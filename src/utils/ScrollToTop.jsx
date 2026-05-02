@@ -1,4 +1,4 @@
-const  ScrollToTop = (element) => {
+const ScrollToTop = element => {
   element.scrollTop = element.scrollHeight;
-}
-export default ScrollToTop
+};
+export default ScrollToTop;

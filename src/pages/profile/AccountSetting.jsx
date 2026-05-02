@@ -1,163 +1,175 @@
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { 
-  // CloudUpload, 
-  Plus } from "lucide-react"
-import { useForm } from "react-hook-form"
-import { useEffect, useState } from "react"
-import { useFetch } from "@/hooks/use-fetch"
-import userService from "@/services/user.service"
-import { useDispatchUser, useUserState } from "@/redux/hooks/useUser"
-import { Spinner } from "@/components/ui/spinner"
-import { toast } from "sonner"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { ProfileSchema } from "@/validations/Schema"
-import Authentication from "@/components/custom/auth/Authenticate"
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  // CloudUpload,
+  Plus,
+} from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import { useFetch } from '@/hooks/use-fetch';
+import userService from '@/services/user.service';
+import { useDispatchUser, useUserState } from '@/redux/hooks/useUser';
+import { Spinner } from '@/components/ui/spinner';
+import { toast } from 'sonner';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { ProfileSchema } from '@/validations/Schema';
+import Authentication from '@/components/custom/auth/Authenticate';
 
 export function AccountSettings() {
-  const [fileDoc, _] = useState(null)
-  const { user } = useUserState()
-  const{updateUserState} = useDispatchUser()
-  const [open,setOpen]= useState(false)
-  const { fn: updateProfilefn, data: updateProfileRes, loading } = useFetch(userService.updateProfile)
-  const { fn: logoutFn,data:logoutRes,loading:logoutLoading} = useFetch(userService.logout)
-  const { handleSubmit, formState: { errors }, register, reset } = useForm({
+  const [fileDoc, _] = useState(null);
+  const { user } = useUserState();
+  const { updateUserState } = useDispatchUser();
+  const [open, setOpen] = useState(false);
+  const {
+    fn: updateProfilefn,
+    data: updateProfileRes,
+    loading,
+  } = useFetch(userService.updateProfile);
+  const { fn: logoutFn, data: logoutRes, loading: logoutLoading } = useFetch(userService.logout);
+  const {
+    handleSubmit,
+    formState: { errors },
+    register,
+    reset,
+  } = useForm({
     resolver: zodResolver(ProfileSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
+      firstName: '',
+      lastName: '',
+      email: '',
       phone: '',
-      address: "",
-      aadhaarNumber: "",
-      businessName:''
+      address: '',
+      aadhaarNumber: '',
+      businessName: '',
     },
-  })
+  });
 
-  useEffect(()=>{
-    if(logoutRes){
-      toast.success('You are Logged out')  
+  useEffect(() => {
+    if (logoutRes) {
+      toast.success('You are Logged out');
       updateUserState(null);
       reset({
         phone: '',
-        firstName: "",
-        lastName: "",
-        email: "",
-        address: "",
-        aadhaarNumber: "",
-        businessName:''
-        
-      })
+        firstName: '',
+        lastName: '',
+        email: '',
+        address: '',
+        aadhaarNumber: '',
+        businessName: '',
+      });
     }
-  },[logoutRes])
+  }, [logoutRes]);
 
   useEffect(() => {
     if (user) {
       reset({
-        phone: (user )?.phone || '',
-        firstName: (user )?.firstName || "",
-        lastName: (user )?.lastName || "",
-        email: (user )?.email || "",
-        address: (user )?.address || "",
-        aadhaarNumber: (user )?.aadhaarNumber || "",
-        businessName :(user )?.businessName || "",
-
-      })
+        phone: user?.phone || '',
+        firstName: user?.firstName || '',
+        lastName: user?.lastName || '',
+        email: user?.email || '',
+        address: user?.address || '',
+        aadhaarNumber: user?.aadhaarNumber || '',
+        businessName: user?.businessName || '',
+      });
     }
-  }, [user, reset])
+  }, [user, reset]);
 
-  function senitizeField(str,fieldName){
-    if(str.replace(/\s/g, '') === ''){
-      return toast.error(fieldName+' is required')
-    } 
+  function senitizeField(str, fieldName) {
+    if (str.replace(/\s/g, '') === '') {
+      return toast.error(fieldName + ' is required');
+    }
   }
 
   async function onSubmit(data) {
-    const formData = new FormData()
-    senitizeField(data.firstName,'First Name')
-    senitizeField(data.lastName,'Last Name')
-    senitizeField(data.email,'Email')
+    const formData = new FormData();
+    senitizeField(data.firstName, 'First Name');
+    senitizeField(data.lastName, 'Last Name');
+    senitizeField(data.email, 'Email');
     // senitizeField(data.phone,'Phone')
-    formData.append("firstName", data.firstName)
-    formData.append("lastName", data.lastName)
-    formData.append("email", data.email)
+    formData.append('firstName', data.firstName);
+    formData.append('lastName', data.lastName);
+    formData.append('email', data.email);
     // formData.append("phone", data.phone)
-    formData.append("address", data.address)
-    formData.append("aadhaarNumber", data.aadhaarNumber)
-    formData.append('businessName',data.businessName)
+    formData.append('address', data.address);
+    formData.append('aadhaarNumber', data.aadhaarNumber);
+    formData.append('businessName', data.businessName);
 
     // Append file if selected
     if (fileDoc) {
-      formData.append("document", fileDoc)
+      formData.append('document', fileDoc);
     }
 
-    await updateProfilefn(formData)
+    await updateProfilefn(formData);
   }
 
   useEffect(() => {
     if (updateProfileRes) {
       updateUserState(updateProfileRes);
-      toast.success('Profile updated successfully')
+      toast.success('Profile updated successfully');
     }
-  }, [updateProfileRes])
+  }, [updateProfileRes]);
 
   useEffect(() => {
     if (!user?.firstName && !user?.phone && !user?.lastName && !user?.email && !user?.address) {
       return;
-    };
+    }
     for (let i = 0; i < Object.entries(errors).length; i++) {
-      toast.error(Object.entries(errors)[i][1]?.message)
+      toast.error(Object.entries(errors)[i][1]?.message);
       break;
     }
-  }, [errors])
+  }, [errors]);
   return (
     <div className="space-y-4">
       {/* Personal Details */}
-      <div className='flex justify-between items-center font-semibold w-full mb-3'>
-          <p className="font-bold text-xl whitespace-nowrap   tracking-tight text-gray-600 ">
-           Profile Details
-          </p>
-    
-        </div>
-    <Authentication setOpen={setOpen} open={open} />
+      <div className="flex justify-between items-center font-semibold w-full mb-3">
+        <p className="font-bold text-xl whitespace-nowrap   tracking-tight text-gray-600 ">
+          Profile Details
+        </p>
+      </div>
+      <Authentication setOpen={setOpen} open={open} />
       <Card className="shadow-none bg-transparent border-0 outline-0 py-0">
-           
-     
-          <form onSubmit={handleSubmit(onSubmit, () => {
+        <form
+          onSubmit={handleSubmit(onSubmit, () => {
             if (!user) {
               setOpen(true);
-              ;
             }
-          })} className=" p-2">
-            <div className="space-y-4  p-5 rounded-md ">
-                {/* <p className="font-[700] text-gray-600">Personal Information</p> */}
+          })}
+          className=" p-2"
+        >
+          <div className="space-y-4  p-5 rounded-md ">
+            {/* <p className="font-[700] text-gray-600">Personal Information</p> */}
             <div className="grid grid-cols-2 gap-4">
-              
               <div className="space-y-2">
-                <Label className="text-gray-600 gap-0" htmlFor="first-name"  >First Name<span className="text-red-500">*</span></Label>
+                <Label className="text-gray-600 gap-0" htmlFor="first-name">
+                  First Name<span className="text-red-500">*</span>
+                </Label>
                 <Input
                   id="first-name"
                   placeholder="Enter first name"
                   className="bg-transparent"
-                  {...register("firstName")}
+                  {...register('firstName')}
                 />
               </div>
               <div className="space-y-2">
-                <Label className="text-gray-600 gap-0" htmlFor="last-name" >Last Name<span className="text-red-500">*</span></Label>
+                <Label className="text-gray-600 gap-0" htmlFor="last-name">
+                  Last Name<span className="text-red-500">*</span>
+                </Label>
                 <Input
                   id="last-name"
                   placeholder="Enter last name"
-                       className="bg-transparent"
-                  {...register("lastName")}
+                  className="bg-transparent"
+                  {...register('lastName')}
                 />
               </div>
             </div>
-             <div className="grid  gap-4 ">
+            <div className="grid  gap-4 ">
               <div className="space-y-2">
-                <Label className="text-gray-600" htmlFor="business">Business Name</Label>
+                <Label className="text-gray-600" htmlFor="business">
+                  Business Name
+                </Label>
                 <div className="flex items-center gap-2 relative">
                   <Input
                     id="business"
@@ -166,25 +178,24 @@ export function AccountSettings() {
                     {...register('businessName')}
                     className="pr-16 bg-transparent"
                   />
-                
                 </div>
               </div>
-
             </div>
             <div className="grid grid-cols-2 gap-4 ">
               <div className="space-y-2">
-                <Label className="text-gray-600 gap-0" htmlFor="email">Email<span className="text-red-500">*</span></Label>
+                <Label className="text-gray-600 gap-0" htmlFor="email">
+                  Email<span className="text-red-500">*</span>
+                </Label>
                 <div className="flex items-center gap-2 relative">
                   <Input
                     id="email"
                     type="email"
                     placeholder="Enter email"
-                    {...register("email")}
+                    {...register('email')}
                     className="pr-16 bg-transparent"
                   />
                   <Button
                     type="button"
-                    
                     variant="link"
                     className="p-0 text-orange-600 bg-transparent  cursor-pointer absolute right-2 top-1/2 -translate-y-1/2 "
                   >
@@ -193,29 +204,33 @@ export function AccountSettings() {
                 </div>
               </div>
               <div className="space-y-2 cursor-not-allowed">
-                <Label className="text-gray-600 gap-0 " htmlFor="phone">Phone<span className="text-red-500">*</span></Label>
+                <Label className="text-gray-600 gap-0 " htmlFor="phone">
+                  Phone<span className="text-red-500">*</span>
+                </Label>
                 <Input
-                disabled
-                  type="text"  inputMode="numeric"
+                  disabled
+                  type="text"
+                  inputMode="numeric"
                   className="bg-transparent"
                   placeholder="Enter phone number "
-                 
-                  {...register("phone")}
+                  {...register('phone')}
                 />
               </div>
             </div>
-           
+
             <div className="space-y-2">
-              <Label className="text-gray-600 gap-0" htmlFor="address">Address<span className="text-red-500">*</span></Label>
-             <div className="relative">
-               <Textarea
-               cols={10}
-                id="address"
-                 className="min-h-24 pb-10 max-w-full whitespace-pre-wrap break-words"
-                placeholder="Enter address"
-                {...register("address")}
-              />
-                              {/* <Button
+              <Label className="text-gray-600 gap-0" htmlFor="address">
+                Address<span className="text-red-500">*</span>
+              </Label>
+              <div className="relative">
+                <Textarea
+                  cols={10}
+                  id="address"
+                  className="min-h-24 pb-10 max-w-full whitespace-pre-wrap break-words"
+                  placeholder="Enter address"
+                  {...register('address')}
+                />
+                {/* <Button
                     type="button"
                     variant="link"
                     className="p-0 text-orange-600 cursor-pointer absolute right-5 bottom-2 gap-1"
@@ -223,12 +238,12 @@ export function AccountSettings() {
                     <Plus className="w-4 h-4"/>
                     Add Address
                   </Button> */}
-             </div>
+              </div>
             </div>
-            </div>
+          </div>
 
-            {/* Aadhaar Verification */}
-            {/* <div className="space-y-4 border border-gray-200 shadow-sm p-5 rounded-md">
+          {/* Aadhaar Verification */}
+          {/* <div className="space-y-4 border border-gray-200 shadow-sm p-5 rounded-md">
               <p className="font-[700] text-gray-600">Aadhaar Verification</p>
               <div className="space-y-4">
                 <div className="space-y-2">
@@ -276,30 +291,36 @@ export function AccountSettings() {
               </div>
             </div> */}
 
-            {/* Submit button */}
-            <div className="flex justify-end">
-               {user ?
+          {/* Submit button */}
+          <div className="flex justify-end">
+            {user ? (
               <Button
-              disabled={logoutLoading}
-              className=" w-32 cursor-pointer text-sm" variant="destructive"
-              onClick={()=>logoutFn()}
-              >Log out</Button>
-              :
-              <Button
-              disabled={logoutLoading}
-              className=" w-32 cursor-pointer text-sm bc"
-              onClick={()=>logoutFn()}
-              >Login</Button>
-              }
-              <Button type="submit" className="cursor-pointer w-32 ml-4 bc text-sm" disabled={loading}>
-                {
-                  loading ? <Spinner className="w-5 h-5 animate-spin " /> : 'Save Profile'
-                }
+                disabled={logoutLoading}
+                className=" w-32 cursor-pointer text-sm"
+                variant="destructive"
+                onClick={() => logoutFn()}
+              >
+                Log out
               </Button>
-            </div>
-          </form>
-     
+            ) : (
+              <Button
+                disabled={logoutLoading}
+                className=" w-32 cursor-pointer text-sm bc"
+                onClick={() => logoutFn()}
+              >
+                Login
+              </Button>
+            )}
+            <Button
+              type="submit"
+              className="cursor-pointer w-32 ml-4 bc text-sm"
+              disabled={loading}
+            >
+              {loading ? <Spinner className="w-5 h-5 animate-spin " /> : 'Save Profile'}
+            </Button>
+          </div>
+        </form>
       </Card>
     </div>
-  )
+  );
 }

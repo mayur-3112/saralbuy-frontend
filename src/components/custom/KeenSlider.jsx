@@ -1,39 +1,46 @@
-import { dateFormatter } from "@/utils/dateFormatter"
+import { dateFormatter } from '@/utils/dateFormatter';
 
-const KeenSlider = ({ product ,target}) => {
-  product = product.product || product || {}
+const KeenSlider = ({ product, target }) => {
+  product = product.product || product || {};
   return (
-   <>
-  <style>{`
+    <>
+      <style>{`
         @media (max-width: 640px) {
           .keen-slider__slide {
           min-width: 100% !important;
         }
         }
       `}</style>
-    <div className={`w-full  border-r-2 border-gray-200 p-2 b shadow-sm  ${target === "requirements" ? 'cursor-pointer': ''}`}>
-      <div className='flex-col sm:flex-row flex gap-6 sm:pl-12 items-center'>
-        <div className='w-24 h-24 flex-shrink-0'>
-          <img
-            src={product.image  || '/no-image.webp'}
-            alt={product.name}
-            className='w-full h-full object-contain rounded-md mix-blend-darken'
-          />
-        </div>
-        <div className='flex flex-col justify-between text-sm'>
-          <div>
-            <span className="cc">
-              {product?.categoryId?.categoryName}
-            </span> 
+      <div
+        className={`w-full  border-r-2 border-gray-200 p-2 b shadow-sm  ${target === 'requirements' ? 'cursor-pointer' : ''}`}
+      >
+        <div className="flex-col sm:flex-row flex gap-6 sm:pl-12 items-center">
+          <div className="w-24 h-24 flex-shrink-0">
+            <img
+              src={product.image || '/no-image.webp'}
+              alt={product.name}
+              className="w-full h-full object-contain rounded-md mix-blend-darken"
+            />
           </div>
-          <p className=' capitalize line-clamp-1 font-semibold'>{product.title}</p>
-          <p>Delivery By: <strong>{dateFormatter(product?.paymentAndDelivery?.ex_deliveryDate) || 'N/A'}</strong></p>
-          <p>QTY: <strong>{product.quantity || 'N/A'}</strong></p>
+          <div className="flex flex-col justify-between text-sm">
+            <div>
+              <span className="cc">{product?.categoryId?.categoryName}</span>
+            </div>
+            <p className=" capitalize line-clamp-1 font-semibold">{product.title}</p>
+            <p>
+              Delivery By:{' '}
+              <strong>
+                {dateFormatter(product?.paymentAndDelivery?.ex_deliveryDate) || 'N/A'}
+              </strong>
+            </p>
+            <p>
+              QTY: <strong>{product.quantity || 'N/A'}</strong>
+            </p>
+          </div>
         </div>
       </div>
-    </div>
-   </>
-  )
-}
+    </>
+  );
+};
 
-export default KeenSlider
+export default KeenSlider;

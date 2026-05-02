@@ -1,18 +1,15 @@
-import authService from "@/services/auth.service";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import authService from '@/services/auth.service';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-export const fetchUser = createAsyncThunk(
-  "user/fetchUser",
-  async (_, { rejectWithValue }) => {
-    try {
-      const repsonse = await authService.userProfile();
+export const fetchUser = createAsyncThunk('user/fetchUser', async (_, { rejectWithValue }) => {
+  try {
+    const repsonse = await authService.userProfile();
 
-      return repsonse;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
-    }
-  },
-);
+    return repsonse;
+  } catch (error) {
+    return rejectWithValue(error.response?.data || error.message);
+  }
+});
 
 const initialState = {
   user: null,
@@ -21,17 +18,17 @@ const initialState = {
 };
 
 export const userSlice = createSlice({
-  name: "user",
+  name: 'user',
   initialState,
   reducers: {
     setUser(state, action) {
-     console.log("UPDATE REDUX STATE------------>",action.payload)
+      console.log('UPDATE REDUX STATE------------>', action.payload);
       state.user = action.payload;
-      state.error=false;
-      state.loading=false;
+      state.error = false;
+      state.loading = false;
     },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
       .addCase(fetchUser.fulfilled, (state, action) => {
         state.user = action.payload;
@@ -46,5 +43,5 @@ export const userSlice = createSlice({
       });
   },
 });
-export const { setUser, } = userSlice.actions;
+export const { setUser } = userSlice.actions;
 export default userSlice.reducer;

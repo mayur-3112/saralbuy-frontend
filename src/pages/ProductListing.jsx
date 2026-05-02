@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
 import {
   Dialog,
   DialogBackdrop,
@@ -6,69 +6,69 @@ import {
   Disclosure,
   DisclosureButton,
   DisclosurePanel,
-} from "@headlessui/react";
-import { XMarkIcon } from "@heroicons/react/24/outline";
-import { FunnelIcon } from "@heroicons/react/20/solid";
-import { Label } from "../Components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useCategory, useCategoryState } from "@/redux/hooks/useCategory";
-import { Range } from "react-range";
-import InfiniteScroll from "react-infinite-scroll-component";
-import { useSearchParams } from "react-router-dom";
+} from '@headlessui/react';
+import { XMarkIcon } from '@heroicons/react/24/outline';
+import { FunnelIcon } from '@heroicons/react/20/solid';
+import { Label } from '../Components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { useCategory, useCategoryState } from '@/redux/hooks/useCategory';
+import { Range } from 'react-range';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { useSearchParams } from 'react-router-dom';
 // import { Spinner } from '../Components/ui/shadcn-io/spinner';
-import productService from "@/services/product.service";
-import ProductListingCard from "@/components/custom/listing/ProductListingCard";
-import { ProductListingCardSkeleton } from "@/const/CustomSkeletons";
-import { ChevronDown, ChevronUp } from "lucide-react";
-import { Controller, useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
+import productService from '@/services/product.service';
+import ProductListingCard from '@/components/custom/listing/ProductListingCard';
+import { ProductListingCardSkeleton } from '@/const/CustomSkeletons';
+import { ChevronDown, ChevronUp } from 'lucide-react';
+import { Controller, useForm } from 'react-hook-form';
+import { Button } from '@/components/ui/button';
 export default function ProductListing() {
   const [values, setValues] = useState([0, 0]);
   const prevFiltersRef = useRef(null);
   const [filters, setFilters] = useState([
     {
-      id: "category",
-      name: "All Category",
+      id: 'category',
+      name: 'All Category',
       options: [
         // DYNAMIC CATEGORIES
       ],
     },
     {
-      id: "subCategory",
-      name: "Sub Category",
+      id: 'subCategory',
+      name: 'Sub Category',
       options: [
         // DYNAMIC CATEGORIES
       ],
     },
     {
-      id: "budget",
-      name: "Budget",
+      id: 'budget',
+      name: 'Budget',
       options: [
-        { value: "new-arrivals", label: "New Arrivals", checked: false },
-        { value: "sale", label: "Sale", checked: false },
-        { value: "travel", label: "Travel", checked: true },
-        { value: "organization", label: "Organization", checked: false },
-        { value: "accessories", label: "Accessories", checked: false },
+        { value: 'new-arrivals', label: 'New Arrivals', checked: false },
+        { value: 'sale', label: 'Sale', checked: false },
+        { value: 'travel', label: 'Travel', checked: true },
+        { value: 'organization', label: 'Organization', checked: false },
+        { value: 'accessories', label: 'Accessories', checked: false },
       ],
     },
     {
-      id: "sort",
-      name: "Sort By",
+      id: 'sort',
+      name: 'Sort By',
       options: [
-        { value: "newly_added", label: "Newly Added", checked: true },
-        { value: "feature", label: "Feature", checked: false },
+        { value: 'newly_added', label: 'Newly Added', checked: true },
+        { value: 'feature', label: 'Feature', checked: false },
         {
-          value: "aplhabetically_a_z",
-          label: "Aplhabetically (A-Z)",
+          value: 'aplhabetically_a_z',
+          label: 'Aplhabetically (A-Z)',
           checked: false,
         },
         {
-          value: "aplhabetically_z_a",
-          label: "Aplhabetically (Z-A)",
+          value: 'aplhabetically_z_a',
+          label: 'Aplhabetically (Z-A)',
           checked: false,
         },
-        { value: "low_to_high", label: "Price Low to High", checked: false },
-        { value: "high_to_low", label: "price High to Low", checked: false },
+        { value: 'low_to_high', label: 'Price Low to High', checked: false },
+        { value: 'high_to_low', label: 'price High to Low', checked: false },
       ],
     },
   ]);
@@ -79,8 +79,8 @@ export default function ProductListing() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [title, setTitle] = useState("");
-  const [key, setKey] = useState("");
+  const [title, setTitle] = useState('');
+  const [key, setKey] = useState('');
   const [products, setProducts] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -88,10 +88,10 @@ export default function ProductListing() {
   const limit = 10;
   const formState = useForm({
     defaultValues: {
-      category: searchParams.get("category") || "",
-      budget: searchParams.get("budget") || "",
-      sort: searchParams.get("sort") || "",
-      subCategory: searchParams.get("subCategory") || "",
+      category: searchParams.get('category') || '',
+      budget: searchParams.get('budget') || '',
+      sort: searchParams.get('sort') || '',
+      subCategory: searchParams.get('subCategory') || '',
     },
   });
   const watchAll = formState.watch();
@@ -101,32 +101,32 @@ export default function ProductListing() {
   }, []);
   useEffect(() => {
     const updateSearchParams = () => {
-      setSearchParams((prevParams) => {
+      setSearchParams(prevParams => {
         const newParams = new URLSearchParams(prevParams);
 
         // Handle category
         if (watchAll.category) {
-          newParams.set("category", watchAll.category);
+          newParams.set('category', watchAll.category);
         } else {
-          newParams.delete("category");
+          newParams.delete('category');
         }
         // Handle category
         if (watchAll.subCategory) {
-          newParams.set("subCategory", watchAll.subCategory);
+          newParams.set('subCategory', watchAll.subCategory);
         } else {
-          newParams.delete("subCategory");
+          newParams.delete('subCategory');
         }
 
         // Handle sort
         if (watchAll.sort) {
-          newParams.set("sort", watchAll.sort);
+          newParams.set('sort', watchAll.sort);
         } else {
-          newParams.delete("sort");
+          newParams.delete('sort');
         }
 
         if (values[1] > 0) {
-          newParams.set("min_budget", values[0].toString());
-          newParams.set("max_budget", values[1].toString());
+          newParams.set('min_budget', values[0].toString());
+          newParams.set('max_budget', values[1].toString());
         }
 
         return newParams;
@@ -134,63 +134,54 @@ export default function ProductListing() {
     };
     const timeoutId = setTimeout(updateSearchParams, 300);
     return () => clearTimeout(timeoutId);
-  }, [
-    watchAll.category,
-    watchAll.sort,
-    watchAll.subCategory,
-    values,
-    setSearchParams,
-  ]);
+  }, [watchAll.category, watchAll.sort, watchAll.subCategory, values, setSearchParams]);
 
   // Clear subcategory when category changes
   useEffect(() => {
-    if (
-      watchAll.category &&
-      watchAll.category !== searchParams.get("category")
-    ) {
-      formState.setValue("subCategory", "");
-      setSearchParams((prevParams) => {
+    if (watchAll.category && watchAll.category !== searchParams.get('category')) {
+      formState.setValue('subCategory', '');
+      setSearchParams(prevParams => {
         const newParams = new URLSearchParams(prevParams);
-        newParams.delete("subCategory");
+        newParams.delete('subCategory');
         return newParams;
       });
     }
   }, [watchAll.category, searchParams, formState, setSearchParams]);
 
   useEffect(() => {
-    if (searchParams.get("min_budget")) {
+    if (searchParams.get('min_budget')) {
       setValues([
-        parseInt(searchParams.get("min_budget")),
-        parseInt(searchParams.get("max_budget")),
+        parseInt(searchParams.get('min_budget')),
+        parseInt(searchParams.get('max_budget')),
       ]);
-    } else if (searchParams.get("max_budget")) {
+    } else if (searchParams.get('max_budget')) {
       setValues([
-        parseInt(searchParams.get("min_budget")),
-        parseInt(searchParams.get("max_budget")),
+        parseInt(searchParams.get('min_budget')),
+        parseInt(searchParams.get('max_budget')),
       ]);
-    } else if (searchParams.get("categoryId")) {
-      formState.setValue("category", searchParams.get("category"));
-    } else if (searchParams.get("subCategory")) {
-      formState.setValue("subCategory", searchParams.get("subCategory"));
-    } else if (searchParams.get("sort")) {
-      formState.setValue("sort", searchParams.get("sort"));
+    } else if (searchParams.get('categoryId')) {
+      formState.setValue('category', searchParams.get('category'));
+    } else if (searchParams.get('subCategory')) {
+      formState.setValue('subCategory', searchParams.get('subCategory'));
+    } else if (searchParams.get('sort')) {
+      formState.setValue('sort', searchParams.get('sort'));
     }
   }, [searchParams]);
 
   useEffect(() => {
     if (!searchParams) return;
-    setTitle(searchParams.get("title") || "");
-    if (searchParams.get("key")) setKey(searchParams.get("key"));
+    setTitle(searchParams.get('title') || '');
+    if (searchParams.get('key')) setKey(searchParams.get('key'));
   }, [searchParams]);
 
   useEffect(() => {
     if (!categoriesArray || categoriesArray.length === 0) return;
-    setFilters((prev) =>
-      prev.map((section) => {
-        if (section.id === "category") {
+    setFilters(prev =>
+      prev.map(section => {
+        if (section.id === 'category') {
           return {
             ...section,
-            options: categoriesArray.map((cat) => ({
+            options: categoriesArray.map(cat => ({
               value: cat._id,
               label: cat.categoryName,
               checked: false,
@@ -198,7 +189,7 @@ export default function ProductListing() {
           };
         }
         return section;
-      }),
+      })
     );
   }, [categoriesArray]);
 
@@ -206,7 +197,7 @@ export default function ProductListing() {
     if (title) {
       setProducts([]);
       setPage(1);
-      fetchMoreData(true,title);
+      fetchMoreData(true, title);
     }
   }, [title]);
   // useEffect(() => {
@@ -250,76 +241,71 @@ export default function ProductListing() {
 
   useEffect(() => {
     if (!title) return;
-    fetchMoreData(true,title);
+    fetchMoreData(true, title);
   }, [
-    searchParams.get("category"),
-    searchParams.get("sort"),
-    searchParams.get("min_budget"),
-    searchParams.get("max_budget"),
-    searchParams.get('subCategory')
+    searchParams.get('category'),
+    searchParams.get('sort'),
+    searchParams.get('min_budget'),
+    searchParams.get('max_budget'),
+    searchParams.get('subCategory'),
   ]);
 
   useEffect(() => {
-  return () => {
-    prevFiltersRef.current = null; 
-  };
-}, []);
+    return () => {
+      prevFiltersRef.current = null;
+    };
+  }, []);
 
-  const fetchMoreData = async (reset = false,forcedTitle='') => {
-     const resolvedTitle = forcedTitle || title;
-  if (!resolvedTitle) return console.warn("title missing");
+  const fetchMoreData = async (reset = false, forcedTitle = '') => {
+    const resolvedTitle = forcedTitle || title;
+    if (!resolvedTitle) return console.warn('title missing');
     const currentPage = reset ? 1 : page;
 
     // Extract filters from searchParams
-    const category = searchParams.get("category") || undefined;
-    const subCategoryId = searchParams.get("subCategory") || undefined;
-    const min_budget = searchParams.get("min_budget")
-      ? Number(searchParams.get("min_budget"))
+    const category = searchParams.get('category') || undefined;
+    const subCategoryId = searchParams.get('subCategory') || undefined;
+    const min_budget = searchParams.get('min_budget')
+      ? Number(searchParams.get('min_budget'))
       : undefined;
-    const max_budget = searchParams.get("max_budget")
-      ? Number(searchParams.get("max_budget"))
+    const max_budget = searchParams.get('max_budget')
+      ? Number(searchParams.get('max_budget'))
       : undefined;
-    const sort = searchParams.get("sort") || undefined;
+    const sort = searchParams.get('sort') || undefined;
 
     try {
-      const response = await productService.getProductByTitle(
-        resolvedTitle,
-        currentPage,
-        limit,
-        { category, subCategoryId, min_budget, max_budget, sort },
-      );
+      const response = await productService.getProductByTitle(resolvedTitle, currentPage, limit, {
+        category,
+        subCategoryId,
+        min_budget,
+        max_budget,
+        sort,
+      });
 
       const newProducts = response?.data?.data?.products || [];
       //   const maxPrice = Math.max(...newProducts.map((p: any) => p.minimumBudget || 0), 0);
       //   setMaxBudget(maxPrice);
 
-      setProducts((prev) => (reset ? newProducts : [...prev, ...newProducts]));
+      setProducts(prev => (reset ? newProducts : [...prev, ...newProducts]));
       setTotal(response?.data?.data.total);
       const totalPages = response?.data?.data.totalPages;
 
       setHasMore(currentPage < totalPages);
       setPage(reset ? 2 : currentPage + 1); // update consistently
     } catch (error) {
-      console.log("Error during get products", error);
+      console.log('Error during get products', error);
     }
   };
 
   useEffect(() => {
     const categoroies =
-      categoriesArray &&
-      categoriesArray?.find(
-        (item) => item._id === searchParams.get("category"),
-      );
-    if (
-      categoroies?.subCategories &&
-      Array.isArray(categoroies?.subCategories)
-    ) {
-      setFilters((prev) =>
-        prev.map((section) => {
-          if (section.id === "subCategory") {
+      categoriesArray && categoriesArray?.find(item => item._id === searchParams.get('category'));
+    if (categoroies?.subCategories && Array.isArray(categoroies?.subCategories)) {
+      setFilters(prev =>
+        prev.map(section => {
+          if (section.id === 'subCategory') {
             return {
               ...section,
-              options: categoroies.subCategories.map((cat) => ({
+              options: categoroies.subCategories.map(cat => ({
                 value: cat._id,
                 label: cat.name,
                 checked: false,
@@ -327,41 +313,41 @@ export default function ProductListing() {
             };
           }
           return section;
-        }),
+        })
       );
     }
-  }, [searchParams.get("category")]);
+  }, [searchParams.get('category')]);
 
   const handleRemoveFilter = () => {
     setMobileFiltersOpen(false);
     formState.reset({
-      category: "",
-      subCategory: "",
-      sort: "",
-      budget: "",
+      category: '',
+      subCategory: '',
+      sort: '',
+      budget: '',
     });
 
     setValues([0, 0]);
 
-    setSearchParams((prev) => {
+    setSearchParams(prev => {
       const newParams = new URLSearchParams(prev);
 
-      newParams.delete("category");
-      newParams.delete("subCategory");
-      newParams.delete("min_budget");
-      newParams.delete("max_budget");
-      newParams.delete("sort");
+      newParams.delete('category');
+      newParams.delete('subCategory');
+      newParams.delete('min_budget');
+      newParams.delete('max_budget');
+      newParams.delete('sort');
 
       return newParams;
     });
   };
 
   const isFilterActive = !!(
-    searchParams.get("category") ||
-    searchParams.get("subCategory") ||
-    searchParams.get("min_budget") ||
-    searchParams.get("max_budget") ||
-    searchParams.get("sort")
+    searchParams.get('category') ||
+    searchParams.get('subCategory') ||
+    searchParams.get('min_budget') ||
+    searchParams.get('max_budget') ||
+    searchParams.get('sort')
   );
 
   return (
@@ -384,9 +370,7 @@ export default function ProductListing() {
               className="relative ml-auto flex bg-white size-full max-w-xs transform flex-col overflow-y-auto  pt-4 pb-6 shadow-xl transition duration-300 ease-in-out data-closed:translate-x-full"
             >
               <div className="flex items-center justify-between px-4">
-                <h2 className="text-lg font-medium text-gray-900">
-                  Product Listing
-                </h2>
+                <h2 className="text-lg font-medium text-gray-900">Product Listing</h2>
                 <button
                   type="button"
                   onClick={() => setMobileFiltersOpen(false)}
@@ -403,18 +387,18 @@ export default function ProductListing() {
               <form className="mt-4 border-t border-gray-200 p-6">
                 <h3 className="sr-only">Categories</h3>
 
-                {filters.map((section) =>
-                  section.id !== "budget" ? (
+                {filters.map(section =>
+                  section.id !== 'budget' ? (
                     <>
                       <Disclosure
                         key={section.id}
                         as="div"
-                        className={`border-b border-gray-200 pb-3 mt-3 ${section.id === "subCategory" && !formState.getValues("category") ? "hidden" : "block"}`}
+                        className={`border-b border-gray-200 pb-3 mt-3 ${section.id === 'subCategory' && !formState.getValues('category') ? 'hidden' : 'block'}`}
                       >
                         <h3 className="-my-3 flow-root">
                           <DisclosureButton
                             className="group flex w-full items-center justify-between py-2 text-sm text-gray-400 hover:text-gray-500"
-                            onChange={(e) => {
+                            onChange={e => {
                               alert(e);
                             }}
                           >
@@ -441,15 +425,12 @@ export default function ProductListing() {
                               render={({ field }) => (
                                 <RadioGroup
                                   value={field.value}
-                                  onValueChange={(value) => {
+                                  onValueChange={value => {
                                     field.onChange(value);
                                   }}
                                 >
                                   {section.options.map((option, optionIdx) => (
-                                    <div
-                                      key={option.value}
-                                      className="flex items-center gap-2"
-                                    >
+                                    <div key={option.value} className="flex items-center gap-2">
                                       <RadioGroupItem
                                         value={option.value}
                                         className="border border-orange-700 focus-visible:border-orange-700 focus-visible:ring-orange-700"
@@ -500,7 +481,7 @@ export default function ProductListing() {
                             step={100}
                             min={0}
                             max={50001}
-                            onChange={(vals) => {
+                            onChange={vals => {
                               setValues(vals);
                             }}
                             renderTrack={({ props, children }) => {
@@ -508,16 +489,11 @@ export default function ProductListing() {
                               const max = 50001;
                               const range = max - min;
 
-                              const leftPercent =
-                                ((values[0] - min) / range) * 100;
-                              const rightPercent =
-                                ((values[1] - min) / range) * 100;
+                              const leftPercent = ((values[0] - min) / range) * 100;
+                              const rightPercent = ((values[1] - min) / range) * 100;
 
                               return (
-                                <div
-                                  {...props}
-                                  className="h-1 w-full bg-gray-300 rounded relative"
-                                >
+                                <div {...props} className="h-1 w-full bg-gray-300 rounded relative">
                                   <div
                                     className="absolute h-1 bg-orange-700 rounded"
                                     style={{
@@ -538,21 +514,16 @@ export default function ProductListing() {
                           />
 
                           <div className="flex justify-between items-center mt-3 text-sm">
-                            Price :{" "}
-                            {Number(
-                              values[0].toString().padStart(2, "0"),
-                            ).toLocaleString()}{" "}
-                            -{" "}
+                            Price : {Number(values[0].toString().padStart(2, '0')).toLocaleString()}{' '}
+                            -{' '}
                             {values[1] > 50000
-                              ? "50000+"
-                              : Number(
-                                  values[1].toString().padStart(2, "0"),
-                                ).toLocaleString()}
+                              ? '50000+'
+                              : Number(values[1].toString().padStart(2, '0')).toLocaleString()}
                           </div>
                         </div>
                       </DisclosurePanel>
                     </Disclosure>
-                  ),
+                  )
                 )}
                 {/* buttons */}
                 {isFilterActive && (
@@ -701,16 +672,16 @@ export default function ProductListing() {
                 <h3 className="sr-only">Categories</h3>
 
                 {filters.map((section, index) =>
-                  section.id !== "budget" ? (
+                  section.id !== 'budget' ? (
                     <Disclosure
                       key={index}
                       as="div"
-                      className={`border-b border-gray-200 pb-3 mt-3 ${section.id === "subCategory" && !formState.getValues("category") ? "hidden" : "block"}`}
+                      className={`border-b border-gray-200 pb-3 mt-3 ${section.id === 'subCategory' && !formState.getValues('category') ? 'hidden' : 'block'}`}
                     >
                       <h3 className="-my-3 flow-root">
                         <DisclosureButton
                           className="group flex w-full items-center justify-between py-2 text-sm text-gray-400 hover:text-gray-500"
-                          onChange={(e) => {
+                          onChange={e => {
                             alert(e);
                           }}
                         >
@@ -737,15 +708,12 @@ export default function ProductListing() {
                             render={({ field }) => (
                               <RadioGroup
                                 value={field.value}
-                                onValueChange={(value) => {
+                                onValueChange={value => {
                                   field.onChange(value);
                                 }}
                               >
                                 {section.options.map((option, optionIdx) => (
-                                  <div
-                                    key={option.value}
-                                    className="flex items-center gap-2"
-                                  >
+                                  <div key={option.value} className="flex items-center gap-2">
                                     <RadioGroupItem
                                       value={option.value}
                                       className="border border-orange-700 focus-visible:border-orange-700 focus-visible:ring-orange-700"
@@ -766,11 +734,7 @@ export default function ProductListing() {
                       </DisclosurePanel>
                     </Disclosure>
                   ) : (
-                    <Disclosure
-                      key={index}
-                      as="div"
-                      className="border-b border-gray-200 pb-3 mt-3"
-                    >
+                    <Disclosure key={index} as="div" className="border-b border-gray-200 pb-3 mt-3">
                       <h3 className="-my-3 flow-root">
                         <DisclosureButton className="group flex w-full items-center justify-between py-3 text-sm text-gray-400 hover:text-gray-500">
                           <span className="font-regular text-[16px] text-orange-700">
@@ -795,7 +759,7 @@ export default function ProductListing() {
                             step={100}
                             min={0}
                             max={50001}
-                            onChange={(vals) => {
+                            onChange={vals => {
                               setValues(vals);
                             }}
                             renderTrack={({ props, children }) => {
@@ -803,16 +767,11 @@ export default function ProductListing() {
                               const max = 50001;
                               const range = max - min;
 
-                              const leftPercent =
-                                ((values[0] - min) / range) * 100;
-                              const rightPercent =
-                                ((values[1] - min) / range) * 100;
+                              const leftPercent = ((values[0] - min) / range) * 100;
+                              const rightPercent = ((values[1] - min) / range) * 100;
 
                               return (
-                                <div
-                                  {...props}
-                                  className="h-1 w-full bg-gray-300 rounded relative"
-                                >
+                                <div {...props} className="h-1 w-full bg-gray-300 rounded relative">
                                   <div
                                     className="absolute h-1 bg-orange-700 rounded"
                                     style={{
@@ -833,21 +792,16 @@ export default function ProductListing() {
                           />
 
                           <div className="flex justify-between items-center mt-3 text-sm">
-                            Price :{" "}
-                            {Number(
-                              values[0].toString().padStart(2, "0"),
-                            ).toLocaleString()}{" "}
-                            -{" "}
+                            Price : {Number(values[0].toString().padStart(2, '0')).toLocaleString()}{' '}
+                            -{' '}
                             {values[1] > 50000
-                              ? "50000+"
-                              : Number(
-                                  values[1].toString().padStart(2, "0"),
-                                ).toLocaleString()}
+                              ? '50000+'
+                              : Number(values[1].toString().padStart(2, '0')).toLocaleString()}
                           </div>
                         </div>
                       </DisclosurePanel>
                     </Disclosure>
-                  ),
+                  )
                 )}
                 {/* buttons */}
                 {isFilterActive && (
@@ -869,9 +823,7 @@ export default function ProductListing() {
                   <p className="font-bold text-2xl border-l-4 border-gray-800 pl-3 tracking-tight text-gray-800">
                     Results
                   </p>
-                  <p className="text-sm text-gray-600 font-medium">
-                    {total || 0} Requirements
-                  </p>
+                  <p className="text-sm text-gray-600 font-medium">{total || 0} Requirements</p>
                 </div>
                 {/* className='shadow-sm rounded-2xl p-6 border' */}
                 <div className="min-h-[300px]">
@@ -888,19 +840,14 @@ export default function ProductListing() {
                       loader={
                         <>
                           {new Array(4).fill(0).map((_, index) => (
-                            <ProductListingCardSkeleton
-                              key={`skeleton-${index}`}
-                            />
+                            <ProductListingCardSkeleton key={`skeleton-${index}`} />
                           ))}
                         </>
                       }
                       className="grid grid-cols-1 sm:grid-cols-2 gap-4"
                     >
-                      {products.map((product) => (
-                        <ProductListingCard
-                          key={product._id}
-                          product={product}
-                        />
+                      {products.map(product => (
+                        <ProductListingCard key={product._id} product={product} />
                       ))}
                     </InfiniteScroll>
                   )}

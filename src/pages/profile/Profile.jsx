@@ -4,107 +4,119 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "../../Components/ui/breadcrumb";
-import { Outlet, useNavigate } from "react-router-dom";
+} from '../../Components/ui/breadcrumb';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { Camera, House } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { NavLink } from 'react-router-dom';
-import { useFetch } from "@/hooks/use-fetch";
-import userService from "@/services/user.service";
-import { useEffect, useRef } from "react";
-import { toast } from "sonner";
-import { useDispatchUser, useUserState } from "@/redux/hooks/useUser";
-import { fallBackName } from "@/utils/fallBackName";
-import { Spinner } from "@/components/ui/spinner";
- const getRoutePath = (value) => {
-    switch (value) {
-      case 'profile':
-        return '/account';
-      case 'your_biding':
-        return '/account/bid';
-      case 'requirements':
-        return '/account/requirements';
-      case 'your_deal':
-        return '/account/deal';
-      case 'notifications':
-        return '/account/notification';
-      case 'cart':
-        return '/account/cart';
-      default:
-        return '/account';
-    }
-  };
-
+import { useFetch } from '@/hooks/use-fetch';
+import userService from '@/services/user.service';
+import { useEffect, useRef } from 'react';
+import { toast } from 'sonner';
+import { useDispatchUser, useUserState } from '@/redux/hooks/useUser';
+import { fallBackName } from '@/utils/fallBackName';
+import { Spinner } from '@/components/ui/spinner';
+const getRoutePath = value => {
+  switch (value) {
+    case 'profile':
+      return '/account';
+    case 'your_biding':
+      return '/account/bid';
+    case 'requirements':
+      return '/account/requirements';
+    case 'your_deal':
+      return '/account/deal';
+    case 'notifications':
+      return '/account/notification';
+    case 'cart':
+      return '/account/cart';
+    default:
+      return '/account';
+  }
+};
 
 const tags = [
   {
     title: 'Profile',
-    value: 'profile'
+    value: 'profile',
   },
   {
-    title: "Cart",
-    value: 'cart'
+    title: 'Cart',
+    value: 'cart',
   },
   {
-    title: "Quotes Submitted",
-    value: 'your_biding'
-  }, {
-    title: "Requirements (Posted / Draft)",
-    value: 'requirements'
-  }, {
-    title: "Closed Deals",
-    value: 'your_deal'
+    title: 'Quotes Submitted',
+    value: 'your_biding',
+  },
+  {
+    title: 'Requirements (Posted / Draft)',
+    value: 'requirements',
+  },
+  {
+    title: 'Closed Deals',
+    value: 'your_deal',
   },
   {
     title: 'Notifications',
-    value: 'notifications'
-  }
-]
+    value: 'notifications',
+  },
+];
 
 const Profile = () => {
-  const {user} = useUserState()
-  const{dispatchUser} =useDispatchUser()
-  const navigate =useNavigate()
-   const { fn: updateProfilefn, data: updateProfileRes, loading:updateProfileLoading } = useFetch(userService.updateProfile)
-  const avatarRef = useRef(null)
-   const handleUpdateProfile = async () => {
-    const formData = new FormData()
-   if (avatarRef.current && avatarRef.current.files) {
-  const file = avatarRef.current.files[0]
-  const maxSize = 2 * 1024 * 1024
-  const allowedTypes = ['image/jpeg', 'image/png', 'image/webp']
-    if (!allowedTypes.includes(file.type)) {
-      toast.error('Only JPG, PNG or WEBP images are allowed')
-      avatarRef.current.value = ''
-      return
-    }
+  const { user } = useUserState();
+  const { dispatchUser } = useDispatchUser();
+  const navigate = useNavigate();
+  const {
+    fn: updateProfilefn,
+    data: updateProfileRes,
+    loading: updateProfileLoading,
+  } = useFetch(userService.updateProfile);
+  const avatarRef = useRef(null);
+  const handleUpdateProfile = async () => {
+    const formData = new FormData();
+    if (avatarRef.current && avatarRef.current.files) {
+      const file = avatarRef.current.files[0];
+      const maxSize = 2 * 1024 * 1024;
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+      if (!allowedTypes.includes(file.type)) {
+        toast.error('Only JPG, PNG or WEBP images are allowed');
+        avatarRef.current.value = '';
+        return;
+      }
 
-    if (file.size > maxSize) {
-      toast.error('Image size should be less than 2MB')
-      avatarRef.current.value = ''
-      return
+      if (file.size > maxSize) {
+        toast.error('Image size should be less than 2MB');
+        avatarRef.current.value = '';
+        return;
+      }
+      formData.append('image', file);
     }
-    formData.append('image', file)
-  }
-   await updateProfilefn(formData)
-   }
+    await updateProfilefn(formData);
+  };
 
-   useEffect(()=>{
-    if(updateProfileRes){
-      dispatchUser(updateProfileRes)
-      toast.success('Profile updated successfully')
+  useEffect(() => {
+    if (updateProfileRes) {
+      dispatchUser(updateProfileRes);
+      toast.success('Profile updated successfully');
     }
-   },[updateProfileRes])
+  }, [updateProfileRes]);
 
   return (
     <div className="w-full max-w-7xl mx-auto py-6 space-y-6 px-4 overflow-auto">
       {/* Breadcrumb */}
       <Breadcrumb className="hidden sm:block">
         <BreadcrumbList>
-          <BreadcrumbItem className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
-            <BreadcrumbPage className="capitalize font-regular text-gray-500"><House className="w-5 h-5"/></BreadcrumbPage>
+          <BreadcrumbItem
+            className="flex items-center gap-2 cursor-pointer"
+            onClick={() => navigate('/')}
+          >
+            <BreadcrumbPage className="capitalize font-regular text-gray-500">
+              <House className="w-5 h-5" />
+            </BreadcrumbPage>
             <BreadcrumbSeparator />
-            <BreadcrumbPage className="capitalize font-regular text-orange-600 font-semibold">Account</BreadcrumbPage>
+            <BreadcrumbPage className="capitalize font-regular text-orange-600 font-semibold">
+              Account
+            </BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
@@ -113,46 +125,63 @@ const Profile = () => {
         <div className="grid gap-8 md:grid-cols-[230px_1fr]">
           {/* Sidebar */}
           <div className="hidden md:block space-y-2 bg-gray-200/50 p-4 rounded-md  sticky top-4  self-start">
-            <div className='flex justify-center items-center mt-2 mb-5 relative'>
-              <div className='relative'>
-                <Avatar className='w-28 h-28 border-gray-600 border-3 flex '>
-                {
-                  updateProfileLoading ? 
-                  <div className="h-full w-full  flex items-center justify-center object-contain">
-                    <Spinner className="w-5 h-5 text-orange-500"/>
-                    
-                  </div>:
-                  <AvatarImage src={user?.profileImage || '/avatar.jpg'} className="w-full h-full object-contain rounded-full"/>
-                }
-                
-                {
-                  !updateProfileLoading && user?.profileImage && <AvatarFallback>{fallBackName(`${user?.firstName} ${user?.lastName}`)}</AvatarFallback>
-                }
+            <div className="flex justify-center items-center mt-2 mb-5 relative">
+              <div className="relative">
+                <Avatar className="w-28 h-28 border-gray-600 border-3 flex ">
+                  {updateProfileLoading ? (
+                    <div className="h-full w-full  flex items-center justify-center object-contain">
+                      <Spinner className="w-5 h-5 text-orange-500" />
+                    </div>
+                  ) : (
+                    <AvatarImage
+                      src={user?.profileImage || '/avatar.jpg'}
+                      className="w-full h-full object-contain rounded-full"
+                    />
+                  )}
+
+                  {!updateProfileLoading && user?.profileImage && (
+                    <AvatarFallback>
+                      {fallBackName(`${user?.firstName} ${user?.lastName}`)}
+                    </AvatarFallback>
+                  )}
                 </Avatar>
-                <input type="file" name="image" hidden id="" ref={avatarRef} onChange={handleUpdateProfile} />
+                <input
+                  type="file"
+                  name="image"
+                  hidden
+                  id=""
+                  ref={avatarRef}
+                  onChange={handleUpdateProfile}
+                />
                 <button
-                disabled={updateProfileLoading}
-                onClick={(e)=>{
-                  e.preventDefault()
-                  if(avatarRef){
-                    avatarRef.current?.click()
-                  }
-                }}  className="absolute bottom-4 cursor-pointer right-0 bg-gray-500 p-1 rounded-full shadow-md hover:bg-gray-400">
-                  <Camera className='w-4 h-4 text-white' />
+                  disabled={updateProfileLoading}
+                  onClick={e => {
+                    e.preventDefault();
+                    if (avatarRef) {
+                      avatarRef.current?.click();
+                    }
+                  }}
+                  className="absolute bottom-4 cursor-pointer right-0 bg-gray-500 p-1 rounded-full shadow-md hover:bg-gray-400"
+                >
+                  <Camera className="w-4 h-4 text-white" />
                 </button>
               </div>
             </div>
-              <a
-              onClick={(e)=>{
-                  e.preventDefault()
-                  if(avatarRef){
-                    avatarRef.current?.click()
-                  }
-                }}
-              href="javascript:void(0)" className="mb-5 block text-md underline text-center font-semibold text-gray-700">Update Photo</a>
+            <a
+              onClick={e => {
+                e.preventDefault();
+                if (avatarRef) {
+                  avatarRef.current?.click();
+                }
+              }}
+              href="javascript:void(0)"
+              className="mb-5 block text-md underline text-center font-semibold text-gray-700"
+            >
+              Update Photo
+            </a>
 
             <div className="grid gap-1 text-gray-600">
-              {tags.map((tag) => {
+              {tags.map(tag => {
                 const routePath = getRoutePath(tag.value);
                 return (
                   <NavLink
@@ -160,7 +189,8 @@ const Profile = () => {
                     to={routePath}
                     end={tag.value === 'profile'}
                     className={({ isActive }) =>
-                      `text-left px-3 py-2 cursor-pointer text-sm rounded-md hover:bg-gray-200/90 ${isActive ? 'bg-gray-200/90 text-gray-600 font-semibold' : ''
+                      `text-left px-3 py-2 cursor-pointer text-sm rounded-md hover:bg-gray-200/90 ${
+                        isActive ? 'bg-gray-200/90 text-gray-600 font-semibold' : ''
                       }`
                     }
                   >
@@ -169,7 +199,6 @@ const Profile = () => {
                 );
               })}
             </div>
-
           </div>
 
           {/* Main Content */}

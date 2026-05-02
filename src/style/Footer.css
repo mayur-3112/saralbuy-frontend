@@ -2,10 +2,9 @@
   background-color: #0e1b2c;
   color: #ffffff;
   padding: 40px 60px 20px;
-  font-family: "Poppins", sans-serif;
+  font-family: 'Poppins', sans-serif;
   /* margin-top: 50px;r */
 }
-
 
 .footer-content {
   display: flex;

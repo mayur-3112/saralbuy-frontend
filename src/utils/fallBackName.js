@@ -1,14 +1,14 @@
-export const fallBackName = (name='') => {
-    console.log(name)
-    if (typeof name !== "string" || !name.trim()) {
-        return "?";
+export const fallBackName = (name = '') => {
+  console.log(name);
+  if (typeof name !== 'string' || !name.trim()) {
+    return '?';
+  }
+  let fallback = '';
+  name.split(' ').forEach(part => {
+    if (part && typeof part[0] === 'string') {
+      if (fallback.length === 2) return fallback;
+      fallback += part[0].toUpperCase();
     }
-    let fallback = "";
-    name.split(" ").forEach((part) => {
-        if (part && typeof part[0] === "string") {
-            if(fallback.length ===2) return fallback
-            fallback += part[0].toUpperCase();
-        }
-    });
-    return fallback || "?";
-}
+  });
+  return fallback || '?';
+};

@@ -1,12 +1,12 @@
-import { Card } from "@/components/ui/card";
-import "keen-slider/keen-slider.min.css";
-import { useKeenSlider } from "keen-slider/react";
-import { MoveRight } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Card } from '@/components/ui/card';
+import 'keen-slider/keen-slider.min.css';
+import { useKeenSlider } from 'keen-slider/react';
+import { MoveRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const SwiperSlider = ({ title, color, target, data }) => {
   const [sliderRef] = useKeenSlider({
-    mode: "free-snap",
+    mode: 'free-snap',
     slides: {
       perView: 1.2,
       spacing: 15,
@@ -16,7 +16,7 @@ const SwiperSlider = ({ title, color, target, data }) => {
 
   return (
     <Card
-      className={`shadow-none  p-5 ${target === "bids" ? `bg-${color}-100` : `bg-${color}-50`}`}
+      className={`shadow-none  p-5 ${target === 'bids' ? `bg-${color}-100` : `bg-${color}-50`}`}
     >
       {/* Header */}
       <div className="flex justify-between items-center ">
@@ -27,11 +27,9 @@ const SwiperSlider = ({ title, color, target, data }) => {
         </p>
         <button
           disabled={!data.length}
-          className={`text-md text-${color}-700 hover:underline  font-semibold  ${!data.length ? "cursor-not-allowed" : "cursor-pointer"}`}
+          className={`text-md text-${color}-700 hover:underline  font-semibold  ${!data.length ? 'cursor-not-allowed' : 'cursor-pointer'}`}
           onClick={() => {
-            target === "bids"
-              ? navigate("/account/bid")
-              : navigate("/account/requirements");
+            target === 'bids' ? navigate('/account/bid') : navigate('/account/requirements');
           }}
         >
           See All
@@ -41,7 +39,7 @@ const SwiperSlider = ({ title, color, target, data }) => {
       {/* Slider */}
       <div ref={sliderRef} className="keen-slider  ">
         {data.length > 0 ? (
-          data.map((item) => (
+          data.map(item => (
             <div key={item._id} className="keen-slider__slide ">
               <Card className="flex flex-row items-center justify-around gap-4 p-4   border border-gray-200">
                 {/* Image */}
@@ -57,13 +55,11 @@ const SwiperSlider = ({ title, color, target, data }) => {
                 <div className="flex flex-col justify-between">
                   <div className="grid space-y-1 w-full">
                     <div>
-                      {target === "bids" && (
-                        <p className="text-sm text-gray-500 mb-1">
-                          Dated: {item.date}
-                        </p>
+                      {target === 'bids' && (
+                        <p className="text-sm text-gray-500 mb-1">Dated: {item.date}</p>
                       )}
                       <p
-                        className={` ${target === "bids" ? "text-orange-700 capitalize font-semibold" : "cc"}`}
+                        className={` ${target === 'bids' ? 'text-orange-700 capitalize font-semibold' : 'cc'}`}
                       >
                         {item.category}
                       </p>
@@ -72,46 +68,39 @@ const SwiperSlider = ({ title, color, target, data }) => {
                       {item.title}
                     </p>
                     <p className="text-sm text-gray-600">
-                      Deliver by:{" "}
-                      <span className="font-bold">{item.deliveryDate}</span>
+                      Deliver by: <span className="font-bold">{item.deliveryDate}</span>
                     </p>
                   </div>
                 </div>
                 {/* Footer */}
                 <div
                   className="flex flex-col h-full justify-between whitespace-nowrap"
-                  style={{ height: "-webkit-fill-available" }}
+                  style={{ height: '-webkit-fill-available' }}
                 >
-                  {target !== "drafts" ? (
+                  {target !== 'drafts' ? (
                     <p
                       className="text-sm cursor-pointer border rounded px-2 py-1 bg-gray-50"
                       onClick={() => {
-                        navigate("/bid-overview/" + item?._id);
+                        navigate('/bid-overview/' + item?._id);
                       }}
                     >
-                      Total Quote:{" "}
-                      <span className="font-semibold text-orange-600">
-                        {item.totalBids}
-                      </span>
+                      Total Quote:{' '}
+                      <span className="font-semibold text-orange-600">{item.totalBids}</span>
                     </p>
                   ) : (
-                    <p className="text-sm text-orange-500 mb-1">
-                      Dated: {item.date}
-                    </p>
+                    <p className="text-sm text-orange-500 mb-1">Dated: {item.date}</p>
                   )}
                   <div className="flex gap-1 items-center justify-end">
                     <a
                       href="javascript:void(0)"
                       onClick={() => {
-                        target === "bids"
-                          ? navigate(
-                              "/product-overview?productId=" + item?.productId,
-                            )
-                          : navigate("/update-draft/" + item._id);
+                        target === 'bids'
+                          ? navigate('/product-overview?productId=' + item?.productId)
+                          : navigate('/update-draft/' + item._id);
                       }}
                       className={`text-sm text-gray-600 font-semibold hover:underline  text-right underline`}
                     >
-                      View {target === "drafts" && "Bids"}
+                      View {target === 'drafts' && 'Bids'}
                     </a>
                     <MoveRight className="h-4 w-4" />
                   </div>
@@ -123,7 +112,7 @@ const SwiperSlider = ({ title, color, target, data }) => {
           <div className="h-full w-full flex-col flex justify-center items-center">
             <img src="/empty-cart.webp" width="20%" />
             <p className="text-gray-500 text-sm capitalize">
-              No {target === "bids" ? "bids" : "drafts"} Registered
+              No {target === 'bids' ? 'bids' : 'drafts'} Registered
             </p>
           </div>
         )}

@@ -1,5 +1,6 @@
 export const sortByDate = (arr, sort, key = 'createdAt') => {
-  return arr.sort((a, b) => { // chaning with original array
+  return arr.sort((a, b) => {
+    // chaning with original array
     const aDate = new Date(a[key]).getTime();
     const bDate = new Date(b[key]).getTime();
 

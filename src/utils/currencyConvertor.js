@@ -1,4 +1,4 @@
-export const currencyConvertor = (amount, currency='INR') => {
+export const currencyConvertor = (amount, currency = 'INR') => {
   const formatter = new Intl.NumberFormat('en-IN', {
     style: 'currency',
     currency: currency,
@@ -6,4 +6,4 @@ export const currencyConvertor = (amount, currency='INR') => {
   });
 
   return formatter.format(amount);
-}
+};

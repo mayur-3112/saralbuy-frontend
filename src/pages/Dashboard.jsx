@@ -1,16 +1,16 @@
-import Banner from "@/components/custom/dashboard/Banner";
-import DyanmicHomeCard from "@/components/custom/dashboard/DynamicHomeCard";
-import Requirement from "@/components/custom/dashboard/Requirement";
-import RequirementSlide from "@/components/custom/dashboard/RequirementSlide";
-import SwiperSlider from "@/components/custom/dashboard/SwiperSlider";
-import TrendingCategory from "@/components/custom/dashboard/TrendingCategory";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useFetch } from "@/hooks/use-fetch";
-import { useCategory, useCategoryState } from "@/redux/hooks/useCategory";
-import bidService from "@/services/bid.service";
-import productService from "@/services/product.service";
-import { dateFormatter } from "@/utils/dateFormatter";
-import React, { useEffect, useState } from "react";
+import Banner from '@/components/custom/dashboard/Banner';
+import DyanmicHomeCard from '@/components/custom/dashboard/DynamicHomeCard';
+import Requirement from '@/components/custom/dashboard/Requirement';
+import RequirementSlide from '@/components/custom/dashboard/RequirementSlide';
+import SwiperSlider from '@/components/custom/dashboard/SwiperSlider';
+import TrendingCategory from '@/components/custom/dashboard/TrendingCategory';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useFetch } from '@/hooks/use-fetch';
+import { useCategory, useCategoryState } from '@/redux/hooks/useCategory';
+import bidService from '@/services/bid.service';
+import productService from '@/services/product.service';
+import { dateFormatter } from '@/utils/dateFormatter';
+import React, { useEffect, useState } from 'react';
 
 const ItemSkeleton = () => (
   <div className="flex flex-col space-y-5">
@@ -26,9 +26,7 @@ const Dashboard = () => {
   const [bids, setBids] = useState([]);
   const [drafts, setDrafts] = useState([]);
   const { fn, data } = useFetch(productService.getHomeCards);
-  const { fn: trendingFn, data: trendingRes } = useFetch(
-    productService.getTrendingCategory,
-  );
+  const { fn: trendingFn, data: trendingRes } = useFetch(productService.getTrendingCategory);
   const {
     fn: getLatestThreeBidsFn,
     data: getLatestBidandDrafts,
@@ -44,27 +42,27 @@ const Dashboard = () => {
   useEffect(() => {
     if (getLatestBidandDrafts) {
       // bids
-      const formattedBids = getLatestBidandDrafts?.bids.map((bid) => ({
+      const formattedBids = getLatestBidandDrafts?.bids.map(bid => ({
         _id: bid._id,
         productId: bid?.productId?._id,
         date: dateFormatter(bid.createdAt),
-        category: bid.productId?.categoryId?.categoryName || "N/A",
-        title: bid.productId?.title || "Untitled",
+        category: bid.productId?.categoryId?.categoryName || 'N/A',
+        title: bid.productId?.title || 'Untitled',
         deliveryDate: dateFormatter(bid.earliestDeliveryDate),
         totalBids: bid?.productId?.totalBidCount || 0,
-        image: bid.productId?.image || "/no-image.webp",
+        image: bid.productId?.image || '/no-image.webp',
       }));
       setBids(formattedBids);
 
       //  drafts
-      const formattedDrafts = getLatestBidandDrafts?.drafts.map((draft) => ({
+      const formattedDrafts = getLatestBidandDrafts?.drafts.map(draft => ({
         _id: draft._id,
         date: dateFormatter(draft.createdAt),
-        category: draft?.categoryId?.categoryName || "N/A",
+        category: draft?.categoryId?.categoryName || 'N/A',
         title: draft.title,
         deliveryDate: dateFormatter(draft.earliestDeliveryDate),
         totalBids: draft?.totalBidCount || 0,
-        image: draft?.image || "/no-image.webp",
+        image: draft?.image || '/no-image.webp',
       }));
       setDrafts(formattedDrafts);
     }
@@ -80,38 +78,22 @@ const Dashboard = () => {
           {bidResponseLoading ? (
             <ItemSkeleton />
           ) : bids.length > 0 ? (
-            <SwiperSlider
-              key={"bid"}
-              title="Your Quote"
-              target="bids"
-              color="gray"
-              data={bids}
-            />
+            <SwiperSlider key={'bid'} title="Your Quote" target="bids" color="gray" data={bids} />
           ) : (
-            <SwiperSlider
-              title="Your Quote"
-              target="bids"
-              color="gray"
-              data={[]}
-            />
+            <SwiperSlider title="Your Quote" target="bids" color="gray" data={[]} />
           )}
           {bidResponseLoading ? (
             <ItemSkeleton />
           ) : drafts.length > 0 ? (
             <SwiperSlider
-              key={"draft"}
+              key={'draft'}
               title="Your Drafts"
               target="drafts"
               color="orange"
               data={drafts}
             />
           ) : (
-            <SwiperSlider
-              title="Your Drafts"
-              target="draft"
-              color="orange"
-              data={[]}
-            />
+            <SwiperSlider title="Your Drafts" target="draft" color="orange" data={[]} />
           )}
         </div>
       </div>
@@ -135,11 +117,7 @@ const Dashboard = () => {
       {/* dyanmic data */}
       {data &&
         data.map((item, idx) => (
-          <DyanmicHomeCard
-            key={idx + 1}
-            bg={idx === 0 ? "gray" : ""}
-            item={item}
-          />
+          <DyanmicHomeCard key={idx + 1} bg={idx === 0 ? 'gray' : ''} item={item} />
         ))}
     </main>
   );

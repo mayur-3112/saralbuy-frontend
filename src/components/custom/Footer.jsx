@@ -1,9 +1,17 @@
+import '../../style/Footer.css';
 
-import "../../style/Footer.css";
-
-import { FaFacebookF, FaTwitter, FaInstagram, FaPinterestP, FaYoutube, FaMapMarkerAlt, FaEnvelope, FaPhone } from 'react-icons/fa';
+import {
+  FaFacebookF,
+  FaTwitter,
+  FaInstagram,
+  FaPinterestP,
+  FaYoutube,
+  FaMapMarkerAlt,
+  FaEnvelope,
+  FaPhone,
+} from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import saralBuyLogo from "/footer-logo.png"
+import saralBuyLogo from '/footer-logo.png';
 const Footer = () => {
   return (
     <footer className=" footer-container">
@@ -11,17 +19,16 @@ const Footer = () => {
         {/* Logo & Description */}
         <div className="footer-section">
           <Link to={'/'} className="flex items-center gap-2">
-            
-              <img
-                src={saralBuyLogo}
-                className="max-h-20  dark:invert mix-blend-light"
-                alt={'company logo'}
-              />
-            </Link>
+            <img
+              src={saralBuyLogo}
+              className="max-h-20  dark:invert mix-blend-light"
+              alt={'company logo'}
+            />
+          </Link>
           <p className="footer-description">
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
-            Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
-            when an unknown printer took a galley.
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
+            has been the industry's standard dummy text ever since the 1500s, when an unknown
+            printer took a galley.
           </p>
         </div>
 
@@ -52,18 +59,28 @@ const Footer = () => {
         <div className="footer-section">
           <h4 className="footer-title">Contact</h4>
           <ul className="footer-contact">
-            <li><FaMapMarkerAlt /> Lorem Ipsum is simply dummy text of the printing & typesetting</li>
-            <li><FaEnvelope /> support@tcf.com</li>
-            <li><FaPhone /> 1234567890</li>
+            <li>
+              <FaMapMarkerAlt /> Lorem Ipsum is simply dummy text of the printing & typesetting
+            </li>
+            <li>
+              <FaEnvelope /> support@tcf.com
+            </li>
+            <li>
+              <FaPhone /> 1234567890
+            </li>
           </ul>
         </div>
       </div>
 
       {/* Bottom Section */}
       <div className="footer-bottom">
-          <div className="footer-socials">
-            <FaFacebookF /><FaTwitter /><FaInstagram /><FaPinterestP /><FaYoutube />
-          </div>
+        <div className="footer-socials">
+          <FaFacebookF />
+          <FaTwitter />
+          <FaInstagram />
+          <FaPinterestP />
+          <FaYoutube />
+        </div>
 
         <p>Copyright@saralbuy2025</p>
         <div className="footer-payments">

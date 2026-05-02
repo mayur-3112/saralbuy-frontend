@@ -1,35 +1,35 @@
-import { Box, Home, Paperclip } from "lucide-react";
+import { Box, Home, Paperclip } from 'lucide-react';
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { DatePicker } from "@/lib/DatePicker";
-import { useFetch } from "@/hooks/use-fetch";
-import productService from "@/services/product.service";
-import { useEffect, useState } from "react";
-import cartService from "@/services/cart.service";
-import { mergeName } from "@/utils/mergerName";
-import { currencyConvertor } from "@/utils/currencyConvertor";
-import { dateFormatter } from "@/utils/dateFormatter";
-import { Controller, useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { useUserState } from "@/redux/hooks/useUser";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { productOverviewBidSchema } from "@/validations/Schema";
-import bidService from "@/services/bid.service";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import SellerVerificationPopup from "@/components/custom/popups/SellerVerificationPopup";
-import { Spinner } from "@/components/ui/spinner";
-import Authentication from "@/components/custom/auth/Authenticate";
+} from '@/components/ui/breadcrumb';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { DatePicker } from '@/lib/DatePicker';
+import { useFetch } from '@/hooks/use-fetch';
+import productService from '@/services/product.service';
+import { useEffect, useState } from 'react';
+import cartService from '@/services/cart.service';
+import { mergeName } from '@/utils/mergerName';
+import { currencyConvertor } from '@/utils/currencyConvertor';
+import { dateFormatter } from '@/utils/dateFormatter';
+import { Controller, useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { useUserState } from '@/redux/hooks/useUser';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { productOverviewBidSchema } from '@/validations/Schema';
+import bidService from '@/services/bid.service';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import SellerVerificationPopup from '@/components/custom/popups/SellerVerificationPopup';
+import { Spinner } from '@/components/ui/spinner';
+import Authentication from '@/components/custom/auth/Authenticate';
 // import fileDownload from "js-file-download";
 // import instance from "@/lib/instance";
-import { CategoryFormSkeleton } from "@/const/CustomSkeletons";
+import { CategoryFormSkeleton } from '@/const/CustomSkeletons';
 import {
   Select,
   SelectContent,
@@ -38,22 +38,22 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
+} from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 
 //  for other brand value condition
 
 function otherBrandValue(obj) {
-  if (obj?.brand === "others" && obj.hasOwnProperty("brandName")) {
+  if (obj?.brand === 'others' && obj.hasOwnProperty('brandName')) {
     return obj.brandName;
   }
   return obj?.brand;
 }
 const ProductOverview = () => {
   const [searchParams] = useSearchParams();
-  const productId = searchParams.get("productId");
-  const bidId = searchParams.get("bidId");
- const { user: userProfile } = useUserState();
+  const productId = searchParams.get('productId');
+  const bidId = searchParams.get('bidId');
+  const { user: userProfile } = useUserState();
   const {
     fn: getProductById,
     data: productResponse,
@@ -89,11 +89,11 @@ const ProductOverview = () => {
   } = useFetch(cartService.addToCart);
   const [open, setOpen] = useState(false);
   const [sellerVerification, setSellerVerification] = useState(false);
-  const [businessType, setBusinessType] = useState("");
+  const [businessType, setBusinessType] = useState('');
   const [businessDets, setBusinessDets] = useState({
-    company_name: "",
-    company_reg_num: "",
-    gst_num: "",
+    company_name: '',
+    company_reg_num: '',
+    gst_num: '',
   });
 
   const navigate = useNavigate();
@@ -109,23 +109,23 @@ const ProductOverview = () => {
   } = useForm({
     resolver: zodResolver(productOverviewBidSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      budgetQuation: "", // this is quotedPrice
+      firstName: '',
+      lastName: '',
+      budgetQuation: '', // this is quotedPrice
       // availableBrand: '',
       earliestDeliveryDate: undefined, // this is deliveryTimeLine
-      sellerType: "",
-      priceBasis: "",
-      taxes: "",
-      location: "",
-      freightTerms: "",
-      paymentTerms: "",
-      buyerNote: "",
+      sellerType: '',
+      priceBasis: '',
+      taxes: '',
+      location: '',
+      freightTerms: '',
+      paymentTerms: '',
+      buyerNote: '',
     },
   });
 
   // Add to Cart Handler
-  const handleAddToCart = async (productId) => {
+  const handleAddToCart = async productId => {
     await addToCartFn(productId);
   };
 
@@ -145,28 +145,27 @@ const ProductOverview = () => {
     } else if (bidId) {
       bidOverviewFn(bidId);
     } else {
-      toast.error("Invalid request");
+      toast.error('Invalid request');
     }
   }, [productId, bidId]);
 
-    useEffect(() => {
-      if (productResponse && Array.isArray(productResponse)) {
-        const mainProduct = productResponse[0];
-        setProductResponse({
-          ...mainProduct,
-        });
-        console.log(productResponse)
-      }
-    }, [productResponse]);
+  useEffect(() => {
+    if (productResponse && Array.isArray(productResponse)) {
+      const mainProduct = productResponse[0];
+      setProductResponse({
+        ...mainProduct,
+      });
+      console.log(productResponse);
+    }
+  }, [productResponse]);
 
   async function handleCreteBid() {
     if (!productResponse) return;
-    if (productResponse?.mainProduct?.userId?._id === userProfile?.user?._id)
-      return;
+    if (productResponse?.mainProduct?.userId?._id === userProfile?.user?._id) return;
     const formData = getValues();
     //  validation
-    if (businessType === "business" && !businessDets.company_name.trim()) {
-      toast.error("company name is required");
+    if (businessType === 'business' && !businessDets.company_name.trim()) {
+      toast.error('company name is required');
       return;
     }
     const buyerId = productResponse?.mainProduct.userId?._id;
@@ -175,19 +174,19 @@ const ProductOverview = () => {
     // const budgetAmount = Number(getValues().budgetQuation) || 0;
     let obj = {
       ...getValues(),
-      status: "active",
+      status: 'active',
       businessType,
-      ...(businessType === "business" && { businessDets }),
+      ...(businessType === 'business' && { businessDets }),
     };
     if (!businessType) {
-      toast.error("business is required !");
+      toast.error('business is required !');
       setSellerVerification(true);
     }
     try {
       await createBidFn(buyerId, productId, obj);
     } catch (err) {
       console.log(err);
-      toast.error("Failed to place Quote");
+      toast.error('Failed to place Quote');
     }
   }
 
@@ -195,11 +194,11 @@ const ProductOverview = () => {
     const user = userProfile;
     const currentFormData = getValues();
     if (!user?._id) {
-      localStorage.setItem("preLoginBidForm", JSON.stringify(currentFormData));
+      localStorage.setItem('preLoginBidForm', JSON.stringify(currentFormData));
       return setOpen(true);
     }
     if (!productResponse && !bidOverviewRes)
-      return console.log("product && Quote not found in frontend");
+      return console.log('product && Quote not found in frontend');
 
     if (productResponse) {
       setSellerVerification(true);
@@ -210,8 +209,8 @@ const ProductOverview = () => {
 
   useEffect(() => {
     if (updateUserBidDetsRes) {
-      toast.success("Quote updated successfully");
-      setBusinessType("");
+      toast.success('Quote updated successfully');
+      setBusinessType('');
     }
   }, [updateUserBidDetsRes]);
 
@@ -248,7 +247,7 @@ const ProductOverview = () => {
   useEffect(() => {
     if (createBidRes) {
       if (productResponse?.mainProduct) {
-        setProductResponse((prev) => {
+        setProductResponse(prev => {
           // Update mainProduct totalBidCount
           const updatedMainProduct = {
             ...prev.mainProduct,
@@ -261,7 +260,7 @@ const ProductOverview = () => {
           };
         });
       } else {
-        console.log("main product is missing to update bid count");
+        console.log('main product is missing to update bid count');
       }
 
       const buyerId = productResponse?.mainProduct.userId?._id;
@@ -275,72 +274,62 @@ const ProductOverview = () => {
         budgetAmount,
       });
 
-      toast.success("Quote created successfully");
+      toast.success('Quote created successfully');
       setSellerVerification(false);
-      setBusinessType("");
+      setBusinessType('');
       reset({
         firstName: userProfile.firstName,
         lastName: userProfile.lastName,
-        budgetQuation: "", // this is quotedPrice
+        budgetQuation: '', // this is quotedPrice
         // availableBrand: '',
         earliestDeliveryDate: undefined, // this is deliveryTimeLine
-        taxes: "",
-        buyerNote: "",
-        freightTerms: "",
-        location: "",
-        paymentTerms: "",
-        priceBasis: "",
+        taxes: '',
+        buyerNote: '',
+        freightTerms: '',
+        location: '',
+        paymentTerms: '',
+        priceBasis: '',
         // quotedPrice:"",
-        sellerType: "",
+        sellerType: '',
       });
     }
   }, [createBidRes]);
 
   useEffect(() => {
     if (userProfile) {
-      const savedData = localStorage.getItem("preLoginBidForm");
+      const savedData = localStorage.getItem('preLoginBidForm');
 
       if (savedData) {
         const parsedData = JSON.parse(savedData);
 
         reset({
           ...parsedData,
-          firstName: bidOverviewRes
-            ? bidOverviewRes?.seller?.firstName
-            : userProfile.firstName,
-          lastName: bidOverviewRes
-            ? bidOverviewRes?.seller?.lastName
-            : userProfile.lastName,
+          firstName: bidOverviewRes ? bidOverviewRes?.seller?.firstName : userProfile.firstName,
+          lastName: bidOverviewRes ? bidOverviewRes?.seller?.lastName : userProfile.lastName,
         });
 
-        localStorage.removeItem("preLoginBidForm");
+        localStorage.removeItem('preLoginBidForm');
       } else {
         reset({
-          firstName: bidOverviewRes
-            ? bidOverviewRes?.seller?.firstName
-            : userProfile.firstName,
-          lastName: bidOverviewRes
-            ? bidOverviewRes?.seller?.lastName
-            : userProfile.lastName,
-          budgetQuation: bidOverviewRes ? bidOverviewRes?.budgetQuation : "",
+          firstName: bidOverviewRes ? bidOverviewRes?.seller?.firstName : userProfile.firstName,
+          lastName: bidOverviewRes ? bidOverviewRes?.seller?.lastName : userProfile.lastName,
+          budgetQuation: bidOverviewRes ? bidOverviewRes?.budgetQuation : '',
           // availableBrand: bidOverviewRes ? bidOverviewRes?.availableBrand : '',
-          earliestDeliveryDate: bidOverviewRes
-            ? bidOverviewRes?.earliestDeliveryDate
-            : undefined,
-          sellerType: bidOverviewRes ? bidOverviewRes?.sellerType : "",
-          priceBasis: bidOverviewRes ? bidOverviewRes?.priceBasis : "",
-          taxes: bidOverviewRes ? bidOverviewRes?.taxes : "",
-          location: bidOverviewRes ? bidOverviewRes?.location : "",
-          freightTerms: bidOverviewRes ? bidOverviewRes?.freightTerms : "",
-          paymentTerms: bidOverviewRes ? bidOverviewRes?.paymentTerms : "",
-          buyerNote: bidOverviewRes ? bidOverviewRes?.buyerNote : "",
+          earliestDeliveryDate: bidOverviewRes ? bidOverviewRes?.earliestDeliveryDate : undefined,
+          sellerType: bidOverviewRes ? bidOverviewRes?.sellerType : '',
+          priceBasis: bidOverviewRes ? bidOverviewRes?.priceBasis : '',
+          taxes: bidOverviewRes ? bidOverviewRes?.taxes : '',
+          location: bidOverviewRes ? bidOverviewRes?.location : '',
+          freightTerms: bidOverviewRes ? bidOverviewRes?.freightTerms : '',
+          paymentTerms: bidOverviewRes ? bidOverviewRes?.paymentTerms : '',
+          buyerNote: bidOverviewRes ? bidOverviewRes?.buyerNote : '',
         });
       }
     }
   }, [userProfile, reset, bidOverviewRes]);
 
   useEffect(() => {
-    if (error === "invalid product ID") {
+    if (error === 'invalid product ID') {
       //  send to 404 page (API error)
     }
   }, []);
@@ -352,23 +341,23 @@ const ProductOverview = () => {
     }
   }, [errors]);
 
-  const handleDocumentDownload = (url) => {
-    const link = document.createElement("a");
+  const handleDocumentDownload = url => {
+    const link = document.createElement('a');
     link.href = url;
-    link.download = url.split("/").pop() || "document";
-    link.target = "_blank";
+    link.download = url.split('/').pop() || 'document';
+    link.target = '_blank';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
-  const handleBidView = async (productId) => {
+  const handleBidView = async productId => {
     await getBidByProductIdFn(productId);
   };
 
   useEffect(() => {
     if (getBidByProductIdRes) {
       const { _id } = getBidByProductIdRes;
-      navigate("/bid-overview/" + _id);
+      navigate('/bid-overview/' + _id);
     }
   }, [getBidByProductIdRes]);
 
@@ -378,9 +367,7 @@ const ProductOverview = () => {
         className="lg:col-span-5 bg-gray-200/80 rounded-lg p-6 space-y-4"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <h3 className="font-semibold text-orange-600">
-          Seller Quotation Details
-        </h3>
+        <h3 className="font-semibold text-orange-600">Seller Quotation Details</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {userProfile?._id && (
             <>
@@ -393,7 +380,7 @@ const ProductOverview = () => {
                   type="text"
                   placeholder="First Name"
                   id="firstName"
-                  {...register("firstName")}
+                  {...register('firstName')}
                   className="bg-white  select-none"
                 />
               </div>
@@ -406,7 +393,7 @@ const ProductOverview = () => {
                   type="text"
                   placeholder="Last Name"
                   id="lastName"
-                  {...register("lastName")}
+                  {...register('lastName')}
                   className="bg-white  select-none"
                 />
               </div>
@@ -452,13 +439,9 @@ const ProductOverview = () => {
                   <SelectContent>
                     <SelectGroup>
                       <SelectItem value="manufacturer">Manufacturer</SelectItem>
-                      <SelectItem value="trader_wholesaler">
-                        Trader / Wholesaler
-                      </SelectItem>
+                      <SelectItem value="trader_wholesaler">Trader / Wholesaler</SelectItem>
                       <SelectItem value="distributor">Distributor</SelectItem>
-                      <SelectItem value="service_provider">
-                        Service Provider
-                      </SelectItem>
+                      <SelectItem value="service_provider">Service Provider</SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>
@@ -474,7 +457,7 @@ const ProductOverview = () => {
               type="number"
               placeholder="Quoted Price"
               className="bg-white"
-              {...register("budgetQuation")}
+              {...register('budgetQuation')}
             />
           </div>
           {/* Price Basis */}
@@ -515,12 +498,8 @@ const ProductOverview = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectItem value="inclusive_gst">
-                        Inclusive of GST
-                      </SelectItem>
-                      <SelectItem value="exclusive_gst">
-                        Exclusive of GST
-                      </SelectItem>
+                      <SelectItem value="inclusive_gst">Inclusive of GST</SelectItem>
+                      <SelectItem value="exclusive_gst">Exclusive of GST</SelectItem>
                       <SelectItem value="gst_rate">GST Rate (%)</SelectItem>
                     </SelectGroup>
                   </SelectContent>
@@ -537,7 +516,7 @@ const ProductOverview = () => {
               type="text"
               placeholder="Location"
               className="bg-white"
-              {...register("location")}
+              {...register('location')}
             />
           </div>
           {/* <div>
@@ -557,7 +536,7 @@ const ProductOverview = () => {
                   date={field.value}
                   title="DD-MM-YYYY"
                   className="w-full"
-                  setDate={(val) => field.onChange(val)}
+                  setDate={val => field.onChange(val)}
                 />
               )}
             />
@@ -577,9 +556,7 @@ const ProductOverview = () => {
                     <SelectGroup>
                       <SelectItem value="ex_works">Ex-Works</SelectItem>
                       <SelectItem value="fob">FOB</SelectItem>
-                      <SelectItem value="delivered">
-                        Delivered (DAP / DDP)
-                      </SelectItem>
+                      <SelectItem value="delivered">Delivered (DAP / DDP)</SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>
@@ -600,9 +577,7 @@ const ProductOverview = () => {
                   <SelectContent>
                     <SelectGroup>
                       <SelectItem value="advance">Advance</SelectItem>
-                      <SelectItem value="partial_advance">
-                        Partial Advance
-                      </SelectItem>
+                      <SelectItem value="partial_advance">Partial Advance</SelectItem>
                       <SelectItem value="on_delivery">On Delivery</SelectItem>
                       <SelectItem value="credit">Credit (X days)</SelectItem>
                     </SelectGroup>
@@ -617,7 +592,7 @@ const ProductOverview = () => {
               Buyer Note
             </Label>
             <Textarea
-              {...register("buyerNote")}
+              {...register('buyerNote')}
               placeholder="Short message (hard limit: 300 characters)"
               className="bg-white w-full"
             />
@@ -627,10 +602,9 @@ const ProductOverview = () => {
           <Button
             type="submit"
             disabled={
-              productResponse?.mainProduct?.userId?._id ===
-                userProfile?._id || createBidLoading
+              productResponse?.mainProduct?.userId?._id === userProfile?._id || createBidLoading
             }
-            variant={"ghost"}
+            variant={'ghost'}
             className="w-32 float-end border text-xs bg-orange-700  transition-all ease-in-out duration-300 hover:bg-orange-600 text-white hover:text-white cursor-pointer"
           >
             Place Quote
@@ -639,14 +613,10 @@ const ProductOverview = () => {
           <Button
             type="submit"
             disabled={updateUserBidDetsLoading}
-            variant={"ghost"}
+            variant={'ghost'}
             className="w-32 float-end border shadow-orange-500 border-orange-500 bg-orange-600  transition-all ease-in-out duration-300 hover:bg-orange-500 text-white hover:text-white cursor-pointer"
           >
-            {updateUserBidDetsLoading ? (
-              <Spinner className="w-5 h-5 animate-spin" />
-            ) : (
-              "Update Bid"
-            )}
+            {updateUserBidDetsLoading ? <Spinner className="w-5 h-5 animate-spin" /> : 'Update Bid'}
           </Button>
         )}
         <div></div>
@@ -657,7 +627,7 @@ const ProductOverview = () => {
   const MergeBidForm = () => {
     const { user } = useUserState();
     const [mergeFormState, setMergeFormState] = useState({
-      message: "",
+      message: '',
     });
 
     function handleSendMessage(e) {
@@ -666,21 +636,21 @@ const ProductOverview = () => {
       const sellerId = user._id;
       const buyerId = currentProduct?.userId?._id;
 
-      if (currentProduct?.dealStatus === "completed") {
-        toast.error("This product has already been sold");
+      if (currentProduct?.dealStatus === 'completed') {
+        toast.error('This product has already been sold');
         return;
       }
 
       localStorage.setItem(
-        "chatIds",
+        'chatIds',
         JSON.stringify({
           productId: currentProduct._id,
           buyerId: buyerId,
           sellerId: sellerId,
-        }),
+        })
       );
 
-      navigate("/chat", {
+      navigate('/chat', {
         state: {
           productId: currentProduct._id,
           buyerId: buyerId,
@@ -704,7 +674,7 @@ const ProductOverview = () => {
           </Label>
           <Textarea
             value={mergeFormState.message}
-            onInput={(e) => {
+            onInput={e => {
               setMergeFormState({ message: e.currentTarget.value });
             }}
             placeholder="Short message (hard limit: 300 characters)"
@@ -714,10 +684,10 @@ const ProductOverview = () => {
         <Button
           type="submit"
           disabled={
-            productResponse?.mainProduct?.userId?._id ===
-              userProfile?._id || mergeFormState.message.trim().length < 2
+            productResponse?.mainProduct?.userId?._id === userProfile?._id ||
+            mergeFormState.message.trim().length < 2
           }
-          variant={"ghost"}
+          variant={'ghost'}
           className="w-32 float-end border text-xs bg-orange-700  transition-all ease-in-out duration-300 hover:bg-orange-600 text-white hover:text-white cursor-pointer"
         >
           Chat Now
@@ -776,7 +746,7 @@ const ProductOverview = () => {
                   src={
                     (bidOverviewRes
                       ? bidOverviewRes?.product?.image
-                      : productResponse?.mainProduct?.image) || "/no-image.webp"
+                      : productResponse?.mainProduct?.image) || '/no-image.webp'
                   }
                   alt="Product"
                   className="object-contain h-full w-full mix-blend-darken"
@@ -786,11 +756,11 @@ const ProductOverview = () => {
               {/* Product Info */}
               <div className="lg:col-span-8 bg-transparent rounded-lg p-4 space-y-4">
                 <h2 className="text-sm font-medium mb-2">
-                  Date :{" "}
+                  Date :{' '}
                   {dateFormatter(
                     bidOverviewRes
                       ? bidOverviewRes?.product?.createdAt
-                      : productResponse?.mainProduct?.createdAt,
+                      : productResponse?.mainProduct?.createdAt
                   )}
                 </h2>
 
@@ -799,9 +769,7 @@ const ProductOverview = () => {
                     ? bidOverviewRes?.product?.title
                     : productResponse?.mainProduct?.title}
                 </h2>
-                <p className="text-sm text-gray-600">
-                  {productResponse?.mainProduct?.description}
-                </p>
+                <p className="text-sm text-gray-600">{productResponse?.mainProduct?.description}</p>
 
                 {/* Meta Info */}
                 <div className="flex flex-wrap gap-4 text-sm text-gray-600">
@@ -822,8 +790,8 @@ const ProductOverview = () => {
                       {mergeName(
                         bidOverviewRes
                           ? bidOverviewRes?.buyer
-                          : productResponse?.mainProduct?.userId,
-                      ) || "N/A"}
+                          : productResponse?.mainProduct?.userId
+                      ) || 'N/A'}
                     </span>
                   </div>
                   <div className="flex items-center gap-1  pr-3 border-r-2 py-1 min-w-32   max-w-[50%]">
@@ -842,8 +810,7 @@ const ProductOverview = () => {
                     <span className=" line-clamp-2">
                       {bidOverviewRes
                         ? bidOverviewRes?.buyer?.address
-                        : productResponse?.mainProduct?.userId?.address ||
-                          "N/A"}
+                        : productResponse?.mainProduct?.userId?.address || 'N/A'}
                     </span>
                   </div>
                   <div className="flex items-center gap-1 py-1 min-w-32 max-w-[25%]">
@@ -862,7 +829,7 @@ const ProductOverview = () => {
                     <span className="capitalize">
                       {bidOverviewRes
                         ? bidOverviewRes?.product?.quantity
-                        : productResponse?.mainProduct?.quantity || "N/A"}{" "}
+                        : productResponse?.mainProduct?.quantity || 'N/A'}{' '}
                       units
                     </span>
                   </div>
@@ -887,7 +854,7 @@ const ProductOverview = () => {
                         handleBidView(
                           bidOverviewRes
                             ? bidOverviewRes?.product?._id
-                            : productResponse?.mainProduct?._id,
+                            : productResponse?.mainProduct?._id
                         )
                       }
                       variant="outline"
@@ -905,19 +872,16 @@ const ProductOverview = () => {
                       <Button
                         className="min-w-32 border-[2px] border-orange-500 text-orange-500 hover:bg-orange-600 hover:text-white transition-all ease-in-out duration-300 cursor-pointer"
                         variant="outline"
-                        onClick={() =>
-                          handleAddToCart(productResponse?.mainProduct?._id)
-                        }
+                        onClick={() => handleAddToCart(productResponse?.mainProduct?._id)}
                         disabled={
                           addToCartLoading ||
-                          productResponse?.mainProduct?.userId?._id ===
-                            userProfile?._id
+                          productResponse?.mainProduct?.userId?._id === userProfile?._id
                         }
                       >
                         {addToCartLoading ? (
                           <Spinner className="w-5 h-5 animate-spin" />
                         ) : (
-                          "Add to Cart"
+                          'Add to Cart'
                         )}
                       </Button>
                     )}
@@ -938,15 +902,14 @@ const ProductOverview = () => {
                     <span className="font-semibold">Product Condition:</span>
                     {(bidOverviewRes
                       ? bidOverviewRes?.product?.subCategory?.name
-                      : productResponse?.mainProduct?.categoryId
-                          ?.categoryName) || "N/A"}
+                      : productResponse?.mainProduct?.categoryId?.categoryName) || 'N/A'}
                   </p>
 
                   <p className="flex items-center justify-between py-2 border-b-2 capitalize">
                     <span className="font-semibold">Brand:</span>
                     {(bidOverviewRes
                       ? otherBrandValue(bidOverviewRes?.product)
-                      : otherBrandValue(productResponse?.mainProduct)) || "N/A"}
+                      : otherBrandValue(productResponse?.mainProduct)) || 'N/A'}
                   </p>
 
                   {/* Model */}
@@ -957,7 +920,7 @@ const ProductOverview = () => {
                       <span className="font-semibold">Model:</span>
                       {(bidOverviewRes
                         ? bidOverviewRes?.product?.model
-                        : productResponse?.mainProduct?.model) || "N/A"}
+                        : productResponse?.mainProduct?.model) || 'N/A'}
                     </p>
                   )}
 
@@ -970,7 +933,7 @@ const ProductOverview = () => {
                       {(bidOverviewRes
                         ? bidOverviewRes?.product?.productType
                         : productResponse?.mainProduct?.productType
-                      )?.replace("_", " ") || "N/A"}
+                      )?.replace('_', ' ') || 'N/A'}
                     </p>
                   )}
 
@@ -982,7 +945,7 @@ const ProductOverview = () => {
                       <span className="font-semibold">Fuel Type:</span>
                       {(bidOverviewRes
                         ? bidOverviewRes?.product?.fuelType
-                        : productResponse?.mainProduct?.fuelType) || "N/A"}
+                        : productResponse?.mainProduct?.fuelType) || 'N/A'}
                     </p>
                   )}
 
@@ -994,7 +957,7 @@ const ProductOverview = () => {
                       <span className="font-semibold">Transmission:</span>
                       {(bidOverviewRes
                         ? bidOverviewRes?.product?.transmission
-                        : productResponse?.mainProduct?.transmission) || "N/A"}
+                        : productResponse?.mainProduct?.transmission) || 'N/A'}
                     </p>
                   )}
 
@@ -1003,28 +966,20 @@ const ProductOverview = () => {
                     ? bidOverviewRes?.product?.oldProductValue
                     : productResponse?.mainProduct?.oldProductValue) && (
                     <p className="flex items-center justify-between py-2 border-b-2">
-                      <span className="font-semibold">
-                        Old Product In Year:
-                      </span>
+                      <span className="font-semibold">Old Product In Year:</span>
                       {(bidOverviewRes
                         ? bidOverviewRes?.product?.oldProductValue?.min
-                        : productResponse?.mainProduct?.oldProductValue?.min) ||
-                        0}
-                      {" - "}
+                        : productResponse?.mainProduct?.oldProductValue?.min) || 0}
+                      {' - '}
                       {(bidOverviewRes
                         ? bidOverviewRes?.product?.oldProductValue?.max
-                        : productResponse?.mainProduct?.oldProductValue?.max) ||
-                        0}
+                        : productResponse?.mainProduct?.oldProductValue?.max) || 0}
                     </p>
                   )}
 
-                  {productResponse?.mainProduct?.categoryId?.categoryName ===
-                    "industrial" && (
+                  {productResponse?.mainProduct?.categoryId?.categoryName === 'industrial' && (
                     <p className="flex items-center justify-between py-2 border-b-2">
-                      <span className="font-semibold">
-                        Construction Tool Type:
-                      </span>{" "}
-                      Industrial Tool
+                      <span className="font-semibold">Construction Tool Type:</span> Industrial Tool
                     </p>
                   )}
 
@@ -1035,22 +990,18 @@ const ProductOverview = () => {
                       {currencyConvertor(
                         bidOverviewRes
                           ? bidOverviewRes?.product?.minimumBudget
-                          : productResponse?.mainProduct?.minimumBudget,
+                          : productResponse?.mainProduct?.minimumBudget
                       )}
                     </p>
                   )}
 
                   <p className="flex items-center justify-between py-2 border-b-2">
-                    <span className="font-semibold">
-                      Required Delivery Date:
-                    </span>
+                    <span className="font-semibold">Required Delivery Date:</span>
                     {dateFormatter(
                       bidOverviewRes
-                        ? bidOverviewRes?.product?.paymentAndDelivery
-                            ?.ex_deliveryDate
-                        : productResponse?.mainProduct?.paymentAndDelivery
-                            ?.ex_deliveryDate,
-                    ) || "N/A"}
+                        ? bidOverviewRes?.product?.paymentAndDelivery?.ex_deliveryDate
+                        : productResponse?.mainProduct?.paymentAndDelivery?.ex_deliveryDate
+                    ) || 'N/A'}
                   </p>
 
                   {/* Bid Active Duration */}
@@ -1058,12 +1009,10 @@ const ProductOverview = () => {
                     ? bidOverviewRes?.product?.bidActiveDuration
                     : productResponse?.mainProduct?.bidActiveDuration) && (
                     <p className="flex items-center justify-between py-2 border-b-2">
-                      <span className="font-semibold">
-                        Bid Active Duration:
-                      </span>
+                      <span className="font-semibold">Bid Active Duration:</span>
                       {bidOverviewRes
                         ? bidOverviewRes?.product?.bidActiveDuration
-                        : productResponse?.mainProduct?.bidActiveDuration}{" "}
+                        : productResponse?.mainProduct?.bidActiveDuration}{' '}
                       day(s)
                     </p>
                   )}
@@ -1075,7 +1024,7 @@ const ProductOverview = () => {
                       <span className="font-semibold">Color:</span>
                       {(bidOverviewRes
                         ? bidOverviewRes?.product?.color
-                        : productResponse?.mainProduct?.color) || "N/A"}
+                        : productResponse?.mainProduct?.color) || 'N/A'}
                     </p>
                   )}
 
@@ -1086,7 +1035,7 @@ const ProductOverview = () => {
                       <span className="font-semibold">Type of Vehicle:</span>
                       {(bidOverviewRes
                         ? bidOverviewRes?.product?.typeOfVehicle
-                        : productResponse?.mainProduct?.typeOfVehicle) || "N/A"}
+                        : productResponse?.mainProduct?.typeOfVehicle) || 'N/A'}
                     </p>
                   )}
 
@@ -1097,7 +1046,7 @@ const ProductOverview = () => {
                       <span className="font-semibold">Type of Product:</span>
                       {(bidOverviewRes
                         ? bidOverviewRes?.product?.typeOfProduct
-                        : productResponse?.mainProduct?.typeOfProduct) || "N/A"}
+                        : productResponse?.mainProduct?.typeOfProduct) || 'N/A'}
                     </p>
                   )}
 
@@ -1105,67 +1054,55 @@ const ProductOverview = () => {
                     <span className="font-semibold">Payment Mode:</span>
                     {(bidOverviewRes
                       ? bidOverviewRes?.product?.paymentAndDelivery?.paymentMode
-                      : productResponse?.mainProduct?.paymentAndDelivery
-                          ?.paymentMode) || "N/A"}
+                      : productResponse?.mainProduct?.paymentAndDelivery?.paymentMode) || 'N/A'}
                   </p>
 
                   {/* Organization Name */}
                   {(bidOverviewRes
-                    ? bidOverviewRes?.product?.paymentAndDelivery
-                        ?.organizationName
-                    : productResponse?.mainProduct?.paymentAndDelivery
-                        ?.organizationName) && (
+                    ? bidOverviewRes?.product?.paymentAndDelivery?.organizationName
+                    : productResponse?.mainProduct?.paymentAndDelivery?.organizationName) && (
                     <p className="flex items-center justify-between py-2 border-b-2 capitalize">
                       <span className="font-semibold">Organization Name:</span>
                       {(bidOverviewRes
-                        ? bidOverviewRes?.product?.paymentAndDelivery
-                            ?.organizationName
-                        : productResponse?.mainProduct?.paymentAndDelivery
-                            ?.organizationName) || "N/A"}
+                        ? bidOverviewRes?.product?.paymentAndDelivery?.organizationName
+                        : productResponse?.mainProduct?.paymentAndDelivery?.organizationName) ||
+                        'N/A'}
                     </p>
                   )}
 
                   {/* Organization Address */}
                   {(bidOverviewRes
-                    ? bidOverviewRes?.product?.paymentAndDelivery
-                        ?.organizationAddress
-                    : productResponse?.mainProduct?.paymentAndDelivery
-                        ?.organizationAddress) && (
+                    ? bidOverviewRes?.product?.paymentAndDelivery?.organizationAddress
+                    : productResponse?.mainProduct?.paymentAndDelivery?.organizationAddress) && (
                     <p className="flex items-center justify-between py-2 border-b-2 capitalize">
-                      <span className="font-semibold">
-                        Organization Address:
-                      </span>
+                      <span className="font-semibold">Organization Address:</span>
                       {(bidOverviewRes
-                        ? bidOverviewRes?.product?.paymentAndDelivery
-                            ?.organizationAddress
-                        : productResponse?.mainProduct?.paymentAndDelivery
-                            ?.organizationAddress) || "N/A"}
+                        ? bidOverviewRes?.product?.paymentAndDelivery?.organizationAddress
+                        : productResponse?.mainProduct?.paymentAndDelivery?.organizationAddress) ||
+                        'N/A'}
                     </p>
                   )}
 
                   {/* GST Number */}
                   {(bidOverviewRes
                     ? bidOverviewRes?.product?.paymentAndDelivery?.gstNumber
-                    : productResponse?.mainProduct?.paymentAndDelivery
-                        ?.gstNumber) && (
+                    : productResponse?.mainProduct?.paymentAndDelivery?.gstNumber) && (
                     <p className="flex items-center justify-between py-2 border-b-2">
                       <span className="font-semibold">GST Number:</span>
                       {(bidOverviewRes
                         ? bidOverviewRes?.product?.paymentAndDelivery?.gstNumber
-                        : productResponse?.mainProduct?.paymentAndDelivery
-                            ?.gstNumber) || "N/A"}
+                        : productResponse?.mainProduct?.paymentAndDelivery?.gstNumber) || 'N/A'}
                     </p>
                   )}
 
                   <p className="flex items-center justify-between py-2 border-b-2">
                     <span className="font-semibold">Supporting Documents:</span>
-                    {productResponse?.mainProduct?.document ||
-                    bidOverviewRes?.product?.document ? (
+                    {productResponse?.mainProduct?.document || bidOverviewRes?.product?.document ? (
                       <p
                         onClick={() =>
                           handleDocumentDownload(
                             productResponse?.mainProduct?.document ||
-                              bidOverviewRes?.product?.document,
+                              bidOverviewRes?.product?.document
                           )
                         }
                         className="flex gap-1 items-center hover:underline cursor-pointer"
@@ -1174,7 +1111,7 @@ const ProductOverview = () => {
                         Download Document
                       </p>
                     ) : (
-                      "N/A"
+                      'N/A'
                     )}
                   </p>
                 </div>

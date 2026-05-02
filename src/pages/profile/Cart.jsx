@@ -1,20 +1,20 @@
-import { Button } from "@/components/ui/button";
-import { SliderSkeleton } from "@/const/CustomSkeletons";
-import TooltipComp from "@/lib/TooltipComp";
-import { ListFilter, X } from "lucide-react";
-import RequirementSlider from "@/components/custom/profile/RequirementSlider";
-import { useEffect, useState } from "react";
-import cartService from "@/services/cart.service";
-import { useFetch } from "@/hooks/use-fetch";
-import { toast } from "sonner";
-import AlertPopup from "@/components/custom/popups/AlertPopup";
-import { sortByDate } from "@/utils/sortByDate";
+import { Button } from '@/components/ui/button';
+import { SliderSkeleton } from '@/const/CustomSkeletons';
+import TooltipComp from '@/lib/TooltipComp';
+import { ListFilter, X } from 'lucide-react';
+import RequirementSlider from '@/components/custom/profile/RequirementSlider';
+import { useEffect, useState } from 'react';
+import cartService from '@/services/cart.service';
+import { useFetch } from '@/hooks/use-fetch';
+import { toast } from 'sonner';
+import AlertPopup from '@/components/custom/popups/AlertPopup';
+import { sortByDate } from '@/utils/sortByDate';
 
 const Cart = () => {
   const [_, setIsAscSorting] = useState(false); // asc and deasc
   const [ids, setIds] = useState({
-    productId: "",
-    cartId: "",
+    productId: '',
+    cartId: '',
   });
   const {
     fn: getCartFn,
@@ -22,28 +22,23 @@ const Cart = () => {
     loading: getCartLoading,
     setData: setCartItems,
   } = useFetch(cartService.getCart);
-  const { fn: removeCartFn, data: removeCartRes } = useFetch(
-    cartService.removeCart,
-  );
+  const { fn: removeCartFn, data: removeCartRes } = useFetch(cartService.removeCart);
   const [open, setOpen] = useState(false);
   useEffect(() => {
     getCartFn();
   }, []);
 
   const message = {
-    title: "Warning",
-    message:
-      "This action cannot be undone. This Cart will permanently delete your account.",
+    title: 'Warning',
+    message: 'This action cannot be undone. This Cart will permanently delete your account.',
   };
 
   function handleCart(cartId, productId) {
-    setCartItems((prevCart) => {
+    setCartItems(prevCart => {
       if (!prevCart?.cartItems) return prevCart;
       return {
         ...prevCart,
-        cartItems: prevCart.cartItems.filter(
-          (item) => item.product._id !== productId,
-        ),
+        cartItems: prevCart.cartItems.filter(item => item.product._id !== productId),
       };
     });
 
@@ -51,11 +46,11 @@ const Cart = () => {
   }
 
   const handleSort = () => {
-    setIsAscSorting((prev) => {
+    setIsAscSorting(prev => {
       const next = !prev;
-      setCartItems((prevCart) => {
+      setCartItems(prevCart => {
         if (!prevCart?.cartItems) return prevCart;
-        const sortedItems = sortByDate(prevCart?.cartItems, next, "addedAt");
+        const sortedItems = sortByDate(prevCart?.cartItems, next, 'addedAt');
         return {
           ...prevCart,
           cartItems: sortedItems,
@@ -68,10 +63,10 @@ const Cart = () => {
 
   useEffect(() => {
     if (removeCartRes) {
-      toast.success(removeCartRes?.message || "Cart item removed successfully");
+      toast.success(removeCartRes?.message || 'Cart item removed successfully');
       setIds({
-        cartId: "",
-        productId: "",
+        cartId: '',
+        productId: '',
       });
     }
   }, [removeCartRes]);
@@ -94,8 +89,8 @@ const Cart = () => {
             </p>
             <Button
               onClick={handleSort}
-              variant={"ghost"}
-              size={"icon"}
+              variant={'ghost'}
+              size={'icon'}
               className=" w-24 flex gap-2 items-center justify-center text-sm font-medium  text-gray-700 bg-transparent border-1 hover:bg-transparent cursor-pointer border-gray-700"
             >
               Date
@@ -104,7 +99,7 @@ const Cart = () => {
           </div>
           {/*  cart list */}
           {getCartLoading ? (
-            new Array(3).fill(0).map((_) => <SliderSkeleton />)
+            new Array(3).fill(0).map(_ => <SliderSkeleton />)
           ) : getCartRes && getCartRes.cartItems?.length > 0 ? (
             getCartRes?.cartItems?.map((item, idx) => (
               <div
@@ -124,7 +119,7 @@ const Cart = () => {
                 >
                   <TooltipComp
                     hoverChildren={<X className="h-4 w-4" />}
-                    contentChildren={<p>Remove From  Cart</p>}
+                    contentChildren={<p>Remove From Cart</p>}
                   ></TooltipComp>
                 </div>
 

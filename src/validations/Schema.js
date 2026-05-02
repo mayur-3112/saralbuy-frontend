@@ -1,23 +1,25 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export const CategoryFormSchema = z.object({
-  title: z.string().min(1, "Title is required"),
+  title: z.string().min(1, 'Title is required'),
   subCategoryId: z.string().optional(),
-  quantity: z.string().min(1, "Quantity is required"),
+  quantity: z.string().min(1, 'Quantity is required'),
   minimumBudget: z.string().optional(),
   productType: z.string().optional(),
   budgetRange: z.string().optional(), // Added for budget range field
   // budget:z.coerce.number().refine((value)=> value >= 0, { message: "Budget must be greater than 0" }),
 
-  oldProductValue: z.object({
-    min: z.string().optional(),
-    max: z.string().optional(),
-  }).optional(),
+  oldProductValue: z
+    .object({
+      min: z.string().optional(),
+      max: z.string().optional(),
+    })
+    .optional(),
 
   productCondition: z.string().optional(),
   image: z.string().optional(),
   document: z.string().optional(),
-  description: z.string().min(1, "Description is required"),
+  description: z.string().min(1, 'Description is required'),
 
   paymentAndDelivery: z.object({
     ex_deliveryDate: z.date().optional(),
@@ -29,7 +31,6 @@ export const CategoryFormSchema = z.object({
 
   draft: z.boolean().optional(),
   gst_requirement: z.string().optional(),
-
 
   brand: z.string().optional(),
   additionalDeliveryAndPackage: z.string().optional(),
@@ -45,31 +46,33 @@ export const CategoryFormSchema = z.object({
   rateAService: z.string().optional(),
   brandName: z.string().optional(),
   typeOfVehicle: z.string().optional(),
-  typeOfProduct: z.string().optional()
-
+  typeOfProduct: z.string().optional(),
 });
 
 export const ProfileSchema = z.object({
-  firstName: z.string().min(1, "First Name is required"),
-  lastName: z.string().min(1, "Last Name is required"),
-  email: z.string().email("Invalid email"),
+  firstName: z.string().min(1, 'First Name is required'),
+  lastName: z.string().min(1, 'Last Name is required'),
+  email: z.string().email('Invalid email'),
   phone: z.string().optional(),
-  address: z.string().min(1, "Address is required").min(3, "Address is too short"),
-  aadhaarNumber: z.string().refine((value) => !value || /^[2-9]{1}[0-9]{11}$/.test(value), {
-    message: 'Invalid Aadhaar Number'
+  address: z.string().min(1, 'Address is required').min(3, 'Address is too short'),
+  aadhaarNumber: z.string().refine(value => !value || /^[2-9]{1}[0-9]{11}$/.test(value), {
+    message: 'Invalid Aadhaar Number',
   }),
-  businessName:z.string().optional(),
-})
+  businessName: z.string().optional(),
+});
 
 export const productOverviewBidSchema = z.object({
-  budgetQuation: z.coerce.number({
-    error: 'Quation Price is required'
-  }).positive("Budget Quation must be positive"),
+  budgetQuation: z.coerce
+    .number({
+      error: 'Quation Price is required',
+    })
+    .positive('Budget Quation must be positive'),
   // availableBrand: z.string().min(1, "Available Brand is required"),
-  earliestDeliveryDate: z.
-    union([z.coerce.date(), z.undefined()]). // it can be date or undefined
-    refine((value) => value !== undefined, {   // firsty check if value is not undefined
-      message: 'Delivery Timeline is required'
+  earliestDeliveryDate: z
+    .union([z.coerce.date(), z.undefined()]) // it can be date or undefined
+    .refine(value => value !== undefined, {
+      // firsty check if value is not undefined
+      message: 'Delivery Timeline is required',
     }),
   sellerType: z.string().optional(),
   taxes: z.string().optional(),
@@ -78,6 +81,4 @@ export const productOverviewBidSchema = z.object({
   location: z.string().optional(),
   paymentTerms: z.string().optional(),
   priceBasis: z.string().optional(),
-
-
 });
