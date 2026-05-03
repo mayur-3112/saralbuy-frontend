@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 import { Button } from '@/components/ui/button';
 import requirementService from '@/services/requirement.service';
-import { useFetch } from '@/hooks/use-fetch';
+import { useFetch } from '@/hooks/useFetch';
 import { dateFormatter } from '@/utils/dateFormatter';
 import { mergeName } from '@/utils/mergerName';
 import { fallBackName } from '@/utils/fallBackName';

@@ -5,7 +5,7 @@ import RequirementSlide from '@/components/custom/dashboard/RequirementSlide';
 import SwiperSlider from '@/components/custom/dashboard/SwiperSlider';
 import TrendingCategory from '@/components/custom/dashboard/TrendingCategory';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useFetch } from '@/hooks/use-fetch';
+import { useFetch } from '@/hooks/useFetch';
 import { useCategory, useCategoryState } from '@/redux/hooks/useCategory';
 import bidService from '@/services/bid.service';
 import productService from '@/services/product.service';

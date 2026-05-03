@@ -3,7 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ListFilter } from 'lucide-react';
 import 'keen-slider/keen-slider.min.css';
 import { useEffect, useState } from 'react';
-import { useFetch } from '@/hooks/use-fetch';
+import { useFetch } from '@/hooks/useFetch';
 import productService from '@/services/product.service';
 import bidService from '@/services/bid.service';
 import { SliderSkeleton } from '@/const/CustomSkeletons';

@@ -9,7 +9,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import { Camera, House } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { NavLink } from 'react-router-dom';
-import { useFetch } from '@/hooks/use-fetch';
+import { useFetch } from '@/hooks/useFetch';
 import userService from '@/services/user.service';
 import { useEffect, useRef } from 'react';
 import { toast } from 'sonner';

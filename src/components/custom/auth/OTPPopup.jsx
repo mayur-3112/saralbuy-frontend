@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import saralBuyLogo from '/image/Logo/saralBuyLogo.png';
-import { useFetch } from '@/hooks/use-fetch';
+import { useFetch } from '@/hooks/useFetch';
 import { Button } from '@/components/ui/button';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 

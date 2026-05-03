@@ -1,4 +1,4 @@
-import { useFetch } from '@/hooks/use-fetch';
+import { useFetch } from '@/hooks/useFetch';
 import { useEffect } from 'react';
 import ProductCard from './ProductCard';
 import requirementService from '@/services/requirement.service';

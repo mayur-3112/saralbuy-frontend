@@ -25,5 +25,9 @@ class RequirementService {
   async getCompletedApprovedRequirements() {
     return instance.get('/requirement/completed-approved').then(res => res.data?.data || res.data);
   }
+  async     getRequirementById(id) {
+        return instance.get(`/requirement/get-requirement/${id}`)
+            .then(res => res.data?.data || res.data);
+    }
 }
 export default new RequirementService();

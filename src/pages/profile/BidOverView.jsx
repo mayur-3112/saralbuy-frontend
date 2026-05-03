@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { CategoryFormSkeleton, SkeletonTable } from '@/const/CustomSkeletons';
 import TableListing from '@/components/custom/TableListing';
 import { AvatarFallback } from '@radix-ui/react-avatar';
-import { useFetch } from '@/hooks/use-fetch';
+import { useFetch } from '@/hooks/useFetch';
 import bidService from '@/services/bid.service';
 import { useEffect, useRef, useState } from 'react';
 import { dateFormatter } from '@/utils/dateFormatter';

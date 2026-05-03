@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { dateFormatter } from '@/utils/dateFormatter';
 // import { fallBackName } from '@/helper/fallBackName';
-import { useFetch } from '@/hooks/use-fetch';
+import { useFetch } from '@/hooks/useFetch';
 import bidService from '@/services/bid.service';
 import { Trash2Icon } from 'lucide-react';
 import { useEffect, useState } from 'react';

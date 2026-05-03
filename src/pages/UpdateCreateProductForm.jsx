@@ -25,7 +25,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { useFetch } from '@/hooks/use-fetch';
+import { useFetch } from '@/hooks/useFetch';
 import categoryService from '@/services/category.service';
 import productService from '@/services/product.service';
 import { useUserState } from '@/redux/hooks/useUser';

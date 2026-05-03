@@ -1,5 +1,4 @@
 export const fallBackName = (name = '') => {
-  console.log(name);
   if (typeof name !== 'string' || !name.trim()) {
     return '?';
   }

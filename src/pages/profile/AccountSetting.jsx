@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
-import { useFetch } from '@/hooks/use-fetch';
+import { useFetch } from '@/hooks/useFetch';
 import userService from '@/services/user.service';
 import { useDispatchUser, useUserState } from '@/redux/hooks/useUser';
 import { Spinner } from '@/components/ui/spinner';

@@ -7,7 +7,7 @@ import raiseAQuotationBanner from '/image/Banners/raiseAQuoationBanner.png';
 import { useNavigate } from 'react-router-dom';
 //Styles
 import '../../../style/Banner.css';
-import { useFetch } from '@/hooks/use-fetch';
+import { useFetch } from '@/hooks/useFetch';
 // import bannerService from "@/services/banner.service";
 
 //Variables

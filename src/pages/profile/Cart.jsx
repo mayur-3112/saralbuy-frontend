@@ -5,7 +5,7 @@ import { ListFilter, X } from 'lucide-react';
 import RequirementSlider from '@/components/custom/profile/RequirementSlider';
 import { useEffect, useState } from 'react';
 import cartService from '@/services/cart.service';
-import { useFetch } from '@/hooks/use-fetch';
+import { useFetch } from '@/hooks/useFetch';
 import { toast } from 'sonner';
 import AlertPopup from '@/components/custom/popups/AlertPopup';
 import { sortByDate } from '@/utils/sortByDate';

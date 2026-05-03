@@ -3,7 +3,7 @@ import saralBuyLogo from '/image/Logo/saralBuyLogo.png';
 
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { useFetch } from '@/hooks/use-fetch';
+import { useFetch } from '@/hooks/useFetch';
 import authService from '@/services/auth.service';
 import { toast } from 'sonner';
 import { Spinner } from '@/components/ui/spinner';

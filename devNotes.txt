@@ -1,7 +1,10 @@
 RequirementHome === ReuquirementSlide
 RecentProductCard ===  ProductCard
 Category === CreateProductForm
+Profle/requiremments === requirements-overview/:id  this is route chnange
 
+BuyerId === Who created product
+SellerId === Who is placing bid
 
 
 
@@ -18,3 +21,10 @@ Point -3
 ager main bid lagyi to mere home requiremnet mai dikega and same buyer kai home requirement mai dikega
 and Buyer kai profile requiremnet  mai vo product dikega but saller kai nhi dikega ??
 
+
+
+
+Point-4
+
+Buyer ka requirement Awarded
+Seller ka deal awarded

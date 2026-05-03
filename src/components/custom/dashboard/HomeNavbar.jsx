@@ -41,10 +41,12 @@ import { Popover, PopoverContent, PopoverTrigger } from '../../../components/ui/
 import { fallBackName } from '@/utils/fallBackName';
 import { mergeName } from '@/utils/mergerName';
 import productService from '@/services/product.service';
-import { useFetch } from '@/hooks/use-fetch';
+import { useFetch } from '@/hooks/useFetch';
 import { useDebounce } from 'use-debounce';
 import { useUserState } from '@/redux/hooks/useUser';
 import { getLocation } from '@/utils/locationAPI';
+import { SOCKET_EVENTS } from '@/socket/socketEvents';
+import socket from '@/socket/socket';
 const menu = [
   {
     title: 'Account',
@@ -445,6 +447,24 @@ const HomeNavbar = () => {
       window.removeEventListener('click', handleOutsideClick);
     };
   }, [showDropdown, productsRef]);
+
+  useEffect(() => {
+  if (!user?._id) return;
+  socket.on(SOCKET_EVENTS.CONNECT, () => {
+    console.log("Connected:", socket.id);
+  });
+   if (!socket.connected) {
+    socket.connect();
+  } else {
+    console.log("Already connected:", socket.id);
+  }
+
+  return () => {
+    socket.off(SOCKET_EVENTS.CONNECT);
+    socket.off(SOCKET_EVENTS.DISCONNECT);
+    socket.disconnect()
+  };
+}, [user?._id]);
   return (
     <section className="bg-gray-100">
       <div className="mb-2 relative z-9 max-w-7xl mx-auto">

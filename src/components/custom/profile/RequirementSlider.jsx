@@ -58,7 +58,7 @@ const RequirementSlider = ({ product, target }) => {
   const handleNavigate = productData => {
     if (target === 'drafts' || target === 'carts') return;
     // Navigate with product data in state
-    navigate('/account/requirements/' + productData._id, {
+    navigate('/account/requirements-overview/' + productData._id, {
       state: { product: productData, sellerId: product.seller?._id, products },
     });
   };
