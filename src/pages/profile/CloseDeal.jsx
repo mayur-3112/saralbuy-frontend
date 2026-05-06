@@ -14,6 +14,7 @@ import { dateFormatter } from '@/utils/dateFormatter';
 import { mergeName } from '@/utils/mergerName';
 import { fallBackName } from '@/utils/fallBackName';
 import { Badge } from '@/components/ui/badge';
+import { currencyConvertor } from '@/utils/currencyConvertor';
 
 const CloseDeal = () => {
   const navigate = useNavigate();
@@ -113,7 +114,7 @@ const CloseDeal = () => {
                 className="rounded-full w-full h-full object-cover"
               />
               <AvatarFallback className="bg-gray-200 rounded-full flex w-full h-full  items-center justify-center text-sm font-semibold">
-                {fallBackName(row.original.bid_to)}
+                {fallBackName(row.original.seller)}
               </AvatarFallback>
             </Avatar>
           </div>
@@ -130,7 +131,7 @@ const CloseDeal = () => {
 
     {
       accessorKey: 'seller',
-      header: 'Seller',
+      header: 'Seller Name',
     },
     {
       accessorKey: 'product',
@@ -238,7 +239,7 @@ const CloseDeal = () => {
           date: dateFormatter(item?.closedAt),
           product: item?.product?.title,
           min_budget: item?.minBudget,
-          final_price: item?.amount,
+          final_price: currencyConvertor(item?.amount),
           seller: mergeName(item.seller),
           dealStatus:
             item?.closedDealStatus === 'waiting_seller_approval' ||

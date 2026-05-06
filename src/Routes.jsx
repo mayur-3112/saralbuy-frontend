@@ -2,7 +2,7 @@ import { lazy, Suspense, useEffect, useState } from 'react';
 import { Route, BrowserRouter as Router, Routes, useLocation } from 'react-router';
 import HomeNavbar from './components/custom/dashboard/HomeNavbar';
 import Footer from './components/custom/Footer';
-import Requirement from './components/custom/dashboard/Requirement';
+const  Requirement = lazy(()=>import( './components/custom/dashboard/Requirement'));
 import Authentication from './components/custom/auth/Authenticate';
 import CreateProductForm from './pages/CreateProductForm';
 import ProductListing from './pages/ProductListing';

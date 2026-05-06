@@ -14,6 +14,7 @@ import { useUserState } from '@/redux/hooks/useUser';
 import { useChatState, useDispatchChat } from '@/redux/hooks/useChat';
 import ApprovalPopup from '@/components/custom/popups/ApprovalPopup';
 import BudgetInputDialog from '@/components/custom/popups/BudgetInputDialog';
+import { toast } from 'sonner';
 
 // ─────────────────────────────────────────────
 // ContactsList — sidebar list of recent chats
@@ -187,6 +188,8 @@ const ChatArea = ({
   onDealApproval, // (dealId, 'accept' | 'reject') => void
 
   isOnline,
+  socket,
+  productId
 }) => {
   const chatContainerRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -278,10 +281,18 @@ const ChatArea = ({
   };
 
   // ── Close deal ─────────────────────────────
-  const handleCloseDealClick = () => {
-    // Show budget dialog; parent handles actual close logic via onCloseDeal
-    setShowBudgetDialog(true);
-  };
+const handleCloseDealClick = () => {
+  const payload = { productId: productId };
+  socket.emit(SOCKET_EVENTS.PRODUCT_SOLD, payload);
+
+  socket.once(SOCKET_EVENTS.PRODUCT_SOLD, ({ isSoldProduct }) => {
+    if (isSoldProduct) {
+      toast.error('This product has already been sold!'); 
+    } else {
+      setShowBudgetDialog(true);
+    }
+  });
+};
 
   const handleBudgetConfirm = amount => {
     setShowBudgetDialog(false);
@@ -693,14 +704,14 @@ const Chatbot = () => {
     updateSetRecentChats,
   } = useDispatchChat();
   const { recentChats, messages, onlineUsers } = useChatState();
-  console.log(recentChats);
+  const [loading,setLoading] = useState(false)
   const { user } = useUserState();
   const [searchParams] = useSearchParams();
   const [focusTile, setFocusTile] = useState(-1);
   const [selectedContact, setSelectedContact] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoadingChats, setIsLoadingChats] = useState(false);
-
+const autoSelectedKeyRef = useRef(null);
   const state = location.state || {};
   const buyerId = state.buyerId;
   const productName = state.productName;
@@ -734,18 +745,47 @@ const Chatbot = () => {
   const [pendingDealId, setPendingDealId] = useState(null);
   const [pendingDealAmount, setPendingDealAmount] = useState(0);
 
-  useEffect(() => {
-    if (recentChats.length > 0 && productId && sellerId) {
-      const tileIndex = recentChats.findIndex(
-        item => item.productId === productId && item.sellerId === sellerId
-      );
-      setFocusTile(tileIndex);
 
-      if (tileIndex !== -1 && !selectedContact) {
-        handleSelectContact(recentChats[tileIndex]);
-      }
+
+// Replace your existing auto-select useEffect with this:
+useEffect(() => {
+  if (!productId || !sellerId) return;
+  
+  const navKey = `${sellerId}_${productId}`;
+  
+  //  Already handled this navigation → don't interfere with manual selections
+  if (autoSelectedKeyRef.current === navKey) return;
+  
+  if (recentChats.length > 0) {
+    const tileIndex = recentChats.findIndex(
+      item => item.productId === productId && item.sellerId === sellerId
+    );
+    setFocusTile(tileIndex);
+
+    if (tileIndex !== -1) {
+      autoSelectedKeyRef.current = navKey; // mark as handled
+      handleSelectContact(recentChats[tileIndex]);
     }
-  }, [recentChats, productId, sellerId]);
+  }
+}, [recentChats, productId, sellerId, location]);
+
+
+// ✅ Reset everything when navigating to a new chat partner
+// useEffect(() => {
+//   setSelectedContact(null);
+//   setIsClosingDeal(false);
+//   setIsDealClosed(false);
+//   setIsDealRejected(false);
+//   setWaitingSellerApproval(false);
+//   setIsSeller(false);
+//   setIsBuyer(false);
+//   setFinalBudget(0);
+//   setClosedDealId(null);
+//   setShowApprovalPopup(false);
+// }, [sellerId, productId]); // fires whenever the navigation target changes
+
+
+ 
 
   // ── DEAL_STATUS_UPDATE listener (buyer receives confirmation / both receive result)
   // ── DEAL_STATUS_UPDATE: handles live updates AND refresh restore ──────────────
@@ -952,10 +992,11 @@ const Chatbot = () => {
 
     socket.on(SOCKET_EVENTS.USER_CHATS, handleUserChats);
     return () => socket.off(SOCKET_EVENTS.USER_CHATS, handleUserChats);
-  }, [socket]);
+  }, [socket,location.state]);
 
   // ── Select contact ────────────────────────────────────────────────────────
   const handleSelectContact = contact => {
+    setLoading(true)
     setIsClosingDeal(false);
     setIsDealClosed(false);
     setIsDealRejected(false);
@@ -977,6 +1018,12 @@ const Chatbot = () => {
       productId: contact.productId || searchParams.get('productId'),
     });
     socket.emit(SOCKET_EVENTS.MARK_READ, { roomId: contact.roomId, readerType: userType });
+    setTimeout(() => {
+    socket.emit(SOCKET_EVENTS.GET_USER_CHATS);
+  }, 300);
+  setTimeout(()=>{
+     setLoading(false)
+  },1000)
   };
 
   // ── Send message ──────────────────────────────────────────────────────────
@@ -1018,7 +1065,14 @@ const Chatbot = () => {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 mb-5">
+   <>
+   {
+    loading ?
+ <div className="h-screen flex items-center justify-center text-lg">
+            <div className="loader"></div>
+          </div>
+        :
+        <div className="w-full max-w-7xl mx-auto px-4 mb-5">
       <div className="h-[calc(100vh-100px)] border-chat-border rounded-lg overflow-hidden mt-5">
         <div className="flex h-full gap-2">
           {/* Sidebar */}
@@ -1091,6 +1145,8 @@ const Chatbot = () => {
                 onSubmitRating={handleSubmitRating}
                 onDealApproval={handleDealApproval}
                 isOnline={selectedContact?.isOnline || false}
+                socket={socket}
+                productId={productId}
               />
             ) : (
               <div className="flex-1 flex items-center justify-center bg-background">
@@ -1110,6 +1166,11 @@ const Chatbot = () => {
         </div>
       </div>
     </div>
+
+   }
+  
+    
+   </>
   );
 };
 

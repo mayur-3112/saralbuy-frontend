@@ -14,6 +14,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import requirementService from '@/services/requirement.service';
 import { Skeleton } from '@/components/ui/skeleton';
 import { CategoryFormSkeleton } from '@/const/CustomSkeletons';
+import { currencyConvertor } from '@/utils/currencyConvertor';
 const RequirementOverview = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -73,7 +74,7 @@ const RequirementOverview = () => {
             bid_buy:
               `${seller.seller?.firstName || ''} ${seller.seller?.lastName || ''}`.trim() ||
               'Anonymous Seller',
-            bid_amount: seller.budgetAmount ? `₹${seller.budgetAmount}` : 'N/A',
+            bid_amount: currencyConvertor(seller.budgetAmount) ? currencyConvertor(seller.budgetAmount) : 'N/A',
             chat_message: seller.message || 'Interested in your requirement',
             action: 'chat',
             sellerId: seller.seller?._id || seller._id || seller.userId,
@@ -94,6 +95,8 @@ const RequirementOverview = () => {
           sellerId: sellerId,
           partnerName: sellerName,
           partnerAvatar: sellerAvatar,
+          isBuyer: true,
+          productName: currentProduct.product?.title
         },
       });
     }

@@ -16,6 +16,7 @@ import TooltipComp from '@/lib/TooltipComp';
 import { toast } from 'sonner';
 import { fallBackName } from '@/utils/fallBackName';
 import { mergeName } from '@/utils/mergerName';
+import { currencyConvertor } from '@/utils/currencyConvertor';
 
 const BidListing = () => {
   const [data, setData] = useState([]);
@@ -201,9 +202,9 @@ const BidListing = () => {
               item.earliestDeliveryDate || item.product?.paymentAndDelivery?.ex_deliveryDate
             ) || 'N/A',
           location:
-            item?.location || item.product?.paymentAndDelivery?.organizationAddress || 'N/A',
+          item.product?.paymentAndDelivery?.organizationAddress || 'N/A',
           min_budget: item?.product?.minimumBudget,
-          your_budget: item?.budgetQuation,
+          your_budget: currencyConvertor(item?.budgetQuation),
           status:
             item?.closedDealStatus === 'waiting_seller_approval' ||
             item?.closedDealStatus === 'pending'

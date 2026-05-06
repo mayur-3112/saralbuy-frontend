@@ -43,11 +43,12 @@ import { mergeName } from '@/utils/mergerName';
 import productService from '@/services/product.service';
 import { useFetch } from '@/hooks/useFetch';
 import { useDebounce } from 'use-debounce';
-import { useUserState } from '@/redux/hooks/useUser';
+import { useDispatchUser, useUserState } from '@/redux/hooks/useUser';
 import { getLocation } from '@/utils/locationAPI';
 import { SOCKET_EVENTS } from '@/socket/socketEvents';
 import socket from '@/socket/socket';
 import { useChatState, useDispatchChat } from '@/redux/hooks/useChat';
+import userService from '@/services/user.service';
 const menu = [
   {
     title: 'Account',
@@ -70,93 +71,6 @@ const menu = [
     icon: <ShoppingCart className="w-5 h-5" />,
   },
 ];
-
-const accountMenu = [
-  {
-    title: 'Profile',
-    url: '/account/',
-    icon: <CircleUserRound className="w-5 h-5" />,
-  },
-  {
-    title: 'Cart',
-    url: '/account/cart',
-    icon: <ShoppingCart className="w-5 h-5" />,
-  },
-  {
-    title: 'Biding History',
-    url: '/account/bid',
-    icon: <Gavel className="w-5 h-5" />,
-  },
-  {
-    title: 'Requirements',
-    url: '/account/requirements',
-    icon: <Package className="w-5 h-5" />,
-  },
-  {
-    title: 'Deals',
-    url: '/account/deal',
-    icon: <Handshake className="w-5 h-5" />,
-  },
-  {
-    title: 'Notifications',
-    url: '/account/notification',
-    icon: <Bell className="w-5 h-5" />,
-  },
-];
-
-// const MOCK_CHATS = [
-//   {
-//     _id: 'c1',
-//     roomId: 'r1',
-//     productId: 'p1',
-//     sellerId: 's1',
-//     buyerId: 'user_001',
-//     name: 'Ramesh Verma',
-//     buyerUnreadCount: 2,
-//     sellerUnreadCount: 0,
-//     productName: 'Samsung Galaxy A54',
-//     userType: 'buyer',
-//     lastMessage: {
-//       message: 'Is the product still available?',
-//       timestamp: new Date().toISOString(),
-//       senderType: 'seller',
-//     },
-//   },
-//   {
-//     _id: 'c2',
-//     roomId: 'r2',
-//     productId: 'p2',
-//     sellerId: 's2',
-//     buyerId: 'user_001',
-//     name: 'Priya Sharma',
-//     buyerUnreadCount: 1,
-//     sellerUnreadCount: 0,
-//     productName: 'Wireless Headphones',
-//     userType: 'buyer',
-//     lastMessage: {
-//       message: 'Can you give a discount?',
-//       timestamp: new Date().toISOString(),
-//       senderType: 'seller',
-//     },
-//   },
-//   {
-//     _id: 'c3',
-//     roomId: 'r3',
-//     productId: 'p3',
-//     sellerId: 's3',
-//     buyerId: 'user_001',
-//     name: 'Ajay Singh',
-//     buyerUnreadCount: 0,
-//     sellerUnreadCount: 0,
-//     productName: 'Laptop Stand',
-//     userType: 'buyer',
-//     lastMessage: {
-//       message: 'Okay, I will check.',
-//       timestamp: new Date().toISOString(),
-//       senderType: 'buyer',
-//     },
-//   },
-// ];
 
 const MOCK_NOTIFICATIONS = [
   {
@@ -258,12 +172,13 @@ const renderMobileMenuItem = item => {
 
 const HomeNavbar = () => {
   const { user } = useUserState();
+  const { updateUserState} = useDispatchUser() // update state
   const { recentChats } = useChatState();
   const { updateSetRecentChats, updateLastMessage, updateUserStatus } = useDispatchChat();
   const notifications = MOCK_NOTIFICATIONS;
   const unseenCount = notifications.filter(n => !n.seen).length;
   const { fn, data } = useFetch(productService.getSeachProduct);
-  const [currenLocation, setCurrentLocation] = useState(user?.currenLocation ?? '');
+  const [currentLocation, setCurrentLocation] = useState(user?.currentLocation ?? '');
   const unreadChatsCount = recentChats.reduce((acc, chat) => {
     const isBuyer = chat.buyerId === user?._id;
     const isSeller = chat.sellerId === user?._id;
@@ -276,14 +191,13 @@ const HomeNavbar = () => {
   const [products, setProducts] = useState([]);
   const [value, { isPending, flush }] = useDebounce(text, 500);
   const [showDropdown, setShowDropdown] = React.useState(false);
-
   const [isSearchLoading, setIsSearchLoading] = useState(false);
 
   // Popover open state
   const [showMessageDropdown, setShowMessageDropdown] = React.useState(false);
   const [showNotificationDropdown, setShowNotificationDropdown] = React.useState(false);
   const [openSheet, setOpenSheet] = React.useState(false);
-
+  const {fn:updateUserFn,data:updateUserRes} = useFetch(userService.updateProfile)
   const productsRef = useRef(null);
 
   // ── Handlers (stubs — replace with real navigation / actions) ───────────
@@ -335,6 +249,7 @@ const HomeNavbar = () => {
           const latitude = position.coords.latitude;
           const longitude = position.coords.longitude;
           const location = await getLocation(longitude, latitude);
+          updateUserFn({currentLocation:location})
           setCurrentLocation(location);
           // await updateProfile({ currentLocation: location })
         },
@@ -351,10 +266,10 @@ const HomeNavbar = () => {
   }
 
   useEffect(() => {
-    if ((!user?.currenLocation || user?.currenLocation === '') && user) {
+    if (!user?.currentLocation  && user) {
       getGeoLocation();
     } else {
-      setCurrentLocation(user?.currenLocation);
+      setCurrentLocation(user?.currentLocation);
     }
   }, [user]);
 
@@ -532,7 +447,7 @@ const HomeNavbar = () => {
                   readOnly
                   placeholder="Location..."
                   className="border-b-[1.5px] bg-transparent pl-6 text-sm border-x-0 border-t-0 shadow-none rounded-none  border-b-black focus-visible:ring-0 focus:outline-0 focus:shadow-none "
-                  defaultValue={currenLocation}
+                  defaultValue={currentLocation}
                 />
                 {/* <NavigationMenu>
                   <NavigationMenuList>
@@ -880,7 +795,7 @@ const HomeNavbar = () => {
                           readOnly
                           placeholder="Location..."
                           className="border-b-[1.5px] max-w-[85%] bg-transparent pl-6 text-sm border-x-0 border-t-0 shadow-none rounded-none border-b-black focus-visible:ring-0 focus:outline-0 focus:shadow-none"
-                          defaultValue={currenLocation}
+                          defaultValue={currentLocation}
                         />
                       </div>
                     </SheetTitle>
