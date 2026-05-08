@@ -32,6 +32,7 @@ export default function TableListing({
   setSearch,
   search,
   isPending,
+  placeholer = 'Search...',
 }) {
   const [sorting, setSorting] = useState([]);
   // const [globalFilter, setGlobalFilter] = useState("");
@@ -70,7 +71,7 @@ export default function TableListing({
             <div className="relative">
               <Input
                 type="text"
-                placeholder="Search..."
+                placeholder={placeholer}
                 value={search ?? ''}
                 onChange={e => setSearch(e.target.value)}
                 className=" px-3 py-2 focus-visible:ring-0 w-64 shadow-none border-1"
@@ -127,7 +128,7 @@ export default function TableListing({
             ))}
           </TableHeader>
           <TableBody>
-            {isPending && isPending() ? (
+            {isPending ? (
               <TableRow>
                 <TableCell colSpan={columns.length}>
                   <div className="flex justify-center items-center py-10 w-full">

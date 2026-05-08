@@ -51,7 +51,7 @@ const BidListing = () => {
           <div className=" ">
             <Avatar className="w-10 h-10">
               <AvatarImage
-                src={row.original.product?.image}
+                src={row.original.avatar}
                 alt="product image"
                 className="rounded-full w-full h-full object-cover"
               />
@@ -106,8 +106,8 @@ const BidListing = () => {
       header: 'Status',
       cell: ({ row }) => {
         const status = row.original?.status?.toLowerCase();
-
-        if (!status || status === 'waiting for seller approval') {
+        // || status === 'waiting for seller approval'
+        if (!status) {
           return (
             <Badge className="bg-gray-100 text-gray-600 rounded-full px-3 w-28">Pending</Badge>
           );
@@ -271,7 +271,8 @@ const BidListing = () => {
           limit={limit}
           setSearch={setSearch}
           search={search}
-          isPending={isPending}
+          isPending={bidLoading}
+          placeholer="Search Product..."
         />
       )}
     </>

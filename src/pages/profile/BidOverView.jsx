@@ -84,16 +84,31 @@ const BidOverview = () => {
       accessorKey: 'status',
       header: 'Status',
       cell: ({ row }) => {
-        const diff = row.original.status;
-        if (diff <= 0) {
-          return <Badge className="bg-red-100 text-red-500 rounded-full px-2 w-20">Inactive</Badge>;
-        } else {
+        console.log(row.original.status);
+        const status = row.original?.status?.toLowerCase();
+        //  status === 'waiting for seller approval'
+        if (!status) {
           return (
-            <Badge className="bg-green-100 text-green-500 rounded-full capitalize px-3 w-20">
-              Active
-            </Badge>
+            <Badge className="bg-gray-100 text-gray-600 rounded-full px-3 w-28">Pending</Badge>
           );
         }
+
+        if (status === 'rejected') {
+          return <Badge className="bg-red-100 text-red-500 rounded-full px-3 w-28">Rejected</Badge>;
+        }
+
+        if (status === 'closed') {
+          return (
+            <Badge className="bg-green-100 text-green-600 rounded-full px-3 w-28">Closed</Badge>
+          );
+        }
+
+        // Progress / ongoing
+        return (
+          <Badge className="bg-yellow-100 text-yellow-600 rounded-full px-3 w-28">
+            In Progress
+          </Badge>
+        );
       },
     },
     //       {
@@ -131,6 +146,8 @@ const BidOverview = () => {
         bidRes?.sellers?.map(item => {
           const createdAt = new Date(item.earliestDeliveryDate).getTime();
           const durationDays = Number(bidRes.product?.bidActiveDuration);
+          const dealStatus = bidRes.product?.dealStatus;
+          console.log(dealStatus);
           const expiryTime = createdAt + durationDays * 24 * 60 * 60 * 1000;
           const now = Date.now();
           const diff = expiryTime - now;
@@ -143,7 +160,14 @@ const BidOverview = () => {
             quote_submssion_date: dateFormatter(item?.createdAt),
             // date: dateFormatter(item?.createdAt),
             your_quote: item?.budgetQuation,
-            status: diff,
+            status:
+              dealStatus === 'waiting_seller_approval' || dealStatus === 'pending'
+                ? 'Waiting for seller approval'
+                : dealStatus === 'rejected'
+                  ? 'Rejected'
+                  : dealStatus === 'completed'
+                    ? 'Closed'
+                    : 'Progress',
           };
         }) || [];
       setSellers(mappedSellers);

@@ -31,7 +31,7 @@ const CloseDeal = () => {
                 className="rounded-full w-full h-full object-cover"
               />
               <AvatarFallback className="bg-gray-200 rounded-full flex w-full h-full  items-center justify-center text-sm font-semibold">
-                {fallBackName(row.original.finalized_with)}
+                {fallBackName(row.original.requirement)}
               </AvatarFallback>
             </Avatar>
           </div>
@@ -114,7 +114,7 @@ const CloseDeal = () => {
                 className="rounded-full w-full h-full object-cover"
               />
               <AvatarFallback className="bg-gray-200 rounded-full flex w-full h-full  items-center justify-center text-sm font-semibold">
-                {fallBackName(row.original.seller)}
+                {fallBackName(row.original.product)}
               </AvatarFallback>
             </Avatar>
           </div>
@@ -230,6 +230,7 @@ const CloseDeal = () => {
       }
     }
     if (pendingApprovedData?.data) {
+      console.log(pendingApprovedData.data);
       if (pendingApprovedData.data.length > 0) {
         const formattedData = pendingApprovedData.data.map(item => ({
           _id: item._id,

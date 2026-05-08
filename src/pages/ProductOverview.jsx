@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label';
 import { DatePicker } from '@/lib/DatePicker';
 import { useFetch } from '@/hooks/useFetch';
 import productService from '@/services/product.service';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import cartService from '@/services/cart.service';
 import { mergeName } from '@/utils/mergerName';
 import { currencyConvertor } from '@/utils/currencyConvertor';
@@ -41,6 +41,7 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import requirementService from '@/services/requirement.service';
+import { Skeleton } from '@/components/ui/skeleton';
 
 //  for other brand value condition
 
@@ -55,6 +56,7 @@ const ProductOverview = () => {
   const productId = searchParams.get('productId');
   const bidId = searchParams.get('bidId');
   const { user: userProfile } = useUserState();
+  let intervalRef = useRef(null);
   const {
     fn: getProductById,
     data: productResponse,
@@ -91,6 +93,7 @@ const ProductOverview = () => {
   const [open, setOpen] = useState(false);
   const [sellerVerification, setSellerVerification] = useState(false);
   const [businessType, setBusinessType] = useState('');
+  const [timeLeft, setTimeLeft] = useState('');
   const [businessDets, setBusinessDets] = useState({
     company_name: '',
     company_reg_num: '',
@@ -192,6 +195,9 @@ const ProductOverview = () => {
 
   async function onSubmit(data) {
     if (soldProduct) return;
+    if (timeLeft === 'Expired') {
+      return toast.error('This product has expired');
+    }
     const user = userProfile;
     if (!user?.firstName?.trim() || !user?.lastName?.trim() || !user?.address?.trim()) {
       navigate('/account');
@@ -709,6 +715,41 @@ const ProductOverview = () => {
     ? bidOverviewRes?.product?.isSoldProduct
     : productResponse?.mainProduct?.isSoldProduct;
 
+  useEffect(() => {
+    let product = bidOverviewRes ? bidOverviewRes?.product : productResponse?.mainProduct;
+    if (!product) return;
+    const createdAt = new Date(product.createdAt).getTime();
+    const durationDays = Number(product.bidActiveDuration);
+    const expiryTime = createdAt + durationDays * 24 * 60 * 60 * 1000;
+
+    const updateTimer = () => {
+      const now = Date.now();
+      const diff = expiryTime - now;
+
+      if (diff <= 0) {
+        setTimeLeft('Expired');
+        if (intervalRef.current) clearInterval(intervalRef.current);
+        return;
+      }
+
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
+    };
+
+    // Initial call
+    if (!soldProduct) {
+      updateTimer();
+      intervalRef.current = setInterval(updateTimer, 1000);
+    }
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [productResponse, bidOverviewRes]);
+
   return (
     <>
       {bidOverLoading || productViewLoading ? (
@@ -775,14 +816,35 @@ const ProductOverview = () => {
 
               {/* Product Info */}
               <div className="lg:col-span-8 bg-transparent rounded-lg p-4 space-y-4">
-                <h2 className="text-sm font-medium mb-2">
-                  Date :{' '}
-                  {dateFormatter(
-                    bidOverviewRes
-                      ? bidOverviewRes?.product?.createdAt
-                      : productResponse?.mainProduct?.createdAt
+                <div>
+                  <h2 className="text-sm font-medium mb-2">
+                    Date :{' '}
+                    {dateFormatter(
+                      bidOverviewRes
+                        ? bidOverviewRes?.product?.createdAt
+                        : productResponse?.mainProduct?.createdAt
+                    )}
+                  </h2>
+                  {productViewLoading || bidOverLoading || !timeLeft ? (
+                    <Skeleton className="h-8 w-24 rounded-full float-end" />
+                  ) : soldProduct ? (
+                    ''
+                  ) : timeLeft !== 'Expired' ? (
+                    <Button
+                      variant="ghost"
+                      className="float-end border rounded-full hover:bg-orange-700 hover:text-white text-sm bg-orange-700 text-white"
+                    >
+                      {timeLeft}
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="ghost"
+                      className="float-end border rounded-full hover:bg-orange-700 hover:text-white text-sm bg-orange-700 text-white"
+                    >
+                      Expired
+                    </Button>
                   )}
-                </h2>
+                </div>
 
                 <h2 className="text-xl font-bold capitalize">
                   {bidOverviewRes
@@ -896,7 +958,8 @@ const ProductOverview = () => {
                         disabled={
                           addToCartLoading ||
                           productResponse?.mainProduct?.userId?._id === userProfile?._id ||
-                          soldProduct
+                          soldProduct ||
+                          timeLeft === 'Expired'
                         }
                       >
                         {addToCartLoading ? (

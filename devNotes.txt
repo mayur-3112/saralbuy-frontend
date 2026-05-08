@@ -31,7 +31,7 @@ Seller ka deal awarded
 
 
 Point -5
-1. bid-overview  deal close status
-2.  time in prouct overview
-3. table search 
+1. bid-overview  deal close status   === Done
+2.  time in prouct overview === Done
+3. table search  === Done // check in notification part
 4. proudct rating

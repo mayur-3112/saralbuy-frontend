@@ -51,5 +51,12 @@ class BidService {
       .get(`/bid/get-bid-by-productId/${productId}`)
       .then(res => res.data?.data || res.data);
   }
+  async deleteBid(productId) {
+    return instance
+      .delete(`/bid/delete-bid/${productId}`, {
+        withCredentials: true,
+      })
+      .then(res => res.data?.data || res.data);
+  }
 }
 export default new BidService();
