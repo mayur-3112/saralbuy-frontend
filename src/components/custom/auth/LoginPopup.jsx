@@ -75,7 +75,7 @@ const LoginPopup = ({ open, setOpen, setNumber, setOtpPopup, setSessionId }) => 
               <Button
                 type="submit"
                 disabled={loading || mobileNumber.length < 10}
-                className="w-full rounded-sm py-5  text-white font-bold "
+                className="w-full rounded-sm py-5  text-white font-bold cursor-pointer "
               >
                 {loading ? <Spinner className="w-5 h-5 animate-spin" /> : 'Send OTP'}
               </Button>

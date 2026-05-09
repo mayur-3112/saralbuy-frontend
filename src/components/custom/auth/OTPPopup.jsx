@@ -25,8 +25,7 @@ const OtpPopup = ({ open, setOpen, number, sessionId, setSessionId }) => {
   const { fn: sendOtp, data: sendOtpResponse } = useFetch(authService.sendOtp);
   const handleVerify = async e => {
     e.preventDefault();
-    // if (!sessionId) return toast.error('sessionId is missing');
-    sessionId = 1233;
+    if (!sessionId) return toast.error('sessionId is missing');
     await fn(number, value, sessionId);
   };
 
