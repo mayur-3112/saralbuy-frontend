@@ -620,12 +620,13 @@ const HomeNavbar = () => {
                         </div>
 
                         {recentChats.filter(c => c.lastMessage).length > 5 && (
-                          <div className="border-t border-gray-200 p-2">
+                          <div className="border-t border-gray-200 p-2 ">
                             <button
                               onClick={() => {
-                                setShowMessageDropdown(false); /* navigate('/chat') */
+                                setShowMessageDropdown(false);
+                                navigate('/chat');
                               }}
-                              className="w-full text-center text-sm font-medium text-orange-600 hover:text-orange-700 py-2 rounded-lg hover:bg-orange-50 transition-colors"
+                              className="w-full text-center text-sm font-medium cursor-pointer  text-orange-600 hover:text-orange-700 py-2 rounded-lg hover:bg-orange-50 transition-colors"
                             >
                               View All Chats
                             </button>

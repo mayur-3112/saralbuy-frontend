@@ -15,6 +15,7 @@ import { useChatState, useDispatchChat } from '@/redux/hooks/useChat';
 import ApprovalPopup from '@/components/custom/popups/ApprovalPopup';
 import BudgetInputDialog from '@/components/custom/popups/BudgetInputDialog';
 import { toast } from 'sonner';
+import RatingPopup from '@/components/custom/popups/RatingPopup';
 
 // ─────────────────────────────────────────────
 // ContactsList — sidebar list of recent chats
@@ -190,6 +191,7 @@ const ChatArea = ({
   isOnline,
   socket,
   productId,
+  dealSellerRating = 0,
 }) => {
   const chatContainerRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -324,33 +326,6 @@ const ChatArea = ({
     (currentUserId === actualBuyerId && currentUserId === actualSellerId) ||
     actualBuyerId === actualSellerId;
 
-  // ── Close-deal button label & style ───────
-  const closeDealLabel = (() => {
-    if (isClosingDeal) return 'Closing...';
-    if (waitingSellerApproval && isSeller) return 'Closed deal request';
-    if (waitingSellerApproval && isBuyer) return 'Deal in Progress';
-    if (isDealRejected) return 'Deal Rejected';
-    if (isDealClosed) return 'Deal Closed';
-    return 'Close Deal';
-  })();
-
-  const closeDealVariant =
-    waitingSellerApproval && isSeller ? 'default' : isDealRejected ? 'destructive' : 'outline';
-
-  const closeDealClass = (() => {
-    if ((waitingSellerApproval && isSeller) || (waitingSellerApproval && isBuyer))
-      return 'bg-orange-600 hover:bg-orange-700 text-white border-orange-600';
-    if (isDealRejected)
-      return 'bg-red-100 text-red-600 border-red-200 hover:bg-red-100 cursor-not-allowed';
-    return 'text-orange-600 hover:text-orange-600 bg-transparent cursor-pointer hover:bg-transparent border-orange-600';
-  })();
-
-  const isCloseDealDisabled =
-    isClosingDeal ||
-    (isDealClosed && !(waitingSellerApproval && isSeller)) ||
-    messages.length === 0 ||
-    isDealRejected;
-
   // ── Empty state ────────────────────────────
   if (!selectedContact) {
     return (
@@ -394,7 +369,25 @@ const ChatArea = ({
                     <AvatarFallback>{selectedContact.name?.charAt(0)}</AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col">
-                    <h3 className="font-semibold text-gray-700">{selectedContact.name}</h3>
+                    <div>
+                      <h3 className="font-semibold text-gray-700">{selectedContact.name}</h3>
+                      {/* product Rating */}
+                      {dealSellerRating > 0 && (
+                        <div className="flex items-center gap-0.5">
+                          {[1, 2, 3, 4, 5].map(star => (
+                            <Star
+                              key={star}
+                              className={`w-4 h-4 ${
+                                star <= dealSellerRating
+                                  ? 'fill-yellow-400 text-yellow-400'
+                                  : 'fill-gray-200 text-gray-200'
+                              }`}
+                            />
+                          ))}
+                          {/* <span className="text-xs text-gray-500 ml-1">{dealSellerRating}/5</span> */}
+                        </div>
+                      )}
+                    </div>
                     <div className="flex items-center gap-1">
                       <div className={`h-2 w-2 rounded-full `} />
                       {/* ${isOnline ? 'bg-green-600' : 'bg-red-600'} */}
@@ -665,13 +658,13 @@ const ChatArea = ({
       </div>
 
       {/* Rating popup */}
-      {/* <RatingPopup
+      <RatingPopup
         open={showRatingPopup}
         setOpen={setShowRatingPopup}
         chatId={lastClosedChatId || selectedContact?._id || ''}
         onSubmit={onSubmitRating}
         loading={ratingLoading}
-      /> */}
+      />
 
       {/* Approval popup */}
       <ApprovalPopup
@@ -718,6 +711,7 @@ const Chatbot = () => {
   const sellerId = state.sellerId;
   const incomingRoomId = state.roomId; // passed from navbar click
   const productId = state.productId;
+  const selectedContactRef = useRef(null);
 
   const currentUserId = user?._id;
   const userType = selectedContact
@@ -744,7 +738,7 @@ const Chatbot = () => {
   const [approvalLoading, setApprovalLoading] = useState(false);
   const [pendingDealId, setPendingDealId] = useState(null);
   const [pendingDealAmount, setPendingDealAmount] = useState(0);
-
+  const [dealSellerRating, setDealSellerRating] = useState(0);
   // Replace your existing auto-select useEffect with this:
   useEffect(() => {
     if (!productId || !sellerId) return;
@@ -767,33 +761,19 @@ const Chatbot = () => {
     }
   }, [recentChats, productId, sellerId, location]);
 
-  // ✅ Reset everything when navigating to a new chat partner
-  // useEffect(() => {
-  //   setSelectedContact(null);
-  //   setIsClosingDeal(false);
-  //   setIsDealClosed(false);
-  //   setIsDealRejected(false);
-  //   setWaitingSellerApproval(false);
-  //   setIsSeller(false);
-  //   setIsBuyer(false);
-  //   setFinalBudget(0);
-  //   setClosedDealId(null);
-  //   setShowApprovalPopup(false);
-  // }, [sellerId, productId]); // fires whenever the navigation target changes
-
-  // ── DEAL_STATUS_UPDATE listener (buyer receives confirmation / both receive result)
-  // ── DEAL_STATUS_UPDATE: handles live updates AND refresh restore ──────────────
   useEffect(() => {
     if (!socket) return;
 
-    const handleDealStatusUpdate = ({ roomId: updatedRoomId, dealId, status, amount }) => {
-      // ✅ Apply to whatever room we're currently in (works on refresh too)
-      // Don't gate on selectedContact?.roomId — on refresh selectedContact
-      // might not be set yet when JOIN_ROOM fires. Store it and apply.
-
+    const handleDealStatusUpdate = ({
+      roomId: updatedRoomId,
+      dealId,
+      status,
+      amount,
+      sellerRating,
+    }) => {
       setClosedDealId(dealId);
       setFinalBudget(amount);
-
+      setDealSellerRating(sellerRating ?? 0);
       if (status === 'waiting_seller_approval') {
         setIsClosingDeal(false);
         setWaitingSellerApproval(true);
@@ -810,6 +790,12 @@ const Chatbot = () => {
         setIsDealRejected(false);
         setIsBuyer(false);
         setIsSeller(false);
+        const amISeller = selectedContactRef.current?.sellerId === currentUserId;
+        const alreadyRated = sellerRating > 0;
+        if (amISeller && !alreadyRated) {
+          setLastClosedChatId(dealId);
+          setShowRatingPopup(true);
+        }
       }
 
       if (status === 'rejected') {
@@ -824,6 +810,10 @@ const Chatbot = () => {
     socket.on(SOCKET_EVENTS.DEAL_STATUS_UPDATE, handleDealStatusUpdate);
     return () => socket.off(SOCKET_EVENTS.DEAL_STATUS_UPDATE, handleDealStatusUpdate);
   }, [socket]);
+
+  useEffect(() => {
+    selectedContactRef.current = selectedContact;
+  }, [selectedContact]);
 
   // ── PENDING_DEAL listener — seller sees popup (live or on refresh via JOIN_ROOM)
   useEffect(() => {
@@ -990,6 +980,7 @@ const Chatbot = () => {
 
   // ── Select contact ────────────────────────────────────────────────────────
   const handleSelectContact = contact => {
+    setDealSellerRating(0);
     setLoading(true);
     setIsClosingDeal(false);
     setIsDealClosed(false);
@@ -1043,7 +1034,18 @@ const Chatbot = () => {
       amount,
     });
   };
-  const handleSubmitRating = (chatId, rating) => setRatingLoading(true);
+  const handleSubmitRating = (chatId, rating) => {
+    if (!chatId || !rating) return;
+    setRatingLoading(true);
+
+    socket.emit(SOCKET_EVENTS.DEAL_RATING, { dealId: chatId, rating });
+
+    socket.once(SOCKET_EVENTS.DEAL_RATING, ({ success }) => {
+      setRatingLoading(false);
+      if (success) setShowRatingPopup(false);
+    });
+  };
+
   const handleDealApproval = (dealId, action) => {
     if (!selectedContact) return;
     setApprovalLoading(true);
@@ -1140,6 +1142,7 @@ const Chatbot = () => {
                     isOnline={selectedContact?.isOnline || false}
                     socket={socket}
                     productId={productId}
+                    dealSellerRating={dealSellerRating}
                   />
                 ) : (
                   <div className="flex-1 flex items-center justify-center bg-background">

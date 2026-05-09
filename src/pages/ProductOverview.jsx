@@ -1,4 +1,4 @@
-import { Box, Home, Paperclip } from 'lucide-react';
+import { Box, Home, Paperclip, Star } from 'lucide-react';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -27,8 +27,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import SellerVerificationPopup from '@/components/custom/popups/SellerVerificationPopup';
 import { Spinner } from '@/components/ui/spinner';
 import Authentication from '@/components/custom/auth/Authenticate';
-// import fileDownload from "js-file-download";
-// import instance from "@/lib/instance";
 import { CategoryFormSkeleton } from '@/const/CustomSkeletons';
 import {
   Select,
@@ -43,20 +41,338 @@ import { Textarea } from '@/components/ui/textarea';
 import requirementService from '@/services/requirement.service';
 import { Skeleton } from '@/components/ui/skeleton';
 
-//  for other brand value condition
-
 function otherBrandValue(obj) {
   if (obj?.brand === 'others' && obj.hasOwnProperty('brandName')) {
     return obj.brandName;
   }
   return obj?.brand;
 }
+
+const MergeBidForm = ({ productResponse, userProfile, navigate }) => {
+  const { user } = useUserState();
+  const [mergeFormState, setMergeFormState] = useState({ message: '' });
+
+  function handleSendMessage(e) {
+    e.preventDefault();
+    const currentProduct = productResponse?.mainProduct;
+    const sellerId = user._id;
+    const buyerId = currentProduct?.userId?._id;
+
+    if (currentProduct?.dealStatus === 'completed') {
+      toast.error('This product has already been sold');
+      return;
+    }
+
+    localStorage.setItem(
+      'chatIds',
+      JSON.stringify({
+        productId: currentProduct._id,
+        buyerId: buyerId,
+        sellerId: sellerId,
+      })
+    );
+
+    navigate('/chat', {
+      state: {
+        productId: currentProduct._id,
+        buyerId: buyerId,
+        sellerId: sellerId,
+        partnerName: mergeName(user),
+        partnerAvatar: user?.profileImage,
+        message: mergeFormState.message,
+      },
+    });
+  }
+
+  return (
+    <form
+      className="lg:col-span-5 bg-gray-200/80 rounded-lg p-6 space-y-4 my-auto h-fit"
+      onSubmit={handleSendMessage}
+    >
+      <h3 className="font-semibold text-orange-600">Merge Quote</h3>
+      <div className="w-full col-span-2">
+        <Label htmlFor="ab" className="mb-2 text-sm">
+          Note for Buyer
+        </Label>
+        <Textarea
+          value={mergeFormState.message}
+          onInput={e => setMergeFormState({ message: e.currentTarget.value })}
+          placeholder="Short message (hard limit: 300 characters)"
+          className="bg-white w-full min-h-32"
+        />
+      </div>
+      <Button
+        type="submit"
+        disabled={
+          productResponse?.mainProduct?.userId?._id === userProfile?._id ||
+          mergeFormState.message.trim().length < 2
+        }
+        variant={'ghost'}
+        className="w-32 float-end border text-xs bg-orange-700 transition-all ease-in-out duration-300 hover:bg-orange-600 text-white hover:text-white cursor-pointer"
+      >
+        Chat Now
+      </Button>
+    </form>
+  );
+};
+
+const SellerForm = ({
+  handleSubmit,
+  onSubmit,
+  register,
+  control,
+  userProfile,
+  bidOverviewRes,
+  productResponse,
+  createBidLoading,
+  updateUserBidDetsLoading,
+  soldProduct,
+}) => {
+  return (
+    <form
+      className="lg:col-span-5 bg-gray-200/80 rounded-lg p-6 space-y-4"
+      onSubmit={handleSubmit(onSubmit)}
+    >
+      <h3 className="font-semibold text-orange-600">Seller Quotation Details</h3>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {userProfile?._id && (
+          <>
+            <div>
+              <Label htmlFor="firstName" className="mb-2 text-sm">
+                First Name
+              </Label>
+              <Input
+                disabled
+                type="text"
+                placeholder="First Name"
+                id="firstName"
+                {...register('firstName')}
+                className="bg-white select-none"
+              />
+            </div>
+            <div>
+              <Label htmlFor="lastName" className="mb-2 text-sm">
+                Last Name
+              </Label>
+              <Input
+                disabled
+                type="text"
+                placeholder="Last Name"
+                id="lastName"
+                {...register('lastName')}
+                className="bg-white select-none"
+              />
+            </div>
+          </>
+        )}
+
+        {/* Seller Type */}
+        <div>
+          <Label className="mb-2 text-sm">Seller Type</Label>
+          <Controller
+            name="sellerType"
+            control={control}
+            render={({ field }) => (
+              <Select onValueChange={field.onChange} value={field.value}>
+                <SelectTrigger className="w-full bg-white">
+                  <SelectValue placeholder="Select Seller Type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="manufacturer">Manufacturer</SelectItem>
+                    <SelectItem value="trader_wholesaler">Trader / Wholesaler</SelectItem>
+                    <SelectItem value="distributor">Distributor</SelectItem>
+                    <SelectItem value="service_provider">Service Provider</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            )}
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="budgetQuation" className="mb-2 text-sm">
+            Quoted Price(₹)
+          </Label>
+          <Input
+            type="number"
+            placeholder="Quoted Price"
+            className="bg-white"
+            {...register('budgetQuation')}
+          />
+        </div>
+
+        {/* Price Basis */}
+        <div>
+          <Label className="mb-2 text-sm">Price Basis</Label>
+          <Controller
+            name="priceBasis"
+            control={control}
+            render={({ field }) => (
+              <Select onValueChange={field.onChange} value={field.value}>
+                <SelectTrigger className="w-full bg-white">
+                  <SelectValue placeholder="Select Price Basis" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="per_unit">Per Unit</SelectItem>
+                    <SelectItem value="per_kg">Per Kg</SelectItem>
+                    <SelectItem value="per_lot">Per Lot</SelectItem>
+                    <SelectItem value="per_piece">Per Piece</SelectItem>
+                    <SelectItem value="per_service">Per Service</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            )}
+          />
+        </div>
+
+        {/* Taxes */}
+        <div>
+          <Label className="mb-2 text-sm">Taxes</Label>
+          <Controller
+            name="taxes"
+            control={control}
+            render={({ field }) => (
+              <Select onValueChange={field.onChange} value={field.value}>
+                <SelectTrigger className="w-full bg-white">
+                  <SelectValue placeholder="Select Taxes" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="inclusive_gst">Inclusive of GST</SelectItem>
+                    <SelectItem value="exclusive_gst">Exclusive of GST</SelectItem>
+                    <SelectItem value="gst_rate">GST Rate (%)</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            )}
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="location" className="mb-2 text-sm">
+            Location
+          </Label>
+          <Input
+            type="text"
+            placeholder="Location"
+            className="bg-white"
+            {...register('location')}
+          />
+        </div>
+
+        <div>
+          <Label className="mb-2 text-sm">Delivery Timeline</Label>
+          <Controller
+            control={control}
+            name="earliestDeliveryDate"
+            render={({ field }) => (
+              <DatePicker
+                disabledBeforeDate={new Date(new Date().getTime())}
+                date={field.value}
+                title="DD-MM-YYYY"
+                className="w-full"
+                setDate={val => field.onChange(val)}
+              />
+            )}
+          />
+        </div>
+
+        {/* Freight Terms */}
+        <div>
+          <Label className="mb-2 text-sm">Freight Terms</Label>
+          <Controller
+            name="freightTerms"
+            control={control}
+            render={({ field }) => (
+              <Select onValueChange={field.onChange} value={field.value}>
+                <SelectTrigger className="w-full bg-white">
+                  <SelectValue placeholder="Select Freight Terms" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="ex_works">Ex-Works</SelectItem>
+                    <SelectItem value="fob">FOB</SelectItem>
+                    <SelectItem value="delivered">Delivered (DAP / DDP)</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            )}
+          />
+        </div>
+
+        {/* Payment Terms */}
+        <div>
+          <Label className="mb-2 text-sm">Payment Terms</Label>
+          <Controller
+            name="paymentTerms"
+            control={control}
+            render={({ field }) => (
+              <Select onValueChange={field.onChange} value={field.value}>
+                <SelectTrigger className="w-full bg-white">
+                  <SelectValue placeholder="Select Payment Terms" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="advance">Advance</SelectItem>
+                    <SelectItem value="partial_advance">Partial Advance</SelectItem>
+                    <SelectItem value="on_delivery">On Delivery</SelectItem>
+                    <SelectItem value="credit">Credit (X days)</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            )}
+          />
+        </div>
+
+        <div className="w-full col-span-2">
+          <Label htmlFor="buyerNote" className="mb-2 text-sm">
+            Buyer Note
+          </Label>
+          <Textarea
+            {...register('buyerNote')}
+            placeholder="Short message (hard limit: 300 characters)"
+            className="bg-white w-full"
+          />
+        </div>
+      </div>
+
+      {!bidOverviewRes ? (
+        <Button
+          type="submit"
+          disabled={
+            productResponse?.mainProduct?.userId?._id === userProfile?._id ||
+            createBidLoading ||
+            soldProduct
+          }
+          variant={'ghost'}
+          className="w-32 float-end border text-xs bg-orange-700 transition-all ease-in-out duration-300 hover:bg-orange-600 text-white hover:text-white cursor-pointer"
+        >
+          Place Quote
+        </Button>
+      ) : (
+        <Button
+          type="submit"
+          disabled={updateUserBidDetsLoading}
+          variant={'ghost'}
+          className="w-32 float-end border shadow-orange-500 border-orange-500 bg-orange-600 transition-all ease-in-out duration-300 hover:bg-orange-500 text-white hover:text-white cursor-pointer"
+        >
+          {updateUserBidDetsLoading ? <Spinner className="w-5 h-5 animate-spin" /> : 'Update Bid'}
+        </Button>
+      )}
+      <div></div>
+    </form>
+  );
+};
+
 const ProductOverview = () => {
   const [searchParams] = useSearchParams();
   const productId = searchParams.get('productId');
   const bidId = searchParams.get('bidId');
   const { user: userProfile } = useUserState();
   let intervalRef = useRef(null);
+
   const {
     fn: getProductById,
     data: productResponse,
@@ -90,10 +406,12 @@ const ProductOverview = () => {
     data: addToCartRes,
     loading: addToCartLoading,
   } = useFetch(cartService.addToCart);
+
   const [open, setOpen] = useState(false);
   const [sellerVerification, setSellerVerification] = useState(false);
   const [businessType, setBusinessType] = useState('');
   const [timeLeft, setTimeLeft] = useState('');
+  const [dealSellerRating, setDealSellerRating] = useState(0);
   const [businessDets, setBusinessDets] = useState({
     company_name: '',
     company_reg_num: '',
@@ -115,9 +433,8 @@ const ProductOverview = () => {
     defaultValues: {
       firstName: '',
       lastName: '',
-      budgetQuation: '', // this is quotedPrice
-      // availableBrand: '',
-      earliestDeliveryDate: undefined, // this is deliveryTimeLine
+      budgetQuation: '',
+      earliestDeliveryDate: undefined,
       sellerType: '',
       priceBasis: '',
       taxes: '',
@@ -128,14 +445,13 @@ const ProductOverview = () => {
     },
   });
 
-  // Add to Cart Handler
   const handleAddToCart = async productId => {
     await addToCartFn(productId);
   };
 
   useEffect(() => {
     if (addToCartRes) {
-      if (addToCartRes && (addToCartRes?.message).match(/already/) !== null) {
+      if ((addToCartRes?.message).match(/already/) !== null) {
         toast.warning(addToCartRes.message);
       } else {
         toast.success(addToCartRes.message);
@@ -156,25 +472,26 @@ const ProductOverview = () => {
   useEffect(() => {
     if (productResponse && Array.isArray(productResponse)) {
       const mainProduct = productResponse[0];
-      setProductResponse({
-        ...mainProduct,
-      });
+      setProductResponse({ ...mainProduct });
+      const rating = mainProduct?.mainProduct?.sellerRating;
+      if (rating) setDealSellerRating(rating);
     }
   }, [productResponse]);
+
+  useEffect(() => {
+    const rating = bidOverviewRes?.product?.sellerRating;
+    if (rating) setDealSellerRating(rating);
+  }, [bidOverviewRes]);
 
   async function handleCreteBid() {
     if (!productResponse) return;
     if (productResponse?.mainProduct?.userId?._id === userProfile?.user?._id) return;
-    const formData = getValues();
-    //  validation
     if (businessType === 'business' && !businessDets.company_name.trim()) {
       toast.error('company name is required');
       return;
     }
     const buyerId = productResponse?.mainProduct.userId?._id;
     const productId = productResponse?.mainProduct._id;
-    // const sellerId = userProfile?._id;
-    // const budgetAmount = Number(getValues().budgetQuation) || 0;
     let obj = {
       ...getValues(),
       status: 'active',
@@ -226,51 +543,16 @@ const ProductOverview = () => {
     }
   }, [updateUserBidDetsRes]);
 
-  // useEffect(() => {
-  //   if (createBidRes) {
-  //     if(productResponse.mainProduct){
-  //     setProductResponse(()=>{
-  //       return{
-  //         ...productResponse,
-  //         mainProduct:{
-  //           ...productResponse.mainProduct,
-  //           totalBidCount:productResponse.mainProduct.totalBidCount+1
-  //         }
-  //       }
-  //     })
-  //     }else{
-  //       console.log('main product to missing update bid count')
-  //     }
-  //     toast.success('Bid created successfully')
-  //     setSellerVerification(false)
-  //     setBusinessType('')
-  //     reset({
-  //       firstName: userProfile.user.firstName,
-  //       lastName: userProfile.user.lastName,
-  //       budgetQuation: '',
-  //       availableBrand: '',
-  //       earliestDeliveryDate: undefined
-  //     });
-  //   }
-  // }, [createBidRes])
-
-  // Replace the existing useEffect for createBidRes with this updated version:
-
   useEffect(() => {
     if (createBidRes) {
       if (productResponse?.mainProduct) {
-        setProductResponse(prev => {
-          // Update mainProduct totalBidCount
-          const updatedMainProduct = {
+        setProductResponse(prev => ({
+          ...prev,
+          mainProduct: {
             ...prev.mainProduct,
             totalBidCount: prev.mainProduct.totalBidCount + 1,
-          };
-
-          return {
-            ...prev,
-            mainProduct: updatedMainProduct,
-          };
-        });
+          },
+        }));
       } else {
         console.log('main product is missing to update bid count');
       }
@@ -279,12 +561,7 @@ const ProductOverview = () => {
       const productId = productResponse?.mainProduct._id;
       const sellerId = userProfile?._id;
       const budgetAmount = Number(getValues().budgetQuation) || 0;
-      createRequirementFn({
-        productId,
-        sellerId,
-        buyerId,
-        budgetAmount,
-      });
+      createRequirementFn({ productId, sellerId, buyerId, budgetAmount });
 
       toast.success('Quote created successfully');
       setSellerVerification(false);
@@ -292,16 +569,14 @@ const ProductOverview = () => {
       reset({
         firstName: userProfile.firstName,
         lastName: userProfile.lastName,
-        budgetQuation: '', // this is quotedPrice
-        // availableBrand: '',
-        earliestDeliveryDate: undefined, // this is deliveryTimeLine
+        budgetQuation: '',
+        earliestDeliveryDate: undefined,
         taxes: '',
         buyerNote: '',
         freightTerms: '',
         location: '',
         paymentTerms: '',
         priceBasis: '',
-        // quotedPrice:"",
         sellerType: '',
       });
     }
@@ -310,23 +585,19 @@ const ProductOverview = () => {
   useEffect(() => {
     if (userProfile) {
       const savedData = localStorage.getItem('preLoginBidForm');
-
       if (savedData) {
         const parsedData = JSON.parse(savedData);
-
         reset({
           ...parsedData,
           firstName: bidOverviewRes ? bidOverviewRes?.seller?.firstName : userProfile.firstName,
           lastName: bidOverviewRes ? bidOverviewRes?.seller?.lastName : userProfile.lastName,
         });
-
         localStorage.removeItem('preLoginBidForm');
       } else {
         reset({
           firstName: bidOverviewRes ? bidOverviewRes?.seller?.firstName : userProfile.firstName,
           lastName: bidOverviewRes ? bidOverviewRes?.seller?.lastName : userProfile.lastName,
           budgetQuation: bidOverviewRes ? bidOverviewRes?.budgetQuation : '',
-          // availableBrand: bidOverviewRes ? bidOverviewRes?.availableBrand : '',
           earliestDeliveryDate: bidOverviewRes ? bidOverviewRes?.earliestDeliveryDate : undefined,
           sellerType: bidOverviewRes ? bidOverviewRes?.sellerType : '',
           priceBasis: bidOverviewRes ? bidOverviewRes?.priceBasis : '',
@@ -342,7 +613,7 @@ const ProductOverview = () => {
 
   useEffect(() => {
     if (error === 'invalid product ID') {
-      //  send to 404 page (API error)
+      // send to 404 page
     }
   }, []);
 
@@ -362,6 +633,7 @@ const ProductOverview = () => {
     link.click();
     document.body.removeChild(link);
   };
+
   const handleBidView = async productId => {
     await getBidByProductIdFn(productId);
   };
@@ -372,343 +644,6 @@ const ProductOverview = () => {
       navigate('/bid-overview/' + _id);
     }
   }, [getBidByProductIdRes]);
-
-  const SellerForm = () => {
-    return (
-      <form
-        className="lg:col-span-5 bg-gray-200/80 rounded-lg p-6 space-y-4"
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <h3 className="font-semibold text-orange-600">Seller Quotation Details</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {userProfile?._id && (
-            <>
-              <div>
-                <Label htmlFor="firstName" className="mb-2 text-sm">
-                  First Name
-                </Label>
-                <Input
-                  disabled
-                  type="text"
-                  placeholder="First Name"
-                  id="firstName"
-                  {...register('firstName')}
-                  className="bg-white  select-none"
-                />
-              </div>
-              <div>
-                <Label htmlFor="lastName" className="mb-2 text-sm">
-                  Last Name
-                </Label>
-                <Input
-                  disabled
-                  type="text"
-                  placeholder="Last Name"
-                  id="lastName"
-                  {...register('lastName')}
-                  className="bg-white  select-none"
-                />
-              </div>
-            </>
-          )}
-          {/* <div>
-            <Label htmlFor="bq" className="mb-2 text-sm">Budget Quotation</Label>
-            <Input type="number" placeholder="₹ 00" id="bq" className="bg-white" {...register('budgetQuation')} />
-          </div> */}
-          {/* <div>
-            <Label htmlFor="ab" className="mb-2 text-sm">Available Brand</Label>
-            <Input type="text" placeholder="Brand XYZ" className="bg-white" {...register('availableBrand')} />
-          </div> */}
-          {/* <div >
-
-            <Label htmlFor="ab" className="mb-2 text-sm">Earliest Deliver By</Label>
-            <Controller
-              control={control}
-              name="earliestDeliveryDate"
-              render={({ field }) => (
-                <DatePicker
-                  disabledBeforeDate={new Date(new Date().getTime())}
-                  date={field.value}
-                  title="DD-MM-YYYY"
-                  className="w-full"
-                  setDate={(val) => field.onChange(val)}
-                />
-              )}
-            />
-
-          </div> */}
-          {/*  Seller Type */}
-          <div>
-            <Label className="mb-2 text-sm">Seller Type</Label>
-            <Controller
-              name="sellerType"
-              control={control}
-              render={({ field }) => (
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="w-full bg-white">
-                    <SelectValue placeholder="Select Seller Type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem value="manufacturer">Manufacturer</SelectItem>
-                      <SelectItem value="trader_wholesaler">Trader / Wholesaler</SelectItem>
-                      <SelectItem value="distributor">Distributor</SelectItem>
-                      <SelectItem value="service_provider">Service Provider</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              )}
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="ab" className="mb-2 text-sm">
-              Quoted Price(₹)
-            </Label>
-            <Input
-              type="number"
-              placeholder="Quoted Price"
-              className="bg-white"
-              {...register('budgetQuation')}
-            />
-          </div>
-          {/* Price Basis */}
-          <div>
-            <Label className="mb-2 text-sm">Price Basis</Label>
-            <Controller
-              name="priceBasis"
-              control={control}
-              render={({ field }) => (
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="w-full bg-white">
-                    <SelectValue placeholder="Select Price Basis" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem value="per_unit">Per Unit</SelectItem>
-                      <SelectItem value="per_kg">Per Kg</SelectItem>
-                      <SelectItem value="per_lot">Per Lot</SelectItem>
-                      <SelectItem value="per_piece">Per Piece</SelectItem>
-                      <SelectItem value="per_service">Per Service</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              )}
-            />
-          </div>
-
-          {/* Taxes */}
-          <div>
-            <Label className="mb-2 text-sm">Taxes</Label>
-            <Controller
-              name="taxes"
-              control={control}
-              render={({ field }) => (
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="w-full bg-white">
-                    <SelectValue placeholder="Select Taxes" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem value="inclusive_gst">Inclusive of GST</SelectItem>
-                      <SelectItem value="exclusive_gst">Exclusive of GST</SelectItem>
-                      <SelectItem value="gst_rate">GST Rate (%)</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              )}
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="ab" className="mb-2 text-sm">
-              Location
-            </Label>
-            <Input
-              type="text"
-              placeholder="Location"
-              className="bg-white"
-              {...register('location')}
-            />
-          </div>
-          {/* <div>
-            <Label htmlFor="ab" className="mb-2 text-sm">Available Qty. / Cap.</Label>
-            <Input type="number" placeholder="Enter MOQ"  className="bg-white" {...register('availableBrand')} />
-          </div> */}
-          <div>
-            <Label htmlFor="ab" className="mb-2 text-sm">
-              Delivery Timeline
-            </Label>
-            <Controller
-              control={control}
-              name="earliestDeliveryDate"
-              render={({ field }) => (
-                <DatePicker
-                  disabledBeforeDate={new Date(new Date().getTime())}
-                  date={field.value}
-                  title="DD-MM-YYYY"
-                  className="w-full"
-                  setDate={val => field.onChange(val)}
-                />
-              )}
-            />
-          </div>
-          {/* Freight Terms */}
-          <div>
-            <Label className="mb-2 text-sm">Freight Terms</Label>
-            <Controller
-              name="freightTerms"
-              control={control}
-              render={({ field }) => (
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="w-full bg-white">
-                    <SelectValue placeholder="Select Freight Terms" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem value="ex_works">Ex-Works</SelectItem>
-                      <SelectItem value="fob">FOB</SelectItem>
-                      <SelectItem value="delivered">Delivered (DAP / DDP)</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              )}
-            />
-          </div>
-          {/* Payment Terms */}
-          <div>
-            <Label className="mb-2 text-sm">Payment Terms</Label>
-            <Controller
-              name="paymentTerms"
-              control={control}
-              render={({ field }) => (
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="w-full bg-white">
-                    <SelectValue placeholder="Select Payment Terms" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem value="advance">Advance</SelectItem>
-                      <SelectItem value="partial_advance">Partial Advance</SelectItem>
-                      <SelectItem value="on_delivery">On Delivery</SelectItem>
-                      <SelectItem value="credit">Credit (X days)</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              )}
-            />
-          </div>
-
-          <div className="w-full col-span-2">
-            <Label htmlFor="ab" className="mb-2 text-sm">
-              Buyer Note
-            </Label>
-            <Textarea
-              {...register('buyerNote')}
-              placeholder="Short message (hard limit: 300 characters)"
-              className="bg-white w-full"
-            />
-          </div>
-        </div>
-        {!bidOverviewRes ? (
-          <Button
-            type="submit"
-            disabled={
-              productResponse?.mainProduct?.userId?._id === userProfile?._id ||
-              createBidLoading ||
-              soldProduct
-            }
-            variant={'ghost'}
-            className="w-32 float-end border text-xs bg-orange-700  transition-all ease-in-out duration-300 hover:bg-orange-600 text-white hover:text-white cursor-pointer"
-          >
-            Place Quote
-          </Button>
-        ) : (
-          <Button
-            type="submit"
-            disabled={updateUserBidDetsLoading}
-            variant={'ghost'}
-            className="w-32 float-end border shadow-orange-500 border-orange-500 bg-orange-600  transition-all ease-in-out duration-300 hover:bg-orange-500 text-white hover:text-white cursor-pointer"
-          >
-            {updateUserBidDetsLoading ? <Spinner className="w-5 h-5 animate-spin" /> : 'Update Bid'}
-          </Button>
-        )}
-        <div></div>
-      </form>
-    );
-  };
-
-  const MergeBidForm = () => {
-    const { user } = useUserState();
-    const [mergeFormState, setMergeFormState] = useState({
-      message: '',
-    });
-
-    function handleSendMessage(e) {
-      e.preventDefault();
-      const currentProduct = productResponse?.mainProduct;
-      const sellerId = user._id;
-      const buyerId = currentProduct?.userId?._id;
-
-      if (currentProduct?.dealStatus === 'completed') {
-        toast.error('This product has already been sold');
-        return;
-      }
-
-      localStorage.setItem(
-        'chatIds',
-        JSON.stringify({
-          productId: currentProduct._id,
-          buyerId: buyerId,
-          sellerId: sellerId,
-        })
-      );
-
-      navigate('/chat', {
-        state: {
-          productId: currentProduct._id,
-          buyerId: buyerId,
-          sellerId: sellerId,
-          partnerName: mergeName(user),
-          partnerAvatar: user?.profileImage,
-          message: mergeFormState.message,
-        },
-      });
-    }
-
-    return (
-      <form
-        className="lg:col-span-5 bg-gray-200/80 rounded-lg p-6 space-y-4 my-auto h-fit"
-        onSubmit={handleSendMessage}
-      >
-        <h3 className="font-semibold text-orange-600">Merge Quote</h3>
-        <div className="w-full col-span-2">
-          <Label htmlFor="ab" className="mb-2 text-sm">
-            Note for Buyer
-          </Label>
-          <Textarea
-            value={mergeFormState.message}
-            onInput={e => {
-              setMergeFormState({ message: e.currentTarget.value });
-            }}
-            placeholder="Short message (hard limit: 300 characters)"
-            className="bg-white w-full min-h-32"
-          />
-        </div>
-        <Button
-          type="submit"
-          disabled={
-            productResponse?.mainProduct?.userId?._id === userProfile?._id ||
-            mergeFormState.message.trim().length < 2
-          }
-          variant={'ghost'}
-          className="w-32 float-end border text-xs bg-orange-700  transition-all ease-in-out duration-300 hover:bg-orange-600 text-white hover:text-white cursor-pointer"
-        >
-          Chat Now
-        </Button>
-      </form>
-    );
-  };
 
   const isMergeQuote = productResponse?.mainProduct?.isMergeQuote;
   const soldProduct = bidOverviewRes
@@ -725,21 +660,17 @@ const ProductOverview = () => {
     const updateTimer = () => {
       const now = Date.now();
       const diff = expiryTime - now;
-
       if (diff <= 0) {
         setTimeLeft('Expired');
         if (intervalRef.current) clearInterval(intervalRef.current);
         return;
       }
-
       const hours = Math.floor(diff / (1000 * 60 * 60));
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
       setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
     };
 
-    // Initial call
     if (!soldProduct) {
       updateTimer();
       intervalRef.current = setInterval(updateTimer, 1000);
@@ -753,7 +684,7 @@ const ProductOverview = () => {
   return (
     <>
       {bidOverLoading || productViewLoading ? (
-        <div className="max-w-7xl mx-auto p-4 ">
+        <div className="max-w-7xl mx-auto p-4">
           <CategoryFormSkeleton />
         </div>
       ) : (
@@ -772,7 +703,7 @@ const ProductOverview = () => {
           <Breadcrumb className="hidden sm:block">
             <BreadcrumbList>
               <BreadcrumbItem
-                className="flex items-center gap-2 cursor-pointer "
+                className="flex items-center gap-2 cursor-pointer"
                 onClick={() => navigate(-1)}
               >
                 <Home className="h-4 w-4" />
@@ -789,12 +720,13 @@ const ProductOverview = () => {
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
+
           <div className="">
             {/* Content */}
             <div className="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
               {/* Image */}
               <div className="lg:col-span-4 bg-gray-100 flex justify-center items-center rounded-lg p-4 max-h-64 relative">
-                <div className=" w-full h-full flex justify-center items-center">
+                <div className="w-full h-full flex justify-center items-center">
                   <img
                     src={
                       (bidOverviewRes
@@ -817,18 +749,35 @@ const ProductOverview = () => {
               {/* Product Info */}
               <div className="lg:col-span-8 bg-transparent rounded-lg p-4 space-y-4">
                 <div>
-                  <h2 className="text-sm font-medium mb-2">
+                  <h2 className="text-sm font-medium mb-2 flex justify-between items-center">
                     Date :{' '}
                     {dateFormatter(
                       bidOverviewRes
                         ? bidOverviewRes?.product?.createdAt
                         : productResponse?.mainProduct?.createdAt
                     )}
+                    {soldProduct && dealSellerRating > 0 && (
+                      <div className="flex items-center gap-0.5">
+                        {[1, 2, 3, 4, 5].map(star => (
+                          <Star
+                            key={star}
+                            className={`w-5 h-5 ${
+                              star <= dealSellerRating
+                                ? 'fill-yellow-400 text-yellow-400'
+                                : 'fill-gray-200 text-gray-200'
+                            }`}
+                          />
+                        ))}
+                        {/* <span className="text-xs text-gray-500 ml-1">{dealSellerRating}/5</span> */}
+                      </div>
+                    )}
                   </h2>
-                  {productViewLoading || bidOverLoading || !timeLeft ? (
-                    <Skeleton className="h-8 w-24 rounded-full float-end" />
-                  ) : soldProduct ? (
+
+                  {/* product Rating */}
+                  {soldProduct ? (
                     ''
+                  ) : (productViewLoading || bidOverLoading) && !timeLeft ? (
+                    <Skeleton className="h-8 w-24 rounded-full float-end" />
                   ) : timeLeft !== 'Expired' ? (
                     <Button
                       variant="ghost"
@@ -876,7 +825,7 @@ const ProductOverview = () => {
                       ) || 'N/A'}
                     </span>
                   </div>
-                  <div className="flex items-center gap-1  pr-3 border-r-2 py-1 min-w-32   max-w-[50%]">
+                  <div className="flex items-center gap-1 pr-3 border-r-2 py-1 min-w-32 max-w-[50%]">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -889,7 +838,7 @@ const ProductOverview = () => {
                         clipRule="evenodd"
                       />
                     </svg>
-                    <span className=" line-clamp-2">
+                    <span className="line-clamp-2">
                       {bidOverviewRes
                         ? bidOverviewRes?.buyer?.address
                         : productResponse?.mainProduct?.userId?.address || 'N/A'}
@@ -919,7 +868,7 @@ const ProductOverview = () => {
 
                 {/* Buttons */}
                 {!isMergeQuote && (
-                  <div className="flex items-center gap-4 mt-5 ">
+                  <div className="flex items-center gap-4 mt-5">
                     <Button
                       disabled={
                         getBidByProductIdLoading ||
@@ -927,11 +876,6 @@ const ProductOverview = () => {
                           ? bidOverviewRes.product?.totalBidCount
                           : productResponse?.mainProduct?.totalBidCount) === 0
                       }
-                      // onClick={()=>{
-                      //   console.log( productResponse?.mainProduct?._id,123)
-                      //   alert('asd')
-                      //  navigate('/bid-overview/' + (bidOverviewRes ? bidOverviewRes?.product?._id : productResponse?.mainProduct?._id))
-                      // }}
                       onClick={() =>
                         handleBidView(
                           bidOverviewRes
@@ -940,9 +884,9 @@ const ProductOverview = () => {
                         )
                       }
                       variant="outline"
-                      className="min-w-32 text-sm border-gray-400 bg-transparent border-[2px] flex items-center gap-2 hover:bg-transparent  cursor-pointer"
+                      className="min-w-32 text-sm border-gray-400 bg-transparent border-[2px] flex items-center gap-2 hover:bg-transparent cursor-pointer"
                     >
-                      <img src="/Layer_1.png" className="w-4 h-4 " />
+                      <img src="/Layer_1.png" className="w-4 h-4" />
                       Total Quote :
                       <span className="font-semibold">
                         {bidOverviewRes
@@ -975,28 +919,25 @@ const ProductOverview = () => {
             </div>
 
             {/* Requirement + Form */}
-            <div className="mt-5 grid grid-cols-1 lg:grid-cols-12 gap-6 ">
+            <div className="mt-5 grid grid-cols-1 lg:grid-cols-12 gap-6">
               {/* Left: Requirement Spec */}
-              <div className="lg:col-span-7  rounded-lg p-6 space-y-3 ">
+              <div className="lg:col-span-7 rounded-lg p-6 space-y-3">
                 <h3 className="font-semibold text-orange-600 text-xl">
                   Requirement Specifications
                 </h3>
-                <div className="text-sm space-y-2 text-gray-600 ">
+                <div className="text-sm space-y-2 text-gray-600">
                   <p className="flex items-center justify-between py-2 border-b-2 capitalize">
                     <span className="font-semibold">Product Condition:</span>
                     {(bidOverviewRes
                       ? bidOverviewRes?.product?.subCategory?.name
                       : productResponse?.mainProduct?.categoryId?.categoryName) || 'N/A'}
                   </p>
-
                   <p className="flex items-center justify-between py-2 border-b-2 capitalize">
                     <span className="font-semibold">Brand:</span>
                     {(bidOverviewRes
                       ? otherBrandValue(bidOverviewRes?.product)
                       : otherBrandValue(productResponse?.mainProduct)) || 'N/A'}
                   </p>
-
-                  {/* Model */}
                   {(bidOverviewRes
                     ? bidOverviewRes?.product?.model
                     : productResponse?.mainProduct?.model) && (
@@ -1007,8 +948,6 @@ const ProductOverview = () => {
                         : productResponse?.mainProduct?.model) || 'N/A'}
                     </p>
                   )}
-
-                  {/* Product Type */}
                   {(bidOverviewRes
                     ? bidOverviewRes?.product?.productType
                     : productResponse?.mainProduct?.productType) && (
@@ -1020,8 +959,6 @@ const ProductOverview = () => {
                       )?.replace('_', ' ') || 'N/A'}
                     </p>
                   )}
-
-                  {/* Fuel Type */}
                   {(bidOverviewRes
                     ? bidOverviewRes?.product?.fuelType
                     : productResponse?.mainProduct?.fuelType) && (
@@ -1032,8 +969,6 @@ const ProductOverview = () => {
                         : productResponse?.mainProduct?.fuelType) || 'N/A'}
                     </p>
                   )}
-
-                  {/* Transmission */}
                   {(bidOverviewRes
                     ? bidOverviewRes?.product?.transmission
                     : productResponse?.mainProduct?.transmission) && (
@@ -1044,8 +979,6 @@ const ProductOverview = () => {
                         : productResponse?.mainProduct?.transmission) || 'N/A'}
                     </p>
                   )}
-
-                  {/* Old Product Value */}
                   {(bidOverviewRes
                     ? bidOverviewRes?.product?.oldProductValue
                     : productResponse?.mainProduct?.oldProductValue) && (
@@ -1060,13 +993,11 @@ const ProductOverview = () => {
                         : productResponse?.mainProduct?.oldProductValue?.max) || 0}
                     </p>
                   )}
-
                   {productResponse?.mainProduct?.categoryId?.categoryName === 'industrial' && (
                     <p className="flex items-center justify-between py-2 border-b-2">
                       <span className="font-semibold">Construction Tool Type:</span> Industrial Tool
                     </p>
                   )}
-
                   {(bidOverviewRes?.product?.minimumBudget ||
                     productResponse?.mainProduct?.minimumBudget) && (
                     <p className="flex items-center justify-between py-2 border-b-2">
@@ -1078,7 +1009,6 @@ const ProductOverview = () => {
                       )}
                     </p>
                   )}
-
                   <p className="flex items-center justify-between py-2 border-b-2">
                     <span className="font-semibold">Required Delivery Date:</span>
                     {dateFormatter(
@@ -1087,8 +1017,6 @@ const ProductOverview = () => {
                         : productResponse?.mainProduct?.paymentAndDelivery?.ex_deliveryDate
                     ) || 'N/A'}
                   </p>
-
-                  {/* Bid Active Duration */}
                   {(bidOverviewRes
                     ? bidOverviewRes?.product?.bidActiveDuration
                     : productResponse?.mainProduct?.bidActiveDuration) && (
@@ -1100,7 +1028,6 @@ const ProductOverview = () => {
                       day(s)
                     </p>
                   )}
-
                   {(bidOverviewRes
                     ? bidOverviewRes?.product?.color
                     : productResponse?.mainProduct?.color) && (
@@ -1111,7 +1038,6 @@ const ProductOverview = () => {
                         : productResponse?.mainProduct?.color) || 'N/A'}
                     </p>
                   )}
-
                   {(bidOverviewRes
                     ? bidOverviewRes?.product?.typeOfVehicle
                     : productResponse?.mainProduct?.typeOfVehicle) && (
@@ -1122,7 +1048,6 @@ const ProductOverview = () => {
                         : productResponse?.mainProduct?.typeOfVehicle) || 'N/A'}
                     </p>
                   )}
-
                   {(bidOverviewRes
                     ? bidOverviewRes?.product?.typeOfProduct
                     : productResponse?.mainProduct?.typeOfProduct) && (
@@ -1133,15 +1058,12 @@ const ProductOverview = () => {
                         : productResponse?.mainProduct?.typeOfProduct) || 'N/A'}
                     </p>
                   )}
-
                   <p className="flex items-center justify-between py-2 border-b-2 capitalize">
                     <span className="font-semibold">Payment Mode:</span>
                     {(bidOverviewRes
                       ? bidOverviewRes?.product?.paymentAndDelivery?.paymentMode
                       : productResponse?.mainProduct?.paymentAndDelivery?.paymentMode) || 'N/A'}
                   </p>
-
-                  {/* Organization Name */}
                   {(bidOverviewRes
                     ? bidOverviewRes?.product?.paymentAndDelivery?.organizationName
                     : productResponse?.mainProduct?.paymentAndDelivery?.organizationName) && (
@@ -1153,8 +1075,6 @@ const ProductOverview = () => {
                         'N/A'}
                     </p>
                   )}
-
-                  {/* Organization Address */}
                   {(bidOverviewRes
                     ? bidOverviewRes?.product?.paymentAndDelivery?.organizationAddress
                     : productResponse?.mainProduct?.paymentAndDelivery?.organizationAddress) && (
@@ -1166,8 +1086,6 @@ const ProductOverview = () => {
                         'N/A'}
                     </p>
                   )}
-
-                  {/* GST Number */}
                   {(bidOverviewRes
                     ? bidOverviewRes?.product?.paymentAndDelivery?.gstNumber
                     : productResponse?.mainProduct?.paymentAndDelivery?.gstNumber) && (
@@ -1178,7 +1096,6 @@ const ProductOverview = () => {
                         : productResponse?.mainProduct?.paymentAndDelivery?.gstNumber) || 'N/A'}
                     </p>
                   )}
-
                   <p className="flex items-center justify-between py-2 border-b-2">
                     <span className="font-semibold">Supporting Documents:</span>
                     {productResponse?.mainProduct?.document || bidOverviewRes?.product?.document ? (
@@ -1202,7 +1119,26 @@ const ProductOverview = () => {
               </div>
 
               {/* Right: Form */}
-              {isMergeQuote ? <MergeBidForm></MergeBidForm> : <SellerForm />}
+              {isMergeQuote ? (
+                <MergeBidForm
+                  productResponse={productResponse}
+                  userProfile={userProfile}
+                  navigate={navigate}
+                />
+              ) : (
+                <SellerForm
+                  handleSubmit={handleSubmit}
+                  onSubmit={onSubmit}
+                  register={register}
+                  control={control}
+                  userProfile={userProfile}
+                  bidOverviewRes={bidOverviewRes}
+                  productResponse={productResponse}
+                  createBidLoading={createBidLoading}
+                  updateUserBidDetsLoading={updateUserBidDetsLoading}
+                  soldProduct={soldProduct}
+                />
+              )}
             </div>
           </div>
         </div>
