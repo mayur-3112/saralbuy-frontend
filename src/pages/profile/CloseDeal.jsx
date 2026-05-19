@@ -217,7 +217,7 @@ const CloseDeal = () => {
           finalized_with: mergeName(item?.buyer),
           requirement: item?.product?.title,
           your_budget: item?.product?.minimumBudget,
-          final_budget: item?.amount,
+          final_budget: currencyConvertor(item?.amount),
           dealStatus:
             item?.closedDealStatus === 'waiting_seller_approval' ||
             item?.closedDealStatus === 'pending'
