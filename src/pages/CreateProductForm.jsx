@@ -11,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { MoveLeft, CloudUpload, X, XIcon } from 'lucide-react';
+import { MoveLeft, CloudUpload, X, XIcon, ArrowLeft } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -109,7 +109,7 @@ const CategoryForm = ({
   const [subCatgoryName, setSubcategoryName] = useState('');
   const imageRef = useRef(null);
   const fileDocRef = useRef(null);
-
+  const navigate = useNavigate();
   const gstField = watch('gst_requirement');
   const productField = watch('productType');
   const paymentMode = watch('paymentAndDelivery.paymentMode');
@@ -153,7 +153,12 @@ const CategoryForm = ({
         {/* Left Panel */}
         <div className="md:col-span-1 lg:col-span-1 bg-transparent border-0 p-6 xs:grid xs:grid-cols-2 gap-6 space-y-4">
           <div className="col-span-1 align-center sm:block flex flex-col justify-center">
-            <h2 className="text-[15px] font-semibold mb-2 text-center">Tell us about your need</h2>
+           <div className='flex gap-2 items-center mb-2'>
+             <MoveLeft className='w-6 cursor-pointer' onClick={()=>{
+              navigate(-1)
+             }}/>
+            <h2 className="text-[15px] font-semibold  text-center">Tell us about your need</h2>
+           </div>
             <p className="text-[13px] text-muted-foreground text-center">
               Please help us tailor the experience by filling out the form below. If this isn't the
               category you meant to choose, you can go back and select another one.

@@ -13,117 +13,11 @@ import {
 } from '@/components/ui/accordion';
 import { useCategory, useCategoryState } from '@/redux/hooks/useCategory';
 
-// const data = [
-//   {
-//     _id: "cat1",
-//     categoryName: "electronics",
-//     image: "https://picsum.photos/id/237/200/300",
-//     subCategories: [
-//       { _id: "sub1", name: "mobile" },
-//       { _id: "sub2", name: "tablets" },
-//       { _id: "sub3", name: "wearables" },
-//       { _id: "sub4", name: "accessories" },
-//       { _id: "sub5", name: "other" },
-//     ],
-//   },
-//   {
-//     _id: "cat2",
-//     categoryName: "furniture",
-//     image: "https://picsum.photos/id/237/200/300",
-//     subCategories: [
-//       { _id: "sub6", name: "sofa" },
-//       { _id: "sub7", name: "beds" },
-//       { _id: "sub8", name: "tables" },
-//     ],
-//   },
-//   {
-//     _id: "cat3",
-//     categoryName: "industrial",
-//     image: "https://picsum.photos/id/237/200/300",
-//     subCategories: [
-//       { _id: "sub9", name: "cement" },
-//       { _id: "sub10", name: "steel" },
-//       { _id: "sub11", name: "bricks" },
-//     ],
-//   },
-//   {
-//     _id: "cat4",
-//     categoryName: "home",
-//     image: "https://picsum.photos/id/237/200/300",
-//     subCategories: [
-//       {
-//         _id: "sub12",
-//         name: "kitchen appliances",
-//         subproducts: [{ name: "microwave" }, { name: "mixer grinder" }],
-//       },
-//       {
-//         _id: "sub13",
-//         name: "cleaning",
-//         subproducts: [{ name: "vacuum cleaner" }, { name: "mops" }],
-//       },
-//     ],
-//   },
-//   {
-//     _id: "cat5",
-//     categoryName: "beauty",
-//     image: "https://picsum.photos/id/237/200/300",
-//     subCategories: [
-//       { _id: "sub14", name: "skincare" },
-//       { _id: "sub15", name: "haircare" },
-//     ],
-//   },
-//   {
-//     _id: "cat5",
-//     categoryName: "beauty",
-//     image: "https://picsum.photos/id/237/200/300",
-//     subCategories: [
-//       { _id: "sub14", name: "skincare" },
-//       { _id: "sub15", name: "haircare" },
-//     ],
-//   },
-//   {
-//     _id: "cat5",
-//     categoryName: "beauty",
-//     image: "https://picsum.photos/id/237/200/300",
-//     subCategories: [
-//       { _id: "sub14", name: "skincare" },
-//       { _id: "sub15", name: "haircare" },
-//     ],
-//   },
-//   {
-//     _id: "cat5",
-//     categoryName: "beauty",
-//     image: "https://picsum.photos/id/237/200/300",
-//     subCategories: [
-//       { _id: "sub14", name: "skincare" },
-//       { _id: "sub15", name: "haircare" },
-//     ],
-//   },
-//   {
-//     _id: "cat5",
-//     categoryName: "beauty",
-//     image: "https://picsum.photos/id/237/200/300",
-//     subCategories: [
-//       { _id: "sub14", name: "skincare" },
-//       { _id: "sub15", name: "haircare" },
-//     ],
-//   },
-//   {
-//     _id: "cat5",
-//     categoryName: "beauty",
-//     image: "https://picsum.photos/id/237/200/300",
-//     subCategories: [
-//       { _id: "sub14", name: "skincare" },
-//       { _id: "sub15", name: "haircare" },
-//     ],
-//   },
-// ];
 
 const Requirement = () => {
   const disptachCategories = useCategory();
   const { categories: data } = useCategoryState();
-  console.log(data);
-  const [currentWinSize, setCurrentWinSize] = useState();
+ const [currentWinSize, setCurrentWinSize] = useState(window.innerWidth);
   const navigate = useNavigate();
   useEffect(() => {
     disptachCategories();
@@ -132,6 +26,7 @@ const Requirement = () => {
     const handleResize = () => {
       setCurrentWinSize(window.innerWidth);
     };
+    handleResize(); 
     window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('resize', handleResize);
