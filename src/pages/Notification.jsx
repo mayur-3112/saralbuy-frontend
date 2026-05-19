@@ -198,10 +198,10 @@ const Notification = () => {
       )}
 
       {!loading && !error && notifications.length === 0 && (
-        <div className="text-center text-gray-500 h-[60vh] flex justify-center items-center flex-col">
-          <img alt="" className="h-28 w-28" src="/empty-cart.webp" />
-          <p className="text-gray-500 text-sm">No notifications found.</p>
-        </div>
+          <div className="w-full h-[300px]  flex flex-col items-center justify-center">
+              <img src="/empty-cart.webp" width="10%" />
+              <p className="text-gray-500 text-sm">No Notification's Found</p>
+            </div>
       )}
 
       {notifications.length > 0 && (
