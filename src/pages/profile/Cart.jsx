@@ -9,6 +9,7 @@ import { useFetch } from '@/hooks/useFetch';
 import { toast } from 'sonner';
 import AlertPopup from '@/components/custom/popups/AlertPopup';
 import { sortByDate } from '@/utils/sortByDate';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const Cart = () => {
   const [_, setIsAscSorting] = useState(false); // asc and deasc
@@ -83,23 +84,35 @@ const Cart = () => {
       />
       <div className="w-full max-w-7xl mx-auto  space-y-6 ">
         <div className="grid space-y-5 w-full">
-          <div className="flex justify-between items-center font-semibold w-full mb-3">
-            <p className="font-bold text-xl whitespace-nowrap   tracking-tight text-gray-600">
-              Your Cart
-            </p>
-            <Button
-              onClick={handleSort}
-              variant={'ghost'}
-              size={'icon'}
-              className=" w-24 flex gap-2 items-center justify-center text-sm font-medium  text-gray-700 bg-transparent border-1 hover:bg-transparent cursor-pointer border-gray-700"
-            >
-              Date
-              <ListFilter className="w-5 h-5" />
-            </Button>
-          </div>
+          {getCartLoading ? (
+            <div className="flex items-center justify-between mb-6">
+              <Skeleton className="h-8 w-52 rounded-md" />
+              <Skeleton className="h-10 w-28 rounded-xl" />
+            </div>
+          ) : (
+            <div className="flex justify-between items-center font-semibold w-full mb-3">
+              <p className="font-bold text-xl whitespace-nowrap   tracking-tight text-gray-600">
+                Your Cart
+              </p>
+              <Button
+                onClick={handleSort}
+                variant={'ghost'}
+                size={'icon'}
+                className=" w-24 flex gap-2 items-center justify-center text-sm font-medium  text-gray-700 bg-transparent border-1 hover:bg-transparent cursor-pointer border-gray-700"
+              >
+                Date
+                <ListFilter className="w-5 h-5" />
+              </Button>
+            </div>
+          )}
+
           {/*  cart list */}
           {getCartLoading ? (
-            new Array(3).fill(0).map(_ => <SliderSkeleton />)
+            new Array(3).fill(0).map(_ => (
+              <>
+                <SliderSkeleton />
+              </>
+            ))
           ) : getCartRes && getCartRes.cartItems?.length > 0 ? (
             getCartRes?.cartItems?.map((item, idx) => (
               <div

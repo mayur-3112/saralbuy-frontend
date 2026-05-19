@@ -7,6 +7,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import notificationService from '@/services/notification.service';
 import { getNotifMeta } from '@/helper/notif.icons';
 import { toast } from 'sonner';
+import { NotificationSkeleton } from '@/const/CustomSkeletons';
 
 const PAGE_SIZE = 10;
 
@@ -168,64 +169,62 @@ const Notification = () => {
 
   return (
     <div className="grid space-y-5">
-      <div className={`flex justify-between items-center mb-3`}>
-        <p className="font-bold text-xl whitespace-nowrap tracking-tight text-gray-600">
-          Notifications {totalCount > 0 && `(${totalCount})`}
-        </p>
-        <Button
-          onClick={handleSorting}
-          variant={'ghost'}
-          size={'icon'}
-          className="w-24 flex gap-2 items-center justify-center text-sm font-medium text-gray-700 bg-transparent border-1 hover:bg-transparent cursor-pointer border-gray-700"
-        >
-          Date
-          {/* {sortOrder === 'desc' ? '▼' : '▲'} */}
-          <ListFilter className="w-5 h-5" />
-        </Button>
-      </div>
-
-      {loading && notifications.length === 0 && (
-        <div className="text-center text-gray-500 py-10">
-          <div className="loader"></div>
-        </div>
-      )}
+      {loading && notifications.length === 0 && <NotificationSkeleton />}
 
       {error && notifications.length === 0 && (
         <div className="w-full h-[300px]  flex flex-col items-center justify-center">
-              <img src="/empty-cart.webp" width="10%" />
-              <p className="text-gray-500 text-sm">No Notification's Found</p>
-            </div>
+          <img src="/empty-cart.webp" width="10%" />
+          <p className="text-gray-500 text-sm">No Notification's Found</p>
+        </div>
       )}
 
       {!loading && !error && notifications.length === 0 && (
-          <div className="w-full h-[300px]  flex flex-col items-center justify-center">
-              <img src="/empty-cart.webp" width="10%" />
-              <p className="text-gray-500 text-sm">No Notification's Found</p>
-            </div>
+        <div className="w-full h-[300px]  flex flex-col items-center justify-center">
+          <img src="/empty-cart.webp" width="10%" />
+          <p className="text-gray-500 text-sm">No Notification's Found</p>
+        </div>
       )}
 
       {notifications.length > 0 && (
-        <div id="notification-scroll-container" style={{ height: '70vh', overflowY: 'auto' }}>
-          <InfiniteScroll
-            dataLength={notifications.length}
-            next={loadMore}
-            hasMore={hasMore}
-            loader={<div className="text-center text-gray-500 py-4">Loading more...</div>}
-            endMessage={<div className="text-center text-gray-400 py-4">No more notifications</div>}
-            scrollableTarget="notification-scroll-container"
-          >
-            <div className="space-y-0">
-              {notifications.map((notif, idx) => {
-                const { type, title, _id, createdAt, seen } = notif;
-                const bgClass = getNotificationBgClass(idx, type);
-                const Icon = getNotificationIcon(type, title);
+        <>
+          <div className={`flex justify-between items-center mb-3`}>
+            <p className="font-bold text-xl whitespace-nowrap tracking-tight text-gray-600">
+              Notifications {totalCount > 0 && `(${totalCount})`}
+            </p>
+            <Button
+              onClick={handleSorting}
+              variant={'ghost'}
+              size={'icon'}
+              className="w-24 flex gap-2 items-center justify-center text-sm font-medium text-gray-700 bg-transparent border-1 hover:bg-transparent cursor-pointer border-gray-700"
+            >
+              Date
+              {/* {sortOrder === 'desc' ? '▼' : '▲'} */}
+              <ListFilter className="w-5 h-5" />
+            </Button>
+          </div>
+          <div id="notification-scroll-container" style={{ height: '70vh', overflowY: 'auto' }}>
+            <InfiniteScroll
+              dataLength={notifications.length}
+              next={loadMore}
+              hasMore={hasMore}
+              loader={<div className="text-center text-gray-500 py-4">Loading more...</div>}
+              endMessage={
+                <div className="text-center text-gray-400 py-4">No more notifications</div>
+              }
+              scrollableTarget="notification-scroll-container"
+            >
+              <div className="space-y-0">
+                {notifications.map((notif, idx) => {
+                  const { type, title, _id, createdAt, seen } = notif;
+                  const bgClass = getNotificationBgClass(idx, type);
+                  const Icon = getNotificationIcon(type, title);
 
-                return (
-                  <div key={_id} className={``}>
-                    <div
-                      className={`p-4 grid ${bgClass} rounded-md space-y-2 border  relative group transition-all duration-200 `}
-                    >
-                      {/* <Button
+                  return (
+                    <div key={_id} className={``}>
+                      <div
+                        className={`p-4 grid ${bgClass} rounded-md space-y-2 border  relative group transition-all duration-200 `}
+                      >
+                        {/* <Button
                         variant="ghost"
                         size="icon"
                         className="absolute top-2 right-2 h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
@@ -234,41 +233,42 @@ const Notification = () => {
                         <Trash2 className="h-4 w-4" />
                       </Button> */}
 
-                      <div className="grid grid-cols-3 items-center gap-5">
-                        <div className="text-md font-bold text-gray-800 capitalize col-span-2 flex items-center gap-2">
-                          {Icon}
-                          <span className="break-words flex gap-2">
-                            {title}{' '}
-                            <div
-                              className={`${!seen ? 'w-2 h-2 rounded-full bg-orange-400' : ''}`}
-                            ></div>
-                          </span>
+                        <div className="grid grid-cols-3 items-center gap-5">
+                          <div className="text-md font-bold text-gray-800 capitalize col-span-2 flex items-center gap-2">
+                            {Icon}
+                            <span className="break-words flex gap-2">
+                              {title}{' '}
+                              <div
+                                className={`${!seen ? 'w-2 h-2 rounded-full bg-orange-400' : ''}`}
+                              ></div>
+                            </span>
+                          </div>
+                          <p className="text-sm text-orange-500 col-span-1 text-right">
+                            {formatDate(createdAt)}
+                          </p>
                         </div>
-                        <p className="text-sm text-orange-500 col-span-1 text-right">
-                          {formatDate(createdAt)}
-                        </p>
-                      </div>
 
-                      <div className="grid grid-cols-3 items-center gap-5">
-                        <p className="text-sm font-medium text-gray-600 line-clamp-2 col-span-2">
-                          {getDescriptionText(notif)}
-                        </p>
-                        {/* <Button
+                        <div className="grid grid-cols-3 items-center gap-5">
+                          <p className="text-sm font-medium text-gray-600 line-clamp-2 col-span-2">
+                            {getDescriptionText(notif)}
+                          </p>
+                          {/* <Button
                           variant="link"
                           className="text-sm text-gray-600 col-span-1 text-right underline cursor-pointer p-0 h-auto hover:text-gray-900"
                           onClick={() => handleView(notif)}
                         >
                           View
                         </Button> */}
+                        </div>
                       </div>
+                      <div className=" pt-2 mx-[0.5px]"></div>
                     </div>
-                    <div className=" pt-2 mx-[0.5px]"></div>
-                  </div>
-                );
-              })}
-            </div>
-          </InfiniteScroll>
-        </div>
+                  );
+                })}
+              </div>
+            </InfiniteScroll>
+          </div>
+        </>
       )}
 
       <AlertPopup

@@ -212,3 +212,28 @@ export const RequirementCardSkeleton = () => {
     </div>
   );
 };
+
+export function NotificationSkeleton() {
+  return (
+    <div className="w-full max-w-6xl mx-auto p-4">
+      <div className="flex items-center justify-between mb-6">
+        <Skeleton className="h-8 w-52 rounded-md" />
+        <Skeleton className="h-10 w-28 rounded-xl" />
+      </div>
+      <div className="space-y-4">
+        {[1, 2, 3, 4, 5].map((_, index) => (
+          <div key={index} className="border rounded-2xl p-5 flex items-start justify-between">
+            <div className="flex gap-4 w-full">
+              <Skeleton className="h-10 w-10 rounded-full" />
+              <div className="space-y-3 flex-1">
+                <Skeleton className="h-5 w-52 rounded-md" />
+                <Skeleton className="h-4 w-80 rounded-md" />
+              </div>
+            </div>
+            <Skeleton className="h-4 w-24 rounded-md ml-4" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
