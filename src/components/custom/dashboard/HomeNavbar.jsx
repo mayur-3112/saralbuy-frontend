@@ -783,10 +783,8 @@ const HomeNavbar = () => {
                             size="sm"
                             className="w-full text-orange-600 hover:text-orange-700 hover:bg-orange-100 h-8 cursor-pointer"
                             onClick={() => {
-                              setShowNotificationDropdown(
-                                false
-                              );
-                                navigate('/account/notification') 
+                              setShowNotificationDropdown(false);
+                              navigate('/account/notification');
                             }}
                           >
                             View All Notifications

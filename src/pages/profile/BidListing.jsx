@@ -79,6 +79,13 @@ const BidListing = () => {
     {
       accessorKey: 'product',
       header: 'Product',
+      cell: ({ row }) => {
+        return (
+          <span className="block max-w-45 truncate text-sm" title={row.getValue('product')}>
+            {row.getValue('product')}
+          </span>
+        );
+      },
     },
     // {
     //     accessorKey: "min_budget",

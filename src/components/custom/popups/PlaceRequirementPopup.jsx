@@ -30,7 +30,7 @@ const PlaceRequirementPopup = ({
 
   function handleChange(e) {
     const value = e.currentTarget.value.replace(/\D/g, '');
-    if(value > 30){
+    if (value > 30) {
       toast.warning('Quote duration must be less than or equal to 30');
       return;
     }

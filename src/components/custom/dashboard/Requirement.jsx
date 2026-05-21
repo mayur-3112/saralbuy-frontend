@@ -13,11 +13,10 @@ import {
 } from '@/components/ui/accordion';
 import { useCategory, useCategoryState } from '@/redux/hooks/useCategory';
 
-
 const Requirement = () => {
   const disptachCategories = useCategory();
   const { categories: data } = useCategoryState();
- const [currentWinSize, setCurrentWinSize] = useState(window.innerWidth);
+  const [currentWinSize, setCurrentWinSize] = useState(window.innerWidth);
   const navigate = useNavigate();
   useEffect(() => {
     disptachCategories();
@@ -26,7 +25,7 @@ const Requirement = () => {
     const handleResize = () => {
       setCurrentWinSize(window.innerWidth);
     };
-    handleResize(); 
+    handleResize();
     window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('resize', handleResize);

@@ -184,12 +184,15 @@ const CategoryForm = ({
         {/* Left Panel */}
         <div className="md:col-span-1 lg:col-span-1 bg-transparent border-0 p-6 xs:grid xs:grid-cols-2 gap-6 space-y-4">
           <div className="col-span-1 align-center sm:block flex flex-col justify-center">
-         <div className='flex gap-2 items-center mb-2'>
-             <MoveLeft className='w-6 cursor-pointer' onClick={()=>{
-              navigate(-1)
-             }}/>
-            <h2 className="text-[15px] font-semibold  text-center">Tell us about your need</h2>
-           </div>
+            <div className="flex gap-2 items-center mb-2">
+              <MoveLeft
+                className="w-6 cursor-pointer"
+                onClick={() => {
+                  navigate(-1);
+                }}
+              />
+              <h2 className="text-[15px] font-semibold  text-center">Tell us about your need</h2>
+            </div>
             <p className="text-[13px] text-muted-foreground text-center">
               Update your product details below. Make sure all required fields are filled correctly.
             </p>
@@ -890,30 +893,27 @@ const UpdateCreateProductForm = () => {
     return true;
   };
 
-
-  useEffect(()=>{
- if (
+  useEffect(() => {
+    if (
       !user?.firstName?.trim() ||
       !user?.lastName?.trim() ||
       !user?.email?.trim() ||
       !user?.phone?.trim()
     ) {
-      toast.info('Please update your profile first before adding quotes',{
-        duration:2000,
-        onDismiss:()=>{
+      toast.info('Please update your profile first before adding quotes', {
+        duration: 2000,
+        onDismiss: () => {
           navigate('/account');
         },
-        onAutoClose:()=>{
+        onAutoClose: () => {
           navigate('/account');
-        }
+        },
       });
 
-  
       return;
     }
-  },[user])
+  }, [user]);
 
-  
   // ── Submit — same pattern as CreateProductForm ────────────────────────────
   const handleSubmit = async (isDraft, resolvedBidDuration) => {
     if (!user) {
@@ -1033,10 +1033,7 @@ const UpdateCreateProductForm = () => {
             <div className="flex flex-row sm:justify-between justify-end items-center gap-3 mb-6">
               <Breadcrumb className="sm:block hidden">
                 <BreadcrumbList>
-                  <BreadcrumbItem
-                    className="flex items-center gap-2 cursor-pointer"
-                   
-                  >
+                  <BreadcrumbItem className="flex items-center gap-2 cursor-pointer">
                     {/* <MoveLeft className="h-4 w-4" /> */}
                     <BreadcrumbPage className="capitalize font-semibold text-gray-500">
                       Category

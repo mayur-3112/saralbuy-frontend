@@ -818,8 +818,18 @@ const ProductOverview = () => {
                 <p className="text-sm text-gray-600">{productResponse?.mainProduct?.description}</p>
 
                 {/* Meta Info */}
-                <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-                  <div className="flex items-center gap-1 pr-3 border-r-2 py-1 min-w-32 max-w-[25%]">
+                <div className="flex flex-wrap gap-4 text-sm text-gray-600 ">
+                  <div
+                    onClick={() => {
+                      navigate(
+                        '/user-profile/' +
+                          (bidOverviewRes
+                            ? bidOverviewRes?.buyer?._id
+                            : productResponse?.mainProduct?.userId?._id)
+                      );
+                    }}
+                    className="flex items-center underline cursor-pointer gap-1 pr-3 border-r-2 py-1 min-w-32 max-w-[25%]"
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"

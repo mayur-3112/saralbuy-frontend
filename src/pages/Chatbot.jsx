@@ -9,7 +9,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { fallBackName } from '@/utils/fallBackName';
 import useSocket from '@/hooks/useSocket';
 import { SOCKET_EVENTS } from '@/socket/socketEvents';
-import { useLocation, useParams, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useUserState } from '@/redux/hooks/useUser';
 import { useChatState, useDispatchChat } from '@/redux/hooks/useChat';
 import ApprovalPopup from '@/components/custom/popups/ApprovalPopup';
@@ -205,7 +205,7 @@ const ChatArea = ({
   const [attachmentPreview, setAttachmentPreview] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadedAttachment, setUploadedAttachment] = useState(null);
-
+  const navigate = useNavigate();
   // Budget dialog
   const [showBudgetDialog, setShowBudgetDialog] = useState(false);
 
@@ -365,11 +365,22 @@ const ChatArea = ({
             <div className="flex justify-between items-center w-full">
               <div className="relative flex items-center gap-3 justify-between w-full">
                 {/* Left: avatar + name + online status */}
-                <div className="flex items-center gap-3">
-                  <Avatar className="h-10 w-10">
-                    <AvatarImage src={selectedContact.avatar} alt={selectedContact.name} />
-                    <AvatarFallback>{selectedContact.name?.charAt(0)}</AvatarFallback>
-                  </Avatar>
+                <div className="flex items-center gap-3 cursor-pointer">
+                  <div
+                    onClick={() => {
+                      navigate(
+                        '/user-profile/' +
+                          (selectedContact.buyerId === currentUserId
+                            ? selectedContact.sellerId
+                            : selectedContact.buyerId)
+                      );
+                    }}
+                  >
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage src={selectedContact.avatar} alt={selectedContact.name} />
+                      <AvatarFallback>{selectedContact.name?.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                  </div>
                   <div className="flex flex-col">
                     <div>
                       <h3 className="font-semibold text-gray-700">{selectedContact.name}</h3>

@@ -19,6 +19,7 @@ import RequirementOverview from './pages/RequirementOverview';
 import NoRouteFound from './pages/404';
 import Loader from './components/custom/Loader';
 import Notification from './pages/Notification';
+import UserProfile from './pages/UserProfile';
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Chatbot = lazy(() => import('./pages/Chatbot'));
 
@@ -64,7 +65,7 @@ export default function AppRoutes() {
             <Route path="requirements-overview/:requirementId" element={<RequirementOverview />} />
           </Route>
           <Route path="/chat" element={<Chatbot />} />
-
+          <Route path="/user-profile/:userId" element={<UserProfile />} />
           <Route path="/bid-overview/:bidId" element={<BidOverview />} />
           <Route path="*" element={<NoRouteFound />} />
         </Routes>

@@ -65,7 +65,7 @@ const tags = [
 const Profile = () => {
   const { user } = useUserState();
   const { dispatchUser } = useDispatchUser();
-  const {pathname} = useLocation()
+  const { pathname } = useLocation();
   const navigate = useNavigate();
   const {
     fn: updateProfilefn,
@@ -118,7 +118,7 @@ const Profile = () => {
             <BreadcrumbPage className="capitalize font-regular  font-semibold">
               Account
             </BreadcrumbPage>
-             <BreadcrumbSeparator />
+            <BreadcrumbSeparator />
             <BreadcrumbPage className="capitalize font-regular text-orange-600 font-semibold">
               {pathname.split('/')[2] || 'Profile'}
             </BreadcrumbPage>
