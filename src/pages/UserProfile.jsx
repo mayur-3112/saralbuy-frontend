@@ -28,7 +28,7 @@ const ProfileField = ({ label, value }) => (
 const UserProfile = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
-  const { fn, data, loading } = useFetch(userService.profile);
+  const { fn, data, loading } = useFetch(userService.getUserProfile);
 
   useEffect(() => {
     fn(userId);
