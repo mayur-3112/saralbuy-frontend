@@ -365,8 +365,9 @@ const ChatArea = ({
             <div className="flex justify-between items-center w-full">
               <div className="relative flex items-center gap-3 justify-between w-full">
                 {/* Left: avatar + name + online status */}
-                <div className="flex items-center gap-3 cursor-pointer">
+                <div className="flex items-center gap-3 ">
                   <div
+                  className='cursor-pointer'
                     onClick={() => {
                       navigate(
                         '/user-profile/' +
