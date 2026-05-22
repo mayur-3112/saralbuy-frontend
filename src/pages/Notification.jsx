@@ -188,9 +188,15 @@ const Notification = () => {
       {notifications.length > 0 && (
         <>
           <div className={`flex justify-between items-center mb-3`}>
-            <p className="font-bold text-xl whitespace-nowrap tracking-tight text-gray-600">
+            <div>
+              <p className="font-bold text-xl whitespace-nowrap tracking-tight text-gray-600">
               Notifications {totalCount > 0 && `(${totalCount})`}
+              
             </p>
+            <i className="text-sm text-gray-500">
+              Notifications are valid for 30 days, after which they will be automatically deleted permanently.
+            </i>
+            </div>
             <Button
               onClick={handleSorting}
               variant={'ghost'}
