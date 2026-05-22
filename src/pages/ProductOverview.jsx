@@ -138,7 +138,7 @@ const SellerForm = ({
       </h3>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
-        {userProfile?._id && (
+        {/* {userProfile?._id && (
           <>
             <div className="w-full">
               <Label htmlFor="firstName" className="mb-2 text-sm block">
@@ -168,7 +168,7 @@ const SellerForm = ({
               />
             </div>
           </>
-        )}
+        )} */}
 
         {/* Seller Type */}
         <div className="w-full">

@@ -36,7 +36,7 @@ export default function TableListing({
 }) {
   const [sorting, setSorting] = useState([]);
   // const [globalFilter, setGlobalFilter] = useState("");
-
+  const LISTING_PAGE_LIMIT = 10;
   const totalPages = Math.ceil(total / limit);
   const table = useReactTable({
     data,
@@ -163,21 +163,21 @@ export default function TableListing({
         </Table>
       </div>
 
-      {total > 10 && (
+      {total > LISTING_PAGE_LIMIT && (
         <div className="flex items-center justify-between">
           <span className="text-sm text-gray-600">
             Page {page} of {totalPages}
           </span>
           <div className="flex gap-2">
             <Button
-              className="px-3 py-1 border rounded disabled:opacity-50 cursor-pointer"
+              className="px-3 py-1 border  disabled:opacity-50 cursor-pointer bg-gray-800 rounded-md min-w-[80px]"
               onClick={() => setPage(page - 1)}
               disabled={page <= 1}
             >
               Previous
             </Button>
             <Button
-              className="px-3 py-1 border rounded disabled:opacity-50 cursor-pointer"
+              className="px-3 py-1 border rounded-md disabled:opacity-50 bg-gray-800 cursor-pointer min-w-[80px]"
               onClick={() => setPage(page + 1)}
               disabled={page >= totalPages}
             >
