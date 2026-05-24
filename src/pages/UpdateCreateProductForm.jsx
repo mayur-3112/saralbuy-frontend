@@ -894,6 +894,7 @@ const UpdateCreateProductForm = () => {
   };
 
   useEffect(() => {
+    if(!user) return;
     if (
       !user?.firstName?.trim() ||
       !user?.lastName?.trim() ||
