@@ -101,6 +101,10 @@ const CategoryForm = ({
   setImage,
   fileDoc,
   setFileDoc,
+  quantityUnit,
+  setQuantityUnit,
+  quantityValue,
+  setQuantityValue,
 }) => {
   const [values, setValues] = useState([0, 2]);
   const [date, setDate] = useState(undefined);
@@ -119,7 +123,6 @@ const CategoryForm = ({
   const transmissionValue = watch('transmission');
   const conditionOfProductValue = watch('conditionOfProduct');
   const toolTypeValue = watch('toolType');
-
   useEffect(() => {
     setValue('oldProductValue.min', values[0].toString());
     setValue('oldProductValue.max', values[1].toString());
@@ -244,12 +247,35 @@ const CategoryForm = ({
               </div>
 
               {currentCategoryName !== 'service' && (
-                <Input
-                  type="string"
-                  placeholder="Quantity*"
-                  {...register('quantity')}
-                  className="bg-white col-span-1"
-                />
+                // <Input
+                //   type="string"
+                //   placeholder="Quantity*"
+                //   {...register('quantity')}
+                //   className="bg-white col-span-1"
+                // />
+                <div className="flex items-center gap-2">
+                  <Select value={quantityUnit} onValueChange={setQuantityUnit} defaultValue="pcs">
+                    <SelectTrigger className="w-[70px] bg-white">
+                      <SelectValue placeholder="Unit" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="ltr">Ltr</SelectItem>
+                      <SelectItem value="kg">KG</SelectItem>
+                      <SelectItem value="pcs">Pcs</SelectItem>
+                      <SelectItem value="ft">Ft</SelectItem>
+                      <SelectItem value="mtr">Mtr</SelectItem>
+                      <SelectItem value="gms">Gms</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Input
+                    type="number"
+                    placeholder="Qty"
+                    value={quantityValue}
+                    onChange={e => setQuantityValue(e.target.value)}
+                    className="flex-1 bg-white"
+                    min="0"
+                  />
+                </div>
               )}
 
               {currentCategoryName === 'fashion' && (
@@ -684,12 +710,13 @@ const CreateProductForm = () => {
   const [bidPopUpOpen, setBidPopUpOpen] = useState(false);
   const [bidDuration, setBidDuration] = useState('');
   const [buttonType, setButtonType] = useState(false);
-
+  const [quantityUnit, setQuantityUnit] = useState('pcs');
+  const [quantityValue, setQuantityValue] = useState('');
   const { watch, setValue, register, getValues } = useForm({
     resolver: zodResolver(CategoryFormSchema),
     defaultValues: {
       title: '',
-      quantity: '',
+      // quantity: '',
       subCategoryId: '',
       minimumBudget: '',
       productType: '',
@@ -756,8 +783,8 @@ const CreateProductForm = () => {
       toast.error('Brand is required');
       return false;
     }
-    if (!formData.quantity && currentCategoryName?.toLowerCase() !== 'service' && !isDraft) {
-      toast.error('Quantity is required');
+    if (!quantityValue && currentCategoryName?.toLowerCase() !== 'service' && !isDraft) {
+      toast.error('Unit is required');
       return false;
     }
     if (!formData.description && !isDraft) {
@@ -774,7 +801,7 @@ const CreateProductForm = () => {
   };
 
   useEffect(() => {
-    if(!user) return;
+    if (!user) return;
     if (
       !user?.firstName?.trim() ||
       !user?.lastName?.trim() ||
@@ -822,9 +849,16 @@ const CreateProductForm = () => {
     const isValid = validateForm(formData, isDraft);
     if (!isValid) return;
 
-    if (formData.quantity) {
-      const qty = formData.quantity.toString().trim();
-      if (!/^\d+$/.test(qty) || parseInt(qty) < 1) {
+    // if (formData.quantity) {
+    //   const qty = formData.quantity.toString().trim();
+    //   if (!/^\d+$/.test(qty) || parseInt(qty) < 1) {
+    //     toast.error('Invalid Quantity');
+    //     return;
+    //   }
+    // }
+    if (quantityValue && currentCategoryName?.toLowerCase() !== 'service') {
+      const qty = quantityValue.toString().trim();
+      if (!/^\d+(\.\d+)?$/.test(qty) || parseFloat(qty) < 0) {
         toast.error('Invalid Quantity');
         return;
       }
@@ -864,6 +898,11 @@ const CreateProductForm = () => {
         multipartData.append(field, typeof value === 'object' ? JSON.stringify(value) : value);
       }
     });
+
+    if (currentCategoryName?.toLowerCase() !== 'service') {
+      if (quantityValue) multipartData.append('quantity', quantityValue);
+      multipartData.append('quantityUnit', quantityUnit); // always send unit
+    }
 
     multipartData.append('draft', isDraft);
     multipartData.append('categoryId', categoryId);
@@ -908,6 +947,10 @@ const CreateProductForm = () => {
           setImage={setImage}
           fileDoc={fileDoc}
           setFileDoc={setFileDoc}
+          quantityUnit={quantityUnit}
+          setQuantityUnit={setQuantityUnit}
+          quantityValue={quantityValue}
+          setQuantityValue={setQuantityValue}
         />
 
         <div className="flex justify-end gap-3 my-5">

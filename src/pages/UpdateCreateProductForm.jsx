@@ -104,7 +104,11 @@ const CategoryForm = ({
   setImage,
   fileDoc,
   setFileDoc,
-  initialData, // for showing existing image/doc previews
+  initialData,
+  quantityUnit,
+  setQuantityUnit,
+  quantityValue,
+  setQuantityValue,
 }) => {
   console.log('INITIAL STATE OF UPDATE PRODUCT FORM------->', initialData);
   const [values, setValues] = useState([
@@ -277,12 +281,29 @@ const CategoryForm = ({
               </div>
 
               {currentCategoryName !== 'service' && (
-                <Input
-                  type="text"
-                  placeholder="Quantity*"
-                  {...register('quantity')}
-                  className="bg-white col-span-1"
-                />
+                <div className="flex items-center gap-2">
+                  <Select value={quantityUnit} onValueChange={setQuantityUnit} defaultValue="pcs">
+                    <SelectTrigger className="w-[70px] bg-white">
+                      <SelectValue placeholder="Unit" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="ltr">Ltr</SelectItem>
+                      <SelectItem value="kg">KG</SelectItem>
+                      <SelectItem value="pcs">Pcs</SelectItem>
+                      <SelectItem value="ft">Ft</SelectItem>
+                      <SelectItem value="mtr">Mtr</SelectItem>
+                      <SelectItem value="gms">Gms</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Input
+                    type="number"
+                    placeholder="Qty"
+                    value={quantityValue}
+                    onChange={e => setQuantityValue(e.target.value)}
+                    className="flex-1 bg-white"
+                    min="0"
+                  />
+                </div>
               )}
 
               {currentCategoryName === 'service' && (
@@ -767,13 +788,15 @@ const UpdateCreateProductForm = () => {
   const [subCategoriesData, setSubCategoriesData] = useState([]);
   const [image, setImage] = useState(null);
   const [fileDoc, setFileDoc] = useState(null);
+  const [quantityUnit, setQuantityUnit] = useState('pcs');
+  const [quantityValue, setQuantityValue] = useState('');
 
   // ── useForm — same pattern as CreateProductForm ───────────────────────────
   const { watch, setValue, register, getValues } = useForm({
     resolver: zodResolver(CategoryFormSchema),
     defaultValues: {
       title: '',
-      quantity: '',
+      // quantity: '',
       subCategoryId: '',
       minimumBudget: '',
       productType: '',
@@ -821,9 +844,11 @@ const UpdateCreateProductForm = () => {
 
     // Pre-fill form with existing draft data
     const d = getDraftRes;
+    if (d.quantity) setQuantityValue(String(d.quantity));
+    if (d.quantityUnit) setQuantityUnit(d.quantityUnit);
     const fields = {
       title: d.title || '',
-      quantity: d.quantity || '',
+      // quantity: '',
       subCategoryId: d.subCategoryId || '',
       minimumBudget: d.minimumBudget || '',
       productType: d.productType || '',
@@ -876,8 +901,8 @@ const UpdateCreateProductForm = () => {
       toast.error('Brand is required');
       return false;
     }
-    if (!formData.quantity && currentCategoryName !== 'service' && !isDraft) {
-      toast.error('Quantity is required');
+    if (!quantityValue && currentCategoryName !== 'service' && !isDraft) {
+      toast.error('Unit is required');
       return false;
     }
     if (!formData.description && !isDraft) {
@@ -894,7 +919,7 @@ const UpdateCreateProductForm = () => {
   };
 
   useEffect(() => {
-    if(!user) return;
+    if (!user) return;
     if (
       !user?.firstName?.trim() ||
       !user?.lastName?.trim() ||
@@ -931,9 +956,9 @@ const UpdateCreateProductForm = () => {
     const isValid = validateForm(formData, isDraft);
     if (!isValid) return;
 
-    if (formData.quantity) {
-      const qty = formData.quantity.toString().trim();
-      if (!/^\d+$/.test(qty) || parseInt(qty) < 1) {
+    if (quantityValue && currentCategoryName?.toLowerCase() !== 'service') {
+      const qty = quantityValue.toString().trim();
+      if (!/^\d+(\.\d+)?$/.test(qty) || parseFloat(qty) < 0) {
         toast.error('Invalid Quantity');
         return;
       }
@@ -971,6 +996,10 @@ const UpdateCreateProductForm = () => {
         multipartData.append(field, typeof value === 'object' ? JSON.stringify(value) : value);
       }
     });
+    if (currentCategoryName?.toLowerCase() !== 'service') {
+      if (quantityValue) multipartData.append('quantity', quantityValue);
+      multipartData.append('quantityUnit', quantityUnit);
+    }
 
     multipartData.append('draft', isDraft);
     multipartData.append('categoryId', draftState?.categoryId?._id || '');
@@ -1062,6 +1091,10 @@ const UpdateCreateProductForm = () => {
               fileDoc={fileDoc}
               setFileDoc={setFileDoc}
               initialData={draftState}
+              quantityUnit={quantityUnit}
+              setQuantityUnit={setQuantityUnit}
+              quantityValue={quantityValue}
+              setQuantityValue={setQuantityValue}
             />
 
             <div className="flex justify-end gap-3 my-5">
