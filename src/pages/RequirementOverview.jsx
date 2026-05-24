@@ -368,6 +368,7 @@ const RequirementOverview = () => {
             title={`Quote Recevied`}
             target="requirementOverview"
             colorPalette="orange"
+            itemStateMessage="No quotes received yet"
           />
         </div>
       </div>

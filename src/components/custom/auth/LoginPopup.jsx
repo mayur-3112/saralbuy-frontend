@@ -14,7 +14,7 @@ const LoginPopup = ({ open, setOpen, setNumber, setOtpPopup, setSessionId }) => 
   const [mobileNumber, setMobileNumber] = useState('');
 
   const [error, setError] = useState('');
-  const { fn, data,loading } = useFetch(authService.sendOtp);
+  const { fn, data, loading } = useFetch(authService.sendOtp);
   const handleNumberChange = event => {
     const value = event.target.value;
     if (/^\d{0,10}$/.test(value)) {

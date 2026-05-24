@@ -12,9 +12,7 @@ class UserService {
       .then(res => res.data?.data || res.data);
   }
   async profile(userId) {
-    return instance
-      .get(`/user/profile`)
-      .then(res => res.data?.data || res.data);
+    return instance.get(`/user/profile`).then(res => res.data?.data || res.data);
   }
   async logout() {
     return instance.get('/user/logout').then(res => res.data?.data || res.data);

@@ -11,7 +11,7 @@ const RING_CLASS = [
 const TrendingCategory = ({ categories }) => {
   const navigate = useNavigate();
   const handleNavigate = categoryId => {
-    navigate(`/product-listing?title=%27%27&key=enter&category=${encodeURIComponent(categoryId)}`);
+    navigate(`/product-listing?category=${encodeURIComponent(categoryId)}&TOPTRENDING=true`);
   };
   return (
     <div className="px-4  bg-no-repeat z-0 bg-cover  py-10  min-h-82  max-w-7xl mx-auto">

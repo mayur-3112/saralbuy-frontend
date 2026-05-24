@@ -144,15 +144,21 @@ const BidListing = () => {
       cell: ({ row }) => {
         return (
           <div className="flex items-center gap-2">
-            <Button
-              className="text-sm cursor-pointer text-gray-600 underline"
-              variant={'link'}
-              onClick={() => {
-                navigate('/bid-overview/' + row.original?._id);
-              }}
-            >
-              View
-            </Button>
+            <TooltipComp
+              hoverChildren={
+                <Button
+                  className="text-sm cursor-pointer text-gray-600 underline"
+                  variant={'link'}
+                  onClick={() => {
+                    navigate('/bid-overview/' + row.original?._id);
+                  }}
+                >
+                  View
+                </Button>
+              }
+              contentChildren={<p>View Quote</p>}
+            ></TooltipComp>
+
             {/* <p onClick={() => {
                         // Store chat IDs in localStorage for persistence across refresh
                         localStorage.setItem('chatIds', JSON.stringify({

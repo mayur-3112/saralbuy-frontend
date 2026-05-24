@@ -22,215 +22,23 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 
-export default function ProductListing() {
-  const [values, setValues] = useState([0, 0]);
-  const [filters, setFilters] = useState([
-    { id: 'category', name: 'All Category', options: [] },
-    { id: 'subCategory', name: 'Sub Category', options: [] },
-    { id: 'budget', name: 'Budget', options: [] },
-    {
-      id: 'sort',
-      name: 'Sort By',
-      options: [
-        { value: 'newly_added', label: 'Newly Added', checked: true },
-        { value: 'feature', label: 'Feature', checked: false },
-        { value: 'aplhabetically_a_z', label: 'Aplhabetically (A-Z)', checked: false },
-        { value: 'aplhabetically_z_a', label: 'Aplhabetically (Z-A)', checked: false },
-        { value: 'low_to_high', label: 'Price Low to High', checked: false },
-        { value: 'high_to_low', label: 'Price High to Low', checked: false },
-      ],
-    },
-  ]);
-
-  const dispatachCategory = useCategory();
-  const { categories: categoriesArray } = useCategoryState();
-
-  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const [products, setProducts] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const [isLoading, setIsLoading] = useState(false); // ← NEW: initial load state
-  const isFetchingRef = useRef(false);
-  const limit = 10;
-
-  const formState = useForm({
-    defaultValues: {
-      category: searchParams.get('category') || '',
-      budget: searchParams.get('budget') || '',
-      sort: searchParams.get('sort') || '',
-      subCategory: searchParams.get('subCategory') || '',
-    },
-  });
-  const watchAll = formState.watch();
-
-  useEffect(() => {
-    dispatachCategory();
-  }, []);
-
-  // Sync form → searchParams
-  useEffect(() => {
-    const id = setTimeout(() => {
-      setSearchParams(prev => {
-        const p = new URLSearchParams(prev);
-        watchAll.category ? p.set('category', watchAll.category) : p.delete('category');
-        watchAll.subCategory ? p.set('subCategory', watchAll.subCategory) : p.delete('subCategory');
-        watchAll.sort ? p.set('sort', watchAll.sort) : p.delete('sort');
-        if (values[1] > 0) {
-          p.set('min_budget', values[0].toString());
-          p.set('max_budget', values[1].toString());
-        }
-        return p;
-      });
-    }, 300);
-    return () => clearTimeout(id);
-  }, [watchAll.category, watchAll.sort, watchAll.subCategory, values, setSearchParams]);
-
-  // Clear subCategory when category changes
-  useEffect(() => {
-    if (watchAll.category && watchAll.category !== searchParams.get('category')) {
-      formState.setValue('subCategory', '');
-      setSearchParams(prev => {
-        const p = new URLSearchParams(prev);
-        p.delete('subCategory');
-        return p;
-      });
-    }
-  }, [watchAll.category]);
-
-  // Populate category options
-  useEffect(() => {
-    if (!categoriesArray?.length) return;
-    setFilters(prev =>
-      prev.map(s =>
-        s.id === 'category'
-          ? {
-              ...s,
-              options: categoriesArray.map(c => ({
-                value: c._id,
-                label: c.categoryName,
-                checked: false,
-              })),
-            }
-          : s
-      )
-    );
-  }, [categoriesArray]);
-
-  // Populate subCategory options
-  useEffect(() => {
-    const selectedCat = categoriesArray?.find(item => item._id === searchParams.get('category'));
-    if (selectedCat?.subCategories?.length) {
-      setFilters(prev =>
-        prev.map(s =>
-          s.id === 'subCategory'
-            ? {
-                ...s,
-                options: selectedCat.subCategories.map(c => ({
-                  value: c._id,
-                  label: c.name,
-                  checked: false,
-                })),
-              }
-            : s
-        )
-      );
-    }
-  }, [searchParams.get('category'), categoriesArray]);
-
-  // ── SINGLE fetch trigger ──────────────────────────────────────────────────
-  useEffect(() => {
-    setProducts([]);
-    setPage(1);
-    setHasMore(true);
-    fetchData(true);
-  }, [
-    searchParams.get('title'),
-    searchParams.get('category'),
-    searchParams.get('sort'),
-    searchParams.get('min_budget'),
-    searchParams.get('max_budget'),
-    searchParams.get('subCategory'),
-  ]);
-
-  const fetchData = async (reset = false) => {
-    if (isFetchingRef.current) return;
-    isFetchingRef.current = true;
-
-    // Show skeleton on initial/reset load only
-    if (reset) setIsLoading(true);
-
-    const title = searchParams.get('title') || '';
-    const currentPage = reset ? 1 : page;
-    const category = searchParams.get('category') || undefined;
-    const subCategoryId = searchParams.get('subCategory') || undefined;
-    const min_budget = searchParams.get('min_budget')
-      ? Number(searchParams.get('min_budget'))
-      : undefined;
-    const max_budget = searchParams.get('max_budget')
-      ? Number(searchParams.get('max_budget'))
-      : undefined;
-    const sort = searchParams.get('sort') || undefined;
-
-    try {
-      const response = await productService.getProductByTitle(title, currentPage, limit, {
-        category,
-        subCategoryId,
-        min_budget,
-        max_budget,
-        sort,
-      });
-
-      const newProducts = response?.data?.data?.products || [];
-      const totalCount = response?.data?.data?.total || 0;
-      const totalPages = response?.data?.data?.totalPages || 1;
-
-      setProducts(prev => (reset ? newProducts : [...prev, ...newProducts]));
-      setTotal(totalCount);
-      setHasMore(currentPage < totalPages);
-      setPage(reset ? 2 : currentPage + 1);
-    } catch (error) {
-      console.error('Error fetching products:', error);
-    } finally {
-      isFetchingRef.current = false;
-      if (reset) setIsLoading(false); // ← hide skeleton after load
-    }
-  };
-
-  const fetchMoreData = () => fetchData(false);
-
-  const handleRemoveFilter = () => {
-    setMobileFiltersOpen(false);
-    formState.reset({ category: '', subCategory: '', sort: '', budget: '' });
-    setValues([0, 0]);
-    setSearchParams(prev => {
-      const p = new URLSearchParams(prev);
-      ['category', 'subCategory', 'min_budget', 'max_budget', 'sort'].forEach(k => p.delete(k));
-      return p;
-    });
-  };
-
-  const isFilterActive = !!(
-    searchParams.get('category') ||
-    searchParams.get('subCategory') ||
-    searchParams.get('min_budget') ||
-    searchParams.get('max_budget') ||
-    searchParams.get('sort')
-  );
-
-  const title = searchParams.get('title') || '';
-
-  // ── Shared filter panel JSX (used in both mobile + desktop) ──────────────
-  const FilterPanel = () => (
+// ─── FilterPanel extracted OUTSIDE so it is never re-created on parent re-render ───
+function FilterPanel({
+  filters,
+  formState,
+  values,
+  setValues,
+  isFilterActive,
+  handleRemoveFilter,
+}) {
+  return (
     <>
       {filters.map((section, index) =>
         section.id !== 'budget' ? (
           <Disclosure
             key={section.id ?? index}
             as="div"
-            className={`border-b border-gray-200 pb-3 mt-3 ${
+            className={`border-b border-gray-200 pb-3 mt-3 DD_OPTIONS ${
               section.id === 'subCategory' && !formState.getValues('category') ? 'hidden' : 'block'
             }`}
           >
@@ -293,12 +101,17 @@ export default function ProductListing() {
                   step={100}
                   min={0}
                   max={50001}
-                  onChange={vals => setValues(vals)}
+                  onChange={vals => setValues([Math.min(...vals), Math.max(...vals)])}
                   renderTrack={({ props, children }) => {
-                    const leftPercent = ((values[0] - 100) / (50001 - 100)) * 100;
-                    const rightPercent = ((values[1] - 100) / (50001 - 100)) * 100;
+                    const { key, ...restProps } = props;
+                    const leftPercent = (values[0] / 50001) * 100;
+                    const rightPercent = (values[1] / 50001) * 100;
                     return (
-                      <div {...props} className="h-1 w-full bg-gray-300 rounded relative">
+                      <div
+                        key={key}
+                        {...restProps}
+                        className="h-1 w-full bg-gray-300 rounded relative"
+                      >
                         <div
                           className="absolute h-1 bg-orange-700 rounded"
                           style={{
@@ -310,16 +123,20 @@ export default function ProductListing() {
                       </div>
                     );
                   }}
-                  renderThumb={({ props }) => (
-                    <div
-                      {...props}
-                      className="w-4 h-4 border-orange-700 border-2 bg-white rounded-full flex items-center justify-center shadow"
-                    />
-                  )}
+                  renderThumb={({ props, index }) => {
+                    const { key, ...restProps } = props;
+                    return (
+                      <div
+                        key={key}
+                        {...restProps}
+                        className="w-4 h-4 border-orange-700 border-2 bg-white rounded-full flex items-center justify-center shadow"
+                      />
+                    );
+                  }}
                 />
                 <div className="flex justify-between items-center mt-3 text-sm">
-                  Price: {values[0].toLocaleString()} –{' '}
-                  {values[1] > 50000 ? '50000+' : values[1].toLocaleString()}
+                  Price: ₹{values[0].toLocaleString()} –{' '}
+                  {values[1] >= 50001 ? '₹50,000+' : `₹${values[1].toLocaleString()}`}
                 </div>
               </div>
             </DisclosurePanel>
@@ -335,11 +152,234 @@ export default function ProductListing() {
           size="lg"
           className="border w-full mt-5 border-orange-600 text-orange-600 rounded-[5px] hover:bg-orange-500 hover:text-white transition-all duration-300 ease-in-out cursor-pointer"
         >
-          Remove Filter's
+          Remove Filter&apos;s
         </Button>
       )}
     </>
   );
+}
+
+// ─── Main page component ─────────────────────────────────────────────────────
+export default function ProductListing() {
+  const [values, setValues] = useState([0, 50001]);
+  const [filters, setFilters] = useState([
+    { id: 'category', name: 'All Category', options: [] },
+    { id: 'subCategory', name: 'Sub Category', options: [] },
+    { id: 'budget', name: 'Budget', options: [] },
+    {
+      id: 'sort',
+      name: 'Sort By',
+      options: [
+        { value: 'newly_added', label: 'Newly Added', checked: true },
+        { value: 'feature', label: 'Feature', checked: false },
+        { value: 'aplhabetically_a_z', label: 'Aplhabetically (A-Z)', checked: false },
+        { value: 'aplhabetically_z_a', label: 'Aplhabetically (Z-A)', checked: false },
+        { value: 'low_to_high', label: 'Price Low to High', checked: false },
+        { value: 'high_to_low', label: 'Price High to Low', checked: false },
+      ],
+    },
+  ]);
+
+  const dispatachCategory = useCategory();
+  const { categories: categoriesArray } = useCategoryState();
+
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [products, setProducts] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const isFetchingRef = useRef(false);
+  const limit = 10;
+
+  const formState = useForm({
+    defaultValues: {
+      category: searchParams.get('category') || '',
+      budget: searchParams.get('budget') || '',
+      sort: searchParams.get('sort') || '',
+      subCategory: searchParams.get('subCategory') || '',
+      topTrending: searchParams.get('TOPTRENDING') === 'true' || false,
+    },
+  });
+  const watchAll = formState.watch();
+
+  useEffect(() => {
+    dispatachCategory();
+  }, []);
+
+  useEffect(() => {
+    const id = setTimeout(() => {
+      setSearchParams(prev => {
+        const p = new URLSearchParams(prev);
+        watchAll.category ? p.set('category', watchAll.category) : p.delete('category');
+        watchAll.subCategory ? p.set('subCategory', watchAll.subCategory) : p.delete('subCategory');
+        watchAll.sort ? p.set('sort', watchAll.sort) : p.delete('sort');
+        if (values[0] > 0 || values[1] < 50001) {
+          p.set('min_budget', values[0].toString());
+          p.set('max_budget', values[1].toString());
+        } else {
+          p.delete('min_budget');
+          p.delete('max_budget');
+        }
+        return p;
+      });
+    }, 300);
+    return () => clearTimeout(id);
+  }, [watchAll.category, watchAll.sort, watchAll.subCategory, values, setSearchParams]);
+
+  // Clear subCategory when category changes
+  useEffect(() => {
+    if (watchAll.category && watchAll.category !== searchParams.get('category')) {
+      formState.setValue('subCategory', '');
+      setSearchParams(prev => {
+        const p = new URLSearchParams(prev);
+        p.delete('subCategory');
+        return p;
+      });
+    }
+  }, [watchAll.category]);
+
+  // Populate category options
+  useEffect(() => {
+    if (!categoriesArray?.length) return;
+    setFilters(prev =>
+      prev.map(s =>
+        s.id === 'category'
+          ? {
+              ...s,
+              options: categoriesArray.map(c => ({
+                value: c._id,
+                label: c.categoryName,
+                checked: false,
+              })),
+            }
+          : s
+      )
+    );
+  }, [categoriesArray]);
+
+  // Populate subCategory options
+  useEffect(() => {
+    const selectedCat = categoriesArray?.find(item => item._id === searchParams.get('category'));
+    if (selectedCat?.subCategories?.length) {
+      setFilters(prev =>
+        prev.map(s =>
+          s.id === 'subCategory'
+            ? {
+                ...s,
+                options: selectedCat.subCategories.map(c => ({
+                  value: c._id,
+                  label: c.name,
+                  checked: false,
+                })),
+              }
+            : s
+        )
+      );
+    }
+  }, [searchParams.get('category'), categoriesArray]);
+
+  // Fetch trigger — fires whenever any filter param changes in the URL
+  useEffect(() => {
+    setProducts([]);
+    setPage(1);
+    setHasMore(true);
+    fetchData(true);
+  }, [
+    searchParams.get('title'),
+    searchParams.get('category'),
+    searchParams.get('sort'),
+    searchParams.get('min_budget'),
+    searchParams.get('max_budget'),
+    searchParams.get('subCategory'),
+    searchParams.get('TOPTRENDING'),
+  ]);
+
+  const fetchData = async (reset = false) => {
+    if (isFetchingRef.current) return;
+    isFetchingRef.current = true;
+
+    if (reset) setIsLoading(true);
+
+    const title = searchParams.get('title') || '';
+    const currentPage = reset ? 1 : page;
+    const category = searchParams.get('category') || undefined;
+    const subCategoryId = searchParams.get('subCategory') || undefined;
+    const min_budget = searchParams.get('min_budget')
+      ? Number(searchParams.get('min_budget'))
+      : undefined;
+    const max_budget = searchParams.get('max_budget')
+      ? Number(searchParams.get('max_budget'))
+      : undefined;
+    const sort = searchParams.get('sort') || undefined;
+
+    try {
+      const response = await productService.getProductByTitle(title, currentPage, limit, {
+        category,
+        subCategoryId,
+        min_budget,
+        max_budget,
+        sort,
+      });
+
+      const newProducts = response?.data?.data?.products || [];
+      const totalCount = response?.data?.data?.total || 0;
+      const totalPages = response?.data?.data?.totalPages || 1;
+
+      setProducts(prev => (reset ? newProducts : [...prev, ...newProducts]));
+      setTotal(totalCount);
+      setHasMore(currentPage < totalPages);
+      setPage(reset ? 2 : currentPage + 1);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    } finally {
+      isFetchingRef.current = false;
+      if (reset) setIsLoading(false);
+    }
+  };
+
+  const fetchMoreData = () => fetchData(false);
+
+  const handleRemoveFilter = () => {
+    const isTopTrending = searchParams.get('TOPTRENDING') === 'true';
+    setMobileFiltersOpen(false);
+    formState.reset({
+      category: isTopTrending ? searchParams.get('category') || '' : '',
+      subCategory: '',
+      sort: '',
+      budget: '',
+    });
+    setValues([0, 50001]);
+    setSearchParams(prev => {
+      const p = new URLSearchParams(prev);
+      if (!isTopTrending) p.delete('category');
+      p.delete('subCategory');
+      p.delete('min_budget');
+      p.delete('max_budget');
+      p.delete('sort');
+      return p;
+    });
+  };
+
+  const isFilterActive = !!(
+    searchParams.get('category') ||
+    searchParams.get('subCategory') ||
+    searchParams.get('min_budget') ||
+    searchParams.get('max_budget') ||
+    searchParams.get('sort')
+  );
+
+  // Shared props passed down to FilterPanel
+  const filterPanelProps = {
+    filters,
+    formState,
+    values,
+    setValues,
+    isFilterActive,
+    handleRemoveFilter,
+  };
 
   return (
     <div className="">
@@ -370,7 +410,7 @@ export default function ProductListing() {
                 </button>
               </div>
               <form className="mt-4 border-t border-gray-200 p-6">
-                <FilterPanel />
+                <FilterPanel {...filterPanelProps} />
               </form>
             </DialogPanel>
           </div>
@@ -392,7 +432,7 @@ export default function ProductListing() {
             <div className="grid grid-cols-1 gap-x-4 gap-y-10 lg:grid-cols-4">
               {/* Desktop filter sidebar */}
               <form className="hidden lg:block rounded-2xl p-4 shadow-xs bg-[#fcf3ed] sticky top-4 self-start">
-                <FilterPanel />
+                <FilterPanel {...filterPanelProps} />
               </form>
 
               {/* Product grid */}
@@ -405,7 +445,6 @@ export default function ProductListing() {
                 </div>
 
                 <div className="min-h-[300px]">
-                  {/* ── LOADING: show skeletons ── */}
                   {isLoading ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       {new Array(6).fill(0).map((_, i) => (
@@ -413,13 +452,11 @@ export default function ProductListing() {
                       ))}
                     </div>
                   ) : products.length === 0 ? (
-                    /* ── EMPTY: no results ── */
                     <div className="flex justify-center items-center h-64 flex-col space-y-2">
                       <img src="empty-cart.webp" alt="No results" className="h-28 w-28" />
                       <p className="text-lg text-center text-gray-500">No Item Found</p>
                     </div>
                   ) : (
-                    /* ── DATA: infinite scroll list ── */
                     <InfiniteScroll
                       dataLength={products.length}
                       next={fetchMoreData}
