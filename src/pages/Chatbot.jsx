@@ -1,5 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, Send, Menu, Paperclip, Star, PanelRightIcon, PanelRightOpen } from 'lucide-react';
+import {
+  Search,
+  Send,
+  Menu,
+  Paperclip,
+  Star,
+  PanelRightIcon,
+  PanelRightOpen,
+  X,
+  Download,
+} from 'lucide-react';
 // import RatingPopup from '@/components/Popup/RatingPopup';
 // import ApprovalPopup from '@/components/Popup/ApprovalPopup';
 import { Input } from '@/components/ui/input';
@@ -18,7 +28,10 @@ import { toast } from 'sonner';
 import RatingPopup from '@/components/custom/popups/RatingPopup';
 import Loader from '@/components/custom/Loader';
 import TooltipComp from '@/lib/TooltipComp';
-
+import pdfImage from '/pdf_img.png';
+import { useFetch } from '@/hooks/useFetch';
+import bucketService from '@/services/bucket.service';
+import { formatSize } from '@/utils/sizeFormatter';
 // ─────────────────────────────────────────────
 // ContactsList — sidebar list of recent chats
 // ─────────────────────────────────────────────
@@ -202,13 +215,18 @@ const ChatArea = ({
 
   // Attachment local UI state
   const [selectedFile, setSelectedFile] = useState(null);
-  const [attachmentPreview, setAttachmentPreview] = useState(null);
+  const [previewObjectURL, setPreviewObjectURL] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadedAttachment, setUploadedAttachment] = useState(null);
+  const [selectedFileType, setSelectedFileType] = useState(null);
   const navigate = useNavigate();
   // Budget dialog
   const [showBudgetDialog, setShowBudgetDialog] = useState(false);
-
+  const {
+    fn: uploadFileFN,
+    data: uploadFileRes,
+    loading: uploadFileLoading,
+  } = useFetch(bucketService.uploadFile);
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
@@ -216,7 +234,7 @@ const ChatArea = ({
   }, [messages]);
 
   // ── File handling ──────────────────────────
-  const handleFileSelect = e => {
+  const handleFileSelect = async e => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -247,18 +265,20 @@ const ChatArea = ({
     ];
 
     if (!allowedMimeTypes.includes(file.type)) {
-      alert('Invalid file type. Only images and documents are allowed.');
+      toast.error('Invalid file type. Only images and documents are allowed.');
       return;
     }
-
     setSelectedFile(file);
+    console.log('Selected file:', file);
+
+    if (previewObjectURL) URL.revokeObjectURL(previewObjectURL);
 
     if (file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = ev => setAttachmentPreview(ev.target?.result);
-      reader.readAsDataURL(file);
+      setPreviewObjectURL(URL.createObjectURL(file));
+      setSelectedFileType('image');
     } else {
-      setAttachmentPreview(null);
+      setPreviewObjectURL(file);
+      setSelectedFileType('document');
     }
 
     // TODO: call your upload service here
@@ -267,13 +287,45 @@ const ChatArea = ({
     // uploadFile(file).then(data => { setUploadedAttachment(data); setIsUploading(false); });
   };
 
+  async function uploadToServer(file) {
+    if (!file) return toast.error('No file selected for upload');
+    setIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      await uploadFileFN(formData);
+    } catch (error) {
+      toast.error('Failed to upload file');
+    } finally {
+      setIsUploading(false);
+    }
+  }
+
+  useEffect(() => {
+    if (uploadFileRes) {
+      console.log(uploadFileRes, 'Uploaded file response');
+      setUploadedAttachment(uploadFileRes);
+      onSendMessage?.(messageText, uploadFileRes);
+      setMessageText('');
+      clearAttachment();
+    }
+  }, [uploadFileRes]);
+
   const clearAttachment = () => {
     setSelectedFile(null);
-    setAttachmentPreview(null);
+    if (previewObjectURL) URL.revokeObjectURL(previewObjectURL);
+    setPreviewObjectURL(null);
+    setSelectedFileType(null);
     setUploadedAttachment(null);
     setIsUploading(false);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
+
+  useEffect(() => {
+    return () => {
+      if (previewObjectURL) URL.revokeObjectURL(previewObjectURL);
+    };
+  }, [previewObjectURL]);
 
   // ── Send message ───────────────────────────
   const handleSendMessage = () => {
@@ -321,6 +373,23 @@ const ChatArea = ({
     });
   };
 
+  async function downloadFile(path, fileName) {
+    try {
+      const response = await fetch(path);
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = fileName || 'attachment';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error('Download failed:', error);
+    }
+  }
+
   // ── Self-chat guard ────────────────────────
   const actualBuyerId = selectedContact?.buyerId;
   const actualSellerId = selectedContact?.sellerId;
@@ -350,7 +419,60 @@ const ChatArea = ({
         loading={isClosingDeal}
       />
 
-      <div className="flex-1 flex flex-col border-1 rounded-md w-full min-h-0">
+      <div className="flex-1 relative flex flex-col border-1 rounded-md w-full min-h-0">
+        {(previewObjectURL || selectedFileType === 'document') && (
+          <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/5">
+            <div className="relative w-[420px] rounded-xl bg-gray-50 p-6 shadow-md flex flex-col items-center gap-5">
+              {/* Close Button */}
+              <button
+                onClick={clearAttachment}
+                className="absolute top-3 right-3 bg-orange-100 text-orange-500 rounded-md p-1 cursor-pointer hover:bg-orange-200"
+              >
+                <X className="h-4 w-4" />
+              </button>
+
+              {/* Preview Image */}
+              {selectedFileType === 'image' ? (
+                <img
+                  src={previewObjectURL}
+                  alt="Preview"
+                  className="h-40 w-40 object-contain rounded-lg"
+                />
+              ) : (
+                <img
+                  src={pdfImage}
+                  alt="Document preview"
+                  className="h-40 w-40 object-contain rounded-lg"
+                />
+              )}
+
+              {/* File Info */}
+              <div className="text-center">
+                <p className="text-sm text-muted-foreground break-all">
+                  File Name: {selectedFile?.name}
+                </p>
+
+                <small className="text-xs text-muted-foreground">
+                  File Size: {selectedFile ? formatSize(selectedFile.size) : 'Unknown'}
+                </small>
+              </div>
+
+              {/* Submit Button */}
+              <Button
+                onClick={() => {
+                  if (selectedFile && !uploadFileLoading) {
+                    uploadToServer(selectedFile);
+                  }
+                }}
+                type="button"
+                disabled={uploadFileLoading}
+                className="w-32 bg-orange-600 border-2 border-orange-600 text-white hover:bg-orange-700 cursor-pointer"
+              >
+                {uploadFileLoading ? 'Uploading...' : 'Send Attachment'}
+              </Button>
+            </div>
+          </div>
+        )}
         {/* ── Chat Header ── */}
         <div className="border-b border-chat-border bg-background">
           {/* Product name bar */}
@@ -494,6 +616,8 @@ const ChatArea = ({
           ref={chatContainerRef}
           className="flex-1 overflow-y-auto p-4 space-y-6 chat-messages-container"
         >
+          {/*  messages */}
+
           {isSelfChat ? (
             <div className="text-center text-red-500 font-semibold">
               Cannot send messages to yourself. Buyer and seller must be different users.
@@ -501,7 +625,16 @@ const ChatArea = ({
           ) : (
             messages.map((message, index) => {
               const isMine = message.senderId === currentUserId && message.senderType === userType;
-
+              // console.log('MSG DEBUG:', {
+              //   senderId: message.senderId,
+              //   currentUserId,
+              //   senderType: message.senderType,
+              //   userType,
+              //   isMine,
+              //   hasAttachment: !!message.attachment?.url,
+              //   attachmentUrl: message.attachment,
+              //   text: message.text,
+              // });
               const showDateSeparator =
                 index === 0 ||
                 (message.timestamp &&
@@ -525,33 +658,53 @@ const ChatArea = ({
                   {/* Message bubble */}
                   <div className={`flex flex-col ${isMine ? 'items-end' : 'items-start'}`}>
                     <div
-                      className={`max-w-[70%] px-4 py-2 ${
+                      className={`max-w-[70%] px-4 relative py-2 ${
                         isMine
                           ? 'bg-gray-500 text-white rounded-tl-lg rounded-bl-lg rounded-br-lg'
                           : 'bg-gray-600 text-white rounded-tr-lg rounded-bl-lg rounded-br-lg'
                       }`}
                     >
                       {/* Attachment */}
-                      {message.attachment?.url && message.attachment?.type && (
-                        <div className="mb-2">
+                      {message.attachment?.url && (
+                        <div className="mb-2 ">
                           {message.attachment.type === 'image' ? (
                             <img
                               src={message.attachment.url}
                               alt={message.attachment.fileName}
-                              className="max-w-full h-auto rounded-md cursor-pointer w-32"
+                              className="max-w-[200px] max-h-[200px] w-auto h-auto rounded-lg object-cover cursor-pointer hover:opacity-90 transition-opacity"
                               onClick={() => window.open(message.attachment.url, '_blank')}
                             />
                           ) : (
-                            <a
-                              href={message.attachment.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-2 p-2 bg-white/10 rounded hover:bg-white/20 transition-colors"
-                            >
-                              <Paperclip className="w-4 h-4" />
-                              <span className="text-sm">{message.attachment.fileName}</span>
-                            </a>
+                            <div className="flex items-center gap-3 bg-white/10 rounded-lg p-3 w-[200px]">
+                              <img
+                                src={pdfImage}
+                                alt="document"
+                                className="h-10 w-10 object-contain flex-shrink-0"
+                              />
+                              <div className="min-w-0 flex-1">
+                                <p className="text-xs font-medium truncate">
+                                  {message.attachment.fileName || 'Document'}
+                                </p>
+                                {message.attachment.fileSize && (
+                                  <p className="text-xs opacity-60 mt-0.5">
+                                    {formatSize(message.attachment.fileSize)}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
                           )}
+
+                          <div
+                            className="absolute z-10 top-2 right-2 z-10 bg-orange-100 text-orange-500 rounded-sm  p-1 cursor-pointer"
+                            onClick={() => {
+                              downloadFile(message.attachment.url, message.attachment.fileName);
+                            }}
+                          >
+                            <TooltipComp
+                              hoverChildren={<Download className="h-4 w-4" />}
+                              contentChildren={<p>Download</p>}
+                            ></TooltipComp>
+                          </div>
                         </div>
                       )}
 
@@ -585,7 +738,7 @@ const ChatArea = ({
         {/* ── Message Input ── */}
         <div className="p-4 border-t border-chat-border bg-background">
           {/* Attachment preview */}
-          {(selectedFile || uploadedAttachment) && (
+          {/* {(selectedFile || uploadedAttachment) && (
             <div className="mb-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -622,7 +775,7 @@ const ChatArea = ({
                 </Button>
               </div>
             </div>
-          )}
+          )} */}
 
           {/* Input row */}
           <div className="flex items-center space-x-5">
@@ -647,7 +800,7 @@ const ChatArea = ({
             />
 
             {/* Paperclip button */}
-            {/* <div
+            <div
               className={`p-2 rounded-full border-2 border-gray-500 ${
                 isSelfChat || isUploading
                   ? 'opacity-50 cursor-not-allowed'
@@ -656,7 +809,7 @@ const ChatArea = ({
               onClick={() => !isSelfChat && !isUploading && fileInputRef.current?.click()}
             >
               <Paperclip className="w-4 h-4 text-gray-700" />
-            </div> */}
+            </div>
 
             {/* Send button */}
             <Button

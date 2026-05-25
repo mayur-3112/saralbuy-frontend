@@ -704,8 +704,8 @@ const CategoryForm = ({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="cash">Cash</SelectItem>
-                  <SelectItem value="card">Banking or Online mode</SelectItem>
-                  <SelectItem value="upi">Any</SelectItem>
+                  <SelectItem value="bank or online">Banking or Online mode</SelectItem>
+                  <SelectItem value="any">Any</SelectItem>
                 </SelectContent>
               </Select>
 
