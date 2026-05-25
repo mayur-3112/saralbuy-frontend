@@ -658,7 +658,7 @@ const ChatArea = ({
                   {/* Message bubble */}
                   <div className={`flex flex-col ${isMine ? 'items-end' : 'items-start'}`}>
                     <div
-                      className={`max-w-[70%] px-4 relative py-2 ${
+                      className={`max-w-[70%] px-2 relative py-2 ${
                         isMine
                           ? 'bg-gray-500 text-white rounded-tl-lg rounded-bl-lg rounded-br-lg'
                           : 'bg-gray-600 text-white rounded-tr-lg rounded-bl-lg rounded-br-lg'
@@ -666,7 +666,7 @@ const ChatArea = ({
                     >
                       {/* Attachment */}
                       {message.attachment?.url && (
-                        <div className="mb-2 ">
+                        <div className=" ">
                           {message.attachment.type === 'image' ? (
                             <img
                               src={message.attachment.url}
@@ -675,14 +675,14 @@ const ChatArea = ({
                               onClick={() => window.open(message.attachment.url, '_blank')}
                             />
                           ) : (
-                            <div className="flex items-center gap-3 bg-white/10 rounded-lg p-3 w-[200px]">
+                            <div className="flex items-center gap-3 bg-white/10 rounded-lg p-3 w-[200px]" title={message.attachment.fileName || 'Document'}>
                               <img
                                 src={pdfImage}
                                 alt="document"
                                 className="h-10 w-10 object-contain flex-shrink-0"
                               />
                               <div className="min-w-0 flex-1">
-                                <p className="text-xs font-medium truncate">
+                                <p className="text-xs font-medium truncate" >
                                   {message.attachment.fileName || 'Document'}
                                 </p>
                                 {message.attachment.fileSize && (
@@ -695,7 +695,7 @@ const ChatArea = ({
                           )}
 
                           <div
-                            className="absolute z-10 top-2 right-2 z-10 bg-orange-100 text-orange-500 rounded-sm  p-1 cursor-pointer"
+                            className="absolute z-10 top-1 right-1  bg-orange-100 text-orange-500 rounded-sm  p-1 cursor-pointer"
                             onClick={() => {
                               downloadFile(message.attachment.url, message.attachment.fileName);
                             }}
