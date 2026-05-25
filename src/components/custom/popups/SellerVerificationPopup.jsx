@@ -11,6 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { Input } from '@/components/ui/input';
+import { useUserState } from '@/redux/hooks/useUser';
 
 const SellerVerificationPopup = ({
   open,
@@ -22,6 +23,7 @@ const SellerVerificationPopup = ({
   setBusinessDets,
   businessDets,
 }) => {
+  const { user } = useUserState();
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
@@ -70,7 +72,7 @@ const SellerVerificationPopup = ({
                     name="company_name"
                     placeholder="Company Name"
                   />
-                  <Input
+                  {/* <Input
                     value={businessDets.company_reg_num}
                     onChange={e => {
                       setBusinessDets({ ...businessDets, company_reg_num: e.target.value });
@@ -78,7 +80,7 @@ const SellerVerificationPopup = ({
                     className="w-full py-5 rounded-md border border-gray-300"
                     name="company_reg_num"
                     placeholder="Company Reg. Number"
-                  />
+                  /> */}
                   <Input
                     value={businessDets.gst_num}
                     onChange={e => {

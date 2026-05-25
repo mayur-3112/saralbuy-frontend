@@ -911,7 +911,7 @@ const UpdateCreateProductForm = () => {
     }
     if (formData.gst_requirement === 'yes' && formData.paymentAndDelivery?.gstNumber && !isDraft) {
       if (!gstRegex.test(formData.paymentAndDelivery.gstNumber.trim())) {
-        toast.error('Invalid GST Number format. Must be 15 characters (Format: 22AAAAA0000A1Z5)');
+        toast.error('Invalid GST Number format');
         return false;
       }
     }

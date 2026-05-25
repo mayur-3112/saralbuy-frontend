@@ -445,8 +445,8 @@ const ProductOverview = () => {
   const [timeLeft, setTimeLeft] = useState('');
   const [dealSellerRating, setDealSellerRating] = useState(0);
   const [businessDets, setBusinessDets] = useState({
-    company_name: '',
-    company_reg_num: '',
+    company_name: userProfile?.businessName || '',
+    company_reg_num: '', // not using
     gst_num: '',
   });
 
@@ -516,6 +516,15 @@ const ProductOverview = () => {
   }, [bidOverviewRes]);
 
   async function handleCreteBid() {
+    const gstRegex = /^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}$/; // 22AAAAA0000A1Z5
+    if (
+      businessType === 'business' &&
+      businessDets.gst_num &&
+      !gstRegex.test(businessDets.gst_num)
+    ) {
+      toast.error('Invalid GST Number format');
+      return;
+    }
     if (!productResponse) return;
     if (productResponse?.mainProduct?.userId?._id === userProfile?.user?._id) return;
     if (businessType === 'business' && !businessDets.company_name.trim()) {
@@ -680,6 +689,9 @@ const ProductOverview = () => {
   const soldProduct = bidOverviewRes
     ? bidOverviewRes?.product?.isSoldProduct
     : productResponse?.mainProduct?.isSoldProduct;
+  const isMe = bidOverviewRes
+    ? bidOverviewRes?.product?.userId?._id === userProfile?._id
+    : productResponse?.mainProduct?.userId?._id === userProfile?._id;
 
   useEffect(() => {
     let product = bidOverviewRes ? bidOverviewRes?.product : productResponse?.mainProduct;
@@ -847,7 +859,8 @@ const ProductOverview = () => {
                         bidOverviewRes
                           ? bidOverviewRes?.buyer
                           : productResponse?.mainProduct?.userId
-                      ) || 'N/A'}
+                      ) || 'N/A'}{' '}
+                      {isMe ? '(You)' : ''}
                     </span>
                   </div>
                   <div className="flex items-center gap-1 pr-3 border-r-2 py-1 min-w-32 max-w-[50%]">
