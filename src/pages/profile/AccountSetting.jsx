@@ -213,13 +213,13 @@ export function AccountSettings() {
                     className="bg-transparent w-full pr-28 sm:pr-32"
                   />
 
-                  <Button
+                  <p
                     type="button"
                     variant="link"
-                    className="p-0 text-xs sm:text-sm text-orange-600 bg-transparent cursor-pointer absolute right-2 top-1/2 -translate-y-1/2"
+                    className="p-0 text-xs sm:text-sm text-orange-600 bg-transparent hover:underline cursor-pointer absolute right-2 top-1/2 -translate-y-1/2"
                   >
                     Verify Email
-                  </Button>
+                  </p>
                 </div>
               </div>
 
