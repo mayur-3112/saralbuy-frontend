@@ -675,14 +675,17 @@ const ChatArea = ({
                               onClick={() => window.open(message.attachment.url, '_blank')}
                             />
                           ) : (
-                            <div className="flex items-center gap-3 bg-white/10 rounded-lg p-3 w-[200px]" title={message.attachment.fileName || 'Document'}>
+                            <div
+                              className="flex items-center gap-3 bg-white/10 rounded-lg p-3 w-[200px]"
+                              title={message.attachment.fileName || 'Document'}
+                            >
                               <img
                                 src={pdfImage}
                                 alt="document"
                                 className="h-10 w-10 object-contain flex-shrink-0"
                               />
                               <div className="min-w-0 flex-1">
-                                <p className="text-xs font-medium truncate" >
+                                <p className="text-xs font-medium truncate">
                                   {message.attachment.fileName || 'Document'}
                                 </p>
                                 {message.attachment.fileSize && (

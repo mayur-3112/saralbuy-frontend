@@ -1,5 +1,13 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
-import { Route, BrowserRouter as Router, Routes, useLocation } from 'react-router';
+import {
+  Navigate,
+  Outlet,
+  Route,
+  BrowserRouter as Router,
+  Routes,
+  useLocation,
+  useNavigate,
+} from 'react-router';
 import HomeNavbar from './components/custom/dashboard/HomeNavbar';
 import Footer from './components/custom/Footer';
 const Requirement = lazy(() => import('./components/custom/dashboard/Requirement'));
@@ -20,8 +28,17 @@ import NoRouteFound from './pages/404';
 import Loader from './components/custom/Loader';
 import Notification from './pages/Notification';
 import UserProfile from './pages/UserProfile';
+import { useUserState } from './redux/hooks/useUser';
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Chatbot = lazy(() => import('./pages/Chatbot'));
+
+const ProtectRoute = () => {
+  const { user } = useUserState();
+  if (!user) {
+    return <Navigate to={'/'} replace />;
+  }
+  return <Outlet />;
+};
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -66,7 +83,9 @@ export default function AppRoutes() {
           </Route>
           <Route path="/chat" element={<Chatbot />} />
           <Route path="/user-profile/:userId" element={<UserProfile />} />
-          <Route path="/bid-overview/:bidId" element={<BidOverview />} />
+          <Route element={<ProtectRoute />}>
+            <Route path="/bid-overview/:bidId" element={<BidOverview />} />
+          </Route>
           <Route path="*" element={<NoRouteFound />} />
         </Routes>
       </Suspense>
