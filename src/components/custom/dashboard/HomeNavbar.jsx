@@ -357,7 +357,7 @@ const HomeNavbar = () => {
       if (showDropdown && productsRef.current) {
         if (!productsRef.current.contains(event.target)) {
           setShowDropdown(false);
-          setText('');
+          setSearchText('');
           setProducts([]);
         }
       }
