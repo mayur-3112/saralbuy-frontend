@@ -51,7 +51,7 @@ function FilterPanel({
                 </span>
               </DisclosureButton>
             </h3>
-            <DisclosurePanel className="pt-6">
+            <DisclosurePanel className=" pt-6 origin-top transition duration-200 ease-out data-closed:-translate-y-6 data-closed:opacity-0" transition>
               <div className="space-y-4">
                 <Controller
                   name={section.id}
@@ -94,7 +94,7 @@ function FilterPanel({
                 </span>
               </DisclosureButton>
             </h3>
-            <DisclosurePanel className="pt-6">
+            <DisclosurePanel className="pt-6 origin-top transition duration-200 ease-out data-closed:-translate-y-6 data-closed:opacity-0" transition>
               <div className="w-full max-w-md">
                 <Range
                   values={values}
@@ -152,7 +152,7 @@ function FilterPanel({
           size="lg"
           className="border w-full mt-5 border-orange-600 text-orange-600 rounded-[5px] hover:bg-orange-500 hover:text-white transition-all duration-300 ease-in-out cursor-pointer"
         >
-          Remove Filter&apos;s
+          Remove Filter's
         </Button>
       )}
     </>
@@ -185,7 +185,7 @@ export default function ProductListing() {
 
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
-
+const [filterKey, setFilterKey] = useState(0);
   const [products, setProducts] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -345,6 +345,7 @@ export default function ProductListing() {
   const handleRemoveFilter = () => {
     const isTopTrending = searchParams.get('TOPTRENDING') === 'true';
     setMobileFiltersOpen(false);
+    setFilterKey(k=>k+1)
     formState.reset({
       category: isTopTrending ? searchParams.get('category') || '' : '',
       subCategory: '',
@@ -410,7 +411,9 @@ export default function ProductListing() {
                 </button>
               </div>
               <form className="mt-4 border-t border-gray-200 p-6">
-                <FilterPanel {...filterPanelProps} />
+                 <div key={filterKey}>
+                  <FilterPanel {...filterPanelProps} />
+                </div>
               </form>
             </DialogPanel>
           </div>
@@ -432,7 +435,9 @@ export default function ProductListing() {
             <div className="grid grid-cols-1 gap-x-4 gap-y-10 lg:grid-cols-4">
               {/* Desktop filter sidebar */}
               <form className="hidden lg:block rounded-2xl p-4 shadow-xs bg-[#fcf3ed] sticky top-4 self-start">
-                <FilterPanel {...filterPanelProps} />
+                <div key={filterKey}>
+                  <FilterPanel {...filterPanelProps} />
+                </div>
               </form>
 
               {/* Product grid */}
