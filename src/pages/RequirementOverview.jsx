@@ -49,20 +49,20 @@ const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails }) => {
       <form>
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
-            <DialogTitle>Seller Quote Details</DialogTitle>
+            <DialogTitle className={'font-semibold'}>Seller Quote Details</DialogTitle>
             <DialogDescription>View the details of the seller's quote here.</DialogDescription>
           </DialogHeader>
 
           <FieldGroup className="grid grid-cols-1 sm:grid-cols-2  gap-2">
             <Field>
               <Label>Budget</Label>
-              <Input value={quoteDetails?.budgetQuation || ''} readOnly />
+              <Input value={quoteDetails?.budgetQuation || '-'} readOnly />
             </Field>
 
             <Field>
               <Label>Seller Type</Label>
               <Input
-                value={separateName(quoteDetails?.sellerType) || ''}
+                value={separateName(quoteDetails?.sellerType) || '-'}
                 readOnly
                 className="capitalize"
               />
@@ -71,7 +71,7 @@ const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails }) => {
             <Field>
               <Label>Price Basis</Label>
               <Input
-                value={separateName(quoteDetails?.priceBasis) || ''}
+                value={separateName(quoteDetails?.priceBasis) || '-'}
                 readOnly
                 className="capitalize"
               />
@@ -80,7 +80,7 @@ const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails }) => {
             <Field>
               <Label>Taxes</Label>
               <Input
-                value={separateName(quoteDetails?.taxes) || ''}
+                value={separateName(quoteDetails?.taxes) || '-'}
                 readOnly
                 className="capitalize"
               />
@@ -88,18 +88,18 @@ const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails }) => {
 
             <Field>
               <Label>Location</Label>
-              <Input value={quoteDetails?.location || ''} readOnly className="capitalize" />
+              <Input value={quoteDetails?.location || '-'} readOnly className="capitalize" />
             </Field>
 
             <Field>
               <Label>Status</Label>
-              <Input value={quoteDetails?.status || ''} className="capitalize" readOnly />
+              <Input value={quoteDetails?.status || '-'} className="capitalize" readOnly />
             </Field>
 
             <Field>
               <Label>Freight Terms</Label>
               <Input
-                value={separateName(quoteDetails?.freightTerms) || ''}
+                value={separateName(quoteDetails?.freightTerms) || '-'}
                 readOnly
                 className="capitalize"
               />
@@ -108,7 +108,7 @@ const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails }) => {
             <Field>
               <Label>Payment Terms</Label>
               <Input
-                value={separateName(quoteDetails?.paymentTerms) || ''}
+                value={separateName(quoteDetails?.paymentTerms) || '-'}
                 readOnly
                 className="capitalize"
               />
@@ -120,7 +120,7 @@ const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails }) => {
                 <Field>
                   <Label>Company Name</Label>
                   <Input
-                    value={quoteDetails?.businessDets?.company_name || ''}
+                    value={quoteDetails?.businessDets?.company_name || '-'}
                     readOnly
                     className="capitalize"
                   />
@@ -129,7 +129,7 @@ const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails }) => {
                 <Field>
                   <Label>GST Number</Label>
                   <Input
-                    value={quoteDetails?.businessDets?.gst_num || ''}
+                    value={quoteDetails?.businessDets?.gst_num || '-'}
                     readOnly
                     className="capitalize"
                   />
@@ -142,7 +142,7 @@ const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails }) => {
               <Label>Description</Label>
 
               <textarea
-                value={quoteDetails?.buyerNote || ''}
+                value={quoteDetails?.buyerNote || '-'}
                 readOnly
                 rows={4}
                 className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm resize-none"

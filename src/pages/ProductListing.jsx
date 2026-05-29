@@ -51,7 +51,10 @@ function FilterPanel({
                 </span>
               </DisclosureButton>
             </h3>
-            <DisclosurePanel className=" pt-6 origin-top transition duration-200 ease-out data-closed:-translate-y-6 data-closed:opacity-0" transition>
+            <DisclosurePanel
+              className=" pt-6 origin-top transition duration-200 ease-out data-closed:-translate-y-6 data-closed:opacity-0"
+              transition
+            >
               <div className="space-y-4">
                 <Controller
                   name={section.id}
@@ -94,7 +97,10 @@ function FilterPanel({
                 </span>
               </DisclosureButton>
             </h3>
-            <DisclosurePanel className="pt-6 origin-top transition duration-200 ease-out data-closed:-translate-y-6 data-closed:opacity-0" transition>
+            <DisclosurePanel
+              className="pt-6 origin-top transition duration-200 ease-out data-closed:-translate-y-6 data-closed:opacity-0"
+              transition
+            >
               <div className="w-full max-w-md">
                 <Range
                   values={values}
@@ -185,7 +191,7 @@ export default function ProductListing() {
 
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
-const [filterKey, setFilterKey] = useState(0);
+  const [filterKey, setFilterKey] = useState(0);
   const [products, setProducts] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -345,7 +351,7 @@ const [filterKey, setFilterKey] = useState(0);
   const handleRemoveFilter = () => {
     const isTopTrending = searchParams.get('TOPTRENDING') === 'true';
     setMobileFiltersOpen(false);
-    setFilterKey(k=>k+1)
+    setFilterKey(k => k + 1);
     formState.reset({
       category: isTopTrending ? searchParams.get('category') || '' : '',
       subCategory: '',
@@ -411,7 +417,7 @@ const [filterKey, setFilterKey] = useState(0);
                 </button>
               </div>
               <form className="mt-4 border-t border-gray-200 p-6">
-                 <div key={filterKey}>
+                <div key={filterKey}>
                   <FilterPanel {...filterPanelProps} />
                 </div>
               </form>

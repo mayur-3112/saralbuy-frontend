@@ -973,7 +973,12 @@ const ProductOverview = () => {
             </div>
 
             {/* Requirement + Form */}
-            <div className="mt-5 grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="mt-5">
+              <sup className="italic text-gray-500 text-sm">
+                Note: This product created by yourself you can't place the quote on this product.
+              </sup>
+            </div>
+            <div className=" grid grid-cols-1 lg:grid-cols-12 gap-6">
               {/* Left: Requirement Spec */}
               <div className="lg:col-span-7 rounded-lg p-6 space-y-3">
                 <h3 className="font-semibold text-orange-600 text-xl">
