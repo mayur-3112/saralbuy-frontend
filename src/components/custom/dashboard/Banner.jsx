@@ -11,7 +11,7 @@ import { useFetch } from '@/hooks/useFetch';
 import bannerService from "@/services/banner.service";
 
 const Banner = () => {
-    const {fn,data}= useFetch(bannerService.getBanners)
+  const {fn,data}= useFetch(bannerService.getBanners)
   let domain= import.meta.env.VITE_BACKEND_URL
   const [banners,setBanners]= useState([
     {
@@ -27,7 +27,7 @@ const Banner = () => {
       textClass: 'banner-text-1',
       buttonClass: 'banner-button-1',
       containerClass: 'banner-content-1',
-        linkUrl:domain+'/requirement'
+        linkUrl:'/requirement'
     },
     {
       image: raiseAQuotationBanner,
@@ -38,7 +38,7 @@ const Banner = () => {
       buttonClass: 'banner-button-2',
       containerClass: 'banner-content-2',
       headerClass: 'banner-header-2',
-       linkUrl:domain+'/requirement'
+       linkUrl:'/requirement'
     },
   ])
 
@@ -80,14 +80,15 @@ useEffect(() => {
 }, [banners.length]);
 
   const handleNavigate = link => {
-    const url = new URL(link, window.location.origin);
+    // const url = new URL(link, window.location.origin);
 
-    const pathname = url.pathname;
-    if (import.meta.env.DEV) {
-      navigate(pathname);
-    } else {
-      navigate(link);
-    }
+    // const pathname = url.pathname;
+    // if (import.meta.env.DEV) {
+    //   navigate(pathname);
+    // } else {
+    //   navigate(link);
+    // }
+    navigate(link)
   };
 
   useEffect(() => {
@@ -111,7 +112,7 @@ useEffect(() => {
               {banner.buttonLabel && (
                 <button
                   className={banner.buttonClass}
-                  onClick={() => handleNavigate(banner?.linkUrl)}
+                  onClick={() => handleNavigate(banner?.endPoint)}
                 >
                   {banner.buttonLabel}
                 </button>
