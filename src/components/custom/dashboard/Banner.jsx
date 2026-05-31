@@ -58,7 +58,7 @@ const Banner = () => {
         textClass: 'banner-text-1',
         buttonClass: 'banner-button-1',
         containerClass: 'banner-content-1',
-        linkUrl: endPoint,
+        linkUrl: banner.endPoint,
       }));
       console.log(response);
       setBanners(prev => [...prev, ...response]);
