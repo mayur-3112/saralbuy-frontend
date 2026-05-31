@@ -8,12 +8,11 @@ import { useNavigate } from 'react-router-dom';
 //Styles
 import '../../../style/Banner.css';
 import { useFetch } from '@/hooks/useFetch';
-import bannerService from "@/services/banner.service";
+import bannerService from '@/services/banner.service';
 
 const Banner = () => {
-  const {fn,data}= useFetch(bannerService.getBanners)
-  let domain= import.meta.env.VITE_BACKEND_URL
-  const [banners,setBanners]= useState([
+  const { fn, data } = useFetch(bannerService.getBanners);
+  const [banners, setBanners] = useState([
     {
       image: smartPhoneBanner,
       text: (
@@ -27,7 +26,7 @@ const Banner = () => {
       textClass: 'banner-text-1',
       buttonClass: 'banner-button-1',
       containerClass: 'banner-content-1',
-        linkUrl:'/requirement'
+      linkUrl: '/requirement',
     },
     {
       image: raiseAQuotationBanner,
@@ -38,17 +37,16 @@ const Banner = () => {
       buttonClass: 'banner-button-2',
       containerClass: 'banner-content-2',
       headerClass: 'banner-header-2',
-       linkUrl:'/requirement'
+      linkUrl: '/requirement',
     },
-  ])
+  ]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fn()
+    fn();
   }, []);
-  
 
   useEffect(() => {
     if (data) {
@@ -56,64 +54,59 @@ const Banner = () => {
         image: banner.imageUrl,
         linkUrl: banner.linkUrl,
         text: banner.title,
-        buttonLabel: banner.buttonText  ,
+        buttonLabel: banner.buttonText,
         textClass: 'banner-text-1',
         buttonClass: 'banner-button-1',
         containerClass: 'banner-content-1',
-        linkUrl:domain +banner.endPoint
+        linkUrl: endPoint,
       }));
-      console.log(response)
-      setBanners((prev) => [...prev, ...response]);
-      console.log(banners)
+      console.log(response);
+      setBanners(prev => [...prev, ...response]);
+      console.log(banners);
     }
   }, [data]);
-useEffect(() => {
-  if (!banners.length) return;
+  useEffect(() => {
+    if (!banners.length) return;
 
-  const interval = setInterval(() => {
-    setCurrentIndex(prev =>
-      (prev + 1) % banners.length
-    );
-  }, 7000);
+    const interval = setInterval(() => {
+      setCurrentIndex(prev => (prev + 1) % banners.length);
+    }, 7000);
 
-  return () => clearInterval(interval);
-}, [banners.length]);
+    return () => clearInterval(interval);
+  }, [banners.length]);
 
   const handleNavigate = bannerDets => {
-   let endPoint = bannerDets.linkUrl
-    navigate(endPoint)
+    let endPoint = bannerDets.linkUrl;
+    navigate(endPoint);
   };
 
   useEffect(() => {
-  setCurrentIndex(0);
-}, [banners.length]);
-
+    setCurrentIndex(0);
+  }, [banners.length]);
 
   return (
     <div className="banner-slider mt-5 sm:mt-10">
-      {banners.length && banners.map((banner, index) => (
-        <div key={index}>
-          <img
-            src={banner.image}
-            alt={`Banner ${index + 1}`}
-            className={`banner-image ${index === currentIndex ? 'active' : 'inactive'}`}
-          />
-          {index === currentIndex && (
-            <div className={banner.containerClass}>
-              {banner.header && <div className={banner.headerClass}>{banner.header}</div>}
-              <div className={banner.textClass}>{banner.text}</div>
-              {banner.buttonLabel && (
-                <button
-                  className={banner.buttonClass}
-                  onClick={() => handleNavigate(banner)}
-                >
-                  {banner.buttonLabel}
-                </button>
-              )}
-            </div>
-          )}
-        </div>
-      ))}
+      {banners.length &&
+        banners.map((banner, index) => (
+          <div key={index}>
+            <img
+              src={banner.image}
+              alt={`Banner ${index + 1}`}
+              className={`banner-image ${index === currentIndex ? 'active' : 'inactive'}`}
+            />
+            {index === currentIndex && (
+              <div className={banner.containerClass}>
+                {banner.header && <div className={banner.headerClass}>{banner.header}</div>}
+                <div className={banner.textClass}>{banner.text}</div>
+                {banner.buttonLabel && (
+                  <button className={banner.buttonClass} onClick={() => handleNavigate(banner)}>
+                    {banner.buttonLabel}
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        ))}
     </div>
   );
 };

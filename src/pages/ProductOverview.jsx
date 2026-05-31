@@ -974,12 +974,11 @@ const ProductOverview = () => {
 
             {/* Requirement + Form */}
             <div className="mt-5">
-              {
-                isMe &&  <sup className="italic text-gray-500 text-sm">
-                Note: This product created by yourself you can't place the quote on this product.
-              </sup>
-              }
-              
+              {isMe && (
+                <sup className="italic text-gray-500 text-sm">
+                  Note: This product created by yourself you can't place the quote on this product.
+                </sup>
+              )}
             </div>
             <div className=" grid grid-cols-1 lg:grid-cols-12 gap-6">
               {/* Left: Requirement Spec */}
