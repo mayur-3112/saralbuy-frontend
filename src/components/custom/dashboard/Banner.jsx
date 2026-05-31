@@ -8,14 +8,12 @@ import { useNavigate } from 'react-router-dom';
 //Styles
 import '../../../style/Banner.css';
 import { useFetch } from '@/hooks/useFetch';
-// import bannerService from "@/services/banner.service";
-
-//Variables
+import bannerService from "@/services/banner.service";
 
 const Banner = () => {
-  //   const {fn,data}= useFetch(bannerService.getBanners)
-  let data = null;
-  let [banners, setBanners] = useState([
+    const {fn,data}= useFetch(bannerService.getBanners)
+  let domain= import.meta.env.VITE_BACKEND_URL
+  const [banners,setBanners]= useState([
     {
       image: smartPhoneBanner,
       text: (
@@ -29,6 +27,7 @@ const Banner = () => {
       textClass: 'banner-text-1',
       buttonClass: 'banner-button-1',
       containerClass: 'banner-content-1',
+        linkUrl:domain+'/requirement'
     },
     {
       image: raiseAQuotationBanner,
@@ -39,38 +38,46 @@ const Banner = () => {
       buttonClass: 'banner-button-2',
       containerClass: 'banner-content-2',
       headerClass: 'banner-header-2',
+       linkUrl:domain+'/requirement'
     },
-  ]);
+  ])
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // fn()
+    fn()
   }, []);
+  
 
   useEffect(() => {
     if (data) {
-      const response = data.map(banner => ({
+      const response = data.banners.map(banner => ({
         image: banner.imageUrl,
         linkUrl: banner.linkUrl,
         text: banner.title,
-        buttonLabel: 'Click Here ',
+        buttonLabel: banner.buttonText  ,
         textClass: 'banner-text-1',
         buttonClass: 'banner-button-1',
         containerClass: 'banner-content-1',
+        linkUrl:domain +banner.endPoint
       }));
-      setBanners(response);
+      console.log(response)
+      setBanners((prev) => [...prev, ...response]);
+      console.log(banners)
     }
   }, [data]);
-  useEffect(() => {
-    let interval = null;
-    if (banners.length > 0) {
-      interval = setInterval(() => {
-        setCurrentIndex(prevIndex => (prevIndex + 1) % banners.length);
-      }, 12 * 1000);
-    }
-    return () => clearInterval(interval);
-  }, [data, banners]);
+useEffect(() => {
+  if (!banners.length) return;
+
+  const interval = setInterval(() => {
+    setCurrentIndex(prev =>
+      (prev + 1) % banners.length
+    );
+  }, 7000);
+
+  return () => clearInterval(interval);
+}, [banners.length]);
 
   const handleNavigate = link => {
     const url = new URL(link, window.location.origin);
@@ -83,9 +90,14 @@ const Banner = () => {
     }
   };
 
+  useEffect(() => {
+  setCurrentIndex(0);
+}, [banners.length]);
+
+
   return (
     <div className="banner-slider mt-5 sm:mt-10">
-      {banners.map((banner, index) => (
+      {banners.length && banners.map((banner, index) => (
         <div key={index}>
           <img
             src={banner.image}
