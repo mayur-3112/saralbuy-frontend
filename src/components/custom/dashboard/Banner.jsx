@@ -79,16 +79,9 @@ useEffect(() => {
   return () => clearInterval(interval);
 }, [banners.length]);
 
-  const handleNavigate = link => {
-    // const url = new URL(link, window.location.origin);
-
-    // const pathname = url.pathname;
-    // if (import.meta.env.DEV) {
-    //   navigate(pathname);
-    // } else {
-    //   navigate(link);
-    // }
-    navigate(link)
+  const handleNavigate = bannerDets => {
+   let endPoint = bannerDets.linkUrl
+    navigate(endPoint)
   };
 
   useEffect(() => {
@@ -112,7 +105,7 @@ useEffect(() => {
               {banner.buttonLabel && (
                 <button
                   className={banner.buttonClass}
-                  onClick={() => handleNavigate(banner?.endPoint)}
+                  onClick={() => handleNavigate(banner)}
                 >
                   {banner.buttonLabel}
                 </button>
