@@ -60,9 +60,7 @@ const Banner = () => {
         containerClass: 'banner-content-1',
         linkUrl: banner.endPoint,
       }));
-      console.log(response);
       setBanners(prev => [...prev, ...response]);
-      console.log(banners);
     }
   }, [data]);
   useEffect(() => {

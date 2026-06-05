@@ -48,7 +48,7 @@ import TooltipComp from '@/lib/TooltipComp';
 import { Spinner } from '@/components/ui/spinner';
 import { CategoryFormSkeleton } from '@/const/CustomSkeletons';
 import PlaceRequirementPopup from '@/components/custom/popups/PlaceRequirementPopup';
-
+import { useCategory, useCategoryState } from '@/redux/hooks/useCategory';
 const innerFormImages = {
   automobile: 'automobileFormImage.png',
   fashion: 'fashionFormImage.png',
@@ -764,6 +764,11 @@ const UpdateCreateProductForm = () => {
   const [bidPopUpOpen, setBidPopUpOpen] = useState(false);
   const [bidDuration, setBidDuration] = useState('');
   const [buttonType, setButtonType] = useState(false);
+  const { categories } = useCategoryState();
+  const dispatachCategory = useCategory();
+  useEffect(() => {
+    dispatachCategory();
+  }, []);
 
   const {
     fn: getDraft,
@@ -879,12 +884,52 @@ const UpdateCreateProductForm = () => {
     Object.entries(fields).forEach(([key, val]) => setValue(key, val));
   }, [getDraftRes]);
 
+  // useEffect(() => {
+  //   if (!catByIdData) return;
+  //   const name = currentCategoryName || '';
+  //   setSubCategoriesData(getSubCategories(name));
+  //   setSubCategoies(catByIdData?.subCategories || []);
+  // }, [catByIdData]);
+
   useEffect(() => {
-    if (!catByIdData) return;
-    const name = currentCategoryName || '';
-    setSubCategoriesData(getSubCategories(name));
-    setSubCategoies(catByIdData?.subCategories || []);
-  }, [catByIdData]);
+    if (catByIdData) {
+      try {
+        if (!categories || categories.length === 0) {
+          console.log('Categories not available yet');
+          return;
+        }
+
+        const findCategory = categories.find(category => category._id === catByIdData?._id);
+
+        if (!findCategory) {
+          console.log('Category not found in categories array');
+          return;
+        }
+
+        console.log(findCategory);
+        const decodedCategoryName = findCategory?.categoryName.toLowerCase();
+
+        // Fix: Map subCategories with correct structure that CategoryForm expects
+        const mappedSubCategories =
+          findCategory?.subCategories?.map(val => ({
+            category: val.name, // Add category field
+            label: val.name,
+            name: val.name,
+            value: val._id,
+            brands: val.brands ?? [],
+          })) || [];
+        setSubCategoriesData(mappedSubCategories);
+        setCurrentCategoryName(decodedCategoryName || null);
+        console.log('Sub Categories Data:', mappedSubCategories);
+      } catch (e) {
+        console.error('Error processing category data:', e);
+        setCurrentCategoryName(null);
+        setSubCategoriesData([]);
+      }
+
+      setSubCategoies(catByIdData?.subCategories || []);
+    }
+  }, [catByIdData, categories]);
 
   // ── Validation — same as CreateProductForm ───────────────────────────────
   const validateForm = (formData, isDraft) => {

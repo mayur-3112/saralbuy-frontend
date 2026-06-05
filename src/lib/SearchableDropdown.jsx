@@ -23,6 +23,7 @@ export function SearchableDropdown({
   renderItems,
   disbaled,
 }) {
+  console.log({ renderItems });
   const [open, setOpen] = React.useState(false);
   //   const [value, setValue] = React.useState("")
 
@@ -37,7 +38,7 @@ export function SearchableDropdown({
           className={`w-[200px] justify-between ${className} text-gray-500 `}
         >
           {value
-            ? renderItems.find(framework => framework.value === value)?.label || dropdownTitle
+            ? renderItems.find(framework => framework === value) || dropdownTitle
             : dropdownTitle}
           <ChevronsUpDown className="opacity-50" />
         </Button>
@@ -52,19 +53,16 @@ export function SearchableDropdown({
             <CommandGroup>
               {renderItems.map(framework => (
                 <CommandItem
-                  key={framework.value}
-                  value={framework.value}
+                  key={framework}
+                  value={framework}
                   onSelect={currentValue => {
                     setValue(currentValue);
                     setOpen(false);
                   }}
                 >
-                  {framework.label || framework?.name}
+                  {framework || framework}
                   <Check
-                    className={cn(
-                      'ml-auto',
-                      value === framework.value ? 'opacity-100' : 'opacity-0'
-                    )}
+                    className={cn('ml-auto', value === framework ? 'opacity-100' : 'opacity-0')}
                   />
                 </CommandItem>
               ))}

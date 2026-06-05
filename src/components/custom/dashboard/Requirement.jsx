@@ -12,6 +12,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { useCategory, useCategoryState } from '@/redux/hooks/useCategory';
+console.log(useCategory);
 
 const Requirement = () => {
   const disptachCategories = useCategory();

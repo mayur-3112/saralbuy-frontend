@@ -48,6 +48,7 @@ import Authentication from '@/components/custom/auth/Authenticate';
 import TooltipComp from '@/lib/TooltipComp';
 import productService from '@/services/product.service';
 import PlaceRequirementPopup from '@/components/custom/popups/PlaceRequirementPopup';
+import { useCategory, useCategoryState } from '@/redux/hooks/useCategory';
 const innerFormImages = {
   automobile: 'automobileFormImage.png',
   fashion: 'fashionFormImage.png',
@@ -139,17 +140,27 @@ const CategoryForm = ({
   useEffect(() => {
     if (subCategoryId && catByIdData) {
       const selectProductName =
-        catByIdData?.subCategories.find(item => item._id === subCategoryId)?.name || 'N/A';
-      const brandsArray = subCategoriesData.find(
-        item =>
-          item.category.replace(/\s+/g, '').toLowerCase() ===
-          selectProductName.replace(/\s+/g, '').toLowerCase()
-      )?.brands;
-      setSubcategoryName(selectProductName);
-      if (brandsArray?.length > 0) setBrandRenderItems(brandsArray);
+        subCategoriesData.find(item => item.value === subCategoryId)?.name || 'N/A';
+      console.log(subCategoriesData, { selectProductName }, subCategoryId);
+      if (subCategoriesData && subCategoriesData.length > 0) {
+        const matchedSub = subCategoriesData?.find(item => item.value === subCategoryId);
+        const brandsArray = matchedSub?.brands ?? [];
+        setSubcategoryName(selectProductName.toLowerCase());
+        if (brandsArray?.length > 0) {
+          setBrandRenderItems(brandsArray);
+        } else {
+          setBrandRenderItems([]);
+        }
+      } else {
+        setSubcategoryName(selectProductName);
+        setBrandRenderItems([]);
+      }
+
       setValue('subCategoryId', subCategoryId);
     }
   }, [subCategoryId, catByIdData, subCategoriesData]);
+
+  console.log({ subCatgoryName });
   return (
     <div className="relative">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -693,6 +704,11 @@ const CategoryForm = ({
 
 const CreateProductForm = () => {
   const navigate = useNavigate();
+  const { categories } = useCategoryState();
+  const dispatachCategory = useCategory();
+  useEffect(() => {
+    dispatachCategory();
+  }, []);
   const { categoryId, subCategoryId } = useParams();
   const [subCategroies, setSubCategoies] = useState([]);
   const { fn: getCatByIdFn, data: catByIdData } = useFetch(categoryService.getCategoriesById);
@@ -758,16 +774,43 @@ const CreateProductForm = () => {
   useEffect(() => {
     if (catByIdData) {
       try {
-        const decodedCategoryName = decodeURIComponent(catByIdData?.categoryName).toLowerCase();
-        setSubCategoriesData(getSubCategories(decodedCategoryName));
+        if (!categories || categories.length === 0) {
+          console.log('Categories not available yet');
+          return;
+        }
+
+        const findCategory = categories.find(category => category._id === catByIdData?._id);
+
+        if (!findCategory) {
+          console.log('Category not found in categories array');
+          return;
+        }
+
+        console.log(findCategory);
+        const decodedCategoryName = findCategory?.categoryName.toLowerCase();
+
+        // Fix: Map subCategories with correct structure that CategoryForm expects
+        const mappedSubCategories =
+          findCategory?.subCategories?.map(val => ({
+            category: val.name, // Add category field
+            label: val.name,
+            name: val.name,
+            value: val._id,
+            brands: val.brands ?? [],
+          })) || [];
+
+        setSubCategoriesData(mappedSubCategories);
         setCurrentCategoryName(decodedCategoryName || null);
+        console.log('Sub Categories Data:', mappedSubCategories);
       } catch (e) {
-        console.error('Error decoding category name:', e);
+        console.error('Error processing category data:', e);
         setCurrentCategoryName(null);
+        setSubCategoriesData([]);
       }
+
       setSubCategoies(catByIdData?.subCategories || []);
     }
-  }, [catByIdData]);
+  }, [catByIdData, categories]); // Add categories to dependency array
 
   const validateForm = (formData, isDraft) => {
     const gstRegex = /^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}$/;
