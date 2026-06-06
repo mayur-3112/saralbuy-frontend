@@ -49,19 +49,20 @@ import { Spinner } from '@/components/ui/spinner';
 import { CategoryFormSkeleton } from '@/const/CustomSkeletons';
 import PlaceRequirementPopup from '@/components/custom/popups/PlaceRequirementPopup';
 import { useCategory, useCategoryState } from '@/redux/hooks/useCategory';
-const innerFormImages = {
-  automobile: 'automobileFormImage.png',
-  fashion: 'fashionFormImage.png',
-  electronics: 'electronicsFormImage.png',
-  home: 'homeapplianceFormImage.png',
-  sports: 'sportsFormImage.png',
-  furniture: 'furnitureFormImage.png',
-  health: 'healthFormImage.png',
-  beauty: 'beautyFormImage.png',
-  service: 'servicesFormImage.png',
-  industrial: 'constructionFormImage.png',
-  others: 'otherImage.webp',
-};
+import { innerFormImages } from './CreateProductForm';
+// const innerFormImages = {
+//   automobile: 'automobileFormImage.png',
+//   fashion: 'fashionFormImage.png',
+//   electronics: 'electronicsFormImage.png',
+//   home: 'homeapplianceFormImage.png',
+//   sports: 'sportsFormImage.png',
+//   furniture: 'furnitureFormImage.png',
+//   health: 'healthFormImage.png',
+//   beauty: 'beautyFormImage.png',
+//   service: 'servicesFormImage.png',
+//   industrial: 'constructionFormImage.png',
+//   others: 'otherImage.webp',
+// };
 
 function getSubCategories(categoryName) {
   switch (categoryName) {
@@ -109,6 +110,7 @@ const CategoryForm = ({
   setQuantityUnit,
   quantityValue,
   setQuantityValue,
+  categoryId
 }) => {
   console.log('INITIAL STATE OF UPDATE PRODUCT FORM------->', initialData);
   const [values, setValues] = useState([
@@ -221,7 +223,7 @@ const CategoryForm = ({
           </div>
           <div className="col-span-1 w-full">
             <img
-              src={`/image/FormImages/${innerFormImages[currentCategoryName]}`}
+              src={`/image/FormImages/${innerFormImages[categoryId]}`}
               alt="Category illustration"
               loading="lazy"
               className="m-auto w-full"
@@ -1158,6 +1160,7 @@ const UpdateCreateProductForm = () => {
               setQuantityUnit={setQuantityUnit}
               quantityValue={quantityValue}
               setQuantityValue={setQuantityValue}
+              categoryId={draftState?.categoryId?._id}
             />
 
             <div className="flex justify-end gap-3 my-5">

@@ -49,18 +49,18 @@ import TooltipComp from '@/lib/TooltipComp';
 import productService from '@/services/product.service';
 import PlaceRequirementPopup from '@/components/custom/popups/PlaceRequirementPopup';
 import { useCategory, useCategoryState } from '@/redux/hooks/useCategory';
-const innerFormImages = {
-  automobile: 'automobileFormImage.png',
-  fashion: 'fashionFormImage.png',
-  electronics: 'electronicsFormImage.png',
-  home: 'homeapplianceFormImage.png',
-  sports: 'sportsFormImage.png',
-  furniture: 'furnitureFormImage.png',
-  health: 'healthFormImage.png',
-  beauty: 'beautyFormImage.png',
-  service: 'servicesFormImage.png',
-  industrial: 'constructionFormImage.png',
-  others: 'otherImage.webp',
+export const innerFormImages = {
+  '68ac92d3cebaeb05950ebab6': 'automobileFormImage.png', // automobile
+  '68ac9374cebaeb05950ebaca': 'fashionFormImage.png', // fashion
+  '68b58e08d65cfa3b18b0caf8': 'electronicsFormImage.png', // electronics
+  '692dbeef6e6c415cf765df60': 'homeapplianceFormImage.png',  //home
+  '68ac93e8cebaeb05950ebad3': 'sportsFormImage.png', // sport
+  '68ac932ecebaeb05950ebac1': 'furnitureFormImage.png', // furniture
+  // health: 'healthFormImage.png',
+  '68ac9473cebaeb05950ebae5': 'beautyFormImage.png', // beaulty
+  '68babf4168093c415483e38d': 'servicesFormImage.png', // service
+  '68ac94aecebaeb05950ebaeb': 'constructionFormImage.png', // industrial
+  '691a295d6e6c415cf765deed': 'otherImage.webp', // others
 };
 function getSubCategories(categoryName) {
   switch (categoryName) {
@@ -106,6 +106,7 @@ const CategoryForm = ({
   setQuantityUnit,
   quantityValue,
   setQuantityValue,
+  categoryId
 }) => {
   const [values, setValues] = useState([0, 2]);
   const [date, setDate] = useState(undefined);
@@ -183,7 +184,7 @@ const CategoryForm = ({
           </div>
           <div className="col-span-1 w-full">
             <img
-              src={`/image/FormImages/${innerFormImages[currentCategoryName]}`}
+              src={`/image/FormImages/${innerFormImages[categoryId]}`}
               alt="Category illustration"
               loading="lazy"
               className="m-auto w-3/4 sm:w-full"
@@ -994,6 +995,7 @@ const CreateProductForm = () => {
           setQuantityUnit={setQuantityUnit}
           quantityValue={quantityValue}
           setQuantityValue={setQuantityValue}
+          categoryId={categoryId}
         />
 
         <div className="flex justify-end gap-3 my-5">
