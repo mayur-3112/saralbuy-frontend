@@ -236,7 +236,7 @@ const CategoryForm = ({
                 />
               )}
 
-              {currentCategoryName !== 'others' && brand === 'others' && (
+              {currentCategoryName !== 'others' && brand?.toLowerCase() === 'others' && (
                 <Input
                   type="text"
                   placeholder="Specific Brand Name..."

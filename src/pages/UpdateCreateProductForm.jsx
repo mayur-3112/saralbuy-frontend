@@ -159,19 +159,35 @@ const CategoryForm = ({
   }, [initialData]);
 
   // Populate brands when subCategory changes
+  // useEffect(() => {
+  //   if (selectedSubCategoryId && catByIdData) {
+  //     const selectProductName =
+  //       catByIdData?.subCategories.find(item => item._id === selectedSubCategoryId)?.name || 'N/A';
+  //     const brandsArray = subCategoriesData.find(
+  //       item =>
+  //         item.category.replace(/\s+/g, '').toLowerCase() ===
+  //         selectProductName.replace(/\s+/g, '').toLowerCase()
+  //     )?.brands;
+  //     setSubcategoryName(selectProductName);
+  //     if (brandsArray?.length > 0) setBrandRenderItems(brandsArray);
+  //   }
+  // }, [selectedSubCategoryId, catByIdData, subCategoriesData]);
   useEffect(() => {
-    if (selectedSubCategoryId && catByIdData) {
-      const selectProductName =
-        catByIdData?.subCategories.find(item => item._id === selectedSubCategoryId)?.name || 'N/A';
-      const brandsArray = subCategoriesData.find(
-        item =>
-          item.category.replace(/\s+/g, '').toLowerCase() ===
-          selectProductName.replace(/\s+/g, '').toLowerCase()
-      )?.brands;
-      setSubcategoryName(selectProductName);
-      if (brandsArray?.length > 0) setBrandRenderItems(brandsArray);
+    if (selectedSubCategoryId && subCategoriesData && subCategoriesData.length > 0) {
+      const matchedSub = subCategoriesData?.find(item => item.value === selectedSubCategoryId);
+      const selectProductName = matchedSub?.name || 'N/A';
+      const brandsArray = matchedSub?.brands ?? [];
+
+      setSubcategoryName(selectProductName.toLowerCase());
+      if (brandsArray?.length > 0) {
+        setBrandRenderItems(brandsArray);
+      } else {
+        setBrandRenderItems([]);
+      }
+    } else {
+      setBrandRenderItems([]);
     }
-  }, [selectedSubCategoryId, catByIdData, subCategoriesData]);
+  }, [selectedSubCategoryId, subCategoriesData]);
 
   // On mount: set initial subCategoryId
   useEffect(() => {
@@ -181,6 +197,8 @@ const CategoryForm = ({
   const previewDoc = url => {
     if (url) window.open(url, '_blank');
   };
+
+  console.log(currentCategoryName !== 'others', brand?.toLowerCase() === 'others');
 
   return (
     <div className="relative">
@@ -259,7 +277,7 @@ const CategoryForm = ({
                 />
               )}
 
-              {currentCategoryName !== 'others' && brand === 'others' && (
+              {currentCategoryName !== 'others' && brand?.toLowerCase() === 'others' && (
                 <Input
                   type="text"
                   placeholder="Specific Brand Name..."
