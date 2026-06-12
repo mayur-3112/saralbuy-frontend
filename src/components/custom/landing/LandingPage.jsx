@@ -6,6 +6,7 @@ import Metrics from './Metrics';
 import HowItWorks from './HowItWorks';
 import CompareSection from './CompareSection';
 import TrustSection from './TrustSection';
+import LiveStatsTicker from '../dashboard/LiveStatsTicker';
 import { Menu, ChevronRight } from 'lucide-react';
 
 const SIDEBAR_CATEGORIES = [
