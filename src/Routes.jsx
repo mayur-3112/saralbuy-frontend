@@ -28,7 +28,10 @@ import NoRouteFound from './pages/404';
 import Loader from './components/custom/Loader';
 import Notification from './pages/Notification';
 import UserProfile from './pages/UserProfile';
+import TermsAndPrivacy from './pages/TermsAndPrivacy';
+import PolicyConsentPopup from './components/custom/popups/PolicyConsentPopup';
 import { useUserState } from './redux/hooks/useUser';
+import DiscussionChatbox from './components/custom/dashboard/DiscussionChatbox';
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Chatbot = lazy(() => import('./pages/Chatbot'));
 
@@ -62,6 +65,8 @@ export default function AppRoutes() {
     <Router>
       <ScrollToTop />
       <Authentication open={open} setOpen={setOpen} />
+      <PolicyConsentPopup />
+      <DiscussionChatbox />
       <HomeNavbar />
       <Suspense fallback={<Loader />}>
         <Routes>
@@ -71,6 +76,8 @@ export default function AppRoutes() {
           <Route path="/update-draft/:productId" element={<UpdateCreateProductForm />} />
           <Route path="/product-listing" element={<ProductListing />} />
           <Route path="/product-overview" element={<ProductOverview />} />
+          <Route path="/terms" element={<TermsAndPrivacy />} />
+          <Route path="/privacy" element={<TermsAndPrivacy />} />
           {/*  account */}
           <Route path="/account" element={<Profile />}>
             <Route index element={<AccountSettings />} />

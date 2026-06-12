@@ -98,6 +98,11 @@ const OtpPopup = ({ open, setOpen, number, sessionId, setSessionId }) => {
           <p className="text-sm">
             Enter the OTP code sent on your number {number?.toString().slice(0, 4)}******
           </p>
+          {import.meta.env.MODE === 'development' && (
+            <p className="text-xs text-amber-700 font-semibold bg-amber-50 p-2 rounded border border-amber-200">
+              [DEV MODE] Check the toast notification or terminal console for the OTP code.
+            </p>
+          )}
         </div>
 
         <form

@@ -13,6 +13,7 @@ export const useFetch = cb => {
       setData(response);
       setLoading(false);
       setError(null);
+      return response;
     } catch (error) {
       console.log(error?.response || error);
       error =
@@ -30,6 +31,7 @@ export const useFetch = cb => {
       }
       setError(error);
       setLoading(false);
+      return null;
     } finally {
       setLoading(false);
     }

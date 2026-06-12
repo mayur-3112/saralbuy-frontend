@@ -11,7 +11,7 @@ const SocketProvider = ({ children }) => {
     return () => {
       socket.disconnect();
     };
-  });
+  }, []);
 
   return <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>;
 };

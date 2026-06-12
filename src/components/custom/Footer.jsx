@@ -26,9 +26,7 @@ const Footer = () => {
             />
           </Link>
           <p className="footer-description">
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
-            has been the industry's standard dummy text ever since the 1500s, when an unknown
-            printer took a galley.
+            SaralBuy is Karnataka's leading B2B bulk procurement platform. We connect verified buyers and industrial suppliers directly, bringing transparent reverse-bidding and 0% commission to bulk trade.
           </p>
         </div>
 
@@ -36,11 +34,11 @@ const Footer = () => {
         <div className="footer-section">
           <h4 className="footer-title">Category</h4>
           <ul>
-            <li>Building Material</li>
-            <li>Roofing</li>
-            <li>Fencing</li>
-            <li>Concrete</li>
-            <li>Insulation</li>
+            <li>Building Materials</li>
+            <li>Electrical & Lighting</li>
+            <li>Plumbing & Sanitation</li>
+            <li>Steel & Structural</li>
+            <li>Finishing & Tiles</li>
           </ul>
         </div>
 
@@ -49,8 +47,8 @@ const Footer = () => {
           <h4 className="footer-title">Support</h4>
           <ul>
             <li>Help & Support</li>
-            <li>Terms & Conditions</li>
-            <li>Privacy Policy</li>
+            <li><Link to="/terms">Terms & Conditions</Link></li>
+            <li><Link to="/privacy">Privacy Policy</Link></li>
             <li>Help</li>
           </ul>
         </div>
@@ -60,13 +58,13 @@ const Footer = () => {
           <h4 className="footer-title">Contact</h4>
           <ul className="footer-contact">
             <li>
-              <FaMapMarkerAlt /> Lorem Ipsum is simply dummy text of the printing & typesetting
+              <FaMapMarkerAlt /> Peenya Industrial Area, Bengaluru, Karnataka, India
             </li>
             <li>
-              <FaEnvelope /> support@tcf.com
+              <FaEnvelope /> support@saralbuy.com
             </li>
             <li>
-              <FaPhone /> 1234567890
+              <FaPhone /> +91 98765 43210
             </li>
           </ul>
         </div>

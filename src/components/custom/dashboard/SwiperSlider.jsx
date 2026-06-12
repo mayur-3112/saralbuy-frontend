@@ -3,6 +3,7 @@ import 'keen-slider/keen-slider.min.css';
 import { useKeenSlider } from 'keen-slider/react';
 import { MoveRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 
 const SwiperSlider = ({ title, color, target, data }) => {
   const [sliderRef] = useKeenSlider({
@@ -112,11 +113,38 @@ const SwiperSlider = ({ title, color, target, data }) => {
             </div>
           ))
         ) : (
-          <div className="h-full w-full flex-col flex justify-center items-center">
-            <img src="/empty-cart.webp" width="20%" />
-            <p className="text-gray-500 text-sm capitalize">
-              No {target === 'bids' ? 'bids' : 'drafts'} Registered
+          <div className="h-full w-full flex flex-col justify-center items-center py-8 text-center bg-white/50 rounded-2xl border border-dashed border-slate-200 mt-4 px-4">
+            <img src="/empty-cart.webp" alt="No data" className="w-16 h-16 opacity-60 mb-2 object-contain" />
+            <p className="text-slate-800 text-sm font-extrabold capitalize">
+              No {target === 'bids' ? 'bids/quotes' : 'draft requirements'} registered
             </p>
+            <p className="text-slate-500 text-[11px] max-w-[280px] mt-1 leading-normal">
+              {target === 'bids'
+                ? 'Submit quotes to active buyer requirements on the sourcing exchange board to secure deals.'
+                : 'Your draft sourcing RFQs will appear here. Build a requirement and save as draft.'}
+            </p>
+            {target === 'bids' ? (
+              <Button
+                size="sm"
+                onClick={() => {
+                  const element = document.querySelector('[data-tour="sourcing-workspace"]');
+                  if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  }
+                }}
+                className="mt-3.5 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl cursor-pointer"
+              >
+                Browse Sourcing Exchange
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                onClick={() => navigate('/requirement')}
+                className="mt-3.5 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold rounded-xl cursor-pointer"
+              >
+                Post a Requirement
+              </Button>
+            )}
           </div>
         )}
       </div>

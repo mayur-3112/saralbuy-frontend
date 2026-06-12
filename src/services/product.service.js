@@ -12,9 +12,13 @@ class ProductService {
   async getHomeCards() {
     return instance.get('/product/get-home-products').then(res => res.data?.data || res.data);
   }
-  async getSeachProduct(productName) {
+  async getSeachProduct(productName, categoryId) {
     return instance
-      .get('/product/get-product/' + productName)
+      .get('/product/get-product/' + productName, {
+        params: {
+          categoryId,
+        },
+      })
       .then(res => res.data?.data || res.data);
   }
   // { category?: string; subCategoryId?: string; min_budget?: number; max_budget?: number; sort?: string }
@@ -58,6 +62,9 @@ class ProductService {
   }
   async saveAsDraft(payload) {
     return instance.put(`/product/save_as_draft`, payload).then(res => res.data?.data || res.data);
+  }
+  async getLiveStats() {
+    return instance.get('/product/live-stats').then(res => res.data?.data || res.data);
   }
 }
 export default new ProductService();

@@ -64,5 +64,10 @@ class BidService {
       .get(`/bid/get-bid-details/${productId}/${sellerId}`)
       .then(res => res.data?.data || res.data);
   }
+  async getBidStats(productId) {
+    return instance
+      .get(`/bid/get-bid-stats/${productId}`)
+      .then(res => res.data?.data || res.data);
+  }
 }
 export default new BidService();

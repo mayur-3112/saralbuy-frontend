@@ -48,6 +48,123 @@ function otherBrandValue(obj) {
   return obj?.brand;
 }
 
+const MOCK_PRODUCTS = {
+  prod_mock_1: {
+    mainProduct: {
+      _id: 'prod_mock_1',
+      title: 'UltraTech OPC 53 Grade Cement',
+      description: 'Delivery required at site, unloading in scope of supplier. ISI marked fresh stock only.',
+      quantity: 1500,
+      quantityUnit: 'Bags',
+      minimumBudget: 380,
+      brand: 'UltraTech',
+      categoryId: { categoryName: 'Building Materials' },
+      subCategoryId: { name: 'OPC 53 Cement' },
+      userId: { _id: 'buyer_mock_1', firstName: 'Mayur', lastName: 'Agarwal', address: 'Peenya Project Site, Bengaluru' },
+      isSoldProduct: false,
+      totalBidCount: 2,
+      isMergeQuote: false,
+      image: '/image/Category/industrialImage.png',
+      createdAt: new Date().toISOString()
+    }
+  },
+  prod_mock_2: {
+    mainProduct: {
+      _id: 'prod_mock_2',
+      title: 'Fe 550 TMT Steel Reinforcement Bars',
+      description: 'Standard 12m length, sizes: 8mm, 12mm, 16mm mixed ratio. Mill test certificate required.',
+      quantity: 12,
+      quantityUnit: 'Tons',
+      minimumBudget: 62000,
+      brand: 'Tata Tiscon',
+      categoryId: { categoryName: 'Building Materials' },
+      subCategoryId: { name: 'TMT Rebars' },
+      userId: { _id: 'buyer_mock_2', firstName: 'Ramesh', lastName: 'Kumar', address: 'Smart City Project, Mangaluru' },
+      isSoldProduct: false,
+      totalBidCount: 3,
+      isMergeQuote: true,
+      image: '/image/Category/industrialImage.png',
+      createdAt: new Date().toISOString()
+    }
+  },
+  prod_mock_3: {
+    mainProduct: {
+      _id: 'prod_mock_3',
+      title: 'Heavy Duty PVC Conduit Pipes (20mm)',
+      description: 'FRLS (Fire Retardant Low Smoke) grade, standard light grey color with couplers.',
+      quantity: 2500,
+      quantityUnit: 'Meters',
+      minimumBudget: 45,
+      brand: 'Supreme',
+      categoryId: { categoryName: 'Building Materials' },
+      subCategoryId: { name: 'Conduit Fittings' },
+      userId: { _id: 'buyer_mock_3', firstName: 'Kiran', lastName: 'Patel', address: 'Commercial Complex, Hubballi' },
+      isSoldProduct: false,
+      totalBidCount: 1,
+      isMergeQuote: false,
+      image: '/image/Category/industrialImage.png',
+      createdAt: new Date().toISOString()
+    }
+  },
+  prod_mock_4: {
+    mainProduct: {
+      _id: 'prod_mock_4',
+      title: 'Double Charge Vitrified Tiles (600x600)',
+      description: 'Glossy finish, ivory/white base color, premium quality brand (Kajaria/Somany equivalent).',
+      quantity: 1200,
+      quantityUnit: 'Sq Ft',
+      minimumBudget: 42,
+      brand: 'Kajaria',
+      categoryId: { categoryName: 'Finishing, Tiles & Granite' },
+      subCategoryId: { name: 'Double Charge Tiles' },
+      userId: { _id: 'buyer_mock_4', firstName: 'Sanjay', lastName: 'Shetty', address: 'Residential Villa Project, Belagavi' },
+      isSoldProduct: false,
+      totalBidCount: 0,
+      isMergeQuote: false,
+      image: '/image/Category/sportsImage.png',
+      createdAt: new Date().toISOString()
+    }
+  },
+  prod_mock_5: {
+    mainProduct: {
+      _id: 'prod_mock_5',
+      title: 'Polished Granite Slabs (Sira Grey, 18mm)',
+      description: 'Uniform thickness, single-quarry lot, double-polished, pre-cut to standard counter size.',
+      quantity: 3000,
+      quantityUnit: 'Sq Ft',
+      minimumBudget: 115,
+      brand: 'General',
+      categoryId: { categoryName: 'Finishing, Tiles & Granite' },
+      subCategoryId: { name: 'Granite' },
+      userId: { _id: 'buyer_mock_5', firstName: 'Anand', lastName: 'Gowda', address: 'IT Park Site, Mysuru' },
+      isSoldProduct: false,
+      totalBidCount: 4,
+      isMergeQuote: true,
+      image: '/image/Category/furnitureImage.png',
+      createdAt: new Date().toISOString()
+    }
+  },
+  prod_mock_6: {
+    mainProduct: {
+      _id: 'prod_mock_6',
+      title: 'Recessed LED Panel Lights (15W, Warm)',
+      description: 'Round shape, aluminum body, driver included, minimum 2-year manufacturer warranty.',
+      quantity: 500,
+      quantityUnit: 'Units',
+      minimumBudget: 320,
+      brand: 'Philips/Havells',
+      categoryId: { categoryName: 'Electrical & Lighting' },
+      subCategoryId: { name: 'LED Panel Lights' },
+      userId: { _id: 'buyer_mock_6', firstName: 'Vijay', lastName: 'Rao', address: 'Apartment Project, Tumakuru' },
+      isSoldProduct: false,
+      totalBidCount: 0,
+      isMergeQuote: false,
+      image: '/image/Category/homeAppliancesImage.png',
+      createdAt: new Date().toISOString()
+    }
+  }
+};
+
 const MergeBidForm = ({ productResponse, userProfile, navigate }) => {
   const { user } = useUserState();
   const [mergeFormState, setMergeFormState] = useState({ message: '' });
@@ -432,6 +549,10 @@ const ProductOverview = () => {
     data: createBidRes,
     loading: createBidLoading,
   } = useFetch(bidService.createBid);
+  const {
+    fn: getBidStatsFn,
+    data: bidStats,
+  } = useFetch(bidService.getBidStats);
   const { fn: createRequirementFn } = useFetch(requirementService.createRequirement);
   const {
     fn: addToCartFn,
@@ -493,7 +614,19 @@ const ProductOverview = () => {
 
   useEffect(() => {
     if (productId) {
-      getProductById(productId);
+      if (productId.startsWith('prod_mock_')) {
+        const mockData = MOCK_PRODUCTS[productId];
+        if (mockData) {
+          setProductResponse({ ...mockData });
+          const rating = mockData.mainProduct?.sellerRating;
+          if (rating) setDealSellerRating(rating);
+        } else {
+          toast.error('Mock product not found');
+        }
+      } else {
+        getProductById(productId);
+        getBidStatsFn(productId);
+      }
     } else if (bidId) {
       bidOverviewFn(bidId);
     } else {
@@ -533,6 +666,12 @@ const ProductOverview = () => {
     }
     const buyerId = productResponse?.mainProduct.userId?._id;
     const productId = productResponse?.mainProduct._id;
+
+    if (productId?.startsWith('prod_mock_')) {
+      toast.info('Submitting quotes is disabled for demo mock products. Please create a real product to test bidding.');
+      return;
+    }
+
     let obj = {
       ...getValues(),
       status: 'active',
@@ -605,6 +744,9 @@ const ProductOverview = () => {
       createRequirementFn({ productId, sellerId, buyerId, budgetAmount });
 
       toast.success('Quote created successfully');
+      if (productId && !productId.startsWith('prod_mock_')) {
+        getBidStatsFn(productId);
+      }
       setSellerVerification(false);
       setBusinessType('');
       reset({
@@ -640,12 +782,12 @@ const ProductOverview = () => {
           lastName: bidOverviewRes ? bidOverviewRes?.seller?.lastName : userProfile.lastName,
           budgetQuation: bidOverviewRes ? bidOverviewRes?.budgetQuation : '',
           earliestDeliveryDate: bidOverviewRes ? bidOverviewRes?.earliestDeliveryDate : undefined,
-          sellerType: bidOverviewRes ? bidOverviewRes?.sellerType : '',
-          priceBasis: bidOverviewRes ? bidOverviewRes?.priceBasis : '',
-          taxes: bidOverviewRes ? bidOverviewRes?.taxes : '',
-          location: bidOverviewRes ? bidOverviewRes?.location : '',
-          freightTerms: bidOverviewRes ? bidOverviewRes?.freightTerms : '',
-          paymentTerms: bidOverviewRes ? bidOverviewRes?.paymentTerms : '',
+          sellerType: bidOverviewRes ? bidOverviewRes?.sellerType : 'trader_wholesaler',
+          priceBasis: bidOverviewRes ? bidOverviewRes?.priceBasis : 'per_unit',
+          taxes: bidOverviewRes ? bidOverviewRes?.taxes : 'inclusive_gst',
+          location: bidOverviewRes ? bidOverviewRes?.location : userProfile.address || '',
+          freightTerms: bidOverviewRes ? bidOverviewRes?.freightTerms : 'ex_works',
+          paymentTerms: bidOverviewRes ? bidOverviewRes?.paymentTerms : 'on_delivery',
           buyerNote: bidOverviewRes ? bidOverviewRes?.buyerNote : '',
         });
       }
@@ -675,6 +817,10 @@ const ProductOverview = () => {
   };
 
   const handleBidView = async productId => {
+    if (productId?.startsWith('prod_mock_')) {
+      toast.info('Quote viewing is disabled for demo mock products. Please create a real product to test bidding.');
+      return;
+    }
     await getBidByProductIdFn(productId);
   };
 
@@ -828,6 +974,23 @@ const ProductOverview = () => {
                     : productResponse?.mainProduct?.title}
                 </h2>
                 <p className="text-sm text-gray-600">{productResponse?.mainProduct?.description}</p>
+
+                {bidStats && bidStats.totalBids > 0 && (
+                  <div className="bg-orange-50/80 border border-orange-200 rounded-lg p-4 mt-4 grid grid-cols-3 gap-2 text-center max-w-lg">
+                    <div>
+                      <span className="block text-xs text-gray-500 uppercase font-semibold">Lowest Quote</span>
+                      <span className="text-lg font-bold text-green-600">₹{bidStats.lowestQuote}</span>
+                    </div>
+                    <div className="border-x border-gray-200">
+                      <span className="block text-xs text-gray-500 uppercase font-semibold">Average Quote</span>
+                      <span className="text-lg font-bold text-orange-600">₹{bidStats.averageQuote}</span>
+                    </div>
+                    <div>
+                      <span className="block text-xs text-gray-500 uppercase font-semibold">Highest Quote</span>
+                      <span className="text-lg font-bold text-red-600">₹{bidStats.highestQuote}</span>
+                    </div>
+                  </div>
+                )}
 
                 {/* Meta Info */}
                 <div className="flex flex-wrap gap-4 text-sm text-gray-600 ">

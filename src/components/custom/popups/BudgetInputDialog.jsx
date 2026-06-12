@@ -15,6 +15,7 @@ import { toast } from 'sonner';
 
 const BudgetInputDialog = ({ open, setOpen, onConfirm, loading }) => {
   const [amount, setAmount] = useState('');
+  const [agreed, setAgreed] = useState(false);
 
   const handleConfirm = () => {
     const numAmount = Number(amount);
@@ -22,12 +23,18 @@ const BudgetInputDialog = ({ open, setOpen, onConfirm, loading }) => {
       toast.error('Please enter a valid budget amount');
       return;
     }
+    if (!agreed) {
+      toast.error('You must agree to the Deal Closure Policy');
+      return;
+    }
     onConfirm(numAmount);
     setAmount('');
+    setAgreed(false);
   };
 
   const handleCancel = () => {
     setAmount('');
+    setAgreed(false);
     setOpen(false);
   };
 
@@ -46,7 +53,7 @@ const BudgetInputDialog = ({ open, setOpen, onConfirm, loading }) => {
           </AlertDialogDescription>
         </AlertDialogHeader>
 
-        <div className="py-2">
+        <div className="py-2 space-y-4">
           <Input
             type="number"
             placeholder="Enter budget amount"
@@ -57,6 +64,18 @@ const BudgetInputDialog = ({ open, setOpen, onConfirm, loading }) => {
             min="0"
             step="0.01"
           />
+          <div className="flex items-start gap-2.5 pt-2">
+            <input
+              type="checkbox"
+              id="budget-dialog-agreed"
+              checked={agreed}
+              onChange={e => setAgreed(e.target.checked)}
+              className="mt-1 w-4 h-4 text-orange-600 border-slate-300 rounded focus:ring-orange-500 cursor-pointer shrink-0"
+            />
+            <label htmlFor="budget-dialog-agreed" className="text-xs text-slate-500 cursor-pointer leading-normal">
+              I agree to the SaralBuy Deal Closure Policy (the platform holds Zero Liability for any material disputes, quality issues, or payment/delivery defaults).
+            </label>
+          </div>
         </div>
 
         <AlertDialogFooter>
@@ -64,7 +83,7 @@ const BudgetInputDialog = ({ open, setOpen, onConfirm, loading }) => {
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction
-            disabled={loading}
+            disabled={loading || !agreed}
             onClick={handleConfirm}
             className="bg-orange-600 cursor-pointer hover:bg-orange-700 text-white px-6 py-2 rounded font-semibold disabled:opacity-50"
           >

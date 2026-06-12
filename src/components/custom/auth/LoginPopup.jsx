@@ -37,7 +37,11 @@ const LoginPopup = ({ open, setOpen, setNumber, setOtpPopup, setSessionId }) => 
   };
   useEffect(() => {
     if (data) {
-      toast.success('OTP sent successfully');
+      if (typeof data === 'string') {
+        toast.success(`OTP (Dev Mode): ${data}`, { duration: 10000 });
+      } else {
+        toast.success('OTP sent successfully');
+      }
       setNumber?.(mobileNumber);
       setOpen(false);
       setOtpPopup?.(true);

@@ -1,7 +1,5 @@
-import Banner from '@/components/custom/dashboard/Banner';
 import DyanmicHomeCard from '@/components/custom/dashboard/DynamicHomeCard';
 import Requirement from '@/components/custom/dashboard/Requirement';
-import RequirementSlide from '@/components/custom/dashboard/RequirementSlide';
 import SwiperSlider from '@/components/custom/dashboard/SwiperSlider';
 import TrendingCategory from '@/components/custom/dashboard/TrendingCategory';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -11,6 +9,11 @@ import bidService from '@/services/bid.service';
 import productService from '@/services/product.service';
 import { dateFormatter } from '@/utils/dateFormatter';
 import React, { useEffect, useState } from 'react';
+import { useUserState } from '@/redux/hooks/useUser';
+import LandingPage from '@/components/custom/landing/LandingPage';
+import SourcingWorkspace from '@/components/custom/dashboard/SourcingWorkspace';
+import OnboardingTour from '@/components/custom/dashboard/OnboardingTour';
+import LiveStatsTicker from '@/components/custom/dashboard/LiveStatsTicker';
 
 const ItemSkeleton = () => (
   <div className="flex flex-col space-y-5">
@@ -23,6 +26,7 @@ const ItemSkeleton = () => (
 );
 
 const Dashboard = () => {
+  const { user } = useUserState();
   const [bids, setBids] = useState([]);
   const [drafts, setDrafts] = useState([]);
   const { fn, data } = useFetch(productService.getHomeCards);
@@ -68,57 +72,80 @@ const Dashboard = () => {
     }
   }, [getLatestBidandDrafts]);
 
-  return (
-    <main className="relative min-h-screen ">
-      <div className="w-full max-w-7xl mx-auto px-4">
-        <Banner />
-        {/* bid */}
+  if (!user) {
+    return <LandingPage />;
+  }
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 mt-10 gap-6 sm:gap-3">
+  return (
+    <main className="relative min-h-screen bg-slate-50 pb-16">
+      <OnboardingTour />
+      <div className="w-full max-w-7xl mx-auto px-4">
+        {/* Welcome Back Header */}
+        <div className="pt-8 pb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+              Welcome back, {user?.firstName || 'Partner'}
+            </h1>
+            <p className="text-slate-500 text-xs mt-0.5">
+              Here is your B2B reverse-bidding and procurement console.
+            </p>
+          </div>
+          <div className="text-xs text-slate-500 font-bold bg-white border border-slate-200 px-3.5 py-1.5 rounded-full shadow-sm">
+            ⚡ 0% Platform Commission
+          </div>
+        </div>
+
+        {/* Live Stats Ticker */}
+        <div className="live-stats-ticker-container">
+          <LiveStatsTicker />
+        </div>
+
+        {/* Serious B2B Sourcing Board with Interactive Filters */}
+        <SourcingWorkspace 
+          user={user} 
+          userBidsCount={bids.length} 
+          userDraftsCount={drafts.length} 
+        />
+
+        {/* Sliders for Bids and Drafts */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 mt-8 gap-6">
           {bidResponseLoading ? (
             <ItemSkeleton />
           ) : bids.length > 0 ? (
-            <SwiperSlider key={'bid'} title="Your Quote" target="bids" color="gray" data={bids} />
+            <SwiperSlider key={'bid'} title="Your Bids/Quotes" target="bids" color="gray" data={bids} />
           ) : (
-            <SwiperSlider title="Your Quote" target="bids" color="gray" data={[]} />
+            <SwiperSlider title="Your Bids/Quotes" target="bids" color="gray" data={[]} />
           )}
           {bidResponseLoading ? (
             <ItemSkeleton />
           ) : drafts.length > 0 ? (
             <SwiperSlider
               key={'draft'}
-              title="Your Drafts"
+              title="Your Draft Requirements"
               target="drafts"
               color="orange"
               data={drafts}
             />
           ) : (
-            <SwiperSlider title="Your Drafts" target="draft" color="orange" data={[]} />
+            <SwiperSlider title="Your Draft Requirements" target="draft" color="orange" data={[]} />
           )}
         </div>
-      </div>
-      {/* requirement  */}
-      <div className="mt-10">
-        <RequirementSlide />
-      </div>
-      {/* trending Section */}
-      <div className="mt-10 relative mx-auto px-4 w-full pt-10">
-        <TrendingCategory categories={trendingRes} />
-        <img
-          src="All In One Market Place that Fits You.png"
-          className="absolute -top-5 mt-7 left-0 w-full"
-        ></img>
-      </div>
 
-      {/* requirement  */}
-      {/* <div > */}
-      {/* <Requirement title="Electronics" color="orange" /> */}
-      {/* </div> */}
-      {/* dyanmic data */}
-      {data &&
-        data.map((item, idx) => (
-          <DyanmicHomeCard key={idx + 1} bg={idx === 0 ? 'gray' : ''} item={item} />
-        ))}
+        {/* Category browsing grid */}
+        {trendingRes && (
+          <div className="mt-12 bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm">
+            <TrendingCategory categories={trendingRes} />
+          </div>
+        )}
+
+        {/* Dynamic content cards */}
+        <div className="mt-8">
+          {data &&
+            data.map((item, idx) => (
+              <DyanmicHomeCard key={idx + 1} bg={idx === 0 ? 'gray' : ''} item={item} />
+            ))}
+        </div>
+      </div>
     </main>
   );
 };

@@ -37,7 +37,7 @@ const getRoutePath = value => {
 
 const tags = [
   {
-    title: 'Profile',
+    title: 'Settings',
     value: 'profile',
   },
   {

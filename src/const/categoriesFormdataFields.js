@@ -129,6 +129,11 @@ export const getCategorySpecificFields = categoryName => {
       ];
 
     default:
-      return [];
+      return [
+        ...baseFields,
+        'brand',
+        'quantity',
+        'typeOfProduct',
+      ];
   }
 };

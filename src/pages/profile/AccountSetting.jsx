@@ -6,6 +6,8 @@ import { Textarea } from '@/components/ui/textarea';
 import {
   // CloudUpload,
   Plus,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
@@ -23,6 +25,7 @@ export function AccountSettings() {
   const { user } = useUserState();
   const { updateUserState } = useDispatchUser();
   const [open, setOpen] = useState(false);
+  const [showAadhaar, setShowAadhaar] = useState(false);
 
   const {
     fn: updateProfilefn,
@@ -192,6 +195,31 @@ export function AccountSettings() {
                     {...register('businessName')}
                     className="pr-16 bg-transparent w-full"
                   />
+                </div>
+              </div>
+            </div>
+
+            {/* Aadhaar Number */}
+            <div className="grid grid-cols-1 gap-4">
+              <div className="space-y-2 w-full">
+                <Label className="text-gray-600 text-sm" htmlFor="aadhaar">
+                  Aadhaar Number
+                </Label>
+                <div className="relative flex items-center">
+                  <Input
+                    id="aadhaar"
+                    type={showAadhaar ? 'text' : 'password'}
+                    placeholder="Enter 12-digit Aadhaar number"
+                    {...register('aadhaarNumber')}
+                    className="pr-10 bg-transparent w-full"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowAadhaar(!showAadhaar)}
+                    className="absolute right-3 text-gray-500 hover:text-gray-700 cursor-pointer"
+                  >
+                    {showAadhaar ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
                 </div>
               </div>
             </div>

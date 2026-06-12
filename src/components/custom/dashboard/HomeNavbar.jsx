@@ -38,7 +38,7 @@ import { Input } from '../../../components/ui/input';
 import { Card } from '../../../components/ui/card';
 import { Badge } from '../../../components/ui/badge';
 import { format } from 'date-fns';
-import saralBuyLogo from '/image/Logo/saralBuyLogo.png';
+import saralBuyLogo from '/image/Logo/newLogo.png';
 import { Popover, PopoverContent, PopoverTrigger } from '../../../components/ui/popover';
 import { fallBackName } from '@/utils/fallBackName';
 import { mergeName } from '@/utils/mergerName';
@@ -46,6 +46,7 @@ import productService from '@/services/product.service';
 import { useFetch } from '@/hooks/useFetch';
 import { useDebounce } from 'use-debounce';
 import { useDispatchUser, useUserState } from '@/redux/hooks/useUser';
+import { useCategory, useCategoryState } from '@/redux/hooks/useCategory';
 import { getLocation } from '@/utils/locationAPI';
 import { SOCKET_EVENTS } from '@/socket/socketEvents';
 import socket from '@/socket/socket';
@@ -55,7 +56,7 @@ import requirementService from '@/services/requirement.service';
 import { getNotifMeta } from '@/helper/notif.icons';
 const menu = [
   {
-    title: 'Profile',
+    title: 'Settings',
     url: '/account',
     icon: <CircleUserRound className="w-5 h-5" />,
   },
@@ -129,7 +130,18 @@ const HomeNavbar = () => {
   const [notifications, setNotifications] = useState([]);
   const unseenCount = notifications.filter(n => !n.seen).length;
   const { fn, data } = useFetch(productService.getSeachProduct);
-  const [currentLocation, setCurrentLocation] = useState(user?.currentLocation ?? '');
+
+  const dispatchCategory = useCategory();
+  const { categories } = useCategoryState();
+  const [selectedSearchCategory, setSelectedSearchCategory] = useState('all');
+
+  const [currentLocation, setCurrentLocation] = useState(() => {
+    return localStorage.getItem('saralbuy_location') || user?.currentLocation || '';
+  });
+
+  useEffect(() => {
+    dispatchCategory();
+  }, []);
 
   const unreadChatsCount = recentChats.reduce((acc, chat) => {
     const isBuyer = chat.buyerId === user?._id;
@@ -230,8 +242,10 @@ const HomeNavbar = () => {
   const handleSearchKeyPress = e => {
     if (e.key === 'Enter' && text.trim()) {
       setShowDropdown(false);
+      const categoryParam = selectedSearchCategory !== 'all' ? `&category=${selectedSearchCategory}` : '';
+      const locationParam = currentLocation ? `&location=${encodeURIComponent(currentLocation)}` : '';
+      navigate(`/product-listing?title=${encodeURIComponent(text)}${categoryParam}${locationParam}&key=enter`);
       setSearchText('');
-      /* navigate(`/product-listing?title=${encodeURIComponent(text)}&key=enter`) */
     }
   };
 
@@ -258,11 +272,29 @@ const HomeNavbar = () => {
     }
   }
 
+  const handleLocationChange = e => {
+    const val = e.target.value;
+    setCurrentLocation(val);
+    localStorage.setItem('saralbuy_location', val);
+  };
+
+  const handleLocationKeyDown = e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      e.target.blur();
+    }
+  };
+
   useEffect(() => {
-    if (!user?.currentLocation && user) {
-      getGeoLocation();
-    } else {
-      setCurrentLocation(user?.currentLocation);
+    const savedLocation = localStorage.getItem('saralbuy_location');
+    if (savedLocation) {
+      setCurrentLocation(savedLocation);
+    } else if (user) {
+      if (!user.currentLocation) {
+        getGeoLocation();
+      } else {
+        setCurrentLocation(user.currentLocation);
+      }
     }
   }, [user]);
 
@@ -314,9 +346,11 @@ const HomeNavbar = () => {
     if (key === 'enter' && value.trim() !== '') {
       setShowDropdown(false);
       setProducts([]);
+      const categoryParam = selectedSearchCategory !== 'all' ? `&category=${selectedSearchCategory}` : '';
+      const locationParam = currentLocation ? `&location=${encodeURIComponent(currentLocation)}` : '';
+      navigate(`/product-listing?title=${encodeURIComponent(value)}${categoryParam}${locationParam}&key=enter`);
       setSearchText('');
       flush();
-      navigate(`/product-listing?title=${encodeURIComponent(value)}&key=enter`);
     }
   };
 
@@ -334,13 +368,13 @@ const HomeNavbar = () => {
       setIsSearchLoading(true);
       setProducts([]);
       setShowDropdown(true);
-      fn(value);
+      fn(value, selectedSearchCategory);
     } else {
       setProducts([]);
       setIsSearchLoading(false);
       setShowDropdown(false);
     }
-  }, [value]);
+  }, [value, selectedSearchCategory]);
 
   // useEffect(() => {
   //   setProducts(data);
@@ -513,13 +547,18 @@ const HomeNavbar = () => {
                 />
               </Link>
 
-              <div className="flex items-center relative ">
-                <MapPin className="w-4 h-4  text-orange-500 rounded-full  absolute top-1/2 left-3  -translate-1/2"></MapPin>
+              <div className="flex items-center relative group">
+                <MapPin 
+                  onClick={getGeoLocation}
+                  className="w-4 h-4 text-orange-500 absolute left-3 top-1/2 -translate-y-1/2 cursor-pointer hover:scale-110 transition-transform"
+                  title="Detect my location"
+                />
                 <Input
-                  readOnly
                   placeholder="Location..."
-                  className="border-b-[1.5px] bg-transparent pl-6 text-sm border-x-0 border-t-0 shadow-none rounded-none  border-b-black focus-visible:ring-0 focus:outline-0 focus:shadow-none "
-                  defaultValue={currentLocation}
+                  className="border-b-[1.5px] bg-transparent pl-8 pr-2 text-sm border-x-0 border-t-0 shadow-none rounded-none border-b-black focus-visible:ring-0 focus:outline-0 focus:shadow-none"
+                  value={currentLocation}
+                  onChange={handleLocationChange}
+                  onKeyDown={handleLocationKeyDown}
                 />
                 {/* <NavigationMenu>
                   <NavigationMenuList>
@@ -530,14 +569,26 @@ const HomeNavbar = () => {
             </div>
 
             {/* Search */}
-            <div className="relative w-1/2">
+            <div className="relative w-1/2 flex items-center bg-white rounded-sm border border-gray-300 focus-within:ring-1 focus-within:ring-gray-900 focus-within:border-gray-900 overflow-hidden">
+              <select
+                value={selectedSearchCategory}
+                onChange={e => setSelectedSearchCategory(e.target.value)}
+                className="bg-gray-50 border-r border-gray-300 text-gray-700 text-xs px-3 py-2 focus:outline-none cursor-pointer h-[38px] max-w-[150px] truncate shrink-0"
+              >
+                <option value="all">All Categories</option>
+                {categories?.map(cat => (
+                  <option key={cat._id} value={cat._id}>
+                    {cat.categoryName}
+                  </option>
+                ))}
+              </select>
               <Input
                 type="text"
                 onInput={handleInputValue}
                 value={text}
                 onKeyPress={handleKeyPress}
                 placeholder="Looking For..."
-                className="pl-2 shadow-none rounded-sm w-full float-end focus-visible:ring-0 border border-gray-300  focus:ring-1 focus:ring-gray-900 focus:border-gray-900"
+                className="pl-3 py-2 shadow-none rounded-none w-full border-none focus-visible:ring-0 h-[38px]"
               />
               <SearchIcon className="absolute right-2.5 top-2.5 h-4 w-4 pointer-events-none opacity-50" />
 
@@ -816,10 +867,16 @@ const HomeNavbar = () => {
             </Button>
 
             {/* Profile Button */}
-            <Button onClick={handleProfileClick} size="icon" className="cursor-pointer bc">
+            <Button onClick={handleProfileClick} size="icon" className="cursor-pointer bc overflow-hidden rounded-full p-0 flex items-center justify-center">
               {!user ? (
                 <UserRound className="w-5 h-5" />
-              ) : user && !user?.firstName && !user?.lastNme ? (
+              ) : user.profileImage ? (
+                <img
+                  src={user.profileImage}
+                  alt="Profile"
+                  className="w-full h-full object-cover"
+                />
+              ) : !user?.firstName && !user?.lastNme ? (
                 <UserRound className="w-5 h-5" />
               ) : (
                 fallBackName(mergeName(user))
@@ -839,7 +896,19 @@ const HomeNavbar = () => {
                 />
               </Link>
               {/* Mobile Search */}
-              <div className="relative w-1/2">
+              <div className="relative w-1/2 flex items-center bg-white rounded-sm border border-gray-300 focus-within:ring-1 focus-within:ring-gray-900 focus-within:border-gray-900 overflow-hidden">
+                <select
+                  value={selectedSearchCategory}
+                  onChange={e => setSelectedSearchCategory(e.target.value)}
+                  className="bg-gray-50 border-r border-gray-300 text-gray-700 text-[10px] px-1.5 py-2 focus:outline-none cursor-pointer h-[32px] max-w-[80px] truncate shrink-0"
+                >
+                  <option value="all">All</option>
+                  {categories?.map(cat => (
+                    <option key={cat._id} value={cat._id}>
+                      {cat.categoryName}
+                    </option>
+                  ))}
+                </select>
                 <Input
                   type="text"
                   value={text}
@@ -849,9 +918,9 @@ const HomeNavbar = () => {
                   }}
                   onKeyPress={handleSearchKeyPress}
                   placeholder="Looking For..."
-                  className="pl-2 shadow-none rounded-sm w-full focus-visible:ring-0 border border-gray-300 focus:ring-1 focus:ring-gray-900 focus:border-gray-900"
+                  className="pl-2 pr-6 py-1 shadow-none rounded-none w-full border-none focus-visible:ring-0 h-[32px] text-xs"
                 />
-                <SearchIcon className="absolute right-2.5 top-2.5 h-4 w-4 pointer-events-none opacity-50" />
+                <SearchIcon className="absolute right-2 top-2 h-3.5 w-3.5 pointer-events-none opacity-50" />
                 <SearchDropdown id="mobile-search-dropdown" />
               </div>
 
@@ -868,13 +937,18 @@ const HomeNavbar = () => {
                   <SheetHeader className="border-b bg-white px-4 py-4 sticky top-0 z-10">
                     <SheetTitle className="w-full">
                       <div className="flex items-center relative w-full">
-                        <MapPin className="w-4 h-4 text-orange-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                        <MapPin 
+                          onClick={getGeoLocation}
+                          className="w-4 h-4 text-orange-500 absolute left-3 top-1/2 -translate-y-1/2 cursor-pointer hover:scale-110 transition-transform"
+                          title="Detect my location"
+                        />
 
                         <Input
-                          readOnly
                           placeholder="Location..."
                           className="w-full bg-gray-50 pl-9 text-sm border border-gray-200 shadow-none focus-visible:ring-0"
-                          defaultValue={currentLocation}
+                          value={currentLocation}
+                          onChange={handleLocationChange}
+                          onKeyDown={handleLocationKeyDown}
                         />
                       </div>
                     </SheetTitle>

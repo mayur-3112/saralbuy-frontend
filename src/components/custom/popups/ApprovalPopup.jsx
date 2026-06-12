@@ -3,11 +3,21 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription } from '../../ui/
 import { Button } from '../../ui/button';
 
 const ApprovalPopup = ({ open, setOpen, dealId, budget, partnerName, onAction, loading }) => {
+  const [agreed, setAgreed] = React.useState(false);
+
   const handleAction = action => {
+    if (action === 'accept' && !agreed) {
+      return;
+    }
     if (onAction) {
       onAction(dealId, action);
     }
+    setAgreed(false);
   };
+
+  React.useEffect(() => {
+    if (!open) setAgreed(false);
+  }, [open]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -24,6 +34,18 @@ const ApprovalPopup = ({ open, setOpen, dealId, budget, partnerName, onAction, l
             <DialogDescription className="text-sm text-gray-500 text-center">
               Do you want to complete this deal or reject the request?
             </DialogDescription>
+            <div className="flex items-start gap-2.5 pt-3 text-left">
+              <input
+                type="checkbox"
+                id="approval-popup-agreed"
+                checked={agreed}
+                onChange={e => setAgreed(e.target.checked)}
+                className="mt-1 w-4 h-4 text-orange-600 border-slate-300 rounded focus:ring-orange-500 cursor-pointer shrink-0"
+              />
+              <label htmlFor="approval-popup-agreed" className="text-xs text-slate-500 cursor-pointer leading-normal">
+                I agree that SaralBuy holds Zero Liability if the materials are rejected upon delivery, or if payment disputes arise.
+              </label>
+            </div>
           </div>
           <div className="space-y-5 w-full">
             <div className="flex justify-center gap-4">
@@ -38,7 +60,7 @@ const ApprovalPopup = ({ open, setOpen, dealId, budget, partnerName, onAction, l
               <Button
                 className="bg-orange-600 cursor-pointer hover:bg-orange-700 text-white px-6 py-2 rounded font-semibold disabled:opacity-50"
                 onClick={() => handleAction('accept')}
-                disabled={loading}
+                disabled={loading || !agreed}
               >
                 {loading ? 'Processing...' : 'Complete Deal'}
               </Button>

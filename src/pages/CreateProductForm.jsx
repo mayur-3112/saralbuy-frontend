@@ -216,13 +216,48 @@ const CategoryForm = ({
               </Select>
 
               {currentCategoryName !== 'service' && currentCategoryName !== 'others' && (
-                <SearchableDropdown
-                  setValue={setbrand}
-                  value={brand}
-                  className="w-full"
-                  dropdownTitle="Brands*"
-                  renderItems={brandRenderItems}
-                />
+                <div className="col-span-1 md:col-span-3">
+                  <Label className="mb-1.5 text-sm block">Quick Brand Selection</Label>
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {brandRenderItems.slice(0, 5).map((b) => {
+                      const brandName = typeof b === 'string' ? b : b.name || b.label || '';
+                      return (
+                        <button
+                          key={brandName}
+                          type="button"
+                          onClick={() => setbrand(brandName)}
+                          className={`px-3 py-1.5 text-xs font-semibold rounded-full border transition-all ${
+                            brand === brandName
+                              ? 'bg-orange-600 text-white border-orange-600 shadow-xs'
+                              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                          }`}
+                        >
+                          {brandName}
+                        </button>
+                      );
+                    })}
+                    {brandRenderItems.length > 5 && (
+                      <button
+                        type="button"
+                        onClick={() => setbrand('others')}
+                        className={`px-3 py-1.5 text-xs font-semibold rounded-full border transition-all ${
+                          brand === 'others'
+                            ? 'bg-orange-600 text-white border-orange-600 shadow-xs'
+                            : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                        }`}
+                      >
+                        Others
+                      </button>
+                    )}
+                  </div>
+                  <SearchableDropdown
+                    setValue={setbrand}
+                    value={brand}
+                    className="w-full"
+                    dropdownTitle="Or search/select brand*"
+                    renderItems={brandRenderItems}
+                  />
+                </div>
               )}
 
               {currentCategoryName === 'others' && (
@@ -955,8 +990,10 @@ const CreateProductForm = () => {
       multipartData.append('bidActiveDuration', resolvedBidDuration);
     }
 
-    await createProduct(categoryId, subCategoryId, multipartData);
-    toast.success(`Form ${isDraft ? 'saved as draft' : 'submitted'} successfully!`);
+    const res = await createProduct(categoryId, subCategoryId, multipartData);
+    if (res) {
+      toast.success(`Form ${isDraft ? 'saved as draft' : 'submitted'} successfully!`);
+    }
   };
   useEffect(() => {
     if (createProductRes) {

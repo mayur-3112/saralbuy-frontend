@@ -9,6 +9,9 @@ import {
   PanelRightOpen,
   X,
   Download,
+  Handshake,
+  CheckCircle,
+  XCircle,
 } from 'lucide-react';
 // import RatingPopup from '@/components/Popup/RatingPopup';
 // import ApprovalPopup from '@/components/Popup/ApprovalPopup';
@@ -656,85 +659,157 @@ const ChatArea = ({
                   )}
 
                   {/* Message bubble */}
-                  <div className={`flex flex-col ${isMine ? 'items-end' : 'items-start'}`}>
-                    <div
-                      className={`max-w-[70%] px-2 relative py-2 ${
-                        isMine
-                          ? 'bg-gray-500 text-white rounded-tl-lg rounded-bl-lg rounded-br-lg'
-                          : 'bg-gray-600 text-white rounded-tr-lg rounded-bl-lg rounded-br-lg'
-                      }`}
-                    >
-                      {/* Attachment */}
-                      {message.attachment?.url && (
-                        <div className=" ">
-                          {message.attachment.type === 'image' ? (
-                            <img
-                              src={message.attachment.url}
-                              alt={message.attachment.fileName}
-                              className="max-w-[200px] max-h-[200px] w-auto h-auto rounded-lg object-cover cursor-pointer hover:opacity-90 transition-opacity"
-                              onClick={() => window.open(message.attachment.url, '_blank')}
-                            />
-                          ) : (
-                            <div
-                              className="flex items-center gap-3 bg-white/10 rounded-lg p-3 w-[200px]"
-                              title={message.attachment.fileName || 'Document'}
-                            >
+                  <div className={`flex gap-2.5 items-end ${isMine ? 'justify-end' : 'justify-start'}`}>
+                    {!isMine && (
+                      <Avatar className="h-8 w-8 flex-shrink-0 mb-6">
+                        <AvatarImage src={selectedContact.avatar} alt={selectedContact.name} />
+                        <AvatarFallback>{selectedContact.name?.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                    )}
+                    <div className={`flex flex-col ${isMine ? 'items-end' : 'items-start'}`}>
+                      <div
+                        className={`max-w-[320px] sm:max-w-md relative px-4 py-2.5 shadow-xs ${
+                          isMine
+                            ? 'bg-gradient-to-tr from-orange-600 to-amber-500 text-white rounded-2xl rounded-tr-xs'
+                            : 'bg-slate-100 text-slate-800 rounded-2xl rounded-tl-xs'
+                        }`}
+                      >
+                        {/* Attachment */}
+                        {message.attachment?.url && (
+                          <div className="relative mb-1">
+                            {message.attachment.type === 'image' ? (
                               <img
-                                src={pdfImage}
-                                alt="document"
-                                className="h-10 w-10 object-contain flex-shrink-0"
+                                src={message.attachment.url}
+                                alt={message.attachment.fileName}
+                                className="max-w-[200px] max-h-[200px] w-auto h-auto rounded-lg object-cover cursor-pointer hover:opacity-90 transition-opacity"
+                                onClick={() => window.open(message.attachment.url, '_blank')}
                               />
-                              <div className="min-w-0 flex-1">
-                                <p className="text-xs font-medium truncate">
-                                  {message.attachment.fileName || 'Document'}
-                                </p>
-                                {message.attachment.fileSize && (
-                                  <p className="text-xs opacity-60 mt-0.5">
-                                    {formatSize(message.attachment.fileSize)}
+                            ) : (
+                              <div
+                                className={`flex items-center gap-3 rounded-lg p-3 w-[200px] ${
+                                  isMine ? 'bg-white/10 text-white' : 'bg-slate-200/80 text-slate-800'
+                                }`}
+                                title={message.attachment.fileName || 'Document'}
+                              >
+                                <img
+                                  src={pdfImage}
+                                  alt="document"
+                                  className="h-10 w-10 object-contain flex-shrink-0"
+                                />
+                                <div className="min-w-0 flex-1">
+                                  <p className="text-xs font-medium truncate">
+                                    {message.attachment.fileName || 'Document'}
                                   </p>
-                                )}
+                                  {message.attachment.fileSize && (
+                                    <p className="text-xs opacity-60 mt-0.5">
+                                      {formatSize(message.attachment.fileSize)}
+                                    </p>
+                                  )}
+                                </div>
                               </div>
+                            )}
+
+                            <div
+                              className="absolute z-10 top-1 right-1 bg-orange-100 text-orange-500 rounded-sm p-1 cursor-pointer"
+                              onClick={() => {
+                                downloadFile(message.attachment.url, message.attachment.fileName);
+                              }}
+                            >
+                              <TooltipComp
+                                hoverChildren={<Download className="h-4 w-4" />}
+                                contentChildren={<p>Download</p>}
+                              ></TooltipComp>
                             </div>
-                          )}
-
-                          <div
-                            className="absolute z-10 top-1 right-1  bg-orange-100 text-orange-500 rounded-sm  p-1 cursor-pointer"
-                            onClick={() => {
-                              downloadFile(message.attachment.url, message.attachment.fileName);
-                            }}
-                          >
-                            <TooltipComp
-                              hoverChildren={<Download className="h-4 w-4" />}
-                              contentChildren={<p>Download</p>}
-                            ></TooltipComp>
                           </div>
-                        </div>
-                      )}
+                        )}
 
-                      {/* Text */}
-                      {message.text && <p className="text-sm">{message.text}</p>}
-                    </div>
+                        {/* Text */}
+                        {message.text && <p className="text-sm leading-relaxed">{message.text}</p>}
+                      </div>
 
-                    {/* Timestamp */}
-                    <span className="text-xs text-muted-foreground mt-1">
-                      {message.timestamp
-                        ? new Date(message.timestamp).toLocaleTimeString('en-IN', {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            hour12: true,
-                          })
-                        : message.time
-                          ? new Date(`1970-01-01T${message.time}`).toLocaleTimeString('en-IN', {
+                      {/* Timestamp */}
+                      <span className="text-[10px] text-muted-foreground mt-1 px-1">
+                        {message.timestamp
+                          ? new Date(message.timestamp).toLocaleTimeString('en-IN', {
                               hour: '2-digit',
                               minute: '2-digit',
                               hour12: true,
                             })
-                          : ''}
-                    </span>
+                          : message.time
+                            ? new Date(`1970-01-01T${message.time}`).toLocaleTimeString('en-IN', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: true,
+                              })
+                            : ''}
+                      </span>
+                    </div>
                   </div>
                 </React.Fragment>
               );
             })
+          )}
+
+          {/* Inline Deal Status Banners */}
+          {waitingSellerApproval && (
+            <div className="p-4 rounded-xl border animate-fade-in shadow-xs max-w-2xl mx-auto w-full bg-orange-50 border-orange-200 mt-6">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-start gap-3">
+                  <div className="bg-orange-500 p-2.5 rounded-full text-white shrink-0 mt-0.5 animate-pulse">
+                    <Handshake className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-semibold text-orange-950">⚡ Deal Awaiting Seller Approval</h4>
+                    <p className="text-xs text-orange-700 mt-0.5 leading-relaxed">
+                      {userType === 'seller'
+                        ? `The buyer has requested to close this deal at a final price of ₹${finalBudget}.`
+                        : `You have requested to close this deal at a final price of ₹${finalBudget}. Awaiting supplier's response.`}
+                    </p>
+                  </div>
+                </div>
+                {userType === 'seller' && (
+                  <Button
+                    size="sm"
+                    className="bg-orange-600 text-white hover:bg-orange-700 font-medium whitespace-nowrap cursor-pointer shadow-sm"
+                    onClick={() => setShowApprovalPopup(true)}
+                  >
+                    Accept / Decline Deal
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {isDealClosed && (
+            <div className="p-4 rounded-xl border shadow-xs max-w-2xl mx-auto w-full bg-green-50 border-green-200 mt-6">
+              <div className="flex items-start gap-3">
+                <div className="bg-green-600 p-2.5 rounded-full text-white shrink-0">
+                  <CheckCircle className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-semibold text-green-950">🎉 Deal Closed Successfully!</h4>
+                  <p className="text-xs text-green-700 mt-0.5 leading-relaxed">
+                    This deal has been accepted and closed at <span className="font-bold text-sm">₹{finalBudget}</span>.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {isDealRejected && (
+            <div className="p-4 rounded-xl border shadow-xs max-w-2xl mx-auto w-full bg-red-50 border-red-200 mt-6">
+              <div className="flex items-start gap-3">
+                <div className="bg-red-500 p-2.5 rounded-full text-white shrink-0">
+                  <XCircle className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-semibold text-red-950">❌ Deal Declined</h4>
+                  <p className="text-xs text-red-700 mt-0.5 leading-relaxed">
+                    The requested deal closure at ₹{finalBudget} was rejected.
+                  </p>
+                </div>
+              </div>
+            </div>
           )}
         </div>
 

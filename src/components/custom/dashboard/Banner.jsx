@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import smartPhoneBanner from '/image/Banners/smartPhoneBanner.png';
 import raiseAQuotationBanner from '/image/Banners/raiseAQuoationBanner.png';
 import { useNavigate } from 'react-router-dom';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 //Styles
 import '../../../style/Banner.css';
 import { useFetch } from '@/hooks/useFetch';
@@ -42,6 +43,7 @@ const Banner = () => {
   ]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -63,19 +65,30 @@ const Banner = () => {
       setBanners(prev => [...prev, ...response]);
     }
   }, [data]);
+
   useEffect(() => {
-    if (!banners.length) return;
+    if (!banners.length || isHovered) return;
 
     const interval = setInterval(() => {
       setCurrentIndex(prev => (prev + 1) % banners.length);
     }, 7000);
 
     return () => clearInterval(interval);
-  }, [banners.length]);
+  }, [banners.length, isHovered]);
 
   const handleNavigate = bannerDets => {
     let endPoint = bannerDets.linkUrl;
     navigate(endPoint);
+  };
+
+  const handlePrev = e => {
+    e.stopPropagation();
+    setCurrentIndex(prev => (prev - 1 + banners.length) % banners.length);
+  };
+
+  const handleNext = e => {
+    e.stopPropagation();
+    setCurrentIndex(prev => (prev + 1) % banners.length);
   };
 
   useEffect(() => {
@@ -83,28 +96,72 @@ const Banner = () => {
   }, [banners.length]);
 
   return (
-    <div className="banner-slider mt-5 sm:mt-10">
-      {banners.length &&
+    <div 
+      className="banner-slider mt-5 sm:mt-10 group/slider"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {banners.length > 0 &&
         banners.map((banner, index) => (
-          <div key={index}>
+          <div key={index} className={`banner-slide-container ${index === currentIndex ? 'block' : 'hidden'}`}>
             <img
               src={banner.image}
               alt={`Banner ${index + 1}`}
-              className={`banner-image ${index === currentIndex ? 'active' : 'inactive'}`}
+              className="banner-image active"
             />
-            {index === currentIndex && (
-              <div className={banner.containerClass}>
-                {banner.header && <div className={banner.headerClass}>{banner.header}</div>}
-                <div className={banner.textClass}>{banner.text}</div>
-                {banner.buttonLabel && (
-                  <button className={banner.buttonClass} onClick={() => handleNavigate(banner)}>
-                    {banner.buttonLabel}
-                  </button>
-                )}
+            <div className={`${banner.containerClass} banner-glass-card animate-fade-in`}>
+              {banner.header && (
+                <div className={`${banner.headerClass} banner-header-text`}>
+                  {banner.header}
+                </div>
+              )}
+              <div className={`${banner.textClass} banner-body-text`}>
+                {banner.text}
               </div>
-            )}
+              {banner.buttonLabel && (
+                <button className={banner.buttonClass} onClick={() => handleNavigate(banner)}>
+                  {banner.buttonLabel}
+                </button>
+              )}
+            </div>
           </div>
         ))}
+
+      {/* Navigation Arrows */}
+      {banners.length > 1 && (
+        <>
+          <button 
+            onClick={handlePrev}
+            className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-orange-600 text-white p-2 rounded-full cursor-pointer z-10 transition-colors opacity-0 group-hover/slider:opacity-100 duration-300 shadow-md"
+            aria-label="Previous slide"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <button 
+            onClick={handleNext}
+            className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-orange-600 text-white p-2 rounded-full cursor-pointer z-10 transition-colors opacity-0 group-hover/slider:opacity-100 duration-300 shadow-md"
+            aria-label="Next slide"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </>
+      )}
+
+      {/* Slide Indicators / Dots */}
+      {banners.length > 1 && (
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 z-10">
+          {banners.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentIndex(index)}
+              className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
+                index === currentIndex ? 'bg-orange-600 w-6' : 'bg-white/50 hover:bg-white w-2.5'
+              }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

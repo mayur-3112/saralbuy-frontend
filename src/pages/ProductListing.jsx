@@ -301,6 +301,7 @@ export default function ProductListing() {
     searchParams.get('max_budget'),
     searchParams.get('subCategory'),
     searchParams.get('TOPTRENDING'),
+    searchParams.get('location'),
   ]);
 
   const fetchData = async (reset = false) => {
@@ -320,6 +321,7 @@ export default function ProductListing() {
       ? Number(searchParams.get('max_budget'))
       : undefined;
     const sort = searchParams.get('sort') || undefined;
+    const location = searchParams.get('location') || undefined;
 
     try {
       const response = await productService.getProductByTitle(title, currentPage, limit, {
@@ -328,6 +330,7 @@ export default function ProductListing() {
         min_budget,
         max_budget,
         sort,
+        location,
       });
 
       const newProducts = response?.data?.data?.products || [];
