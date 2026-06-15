@@ -44,5 +44,11 @@ class RequirementService {
       .get('/requirement/get-requirement-id/' + productId)
       .then(res => res.data?.data || res.data);
   }
+  async submitDealSurvey(data) {
+    return instance.post('/deal-survey', data).then(res => res.data?.data || res.data);
+  }
+  async getDealSurvey(dealId) {
+    return instance.get(`/deal-survey/${dealId}`).then(res => res.data?.data || res.data);
+  }
 }
 export default new RequirementService();

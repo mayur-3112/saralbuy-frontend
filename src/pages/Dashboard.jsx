@@ -13,7 +13,7 @@ import { useUserState } from '@/redux/hooks/useUser';
 import LandingPage from '@/components/custom/landing/LandingPage';
 import SourcingWorkspace from '@/components/custom/dashboard/SourcingWorkspace';
 import OnboardingTour from '@/components/custom/dashboard/OnboardingTour';
-import LiveStatsTicker from '@/components/custom/dashboard/LiveStatsTicker';
+
 
 const ItemSkeleton = () => (
   <div className="flex flex-col space-y-5">
@@ -80,24 +80,16 @@ const Dashboard = () => {
     <main className="relative min-h-screen bg-slate-50 pb-16">
       <OnboardingTour />
       <div className="w-full max-w-7xl mx-auto px-4">
-        {/* Welcome Back Header */}
+        {/* Welcome Header */}
         <div className="pt-8 pb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight">
-              Welcome back, {user?.firstName || 'Partner'}
+            <h1 className="text-2xl font-bold text-slate-900">
+              Welcome, {user?.firstName || 'Partner'}
             </h1>
-            <p className="text-slate-500 text-xs mt-0.5">
-              Here is your B2B reverse-bidding and procurement console.
+            <p className="text-slate-500 text-sm mt-0.5">
+              Your procurement dashboard
             </p>
           </div>
-          <div className="text-xs text-slate-500 font-bold bg-white border border-slate-200 px-3.5 py-1.5 rounded-full shadow-sm">
-            ⚡ 0% Platform Commission
-          </div>
-        </div>
-
-        {/* Live Stats Ticker */}
-        <div className="live-stats-ticker-container">
-          <LiveStatsTicker />
         </div>
 
         {/* Serious B2B Sourcing Board with Interactive Filters */}

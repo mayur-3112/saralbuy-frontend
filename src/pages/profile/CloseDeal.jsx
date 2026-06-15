@@ -1,4 +1,4 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+﻿import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useNavigate } from 'react-router-dom';
 
 import 'keen-slider/keen-slider.min.css';
@@ -15,9 +15,170 @@ import { mergeName } from '@/utils/mergerName';
 import { fallBackName } from '@/utils/fallBackName';
 import { Badge } from '@/components/ui/badge';
 import { currencyConvertor } from '@/utils/currencyConvertor';
+import { toast } from 'sonner';
+
+const DealSurveyModal = ({ isOpen, onClose, dealId }) => {
+  const [form, setForm] = useState({
+    wasDealClosed: null,
+    finalAmount: '',
+    rating: 0,
+    experience: '',
+    wouldRecommend: null,
+    feedback: '',
+    issuesFaced: '',
+  });
+  const [submitting, setSubmitting] = useState(false);
+
+  if (!isOpen) return null;
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (form.wasDealClosed === null) {
+      toast.error('Please select if the deal was closed or not');
+      return;
+    }
+    if (form.wasDealClosed && !form.finalAmount) {
+      toast.error('Please enter the final deal amount');
+      return;
+    }
+    if (!form.rating) {
+      toast.error('Please rate your experience');
+      return;
+    }
+    setSubmitting(true);
+    try {
+      await requirementService.submitDealSurvey({
+        dealId,
+        ...form,
+        finalAmount: form.finalAmount ? Number(form.finalAmount) : undefined,
+      });
+      toast.success('Thank you for your feedback!');
+      onClose();
+    } catch (err) {
+      toast.error(err?.response?.data?.message || 'Failed to submit survey');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
+        <div className="p-6 border-b">
+          <h3 className="text-lg font-bold text-gray-800">Deal Feedback Survey</h3>
+          <p className="text-sm text-gray-500 mt-1">Help us improve by sharing your experience</p>
+        </div>
+        <form onSubmit={handleSubmit} className="p-6 space-y-5">
+          {/* Was deal closed? */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Was the deal actually closed? *</label>
+            <div className="flex gap-3">
+              <button type="button" onClick={() => setForm(f => ({ ...f, wasDealClosed: true }))}
+                className={`px-5 py-2 rounded-lg border text-sm font-medium ${form.wasDealClosed === true ? 'bg-green-50 border-green-500 text-green-700' : 'border-gray-300 text-gray-600 hover:bg-gray-50'}`}>
+                âœ… Yes
+              </button>
+              <button type="button" onClick={() => setForm(f => ({ ...f, wasDealClosed: false }))}
+                className={`px-5 py-2 rounded-lg border text-sm font-medium ${form.wasDealClosed === false ? 'bg-red-50 border-red-500 text-red-700' : 'border-gray-300 text-gray-600 hover:bg-gray-50'}`}>
+                âŒ No
+              </button>
+            </div>
+          </div>
+
+          {/* Final Amount */}
+          {form.wasDealClosed && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Final Deal Amount (â‚¹) *</label>
+              <input type="number" placeholder="e.g. 250000" value={form.finalAmount}
+                onChange={e => setForm(f => ({ ...f, finalAmount: e.target.value }))}
+                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-orange-200 focus:border-orange-400 outline-none" />
+            </div>
+          )}
+
+          {/* Rating */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Rate your experience *</label>
+            <div className="flex gap-2">
+              {[1, 2, 3, 4, 5].map(star => (
+                <button key={star} type="button" onClick={() => setForm(f => ({ ...f, rating: star }))}
+                  className={`text-2xl transition-transform hover:scale-110 ${star <= form.rating ? 'text-yellow-400' : 'text-gray-300'}`}>
+                  â˜…
+                </button>
+              ))}
+              {form.rating > 0 && <span className="text-sm text-gray-500 ml-2 self-center">{form.rating}/5</span>}
+            </div>
+          </div>
+
+          {/* Experience */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">How was the overall experience?</label>
+            <div className="grid grid-cols-2 gap-2">
+              {['excellent', 'good', 'average', 'poor'].map(exp => (
+                <button key={exp} type="button" onClick={() => setForm(f => ({ ...f, experience: exp }))}
+                  className={`px-3 py-2 rounded-lg border text-sm capitalize ${form.experience === exp ? 'bg-orange-50 border-orange-400 text-orange-700 font-medium' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
+                  {exp === 'excellent' ? 'ðŸŒŸ ' : exp === 'good' ? 'ðŸ‘ ' : exp === 'average' ? 'ðŸ˜ ' : 'ðŸ‘Ž '}{exp}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Would Recommend */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Would you recommend this buyer/supplier?</label>
+            <div className="flex gap-3">
+              <button type="button" onClick={() => setForm(f => ({ ...f, wouldRecommend: true }))}
+                className={`px-5 py-2 rounded-lg border text-sm font-medium ${form.wouldRecommend === true ? 'bg-green-50 border-green-500 text-green-700' : 'border-gray-300 text-gray-600 hover:bg-gray-50'}`}>
+                ðŸ‘ Yes
+              </button>
+              <button type="button" onClick={() => setForm(f => ({ ...f, wouldRecommend: false }))}
+                className={`px-5 py-2 rounded-lg border text-sm font-medium ${form.wouldRecommend === false ? 'bg-red-50 border-red-500 text-red-700' : 'border-gray-300 text-gray-600 hover:bg-gray-50'}`}>
+                ðŸ‘Ž No
+              </button>
+            </div>
+          </div>
+
+          {/* Feedback */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Additional feedback (optional)</label>
+            <textarea rows={3} placeholder="Share any thoughts about the deal..." value={form.feedback}
+              onChange={e => setForm(f => ({ ...f, feedback: e.target.value }))}
+              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-orange-200 focus:border-orange-400 outline-none resize-none" />
+          </div>
+
+          {/* Issues */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Any issues faced? (optional)</label>
+            <textarea rows={2} placeholder="Describe any problems you encountered..." value={form.issuesFaced}
+              onChange={e => setForm(f => ({ ...f, issuesFaced: e.target.value }))}
+              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-orange-200 focus:border-orange-400 outline-none resize-none" />
+          </div>
+
+          {/* Buttons */}
+          <div className="flex justify-end gap-3 pt-2">
+            <button type="button" onClick={onClose}
+              className="px-5 py-2.5 rounded-lg border border-gray-300 text-sm font-medium text-gray-600 hover:bg-gray-50">
+              Cancel
+            </button>
+            <button type="submit" disabled={submitting}
+              className="px-5 py-2.5 rounded-lg bg-orange-500 text-white text-sm font-medium hover:bg-orange-600 disabled:opacity-50">
+              {submitting ? 'Submitting...' : 'Submit Feedback'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
 
 const CloseDeal = () => {
   const navigate = useNavigate();
+  const [surveyOpen, setSurveyOpen] = useState(false);
+  const [surveyDealId, setSurveyDealId] = useState(null);
+
+  const openSurvey = (dealId) => {
+    setSurveyDealId(dealId);
+    setSurveyOpen(true);
+  };
+
   const columnsCompletedReq = [
     {
       accessorKey: 'avtar',
@@ -50,10 +211,6 @@ const CloseDeal = () => {
       accessorKey: 'requirement',
       header: 'Requirement',
     },
-    // {
-    //   accessorKey: "your_budget",
-    //   header: "Budget",
-    // },
     {
       accessorKey: 'final_budget',
       header: 'Final Budget',
@@ -62,7 +219,6 @@ const CloseDeal = () => {
       accessorKey: 'dealStatus',
       header: 'Deal Status',
       cell: ({ row }) => {
-        // const diff = row.getValue("status") as number;
         const diff = row.original?.dealStatus?.toLowerCase() === 'rejected';
         if (!row.original?.dealStatus) {
           return (
@@ -93,6 +249,13 @@ const CloseDeal = () => {
               }}
             >
               View
+            </Button>
+            <Button
+              className="text-sm cursor-pointer text-orange-600"
+              variant={'link'}
+              onClick={() => openSurvey(row.original?._id)}
+            >
+              Feedback
             </Button>
           </div>
         );
@@ -145,7 +308,6 @@ const CloseDeal = () => {
       accessorKey: 'dealStatus',
       header: 'Deal Status',
       cell: ({ row }) => {
-        // const diff = row.getValue("status") as number;
         const diff = row.original?.dealStatus?.toLowerCase() === 'rejected';
         if (!row.original?.dealStatus) {
           return (
@@ -178,6 +340,13 @@ const CloseDeal = () => {
             >
               View
             </Button>
+            <Button
+              className="text-sm cursor-pointer text-orange-600"
+              variant={'link'}
+              onClick={() => openSurvey(row.original?._id)}
+            >
+              Feedback
+            </Button>
           </div>
         );
       },
@@ -198,7 +367,6 @@ const CloseDeal = () => {
   const [completeRequirements, setCompleteRequirements] = useState([]);
   const [approvedRequirements, setApprovedRequirements] = useState([]);
   useEffect(() => {
-    console.log(tab);
     if (tab === 'approved_bids') {
       pendingApprovedFn();
     } else {
@@ -230,7 +398,6 @@ const CloseDeal = () => {
       }
     }
     if (pendingApprovedData?.data) {
-      console.log(pendingApprovedData.data);
       if (pendingApprovedData.data.length > 0) {
         const formattedData = pendingApprovedData.data.map(item => ({
           _id: item._id,
@@ -307,8 +474,16 @@ const CloseDeal = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Deal Survey Modal */}
+      <DealSurveyModal
+        isOpen={surveyOpen}
+        onClose={() => setSurveyOpen(false)}
+        dealId={surveyDealId}
+      />
     </div>
   );
 };
 
 export default CloseDeal;
+

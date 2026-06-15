@@ -2,11 +2,7 @@ import React from 'react';
 import Hero from './Hero';
 import B2BProductGrid from './B2BProductGrid';
 import LiveSourcingBoard from './LiveSourcingBoard';
-import Metrics from './Metrics';
 import HowItWorks from './HowItWorks';
-import CompareSection from './CompareSection';
-import TrustSection from './TrustSection';
-import LiveStatsTicker from '../dashboard/LiveStatsTicker';
 import { Menu, ChevronRight } from 'lucide-react';
 
 const SIDEBAR_CATEGORIES = [
@@ -32,22 +28,17 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="bg-slate-100 min-h-screen text-slate-800 font-sans">
+    <div className="bg-white min-h-screen text-slate-800 font-sans">
       
-      {/* 1. Classic Hero Section containing the RFQ form on the right */}
+      {/* 1. Hero Section */}
       <Hero onOpenAuth={triggerAuth} />
-
-      {/* Live genuine exchange statistics ticker */}
-      <div className="max-w-7xl mx-auto px-4">
-        <LiveStatsTicker />
-      </div>
 
       {/* 2. Main Directory Contents Grid (Two-Column Layout) */}
       <div className="max-w-7xl mx-auto px-4 py-8 grid lg:grid-cols-12 gap-6">
         
-        {/* Left Column: B2B Category Directory Sidebar (IndiaMART Style) */}
+        {/* Left Column: B2B Category Directory Sidebar */}
         <aside className="hidden lg:block lg:col-span-3 space-y-4">
-          <div className="bg-white border border-slate-350 rounded shadow-xs overflow-hidden">
+          <div className="bg-white border border-slate-200 rounded shadow-xs overflow-hidden">
             <div className="bg-slate-800 text-white p-3 font-bold text-xs uppercase tracking-wider flex items-center gap-2">
               <Menu className="w-4.5 h-4.5" /> Sourcing Categories
             </div>
@@ -91,7 +82,7 @@ export default function LandingPage() {
           </div>
         </aside>
 
-        {/* Right Column: Main Content Area (Moglix Product Grid & IndiaMART Sourcing Table) */}
+        {/* Right Column: Main Content Area */}
         <main className="col-span-12 lg:col-span-9 space-y-8">
           
           {/* Popular wholesale products directory */}
@@ -103,11 +94,8 @@ export default function LandingPage() {
         </main>
       </div>
 
-      {/* 3. Operational features and Comparisons (Traditional blocky style) */}
-      <Metrics />
+      {/* 3. How It Works */}
       <HowItWorks onOpenAuth={triggerAuth} />
-      <CompareSection />
-      <TrustSection onOpenAuth={triggerAuth} />
 
     </div>
   );

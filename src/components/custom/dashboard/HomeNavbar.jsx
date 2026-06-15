@@ -38,7 +38,7 @@ import { Input } from '../../../components/ui/input';
 import { Card } from '../../../components/ui/card';
 import { Badge } from '../../../components/ui/badge';
 import { format } from 'date-fns';
-import saralBuyLogo from '/image/Logo/newLogo.png';
+import saralBuyLogo from '/image/Logo/navbarLogo.png';
 import { Popover, PopoverContent, PopoverTrigger } from '../../../components/ui/popover';
 import { fallBackName } from '@/utils/fallBackName';
 import { mergeName } from '@/utils/mergerName';
@@ -866,7 +866,10 @@ const HomeNavbar = () => {
               Post a requirement
             </Button>
 
-            {/* Profile Button */}
+            {/* User Greeting + Profile Button */}
+            {user && (
+              <span className="text-sm font-medium text-gray-700">Hello, {user?.firstName || 'Guest'}!</span>
+            )}
             <Button onClick={handleProfileClick} size="icon" className="cursor-pointer bc overflow-hidden rounded-full p-0 flex items-center justify-center">
               {!user ? (
                 <UserRound className="w-5 h-5" />
@@ -935,7 +938,10 @@ const HomeNavbar = () => {
                 <SheetContent side="left" className="w-[85vw] sm:w-[400px] p-0 overflow-y-auto">
                   {/* Header */}
                   <SheetHeader className="border-b bg-white px-4 py-4 sticky top-0 z-10">
-                    <SheetTitle className="w-full">
+                    <SheetTitle className="w-full space-y-3">
+                      {user && (
+                        <p className="text-sm font-medium text-gray-700">Hello, {user?.firstName || 'Guest'}!</p>
+                      )}
                       <div className="flex items-center relative w-full">
                         <MapPin 
                           onClick={getGeoLocation}
