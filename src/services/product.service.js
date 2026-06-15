@@ -6,6 +6,11 @@ class ProductService {
       .post(`/product/add-product/${categoryId}/${subCategoryId}/`, productObj)
       .then(res => res.data?.data || res.data);
   }
+  async addMultipleProducts(payload) {
+    return instance
+      .post(`/product/create-multiple`, payload)
+      .then(res => res.data?.data || res.data);
+  }
   async getTrendingCategory() {
     return instance.get('/product/get-trending-category').then(res => res.data?.data || res.data);
   }

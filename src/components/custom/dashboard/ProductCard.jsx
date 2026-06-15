@@ -75,7 +75,7 @@ const ProductCard = ({ product: item }) => {
                 clipRule="evenodd"
               />
             </svg>{' '}
-            {item?.productId?.quantity || item?.quantity} units
+            {(item?.productId?.isMultiple || item?.isMultiple) ? `${(item?.productId?.items || item?.items || []).length} Items Included` : `${item?.productId?.quantity || item?.quantity} units`}
           </div>
         </div>
       </div>

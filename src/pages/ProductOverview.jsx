@@ -1059,13 +1059,43 @@ const ProductOverview = () => {
                       />
                     </svg>
                     <span className="capitalize">
-                      {bidOverviewRes
-                        ? bidOverviewRes?.product?.quantity
-                        : productResponse?.mainProduct?.quantity || 'N/A'}{' '}
-                      units
+                      {(bidOverviewRes?.product?.isMultiple || productResponse?.mainProduct?.isMultiple) ? 
+                        `${(bidOverviewRes?.product?.items || productResponse?.mainProduct?.items || []).length} Items` : 
+                        `${bidOverviewRes ? bidOverviewRes?.product?.quantity : productResponse?.mainProduct?.quantity || 'N/A'} units`
+                      }
                     </span>
                   </div>
                 </div>
+
+                {(bidOverviewRes?.product?.isMultiple || productResponse?.mainProduct?.isMultiple) && (
+                  <div className="mt-6 border border-gray-200 rounded-lg overflow-hidden">
+                    <div className="bg-gray-100 px-4 py-2 border-b border-gray-200 font-semibold text-gray-700">
+                      Requested Items List
+                    </div>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm text-left text-gray-600">
+                        <thead className="text-xs text-gray-500 bg-gray-50 uppercase border-b border-gray-200">
+                          <tr>
+                            <th className="px-4 py-3">Subcategory</th>
+                            <th className="px-4 py-3">Brand</th>
+                            <th className="px-4 py-3">Type/Model</th>
+                            <th className="px-4 py-3">Quantity</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {(bidOverviewRes?.product?.items || productResponse?.mainProduct?.items || []).map((item, idx) => (
+                            <tr key={idx} className="bg-white border-b hover:bg-orange-50/50">
+                              <td className="px-4 py-3 font-medium text-gray-900">{item.subCategoryName || 'N/A'}</td>
+                              <td className="px-4 py-3">{item.brand || 'N/A'}</td>
+                              <td className="px-4 py-3">{item.typeOfProduct || item.model || 'N/A'}</td>
+                              <td className="px-4 py-3 font-semibold text-orange-600">{item.quantity} {item.quantityUnit}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
 
                 {soldProduct && dealSellerRating > 0 && (
                   <div className="flex items-center gap-0.5">

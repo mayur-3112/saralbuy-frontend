@@ -139,7 +139,30 @@ const Requirement = () => {
     <div className="w-full max-w-7xl mx-auto px-4 min-h-screen relative">
       {/* <Banner /> */}
 
-      <h1 className="text-xl font-bold te xt-gray-700 mt-10 mb-4">Select a Category</h1>
+      <div className="mt-10 mb-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div 
+          className="border-2 border-orange-500 rounded-lg p-6 bg-orange-50 cursor-pointer shadow-sm hover:shadow-md transition-shadow"
+          onClick={() => {
+            // Let them scroll down to select a category
+            window.scrollTo({ top: 300, behavior: 'smooth' });
+          }}
+        >
+          <h2 className="text-xl font-bold text-orange-600 mb-2">Post a Single Requirement</h2>
+          <p className="text-gray-600 text-sm">Have one specific product in mind? Select a category below to post your requirement.</p>
+        </div>
+        
+        <div 
+          className="border border-gray-300 rounded-lg p-6 bg-white cursor-pointer shadow-sm hover:shadow-md transition-shadow hover:border-orange-400"
+          onClick={() => {
+            navigate('/post-multiple-requirements');
+          }}
+        >
+          <h2 className="text-xl font-bold text-gray-800 mb-2">Post Multiple Requirements</h2>
+          <p className="text-gray-600 text-sm">Have a Bill of Materials or a long list? Build a dynamic list and post them all at once.</p>
+        </div>
+      </div>
+
+      <h1 className="text-xl font-bold text-gray-700 mb-4">Select a Category (For Single Item)</h1>
       {currentWinSize >= 768 ? (
         <div className="grid grid-cols-10 gap-5 ">
           {data && data?.map(item => <ItemCard key={item._id} {...item} />)}
