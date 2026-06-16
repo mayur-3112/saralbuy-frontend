@@ -104,9 +104,9 @@ const Dashboard = () => {
           {bidResponseLoading ? (
             <ItemSkeleton />
           ) : bids.length > 0 ? (
-            <SwiperSlider key={'bid'} title="Your Bids/Quotes" target="bids" color="gray" data={bids} />
+            <SwiperSlider key={'bid'} title="Your Quotes" target="bids" color="gray" data={bids} />
           ) : (
-            <SwiperSlider title="Your Bids/Quotes" target="bids" color="gray" data={[]} />
+            <SwiperSlider title="Your Quotes" target="bids" color="gray" data={[]} />
           )}
           {bidResponseLoading ? (
             <ItemSkeleton />

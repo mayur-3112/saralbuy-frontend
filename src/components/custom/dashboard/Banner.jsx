@@ -32,7 +32,7 @@ const Banner = () => {
     {
       image: raiseAQuotationBanner,
       text: 'Everything You Wanna Sell, All in One Place',
-      buttonLabel: 'Raise your Bids',
+      buttonLabel: 'Raise Your Quotes',
       header: 'Build with Confidence',
       textClass: 'banner-text-2',
       buttonClass: 'banner-button-2',

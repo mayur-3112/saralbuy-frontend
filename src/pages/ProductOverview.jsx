@@ -668,7 +668,7 @@ const ProductOverview = () => {
     const productId = productResponse?.mainProduct._id;
 
     if (productId?.startsWith('prod_mock_')) {
-      toast.info('Submitting quotes is disabled for demo mock products. Please create a real product to test bidding.');
+      toast.info('Submitting quotes is disabled for demo mock products. Please create a real product to test quoting.');
       return;
     }
 
@@ -818,7 +818,7 @@ const ProductOverview = () => {
 
   const handleBidView = async productId => {
     if (productId?.startsWith('prod_mock_')) {
-      toast.info('Quote viewing is disabled for demo mock products. Please create a real product to test bidding.');
+      toast.info('Quote viewing is disabled for demo mock products. Please create a real product to test quoting.');
       return;
     }
     await getBidByProductIdFn(productId);
@@ -1295,7 +1295,7 @@ const ProductOverview = () => {
                     ? bidOverviewRes?.product?.bidActiveDuration
                     : productResponse?.mainProduct?.bidActiveDuration) && (
                     <p className="flex items-center justify-between py-2 border-b-2">
-                      <span className="font-semibold">Bid Active Duration:</span>
+                      <span className="font-semibold">Quote Active Duration:</span>
                       {bidOverviewRes
                         ? bidOverviewRes?.product?.bidActiveDuration
                         : productResponse?.mainProduct?.bidActiveDuration}{' '}

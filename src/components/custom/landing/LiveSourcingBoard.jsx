@@ -119,7 +119,7 @@ export default function LiveSourcingBoard({ onOpenAuth }) {
                   <th className="p-4 w-[35%]">Requirement Description</th>
                   <th className="p-4 w-[12%]">Quantity</th>
                   <th className="p-4 w-[20%]">Delivery Location</th>
-                  <th className="p-4 w-[10%] text-center">Bids Received</th>
+                  <th className="p-4 w-[10%] text-center">Quotes Received</th>
                   <th className="p-4 w-[10%]">Status</th>
                   <th className="p-4 w-[13%] text-center">Action</th>
                 </tr>
@@ -147,7 +147,7 @@ export default function LiveSourcingBoard({ onOpenAuth }) {
                       </div>
                     </td>
                     
-                    {/* Bids received */}
+                    {/* Quotes Received */}
                     <td className="p-4 text-center">
                       <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-orange-50 border border-orange-100 text-orange-700 text-xs font-bold rounded">
                         <Gavel className="w-3.5 h-3.5" /> {req.bidsCount} Quotes

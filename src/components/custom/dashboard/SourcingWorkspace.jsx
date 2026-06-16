@@ -243,8 +243,8 @@ export default function SourcingWorkspace({ user, userBidsCount, userDraftsCount
       <div className="bg-white border border-slate-300 rounded p-6 shadow-sm space-y-4">
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 border-b border-slate-200 pb-4">
           <div>
-            <h2 className="text-lg font-black text-slate-900 tracking-tight">Sourcing & Bidding Terminal</h2>
-            <p className="text-xs text-slate-500 mt-0.5">Filter active requirements and submit direct reverse-bids.</p>
+            <h2 className="text-lg font-black text-slate-900 tracking-tight">Sourcing & Quoting Terminal</h2>
+            <p className="text-xs text-slate-500 mt-0.5">Filter active requirements and submit direct quotes.</p>
           </div>
           
           <button

@@ -1,4 +1,4 @@
-﻿import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useNavigate } from 'react-router-dom';
 
 import 'keen-slider/keen-slider.min.css';
@@ -75,11 +75,11 @@ const DealSurveyModal = ({ isOpen, onClose, dealId }) => {
             <div className="flex gap-3">
               <button type="button" onClick={() => setForm(f => ({ ...f, wasDealClosed: true }))}
                 className={`px-5 py-2 rounded-lg border text-sm font-medium ${form.wasDealClosed === true ? 'bg-green-50 border-green-500 text-green-700' : 'border-gray-300 text-gray-600 hover:bg-gray-50'}`}>
-                âœ… Yes
+                ✅ Yes
               </button>
               <button type="button" onClick={() => setForm(f => ({ ...f, wasDealClosed: false }))}
                 className={`px-5 py-2 rounded-lg border text-sm font-medium ${form.wasDealClosed === false ? 'bg-red-50 border-red-500 text-red-700' : 'border-gray-300 text-gray-600 hover:bg-gray-50'}`}>
-                âŒ No
+                ❌ No
               </button>
             </div>
           </div>
@@ -87,7 +87,7 @@ const DealSurveyModal = ({ isOpen, onClose, dealId }) => {
           {/* Final Amount */}
           {form.wasDealClosed && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Final Deal Amount (â‚¹) *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Final Deal Amount (₹) *</label>
               <input type="number" placeholder="e.g. 250000" value={form.finalAmount}
                 onChange={e => setForm(f => ({ ...f, finalAmount: e.target.value }))}
                 className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-orange-200 focus:border-orange-400 outline-none" />
@@ -101,7 +101,7 @@ const DealSurveyModal = ({ isOpen, onClose, dealId }) => {
               {[1, 2, 3, 4, 5].map(star => (
                 <button key={star} type="button" onClick={() => setForm(f => ({ ...f, rating: star }))}
                   className={`text-2xl transition-transform hover:scale-110 ${star <= form.rating ? 'text-yellow-400' : 'text-gray-300'}`}>
-                  â˜…
+                  ★
                 </button>
               ))}
               {form.rating > 0 && <span className="text-sm text-gray-500 ml-2 self-center">{form.rating}/5</span>}
@@ -115,7 +115,7 @@ const DealSurveyModal = ({ isOpen, onClose, dealId }) => {
               {['excellent', 'good', 'average', 'poor'].map(exp => (
                 <button key={exp} type="button" onClick={() => setForm(f => ({ ...f, experience: exp }))}
                   className={`px-3 py-2 rounded-lg border text-sm capitalize ${form.experience === exp ? 'bg-orange-50 border-orange-400 text-orange-700 font-medium' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
-                  {exp === 'excellent' ? 'ðŸŒŸ ' : exp === 'good' ? 'ðŸ‘ ' : exp === 'average' ? 'ðŸ˜ ' : 'ðŸ‘Ž '}{exp}
+                  {exp === 'excellent' ? '🌟 ' : exp === 'good' ? '👍 ' : exp === 'average' ? '😐 ' : '👎 '}{exp}
                 </button>
               ))}
             </div>
@@ -127,11 +127,11 @@ const DealSurveyModal = ({ isOpen, onClose, dealId }) => {
             <div className="flex gap-3">
               <button type="button" onClick={() => setForm(f => ({ ...f, wouldRecommend: true }))}
                 className={`px-5 py-2 rounded-lg border text-sm font-medium ${form.wouldRecommend === true ? 'bg-green-50 border-green-500 text-green-700' : 'border-gray-300 text-gray-600 hover:bg-gray-50'}`}>
-                ðŸ‘ Yes
+                👍 Yes
               </button>
               <button type="button" onClick={() => setForm(f => ({ ...f, wouldRecommend: false }))}
                 className={`px-5 py-2 rounded-lg border text-sm font-medium ${form.wouldRecommend === false ? 'bg-red-50 border-red-500 text-red-700' : 'border-gray-300 text-gray-600 hover:bg-gray-50'}`}>
-                ðŸ‘Ž No
+                👎 No
               </button>
             </div>
           </div>
