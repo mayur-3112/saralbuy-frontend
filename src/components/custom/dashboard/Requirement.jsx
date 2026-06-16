@@ -120,14 +120,14 @@ const Requirement = () => {
   const disptachCategories = useCategory();
   const { categories: serverCategories } = useCategoryState();
   
-  // Filter out the 4 legacy test categories
-  const legacyIds = [
-    '6a2ade8177e519fa2715f67c',
-    '6a2ade8177e519fa2715f680',
-    '6a2ade8177e519fa2715f684',
-    '6a2ade8177e519fa2715f687'
+  // Filter out the 4 legacy test categories by name so it works on both local and live DBs
+  const legacyNames = [
+    'Building Materials',
+    'Electrical & Lights',
+    'Plumbing & Sanitary',
+    'Paints & Waterproofing'
   ];
-  const filteredCategories = serverCategories?.filter(cat => !legacyIds.includes(cat._id));
+  const filteredCategories = serverCategories?.filter(cat => !legacyNames.includes(cat.categoryName));
   
   const data = (filteredCategories && filteredCategories.length > 0) ? filteredCategories : FALLBACK_CATEGORIES;
   const [currentWinSize, setCurrentWinSize] = useState(window.innerWidth);

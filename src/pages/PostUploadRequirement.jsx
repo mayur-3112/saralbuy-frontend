@@ -24,19 +24,19 @@ const PostUploadRequirement = () => {
   const navigate = useNavigate();
   const { user } = useUserState();
   const dispatachCategory = useCategory();
-  const { categories: serverCategories } = useCategoryState();
+  const { categories } = useCategoryState();
   const [loading, setLoading] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
 
   // Filter out the 4 legacy test categories
-  const legacyIds = [
-    '6a2ade8177e519fa2715f67c',
-    '6a2ade8177e519fa2715f680',
-    '6a2ade8177e519fa2715f684',
-    '6a2ade8177e519fa2715f687'
+  const legacyNames = [
+    'Building Materials',
+    'Electrical & Lights',
+    'Plumbing & Sanitary',
+    'Paints & Waterproofing'
   ];
-  const categories = serverCategories?.filter(cat => !legacyIds.includes(cat._id));
+  const filteredCategories = categories?.filter(cat => !legacyNames.includes(cat.categoryName));
 
   useEffect(() => {
     dispatachCategory();
@@ -170,7 +170,7 @@ const PostUploadRequirement = () => {
           <p className="text-sm text-gray-500 mb-4">Select all applicable categories so the right sellers get notified.</p>
           
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {categories?.map(cat => (
+            {filteredCategories?.map(cat => (
               <label 
                 key={cat._id} 
                 className={`flex items-center gap-2 p-3 border rounded-md cursor-pointer transition-colors ${selectedCategories.includes(cat._id) ? 'bg-orange-50 border-orange-400 text-orange-800' : 'bg-white border-gray-200 hover:bg-gray-50'}`}

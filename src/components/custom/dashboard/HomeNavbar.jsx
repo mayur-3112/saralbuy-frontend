@@ -141,6 +141,15 @@ const HomeNavbar = () => {
     return localStorage.getItem('saralbuy_location') || user?.currentLocation || '';
   });
 
+  // Filter out legacy categories
+  const legacyNames = [
+    'Building Materials',
+    'Electrical & Lights',
+    'Plumbing & Sanitary',
+    'Paints & Waterproofing'
+  ];
+  const filteredCategories = categories?.filter(cat => !legacyNames.includes(cat.categoryName));
+
   useEffect(() => {
     dispatchCategory();
   }, []);
@@ -583,7 +592,7 @@ const HomeNavbar = () => {
                 className="bg-gray-50 border-r border-gray-300 text-gray-700 text-xs px-3 py-2 focus:outline-none cursor-pointer h-[38px] max-w-[150px] truncate shrink-0"
               >
                 <option value="all">All Categories</option>
-                {categories?.map(cat => (
+                {filteredCategories?.map(cat => (
                   <option key={cat._id} value={cat._id}>
                     {cat.categoryName}
                   </option>
@@ -913,7 +922,7 @@ const HomeNavbar = () => {
                   className="bg-gray-50 border-r border-gray-300 text-gray-700 text-[10px] px-1.5 py-2 focus:outline-none cursor-pointer h-[32px] max-w-[80px] truncate shrink-0"
                 >
                   <option value="all">All</option>
-                  {categories?.map(cat => (
+                  {filteredCategories?.map(cat => (
                     <option key={cat._id} value={cat._id}>
                       {cat.categoryName}
                     </option>
