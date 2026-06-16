@@ -139,7 +139,7 @@ const Requirement = () => {
     <div className="w-full max-w-7xl mx-auto px-4 min-h-screen relative">
       {/* <Banner /> */}
 
-      <div className="mt-10 mb-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="mt-10 mb-8 grid grid-cols-1 md:grid-cols-3 gap-6">
         <div 
           className="border-2 border-orange-500 rounded-lg p-6 bg-orange-50 cursor-pointer shadow-sm hover:shadow-md transition-shadow"
           onClick={() => {
@@ -159,6 +159,16 @@ const Requirement = () => {
         >
           <h2 className="text-xl font-bold text-gray-800 mb-2">Post Multiple Requirements</h2>
           <p className="text-gray-600 text-sm">Have a Bill of Materials or a long list? Build a dynamic list and post them all at once.</p>
+        </div>
+
+        <div 
+          className="border border-gray-300 rounded-lg p-6 bg-white cursor-pointer shadow-sm hover:shadow-md transition-shadow hover:border-orange-400"
+          onClick={() => {
+            navigate('/upload-requirements');
+          }}
+        >
+          <h2 className="text-xl font-bold text-gray-800 mb-2">Upload Requirements</h2>
+          <p className="text-gray-600 text-sm">Have an Excel sheet, PDF, or image? Upload your document and let sellers review it directly.</p>
         </div>
       </div>
 

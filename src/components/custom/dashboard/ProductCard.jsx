@@ -62,21 +62,39 @@ const ProductCard = ({ product: item }) => {
             </svg>{' '}
             {item?.currentLocation || item?.buyerId?.address || 'N/A'}
           </div>
-          <div className="flex items-center text-sm text-gray-700 gap-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="size-4 text-gray-500"
-            >
-              <path
-                fillRule="evenodd"
-                d="M2.625 6.75a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Zm4.875 0A.75.75 0 0 1 8.25 6h12a.75.75 0 0 1 0 1.5h-12a.75.75 0 0 1-.75-.75ZM2.625 12a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0ZM7.5 12a.75.75 0 0 1 .75-.75h12a.75.75 0 0 1 0 1.5h-12A.75.75 0 0 1 7.5 12Zm-4.875 5.25a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Zm4.875 0a.75.75 0 0 1 .75-.75h12a.75.75 0 0 1 0 1.5h-12a.75.75 0 0 1-.75-.75Z"
-                clipRule="evenodd"
-              />
-            </svg>{' '}
-            {(item?.productId?.isMultiple || item?.isMultiple) ? `${(item?.productId?.items || item?.items || []).length} Items Included` : `${item?.productId?.quantity || item?.quantity} units`}
-          </div>
+          {!(item?.productId?.isMultiple || item?.isMultiple) ? (
+            <div className="flex items-center text-sm text-gray-700 gap-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="size-4 text-gray-500"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M2.625 6.75a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Zm4.875 0A.75.75 0 0 1 8.25 6h12a.75.75 0 0 1 0 1.5h-12a.75.75 0 0 1-.75-.75ZM2.625 12a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0ZM7.5 12a.75.75 0 0 1 .75-.75h12a.75.75 0 0 1 0 1.5h-12A.75.75 0 0 1 7.5 12Zm-4.875 5.25a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Zm4.875 0a.75.75 0 0 1 .75-.75h12a.75.75 0 0 1 0 1.5h-12a.75.75 0 0 1-.75-.75Z"
+                  clipRule="evenodd"
+                />
+              </svg>{' '}
+              {item?.productId?.quantity || item?.quantity} units
+            </div>
+          ) : (
+            <div className="mt-2 text-sm text-gray-700">
+              <p className="font-semibold text-orange-600 mb-1 border-b pb-1">
+                {(item?.productId?.items || item?.items || []).length} Items Requested:
+              </p>
+              <ul className="list-disc pl-4 text-xs space-y-1">
+                {(item?.productId?.items || item?.items || []).slice(0, 3).map((subItem, idx) => (
+                  <li key={idx} className="truncate">
+                    {subItem.subCategoryName} <span className="text-gray-400">({subItem.quantity} {subItem.quantityUnit})</span>
+                  </li>
+                ))}
+              </ul>
+              {(item?.productId?.items || item?.items || []).length > 3 && (
+                <p className="text-xs text-blue-600 mt-1 italic pl-1">+ {(item?.productId?.items || item?.items || []).length - 3} more items...</p>
+              )}
+            </div>
+          )}
         </div>
       </div>
       <div className="flex flex-row items-center justify-between mt-3">
