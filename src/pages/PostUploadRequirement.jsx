@@ -18,7 +18,7 @@ import { useCategory, useCategoryState } from '@/redux/hooks/useCategory';
 import { useUserState } from '@/redux/hooks/useUser';
 import Authentication from '@/components/custom/auth/Authenticate';
 import { Spinner } from '@/components/ui/spinner';
-import axiosInstance from '@/services/axiosInstance'; // Using raw axios for FormData
+import instance from '@/helper/instance';
 
 const PostUploadRequirement = () => {
   const navigate = useNavigate();
