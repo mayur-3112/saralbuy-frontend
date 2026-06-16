@@ -204,13 +204,13 @@ export default function SourcingWorkspace({ user, userBidsCount, userDraftsCount
           </div>
         </div>
 
-        {/* KPI 2: My Submitted Bids */}
+        {/* KPI 2: My Submitted Quotes */}
         <div className="bg-white border border-slate-350 rounded p-5 shadow-sm flex items-center gap-4">
           <div className="w-12 h-12 rounded bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shrink-0">
             <Gavel className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">My Submitted Bids</p>
+            <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">My Submitted Quotes</p>
             <p className="text-2xl font-black text-slate-900 mt-1">{userBidsCount || 0}</p>
           </div>
         </div>
@@ -316,7 +316,7 @@ export default function SourcingWorkspace({ user, userBidsCount, userDraftsCount
                     <th className="p-4 w-[35%]">Project Material Needs</th>
                     <th className="p-4 w-[12%]">Quantity</th>
                     <th className="p-4 w-[20%]">Buyer & Project Site</th>
-                    <th className="p-4 w-[10%] text-center">Bids Received</th>
+                    <th className="p-4 w-[10%] text-center">Quotes Received</th>
                     <th className="p-4 w-[10%]">Date Posted</th>
                     <th className="p-4 w-[13%] text-center">Action</th>
                   </tr>
@@ -364,7 +364,7 @@ export default function SourcingWorkspace({ user, userBidsCount, userDraftsCount
                         </td>
                         <td className="p-4 text-center">
                           <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-orange-50 border border-orange-100 text-orange-700 text-xs font-bold rounded">
-                            <Gavel className="w-3.5 h-3.5" /> {req.productId?.totalBidCount || req.bidsCount || 0} Bids
+                            <Gavel className="w-3.5 h-3.5" /> {req.productId?.totalBidCount || req.bidsCount || 0} Quotes
                           </span>
                         </td>
                         <td className="p-4 text-xs text-slate-500 font-bold">
@@ -375,7 +375,7 @@ export default function SourcingWorkspace({ user, userBidsCount, userDraftsCount
                             onClick={() => navigate(`/product-overview?productId=${req.productId?._id || req._id}`)}
                             className="w-full py-2 bg-orange-600 hover:bg-orange-500 text-white text-xs font-black rounded border border-orange-600 transition-colors cursor-pointer"
                           >
-                            Place Bid
+                            Place Quote
                           </button>
                         </td>
                       </tr>

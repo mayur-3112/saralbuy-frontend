@@ -25,7 +25,7 @@ export default function Hero({ onOpenAuth }) {
         <div className="max-w-3xl mx-auto text-center space-y-6">
           {/* Main Headline */}
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 leading-tight">
-            Get Wholesale bids Directly From Builders & Suppliers
+            Get Wholesale Price Quotes Directly From Builders & Suppliers
           </h1>
           
           <p className="text-slate-600 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto">

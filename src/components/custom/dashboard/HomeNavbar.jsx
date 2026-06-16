@@ -73,9 +73,9 @@ const menu = [
     icon: <MessageCircleMore className="w-5 h-5" />,
   },
   {
-    title: 'My Bids',
+    title: 'Quotes Submitted',
     url: '/account/bid',
-    icon: <Gavel className="w-5 h-5" />,
+    icon: <CuboidIcon className="w-5 h-5" />,
   },
   {
     title: 'Requirements (Posted / Draft)',
@@ -863,20 +863,10 @@ const HomeNavbar = () => {
                 </PopoverContent>
               </Popover>
 
-              {/* Bids */}
-              <div
-                className="cursor-pointer bg-transparent border-0 shadow-none"
-                onClick={() => navigate('/account/bid')}
-                title="My Bids"
-              >
-                <Gavel className="w-5 h-5 text-gray-600" />
-              </div>
-
               {/* Cart */}
               <div
                 className="cursor-pointer bg-transparent border-0 shadow-none"
                 onClick={handleCartClick}
-                title="Cart"
               >
                 <ShoppingCart className="w-5 h-5 text-gray-600" />
               </div>

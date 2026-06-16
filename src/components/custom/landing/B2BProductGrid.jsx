@@ -77,7 +77,7 @@ const WHOLESALE_PRODUCTS = [
 ];
 
 export default function B2BProductGrid({ onOpenAuth }) {
-  const handleGetBids = (productTitle) => {
+  const handleGetQuotes = (productTitle) => {
     localStorage.setItem('pending_rfq_product', productTitle);
     localStorage.setItem('pending_rfq_qty', 'Bulk');
     onOpenAuth('buyer');
@@ -131,7 +131,7 @@ export default function B2BProductGrid({ onOpenAuth }) {
 
             {/* Button */}
             <button
-              onClick={() => handleGetBids(prod.title)}
+              onClick={() => handleGetQuotes(prod.title)}
               className="w-full mt-4 py-2 bg-orange-600 hover:bg-orange-500 text-white text-xs font-black rounded border border-orange-600 cursor-pointer flex items-center justify-center gap-1.5"
             >
               <Gavel className="w-3.5 h-3.5" /> Get Best Price
