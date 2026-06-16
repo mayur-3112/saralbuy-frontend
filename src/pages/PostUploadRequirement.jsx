@@ -118,7 +118,7 @@ const PostUploadRequirement = () => {
       }
     } catch (error) {
       console.error(error);
-      toast.error('Failed to post document requirement');
+      toast.error(error?.response?.data?.message || 'Failed to post document requirement');
     } finally {
       setLoading(false);
     }
@@ -137,13 +137,13 @@ const PostUploadRequirement = () => {
       </div>
       <p className="text-gray-600 mb-8">Have a Bill of Materials, PDF, Excel sheet, or Image? Upload it directly and we will notify sellers in the relevant categories.</p>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 sm:space-y-8">
         
         {/* Upload Box */}
-        <div className="p-8 bg-white border-2 border-dashed border-gray-300 rounded-lg text-center flex flex-col items-center justify-center hover:bg-gray-50 transition-colors">
-          <UploadCloud className="w-16 h-16 text-orange-400 mb-4" />
+        <div className="p-5 md:p-8 bg-white border-2 border-dashed border-gray-300 rounded-lg text-center flex flex-col items-center justify-center hover:bg-gray-50 transition-colors">
+          <UploadCloud className="w-12 h-12 md:w-16 md:h-16 text-orange-400 mb-3 md:mb-4" />
           <p className="text-gray-700 font-semibold mb-2">Drag and drop your file here, or click to browse</p>
-          <p className="text-sm text-gray-500 mb-6">Supported formats: PDF, Excel, Word, JPEG, PNG</p>
+          <p className="text-xs sm:text-sm text-gray-500 mb-6">Supported formats: PDF, Excel, Word, JPEG, PNG</p>
           <input
             type="file"
             id="file-upload"
@@ -153,23 +153,24 @@ const PostUploadRequirement = () => {
           />
           <label 
             htmlFor="file-upload"
-            className="px-6 py-2 bg-white border border-gray-300 rounded-md font-semibold text-gray-700 hover:bg-gray-100 cursor-pointer"
+            className="px-5 py-2 sm:px-6 sm:py-2 bg-white border border-gray-300 rounded-md font-semibold text-gray-700 hover:bg-gray-100 cursor-pointer text-sm sm:text-base"
           >
-            Select File
+            Browse Files
           </label>
           {selectedFile && (
-            <div className="mt-4 p-3 bg-orange-50 border border-orange-200 rounded text-orange-800 text-sm font-semibold w-full max-w-md">
-              Selected: {selectedFile.name}
+            <div className="mt-4 flex items-center gap-2 text-sm text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-full">
+              <FileText className="w-4 h-4" />
+              <span className="font-medium truncate max-w-[200px] sm:max-w-[300px]">{selectedFile.name}</span>
             </div>
           )}
         </div>
 
         {/* Category Multi-Select */}
-        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+        <div className="p-4 sm:p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
           <h3 className="text-lg font-bold text-gray-800 mb-2">Which categories does this file relate to?*</h3>
-          <p className="text-sm text-gray-500 mb-4">Select all applicable categories so the right sellers get notified.</p>
+          <p className="text-xs sm:text-sm text-gray-500 mb-4">Select all applicable categories so the right sellers get notified.</p>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
             {filteredCategories?.map(cat => (
               <label 
                 key={cat._id} 
@@ -188,10 +189,10 @@ const PostUploadRequirement = () => {
         </div>
 
         {/* Common Details Section */}
-        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm space-y-6">
+        <div className="p-4 sm:p-6 bg-white border border-gray-200 rounded-lg shadow-sm space-y-6">
           <h3 className="text-xl font-bold text-gray-800 border-b pb-4">Details</h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div className="col-span-1 md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-1">Title*</label>
               <Input

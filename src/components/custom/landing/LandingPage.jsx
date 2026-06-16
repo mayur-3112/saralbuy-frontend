@@ -37,7 +37,7 @@ export default function LandingPage() {
       <div className="max-w-7xl mx-auto px-4 py-8 grid lg:grid-cols-12 gap-6">
         
         {/* Left Column: B2B Category Directory Sidebar */}
-        <aside className="hidden lg:block lg:col-span-3 space-y-4">
+        <aside className="lg:col-span-3 space-y-4 order-last lg:order-first mt-8 lg:mt-0">
           <div className="bg-white border border-slate-200 rounded shadow-xs overflow-hidden">
             <div className="bg-slate-800 text-white p-3 font-bold text-xs uppercase tracking-wider flex items-center gap-2">
               <Menu className="w-4.5 h-4.5" /> Sourcing Categories

@@ -193,8 +193,8 @@ const CategoryForm = ({
         </div>
 
         <div className="col-span-2 md:col-span-2 flex flex-col gap-3">
-          <div className="rounded-[5px] p-6 bg-gray-200/50">
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+          <div className="rounded-[5px] p-4 sm:p-6 bg-gray-200/50">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
               <Input
                 type="text"
                 placeholder="Title* (Give a short title for your post - specify your required product in 3–4 words)"
@@ -552,7 +552,7 @@ const CategoryForm = ({
             </div>
           </div>
 
-          <div className="rounded-[5px] p-6 bg-gray-200/50">
+          <div className="rounded-[5px] p-4 sm:p-6 bg-gray-200/50">
             <div className="mb-4">
               <h3 className="text-lg font-semibold text-gray-700">Other Details</h3>
               <sup className="italic text-gray-500">
@@ -662,9 +662,9 @@ const CategoryForm = ({
             />
           </div>
 
-          <div className="rounded-[5px] p-6 bg-gray-200/50">
+          <div className="rounded-[5px] p-4 sm:p-6 bg-gray-200/50">
             <h3 className="text-lg font-semibold mb-4 text-gray-700">Payment & Delivery Details</h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
               <DatePicker
                 date={date}
                 title="Delivery Date"

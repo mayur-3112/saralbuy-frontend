@@ -31,7 +31,7 @@ const CategoryGroup = ({ nestIndex, control, register, watch, setValue, removeGr
   const subCategories = selectedCategory?.subCategories || [];
 
   return (
-    <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm relative mb-6">
+    <div className="p-4 sm:p-6 bg-white border border-gray-200 rounded-lg shadow-sm relative mb-6">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
           <Layers className="w-5 h-5 text-orange-500" />
@@ -332,10 +332,10 @@ const PostMultipleRequirements = () => {
         </div>
 
         {/* Common Details Section */}
-        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm space-y-6 mt-8">
-          <h3 className="text-xl font-bold text-gray-800 border-b pb-4">Overall Details (Applied to all items)</h3>
+        <div className="p-4 sm:p-6 bg-white border border-gray-200 rounded-lg shadow-sm space-y-6">
+          <h3 className="text-xl font-bold text-gray-800 border-b pb-4">Common Details</h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div className="col-span-1 md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-1">Overall Title*</label>
               <Input
