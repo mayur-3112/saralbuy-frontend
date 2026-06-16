@@ -150,7 +150,7 @@ export default function LiveSourcingBoard({ onOpenAuth }) {
                     {/* Bids received */}
                     <td className="p-4 text-center">
                       <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-orange-50 border border-orange-100 text-orange-700 text-xs font-bold rounded">
-                        <Gavel className="w-3.5 h-3.5" /> {req.bidsCount} Quotes
+                        <Gavel className="w-3.5 h-3.5" /> {req.bidsCount} Bids
                       </span>
                     </td>
                     
@@ -176,7 +176,7 @@ export default function LiveSourcingBoard({ onOpenAuth }) {
                           onClick={() => onOpenAuth('seller')}
                           className="w-full py-2 bg-orange-600 hover:bg-orange-500 text-white text-xs font-black rounded border border-orange-600 transition-colors cursor-pointer"
                         >
-                          Place Quote
+                          Place Bid
                         </button>
                       ) : (
                         <button

@@ -10,8 +10,8 @@ export default function HowItWorks({ onOpenAuth }) {
     },
     {
       num: '02',
-      title: 'Get Competitive Quotes',
-      desc: 'Our network of verified, GST-registered suppliers review your request and submit direct, competitive price quotes.',
+      title: 'Get Competitive Bids',
+      desc: 'Our network of verified, GST-registered suppliers review your request and submit direct, competitive price Bids.',
     },
     {
       num: '03',
@@ -21,7 +21,7 @@ export default function HowItWorks({ onOpenAuth }) {
     {
       num: '04',
       title: 'Pay Direct (0% Fee)',
-      desc: 'Approve the best quote, issue your purchase order, and pay the supplier directly. No commissions, no middleman markups.',
+      desc: 'Approve the best bid, issue your purchase order, and pay the supplier directly. No commissions, no middleman markups.',
     },
   ];
 
