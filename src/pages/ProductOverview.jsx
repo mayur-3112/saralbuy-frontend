@@ -1067,6 +1067,26 @@ const ProductOverview = () => {
                   </div>
                 </div>
 
+                  {(bidOverviewRes?.product?.isUpload || productResponse?.mainProduct?.isUpload) && (
+                    <div className="mt-6 border-2 border-orange-200 bg-orange-50 rounded-lg p-5 flex items-center justify-between">
+                      <div>
+                        <h4 className="font-bold text-gray-800 text-lg">Attached Requirements Document</h4>
+                        <p className="text-sm text-gray-600 mt-1">Please download the document to view the full bill of materials and specifications.</p>
+                      </div>
+                      <a 
+                        href={bidOverviewRes?.product?.document || productResponse?.mainProduct?.document}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-5 py-2.5 rounded-md font-semibold transition-colors"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Download Document
+                      </a>
+                    </div>
+                  )}
+
                 {(bidOverviewRes?.product?.isMultiple || productResponse?.mainProduct?.isMultiple) && (
                   <div className="mt-6 border border-gray-200 rounded-lg overflow-hidden">
                     <div className="bg-gray-100 px-4 py-2 border-b border-gray-200 font-semibold text-gray-700">

@@ -119,7 +119,17 @@ const FALLBACK_CATEGORIES = [
 const Requirement = () => {
   const disptachCategories = useCategory();
   const { categories: serverCategories } = useCategoryState();
-  const data = (serverCategories && serverCategories.length > 0) ? serverCategories : FALLBACK_CATEGORIES;
+  
+  // Filter out the 4 legacy test categories
+  const legacyIds = [
+    '6a2ade8177e519fa2715f67c',
+    '6a2ade8177e519fa2715f680',
+    '6a2ade8177e519fa2715f684',
+    '6a2ade8177e519fa2715f687'
+  ];
+  const filteredCategories = serverCategories?.filter(cat => !legacyIds.includes(cat._id));
+  
+  const data = (filteredCategories && filteredCategories.length > 0) ? filteredCategories : FALLBACK_CATEGORIES;
   const [currentWinSize, setCurrentWinSize] = useState(window.innerWidth);
   const navigate = useNavigate();
   useEffect(() => {

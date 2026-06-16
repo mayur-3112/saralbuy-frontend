@@ -24,10 +24,19 @@ const PostUploadRequirement = () => {
   const navigate = useNavigate();
   const { user } = useUserState();
   const dispatachCategory = useCategory();
-  const { categories } = useCategoryState();
+  const { categories: serverCategories } = useCategoryState();
   const [loading, setLoading] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+
+  // Filter out the 4 legacy test categories
+  const legacyIds = [
+    '6a2ade8177e519fa2715f67c',
+    '6a2ade8177e519fa2715f680',
+    '6a2ade8177e519fa2715f684',
+    '6a2ade8177e519fa2715f687'
+  ];
+  const categories = serverCategories?.filter(cat => !legacyIds.includes(cat._id));
 
   useEffect(() => {
     dispatachCategory();

@@ -54,6 +54,8 @@ import { useChatState, useDispatchChat } from '@/redux/hooks/useChat';
 import userService from '@/services/user.service';
 import requirementService from '@/services/requirement.service';
 import { getNotifMeta } from '@/helper/notif.icons';
+import { toast } from 'sonner';
+
 const menu = [
   {
     title: 'Settings',
@@ -498,6 +500,11 @@ const HomeNavbar = () => {
 
     socket.off(SOCKET_EVENTS.NOTIFICATION_NEW);
     socket.on(SOCKET_EVENTS.NOTIFICATION_NEW, notif => {
+      // Trigger a toast alert
+      toast.success(notif.title || 'New Notification', {
+        description: notif.description || 'You have a new update.',
+        duration: 5000,
+      });
       setNotifications(prev => {
         if (prev.some(n => n._id === notif._id)) return prev;
         return [notif, ...prev];
