@@ -333,9 +333,28 @@ export default function SourcingWorkspace({ user, userBidsCount, userDraftsCount
                           <div className="text-xs text-slate-400 font-semibold mt-1">Category: {req.productId?.categoryId?.categoryName || 'General'}</div>
                           <div className="text-xs text-slate-500 mt-1.5 leading-relaxed font-medium bg-slate-50 border border-slate-100 rounded p-2">{specs}</div>
                         </td>
-                        <td className="p-4 font-black text-slate-900 text-[15px]">
-                          {req.productId?.quantity || req.quantity} Units
-                        </td>
+                          <td className="p-4">
+                            {req.productId?.isUpload ? (
+                              <div className="text-orange-600 text-[13px] font-bold bg-orange-50 px-2 py-1 rounded inline-block">Document Uploaded</div>
+                            ) : req.productId?.isMultiple ? (
+                              <div className="text-sm text-slate-700">
+                                <ul className="list-disc pl-4 text-xs space-y-1 font-medium">
+                                  {(req.productId?.items || req.items || []).slice(0, 3).map((subItem, idx) => (
+                                    <li key={idx} className="truncate">
+                                      {subItem.subCategoryName} <span className="text-slate-400">({subItem.quantity} {subItem.quantityUnit})</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                                {(req.productId?.items || req.items || []).length > 3 && (
+                                  <div className="text-xs text-blue-600 mt-1 italic pl-1 font-semibold">+ {(req.productId?.items || req.items || []).length - 3} more items</div>
+                                )}
+                              </div>
+                            ) : (
+                              <div className="font-black text-slate-900 text-[15px]">
+                                {req.productId?.quantity || req.quantity} Units
+                              </div>
+                            )}
+                          </td>
                         <td className="p-4">
                           <div className="font-bold text-slate-800">{buyerName}</div>
                           <div className="text-xs text-slate-500 flex items-center gap-1 mt-1 font-semibold">
