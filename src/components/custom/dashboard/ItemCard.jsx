@@ -1,10 +1,25 @@
-import { ChevronDown } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { ChevronDown, Factory, Laptop, Home, Box, Wrench, Sofa, Car, Activity, ShieldCheck } from 'lucide-react';
+import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useMemo } from 'react';
+
 const ELECTRONICS_ORDER = ['mobile', 'tablets', 'wearables', 'accessories', 'other'];
 
-const ItemCard = ({ categoryName, subCategories, image, _id }) => {
+const getCategoryIcon = (categoryName) => {
+  switch(categoryName.toLowerCase()) {
+    case 'industrial': return <Factory className="w-6 h-6 text-orange-500" />;
+    case 'electronics': return <Laptop className="w-6 h-6 text-orange-500" />;
+    case 'home': return <Home className="w-6 h-6 text-orange-500" />;
+    case 'furniture': return <Sofa className="w-6 h-6 text-orange-500" />;
+    case 'service': return <Wrench className="w-6 h-6 text-orange-500" />;
+    case 'automobile': return <Car className="w-6 h-6 text-orange-500" />;
+    case 'sports': return <Activity className="w-6 h-6 text-orange-500" />;
+    case 'fashion': return <ShieldCheck className="w-6 h-6 text-orange-500" />;
+    case 'beauty': return <ShieldCheck className="w-6 h-6 text-orange-500" />;
+    default: return <Box className="w-6 h-6 text-orange-500" />;
+  }
+};
+
+const ItemCard = ({ categoryName, subCategories, _id, onSelect }) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const TARGET_FIELD = 'home';
@@ -39,20 +54,16 @@ const ItemCard = ({ categoryName, subCategories, image, _id }) => {
     <div className="group flex flex-col w-full relative" id={`itemcard-${_id}`}>
       {/* Card Trigger */}
       <div
-        className="cursor-pointer rounded-2x w-full"
+        className="cursor-pointer border border-slate-200 bg-white rounded-lg p-5 hover:border-orange-500 hover:shadow-md transition-all flex justify-between items-center group"
         onClick={() => {
           setOpen(prev => !prev);
         }}
       >
-        <div className="w-full h-24">
-          <img
-            className="h-full w-full object-contain rounded-xs bg-blend-hard-light mix-blend-darken"
-            src={image}
-            alt="Category"
-          />
-        </div>
-        <div className="py-2 text-center flex justify-between items-center">
-          <p className="text-[13px] pl-1 capitalize font-medium ">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-orange-50 rounded-lg group-hover:scale-110 transition-transform">
+            {getCategoryIcon(categoryName)}
+          </div>
+          <p className="text-[14px] capitalize font-bold text-slate-800">
             {categoryName === 'beauty'
               ? 'Personal Care'
               : categoryName === 'electronics'
@@ -67,20 +78,20 @@ const ItemCard = ({ categoryName, subCategories, image, _id }) => {
                         ? 'furniture and decor'
                         : categoryName}
           </p>
-          <ChevronDown
-            className={`w-5 h-5 text-gray-500 transition-transform duration-300 flex-shrink-0 ${
-              open ? 'rotate-180' : ''
-            }`}
-          />
         </div>
+        <ChevronDown
+          className={`w-5 h-5 text-gray-500 transition-transform duration-300 flex-shrink-0 group-hover:text-orange-500 ${
+            open ? 'rotate-180' : ''
+          }`}
+        />
       </div>
 
       {/* Dropdown with scrollbar */}
 
       <div
         className={`
-           left-0 top-full rounded-md z-30 w-[200px] bg-white border border-gray-200 mt-1
-           origin-top
+           absolute left-0 top-[105%] rounded-md z-30 w-full bg-white border border-gray-200 shadow-lg
+           origin-top transition-all duration-200
           ${open ? 'max-h-56 opacity-100 scale-y-100 pointer-events-auto ' : 'max-h-0 opacity-0 scale-y-95 pointer-events-none'}
         `}
       >
@@ -90,7 +101,11 @@ const ItemCard = ({ categoryName, subCategories, image, _id }) => {
               <div
                 onClick={() => {
                   if (categoryName !== TARGET_FIELD) {
-                    navigate(`/category/${_id}/${item._id}`);
+                    if (onSelect) {
+                      onSelect(_id, item._id);
+                    } else {
+                      navigate(`/category/${_id}/${item._id}`);
+                    }
                     return;
                   }
                   setInnerOpen(innerOpen === index ? null : index);

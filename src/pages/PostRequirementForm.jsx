@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { MoveLeft, Plus, Trash2, UploadCloud, FileText, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,6 +24,11 @@ import instance from '@/helper/instance';
 
 const PostRequirementForm = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const mode = searchParams.get('mode') || 'single';
+  const initialCat = searchParams.get('cat');
+  const initialSub = searchParams.get('sub');
+  
   const { user } = useUserState();
   const dispatachCategory = useCategory();
   const { categories } = useCategoryState();
@@ -39,8 +44,8 @@ const PostRequirementForm = () => {
   const { control, register, handleSubmit, watch, setValue } = useForm({
     defaultValues: {
       title: '',
-      categoryId: '',
-      subCategoryId: '',
+      categoryId: initialCat || '',
+      subCategoryId: initialSub || '',
       items: [
         { itemName: '', itemDescription: '', quantity: '', quantityUnit: 'pcs', brand: 'Any' }
       ],
@@ -220,97 +225,99 @@ const PostRequirementForm = () => {
         </div>
 
         {/* Dynamic Item Rows */}
-        <div className="p-6 bg-white border border-slate-200 rounded-lg shadow-sm">
-          <div className="flex items-center justify-between border-b border-slate-200 pb-4 mb-4">
-            <h3 className="text-lg font-black text-slate-900">List of Materials/Services</h3>
-          </div>
+        {mode === 'single' && (
+          <div className="p-6 bg-white border border-slate-200 rounded-lg shadow-sm">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-4 mb-4">
+              <h3 className="text-lg font-black text-slate-900">List of Materials/Services</h3>
+            </div>
           
-          {/* Header Row for Desktop */}
-          <div className="hidden md:grid grid-cols-12 gap-3 mb-2 px-2 text-xs font-extrabold text-slate-500 uppercase tracking-wider">
-            <div className="col-span-3">Item Name</div>
-            <div className="col-span-3">Description / Specs</div>
-            <div className="col-span-2">Quantity</div>
-            <div className="col-span-1">Units</div>
-            <div className="col-span-2">Brand</div>
-            <div className="col-span-1 text-center">Action</div>
+            {/* Header Row for Desktop */}
+            <div className="hidden md:grid grid-cols-12 gap-3 mb-2 px-2 text-xs font-extrabold text-slate-500 uppercase tracking-wider">
+              <div className="col-span-3">Item Name</div>
+              <div className="col-span-3">Description / Specs</div>
+              <div className="col-span-2">Quantity</div>
+              <div className="col-span-1">Units</div>
+              <div className="col-span-2">Brand</div>
+              <div className="col-span-1 text-center">Action</div>
+            </div>
+
+            <div className="space-y-4">
+              {fields.map((item, index) => (
+                <div key={item.id} className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-50/50 p-3 rounded-md border border-slate-200 hover:border-orange-300 transition-colors">
+                  <div className="md:col-span-3">
+                    <label className="block md:hidden text-xs font-bold text-slate-500 mb-1">Item Name</label>
+                    <Input placeholder="e.g., Pipe" {...register(`items.${index}.itemName`)} className="bg-white border-slate-200 font-medium" />
+                  </div>
+
+                  <div className="md:col-span-3">
+                    <label className="block md:hidden text-xs font-bold text-slate-500 mb-1">Description / Specs</label>
+                    <Input placeholder="e.g., DN65 ASTM A106" {...register(`items.${index}.itemDescription`)} className="bg-white border-slate-200 font-medium" />
+                  </div>
+                  
+                  <div className="md:col-span-2">
+                    <label className="block md:hidden text-xs font-bold text-slate-500 mb-1">Qty</label>
+                    <Input type="number" placeholder="Qty" {...register(`items.${index}.quantity`)} className="bg-white border-slate-200 font-medium" min="1" />
+                  </div>
+                  
+                  <div className="md:col-span-1">
+                    <label className="block md:hidden text-xs font-bold text-slate-500 mb-1">Units</label>
+                    <Controller
+                      name={`items.${index}.quantityUnit`}
+                      control={control}
+                      render={({ field: { onChange, value } }) => (
+                        <Select value={value} onValueChange={onChange}>
+                          <SelectTrigger className="bg-white border-slate-200 font-medium">
+                            <SelectValue placeholder="Unit" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {['pcs', 'ltr', 'kg', 'ft', 'mtr', 'tons', 'bags', 'set'].map(u => (
+                              <SelectItem key={u} value={u} className="uppercase">{u}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block md:hidden text-xs font-bold text-slate-500 mb-1">Brand</label>
+                    <Controller
+                      name={`items.${index}.brand`}
+                      control={control}
+                      render={({ field: { onChange, value } }) => (
+                        <Select value={value} onValueChange={onChange}>
+                          <SelectTrigger className="bg-white border-slate-200 font-medium">
+                            <SelectValue placeholder="Brand" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {availableBrands.map(b => (
+                              <SelectItem key={b} value={b}>{b}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                  </div>
+
+                  <div className="md:col-span-1 flex justify-end md:justify-center mt-2 md:mt-0">
+                    <button type="button" onClick={() => remove(index)} className="text-slate-400 hover:text-red-500 p-2 hover:bg-red-50 rounded transition-colors" title="Delete Row">
+                      <Trash2 className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => append({ itemName: '', itemDescription: '', quantity: '', quantityUnit: 'pcs', brand: 'Any' })}
+              className="mt-4 text-orange-600 hover:text-orange-700 hover:bg-orange-50 font-extrabold border border-dashed border-orange-200"
+            >
+              <Plus className="w-4 h-4 mr-1" /> Add Another Item
+            </Button>
           </div>
-
-          <div className="space-y-4">
-            {fields.map((item, index) => (
-              <div key={item.id} className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-50/50 p-3 rounded-md border border-slate-200 hover:border-orange-300 transition-colors">
-                <div className="md:col-span-3">
-                  <label className="block md:hidden text-xs font-bold text-slate-500 mb-1">Item Name</label>
-                  <Input placeholder="e.g., Pipe" {...register(`items.${index}.itemName`)} className="bg-white border-slate-200 font-medium" />
-                </div>
-
-                <div className="md:col-span-3">
-                  <label className="block md:hidden text-xs font-bold text-slate-500 mb-1">Description / Specs</label>
-                  <Input placeholder="e.g., DN65 ASTM A106" {...register(`items.${index}.itemDescription`)} className="bg-white border-slate-200 font-medium" />
-                </div>
-                
-                <div className="md:col-span-2">
-                  <label className="block md:hidden text-xs font-bold text-slate-500 mb-1">Qty</label>
-                  <Input type="number" placeholder="Qty" {...register(`items.${index}.quantity`)} className="bg-white border-slate-200 font-medium" min="1" />
-                </div>
-                
-                <div className="md:col-span-1">
-                  <label className="block md:hidden text-xs font-bold text-slate-500 mb-1">Units</label>
-                  <Controller
-                    name={`items.${index}.quantityUnit`}
-                    control={control}
-                    render={({ field: { onChange, value } }) => (
-                      <Select value={value} onValueChange={onChange}>
-                        <SelectTrigger className="bg-white border-slate-200 font-medium">
-                          <SelectValue placeholder="Unit" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {['pcs', 'ltr', 'kg', 'ft', 'mtr', 'tons', 'bags', 'set'].map(u => (
-                            <SelectItem key={u} value={u} className="uppercase">{u}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )}
-                  />
-                </div>
-
-                <div className="md:col-span-2">
-                  <label className="block md:hidden text-xs font-bold text-slate-500 mb-1">Brand</label>
-                  <Controller
-                    name={`items.${index}.brand`}
-                    control={control}
-                    render={({ field: { onChange, value } }) => (
-                      <Select value={value} onValueChange={onChange}>
-                        <SelectTrigger className="bg-white border-slate-200 font-medium">
-                          <SelectValue placeholder="Brand" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {availableBrands.map(b => (
-                            <SelectItem key={b} value={b}>{b}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )}
-                  />
-                </div>
-
-                <div className="md:col-span-1 flex justify-end md:justify-center mt-2 md:mt-0">
-                  <button type="button" onClick={() => remove(index)} className="text-slate-400 hover:text-red-500 p-2 hover:bg-red-50 rounded transition-colors" title="Delete Row">
-                    <Trash2 className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={() => append({ itemName: '', itemDescription: '', quantity: '', quantityUnit: 'pcs', brand: 'Any' })}
-            className="mt-4 text-orange-600 hover:text-orange-700 hover:bg-orange-50 font-extrabold border border-dashed border-orange-200"
-          >
-            <Plus className="w-4 h-4 mr-1" /> Add Another Item
-          </Button>
-        </div>
+        )}
 
         {/* Documents & Terms Section */}
         <div className="p-6 bg-white border border-slate-200 rounded-lg shadow-sm">

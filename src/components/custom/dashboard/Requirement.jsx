@@ -117,6 +117,7 @@ const FALLBACK_CATEGORIES = [
 ];
 
 const Requirement = () => {
+  const [postMode, setPostMode] = useState('single');
   const disptachCategories = useCategory();
   const { categories: serverCategories } = useCategoryState();
   
@@ -149,58 +150,66 @@ const Requirement = () => {
     <div className="w-full max-w-7xl mx-auto px-4 min-h-screen relative">
       {/* <Banner /> */}
 
-      <div className="mt-10 mb-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="mt-10 mb-8 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
         <div 
-          className="border-2 border-orange-500 rounded-lg p-6 bg-orange-50 cursor-pointer shadow-sm hover:shadow-md transition-shadow"
+          className={`border-2 rounded-lg p-6 cursor-pointer shadow-sm hover:shadow-md transition-all ${
+            postMode === 'single' ? 'border-orange-500 bg-orange-50' : 'border-gray-200 bg-white hover:border-orange-300'
+          }`}
           onClick={() => {
-            // Let them scroll down to select a category
+            setPostMode('single');
             window.scrollTo({ top: 300, behavior: 'smooth' });
           }}
         >
-          <h2 className="text-xl font-bold text-orange-600 mb-2">Post a Single Requirement</h2>
-          <p className="text-gray-600 text-sm">Have one specific product in mind? Select a category below to post your requirement.</p>
+          <div className="flex items-center gap-3 mb-2">
+            <div className={`p-2 rounded-full ${postMode === 'single' ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-500'}`}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
+            </div>
+            <h2 className={`text-xl font-bold ${postMode === 'single' ? 'text-orange-600' : 'text-gray-800'}`}>Post a Single Requirement</h2>
+          </div>
+          <p className="text-gray-600 text-sm">Have one specific product in mind? Fill out a simple form with your particulars.</p>
         </div>
         
         <div 
-          className="border border-gray-300 rounded-lg p-6 bg-white cursor-pointer shadow-sm hover:shadow-md transition-shadow hover:border-orange-400"
+          className={`border-2 rounded-lg p-6 cursor-pointer shadow-sm hover:shadow-md transition-all ${
+            postMode === 'upload' ? 'border-orange-500 bg-orange-50' : 'border-gray-200 bg-white hover:border-orange-300'
+          }`}
           onClick={() => {
-            navigate('/post-multiple-requirements');
+            setPostMode('upload');
+            window.scrollTo({ top: 300, behavior: 'smooth' });
           }}
         >
-          <h2 className="text-xl font-bold text-gray-800 mb-2">Post Multiple Requirements</h2>
-          <p className="text-gray-600 text-sm">Have a Bill of Materials or a long list? Build a dynamic list and post them all at once.</p>
-        </div>
-
-        <div 
-          className="border border-gray-300 rounded-lg p-6 bg-white cursor-pointer shadow-sm hover:shadow-md transition-shadow hover:border-orange-400"
-          onClick={() => {
-            navigate('/upload-requirements');
-          }}
-        >
-          <h2 className="text-xl font-bold text-gray-800 mb-2">Upload Requirements</h2>
-          <p className="text-gray-600 text-sm">Have an Excel sheet, PDF, or image? Upload your document and let sellers review it directly.</p>
+          <div className="flex items-center gap-3 mb-2">
+            <div className={`p-2 rounded-full ${postMode === 'upload' ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-500'}`}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M12 18v-6"/><path d="m9 15 3-3 3 3"/></svg>
+            </div>
+            <h2 className={`text-xl font-bold ${postMode === 'upload' ? 'text-orange-600' : 'text-gray-800'}`}>Upload PDF Requirement</h2>
+          </div>
+          <p className="text-gray-600 text-sm">Have an Excel sheet, PDF, or image? Upload your document directly.</p>
         </div>
       </div>
 
-      <h1 className="text-xl font-bold text-gray-700 mb-4">Select a Category (For Single Item)</h1>
+      <h1 className="text-xl font-bold text-gray-700 mb-4">Select a Category</h1>
       {currentWinSize >= 768 ? (
-        <div className="grid grid-cols-10 gap-5 ">
-          {data && data?.map(item => <ItemCard key={item._id} {...item} />)}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          {data && data?.map(item => (
+            <ItemCard 
+              key={item._id} 
+              {...item} 
+              onSelect={(catId, subId) => navigate(`/post-requirement?mode=${postMode}&cat=${catId}&sub=${subId}`)} 
+            />
+          ))}
         </div>
       ) : (
         <Accordion type="single" collapsible className="w-full">
           {data &&
             data?.map(item => (
               <AccordionItem value={item?._id} key={item._id}>
-                <AccordionTrigger className="capitalize">
+                <AccordionTrigger className="capitalize px-4 bg-white border border-slate-200 rounded-lg hover:border-orange-300 transition-colors">
                   <div className="flex items-center gap-x-4">
-                    <img
-                      src={item?.image}
-                      alt={item?.categoryName}
-                      className="w-14 h-14 object-cover rounded-md"
-                    />
-
-                    <p className="text-sm font-medium capitalize">{item?.categoryName}</p>
+                    <div className="w-10 h-10 rounded-md bg-orange-50 text-orange-500 flex items-center justify-center font-bold text-lg">
+                      {item?.categoryName.charAt(0).toUpperCase()}
+                    </div>
+                    <p className="text-sm font-bold capitalize text-slate-700">{item?.categoryName}</p>
                   </div>
                 </AccordionTrigger>
 
@@ -208,10 +217,10 @@ const Requirement = () => {
                   {item?.subCategories?.map(sub => (
                     <p
                       onClick={() => {
-                        navigate(`/category/${item?._id}/${sub._id}`);
+                        navigate(`/post-requirement?mode=${postMode}&cat=${item?._id}&sub=${sub._id}`);
                       }}
                       key={sub?._id}
-                      className="capitalize underline text-orange-500 text-sm cursor-pointer"
+                      className="capitalize text-slate-600 hover:text-orange-500 py-2 border-b border-slate-100 text-sm cursor-pointer last:border-none"
                     >
                       {sub?.name}
                     </p>
