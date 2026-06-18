@@ -139,7 +139,7 @@ const SwiperSlider = ({ title, color, target, data }) => {
             ) : (
               <Button
                 size="sm"
-                onClick={() => navigate('/requirement')}
+                onClick={() => navigate('/post-requirement')}
                 className="mt-3.5 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold rounded-xl cursor-pointer"
               >
                 Post a Requirement

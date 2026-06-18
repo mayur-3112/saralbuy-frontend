@@ -60,18 +60,6 @@ const tags = [
     title: 'Notifications',
     value: 'notifications',
   },
-  {
-    title: 'FAQs',
-    value: 'faq',
-  },
-  {
-    title: 'About Us',
-    value: 'about_us',
-  },
-  {
-    title: 'Contact Us',
-    value: 'contact_us',
-  },
 ];
 
 const Profile = () => {

@@ -248,7 +248,7 @@ export default function SourcingWorkspace({ user, userBidsCount, userDraftsCount
           </div>
           
           <button
-            onClick={() => navigate('/requirement')}
+            onClick={() => navigate('/post-requirement')}
             className="w-full lg:w-auto px-4 py-2.5 bg-orange-600 hover:bg-orange-500 text-white font-bold rounded text-xs flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-orange-600/10"
           >
             <Plus className="w-4 h-4" /> Post New Project Sourcing Need

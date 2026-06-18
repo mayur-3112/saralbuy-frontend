@@ -177,7 +177,7 @@ const HomeNavbar = () => {
 
   // ── Handlers (stubs — replace with real navigation / actions) ───────────
   const handleRaiseARequirement = () => {
-    navigate('/requirement');
+    navigate('/post-requirement');
     setOpenSheet(false);
   };
   const handleProfileClick = () => {
@@ -562,7 +562,7 @@ const HomeNavbar = () => {
               <div className="hidden lg:flex items-center gap-6 ml-2">
                 <Link to={'/product-listing'} className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors">EXPLORE</Link>
                 <Link to={'/'} className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors">HOW IT WORKS</Link>
-                <Link to={'/requirement'} className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors">RFQ/INQUIRIES</Link>
+                <Link to={'/post-requirement'} className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors">RFQ/INQUIRIES</Link>
               </div>
 
               <div className="flex items-center relative group">

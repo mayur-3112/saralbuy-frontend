@@ -74,7 +74,7 @@ export default function AppRoutes() {
       <Suspense fallback={<Loader />}>
         <Routes>
           <Route path="/" element={<Dashboard />} />
-          <Route path="/requirement" element={<Requirement />} />
+          <Route path="/requirement" element={<Navigate to="/post-requirement" replace />} />
           <Route path="/post-requirement" element={<PostRequirementForm />} />
           <Route path="/category/:categoryId/:subCategoryId" element={<CreateProductForm />} />
           <Route path="/update-draft/:productId" element={<UpdateCreateProductForm />} />
