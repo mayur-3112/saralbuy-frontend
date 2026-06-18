@@ -13,7 +13,6 @@ import { DatePicker } from '@/lib/DatePicker';
 import { useFetch } from '@/hooks/useFetch';
 import productService from '@/services/product.service';
 import { useEffect, useRef, useState } from 'react';
-import cartService from '@/services/cart.service';
 import { mergeName } from '@/utils/mergerName';
 import { currencyConvertor } from '@/utils/currencyConvertor';
 import { dateFormatter } from '@/utils/dateFormatter';
@@ -554,11 +553,6 @@ const ProductOverview = () => {
     data: bidStats,
   } = useFetch(bidService.getBidStats);
   const { fn: createRequirementFn } = useFetch(requirementService.createRequirement);
-  const {
-    fn: addToCartFn,
-    data: addToCartRes,
-    loading: addToCartLoading,
-  } = useFetch(cartService.addToCart);
 
   const [open, setOpen] = useState(false);
   const [sellerVerification, setSellerVerification] = useState(false);
@@ -597,20 +591,6 @@ const ProductOverview = () => {
       buyerNote: '',
     },
   });
-
-  const handleAddToCart = async productId => {
-    await addToCartFn(productId);
-  };
-
-  useEffect(() => {
-    if (addToCartRes) {
-      if ((addToCartRes?.message).match(/already/) !== null) {
-        toast.warning(addToCartRes.message);
-      } else {
-        toast.success(addToCartRes.message);
-      }
-    }
-  }, [addToCartRes]);
 
   useEffect(() => {
     if (productId) {
@@ -1161,25 +1141,6 @@ const ProductOverview = () => {
                           : productResponse?.mainProduct?.totalBidCount || 0}
                       </span>
                     </Button>
-                    {!bidOverviewRes && (
-                      <Button
-                        className="min-w-32 border-[2px] border-orange-500 text-orange-500 hover:bg-orange-600 hover:text-white transition-all ease-in-out duration-300 cursor-pointer"
-                        variant="outline"
-                        onClick={() => handleAddToCart(productResponse?.mainProduct?._id)}
-                        disabled={
-                          addToCartLoading ||
-                          productResponse?.mainProduct?.userId?._id === userProfile?._id ||
-                          soldProduct ||
-                          timeLeft === 'Expired'
-                        }
-                      >
-                        {addToCartLoading ? (
-                          <Spinner className="w-5 h-5 animate-spin" />
-                        ) : (
-                          'Add to Cart'
-                        )}
-                      </Button>
-                    )}
                   </div>
                 )}
               </div>

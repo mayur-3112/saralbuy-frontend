@@ -63,11 +63,6 @@ const menu = [
     icon: <CircleUserRound className="w-5 h-5" />,
   },
   {
-    title: 'Cart',
-    url: '/account/cart',
-    icon: <ShoppingCart className="w-5 h-5" />,
-  },
-  {
     title: 'Messages',
     url: '/chat',
     icon: <MessageCircleMore className="w-5 h-5" />,
@@ -558,10 +553,17 @@ const HomeNavbar = () => {
               <Link to={'/'} className="flex items-center gap-2">
                 <img
                   src={saralBuyLogo}
-                  className="max-h-20 mix-blend-darken  dark:invert"
+                  className="max-h-20 mix-blend-darken dark:invert"
                   alt={'company logo'}
                 />
               </Link>
+              
+              {/* B2B Navigation Links */}
+              <div className="hidden lg:flex items-center gap-6 ml-2">
+                <Link to={'/product-listing'} className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors">EXPLORE</Link>
+                <Link to={'/'} className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors">HOW IT WORKS</Link>
+                <Link to={'/requirement'} className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors">RFQ/INQUIRIES</Link>
+              </div>
 
               <div className="flex items-center relative group">
                 <MapPin 
@@ -863,43 +865,25 @@ const HomeNavbar = () => {
                 </PopoverContent>
               </Popover>
 
-              {/* Cart */}
-              <div
-                className="cursor-pointer bg-transparent border-0 shadow-none"
-                onClick={handleCartClick}
-              >
-                <ShoppingCart className="w-5 h-5 text-gray-600" />
-              </div>
             </div>
 
             {/* Post a Requirement */}
             <Button
-              onClick={handleRaiseARequirement}
-              variant="link"
-              size="lg"
-              className="border  shadow-orange-500 border-orange-600 text-orange-600 rounded-[5px] transition-all duration-300 ease-in-out underline hover:bg-orange-500 hover:text-white cursor-pointer"
+              onClick={() => {
+                navigate('/post-requirement');
+                setOpenSheet(false);
+              }}
+              variant="default"
+              size="sm"
+              className="bg-orange-600 text-white font-black px-5 py-2 rounded-md shadow-sm hover:bg-orange-700 transition-colors cursor-pointer text-sm"
             >
-              Post a requirement
+              Post Requirements
             </Button>
 
-            {/* User Greeting + Profile Button */}
-            {user && (
-              <span className="text-sm font-medium text-gray-700">Hello, {user?.firstName || 'Guest'}!</span>
-            )}
-            <Button onClick={handleProfileClick} size="icon" className="cursor-pointer bc overflow-hidden rounded-full p-0 flex items-center justify-center">
-              {!user ? (
-                <UserRound className="w-5 h-5" />
-              ) : user.profileImage ? (
-                <img
-                  src={user.profileImage}
-                  alt="Profile"
-                  className="w-full h-full object-cover"
-                />
-              ) : !user?.firstName && !user?.lastNme ? (
-                <UserRound className="w-5 h-5" />
-              ) : (
-                fallBackName(mergeName(user))
-              )}
+            {/* My Account Button */}
+            <Button onClick={handleProfileClick} variant="outline" className="hidden lg:flex items-center gap-2 font-bold text-slate-700 border-slate-300 hover:bg-slate-100 hover:text-slate-900 px-4 py-2 rounded-full cursor-pointer transition-colors shadow-sm bg-white">
+              <UserRound className="w-4 h-4" />
+              My Account
             </Button>
           </nav>
 

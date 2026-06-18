@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { MapPin, Gavel, Clock, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { maskOrganizationName } from '../../../utils/maskName';
 
 const MOCK_REQUIREMENTS = [
   {
     id: 1,
     title: 'UltraTech OPC 53 Grade Cement',
     category: 'Building Materials',
+    organization: 'LARSEN & TOUBRO LIMITED',
     quantity: '1,500 Bags',
     location: 'Peenya Project Site, Bengaluru',
     postedTime: '2 hours ago',
@@ -17,6 +19,7 @@ const MOCK_REQUIREMENTS = [
     id: 2,
     title: 'Fe 550 TMT Steel Reinforcement Bars',
     category: 'Building Materials',
+    organization: 'PRESTIGE ESTATES PROJECTS',
     quantity: '12 Tons',
     location: 'Smart City Project, Mangaluru',
     postedTime: '5 hours ago',
@@ -28,6 +31,7 @@ const MOCK_REQUIREMENTS = [
     id: 3,
     title: 'Heavy Duty PVC Conduit Pipes (20mm)',
     category: 'Plumbing & Fittings',
+    organization: 'BRIGADE ENTERPRISES',
     quantity: '2,500 Meters',
     location: 'Commercial Complex, Hubballi',
     postedTime: '1 day ago',
@@ -39,6 +43,7 @@ const MOCK_REQUIREMENTS = [
     id: 4,
     title: 'Double Charge Vitrified Floor Tiles (600x600mm)',
     category: 'Finishing & Interior',
+    organization: 'SOBHA DEVELOPERS',
     quantity: '1,200 Sq Ft',
     location: 'Residential Villa Project, Belagavi',
     postedTime: 'Yesterday',
@@ -50,6 +55,7 @@ const MOCK_REQUIREMENTS = [
     id: 5,
     title: 'Polished Granite Slabs (Sira Grey, 18mm)',
     category: 'Finishing & Interior',
+    organization: 'PURAVANKARA LIMITED',
     quantity: '3,000 Sq Ft',
     location: 'IT Park Site, Mysuru',
     postedTime: '2 days ago',
@@ -61,6 +67,7 @@ const MOCK_REQUIREMENTS = [
     id: 6,
     title: 'Recessed LED Panel Lights (15W, Warm White)',
     category: 'Electrical & Lighting',
+    organization: 'MAHINDRA LIFESPACES',
     quantity: '500 Units',
     location: 'Apartment Project, Tumakuru',
     postedTime: '3 days ago',
@@ -118,7 +125,7 @@ export default function LiveSourcingBoard({ onOpenAuth }) {
                 <tr className="border-b border-slate-300 bg-slate-50 text-slate-700 text-xs uppercase font-extrabold">
                   <th className="p-4 w-[35%]">Requirement Description</th>
                   <th className="p-4 w-[12%]">Quantity</th>
-                  <th className="p-4 w-[20%]">Delivery Location</th>
+                  <th className="p-4 w-[20%]">Buyer & Location</th>
                   <th className="p-4 w-[10%] text-center">Quotes Received</th>
                   <th className="p-4 w-[10%]">Status</th>
                   <th className="p-4 w-[13%] text-center">Action</th>
@@ -139,11 +146,14 @@ export default function LiveSourcingBoard({ onOpenAuth }) {
                       {req.quantity}
                     </td>
                     
-                    {/* Location */}
+                    {/* Location & Organization */}
                     <td className="p-4">
+                      <div className="font-extrabold text-slate-500 text-[11px] mb-1 tracking-widest bg-slate-100 inline-block px-1.5 py-0.5 rounded">
+                        {maskOrganizationName(req.organization)}
+                      </div>
                       <div className="flex items-center gap-1 font-bold text-slate-800">
                         <MapPin className="w-4 h-4 text-slate-400 shrink-0" />
-                        <span>{req.location}</span>
+                        <span className="leading-snug">{req.location}</span>
                       </div>
                     </td>
                     

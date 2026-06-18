@@ -96,17 +96,8 @@ export default function B2BProductGrid({ onOpenAuth }) {
         {WHOLESALE_PRODUCTS.map((prod) => (
           <div
             key={prod.id}
-            className="bg-white border border-slate-250 hover:border-slate-400 rounded p-4 flex flex-col justify-between shadow-xs transition-colors"
+            className="bg-white border border-slate-200 hover:border-orange-300 rounded-lg p-5 flex flex-col justify-between shadow-sm hover:shadow transition-all"
           >
-            {/* Image */}
-            <div className="w-full h-32 flex items-center justify-center bg-slate-50 border border-slate-100 rounded mb-3">
-              <img
-                src={prod.image}
-                alt={prod.title}
-                className="max-h-24 max-w-full object-contain mix-blend-darken"
-              />
-            </div>
-
             {/* Info */}
             <div className="space-y-1.5 flex-1 flex flex-col justify-between">
               <div>

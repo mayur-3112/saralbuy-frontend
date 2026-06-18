@@ -28,8 +28,12 @@ const getRoutePath = value => {
       return '/account/deal';
     case 'notifications':
       return '/account/notification';
-    case 'cart':
-      return '/account/cart';
+    case 'faq':
+      return '/faq';
+    case 'about_us':
+      return '/about-us';
+    case 'contact_us':
+      return '/contact-us';
     default:
       return '/account';
   }
@@ -39,10 +43,6 @@ const tags = [
   {
     title: 'Settings',
     value: 'profile',
-  },
-  {
-    title: 'Cart',
-    value: 'cart',
   },
   {
     title: 'Quotes Submitted',
@@ -59,6 +59,18 @@ const tags = [
   {
     title: 'Notifications',
     value: 'notifications',
+  },
+  {
+    title: 'FAQs',
+    value: 'faq',
+  },
+  {
+    title: 'About Us',
+    value: 'about_us',
+  },
+  {
+    title: 'Contact Us',
+    value: 'contact_us',
   },
 ];
 
@@ -127,10 +139,10 @@ const Profile = () => {
       </Breadcrumb>
 
       <div className="grid gap-8">
-        <div className="grid gap-8 md:grid-cols-[230px_1fr]">
+        <div className="grid gap-8 md:grid-cols-[250px_1fr]">
           {/* Sidebar */}
-          <div className="hidden md:block space-y-2 bg-gray-200/50 p-4 rounded-md  sticky top-4  self-start">
-            <div className="flex justify-center items-center mt-2 mb-5 relative">
+          <div className="hidden md:flex flex-col space-y-4 bg-white border border-slate-200 shadow-sm p-5 rounded-lg sticky top-24 self-start">
+            <div className="flex flex-col items-center mt-2 mb-4 relative">
               <div className="relative">
                 <Avatar className="w-28 h-28 border-gray-600 border-3 flex ">
                   {updateProfileLoading ? (
@@ -180,12 +192,12 @@ const Profile = () => {
                 }
               }}
               href="javascript:void(0)"
-              className="mb-5 block text-md underline text-center font-semibold text-gray-700"
+              className="mt-4 mb-2 text-sm font-bold text-orange-600 hover:text-orange-700 hover:underline text-center"
             >
               Update Photo
             </a>
 
-            <div className="grid gap-1 text-gray-600">
+            <div className="flex flex-col gap-1 mt-4 border-t border-slate-100 pt-4">
               {tags.map(tag => {
                 const routePath = getRoutePath(tag.value);
                 return (
@@ -194,8 +206,8 @@ const Profile = () => {
                     to={routePath}
                     end={tag.value === 'profile'}
                     className={({ isActive }) =>
-                      `text-left px-3 py-2 cursor-pointer text-sm rounded-md hover:bg-gray-200/90 ${
-                        isActive ? 'bg-gray-200/90 text-gray-600 font-semibold' : ''
+                      `text-left px-4 py-2.5 cursor-pointer text-sm font-bold rounded-md transition-colors ${
+                        isActive ? 'bg-orange-50 text-orange-700 border-l-4 border-orange-600' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                       }`
                     }
                   >

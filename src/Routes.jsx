@@ -17,15 +17,16 @@ import ProductListing from './pages/ProductListing';
 import ProductOverview from './pages/ProductOverview';
 import Profile from './pages/profile/Profile';
 import { AccountSettings } from './pages/profile/AccountSetting';
-import Cart from './pages/profile/Cart';
 import BidListing from './pages/profile/BidListing';
 import BidOverview from './pages/profile/BidOverView';
 import Requirements from './pages/profile/Requirements';
 import CloseDeal from './pages/profile/CloseDeal';
 import UpdateCreateProductForm from './pages/UpdateCreateProductForm';
 import RequirementOverview from './pages/RequirementOverview';
-import PostMultipleRequirements from './pages/PostMultipleRequirements';
-const PostUploadRequirement = lazy(() => import('./pages/PostUploadRequirement'));
+import PostRequirementForm from './pages/PostRequirementForm';
+import FAQ from './pages/FAQ';
+import AboutUs from './pages/AboutUs';
+import ContactUs from './pages/ContactUs';
 import NoRouteFound from './pages/404';
 import Loader from './components/custom/Loader';
 import Notification from './pages/Notification';
@@ -74,18 +75,19 @@ export default function AppRoutes() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/requirement" element={<Requirement />} />
-          <Route path="/post-multiple-requirements" element={<PostMultipleRequirements />} />
-          <Route path="/upload-requirements" element={<PostUploadRequirement />} />
+          <Route path="/post-requirement" element={<PostRequirementForm />} />
           <Route path="/category/:categoryId/:subCategoryId" element={<CreateProductForm />} />
           <Route path="/update-draft/:productId" element={<UpdateCreateProductForm />} />
           <Route path="/product-listing" element={<ProductListing />} />
           <Route path="/product-overview" element={<ProductOverview />} />
           <Route path="/terms" element={<TermsAndPrivacy />} />
           <Route path="/privacy" element={<TermsAndPrivacy />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="/about-us" element={<AboutUs />} />
+          <Route path="/contact-us" element={<ContactUs />} />
           {/*  account */}
           <Route path="/account" element={<Profile />}>
             <Route index element={<AccountSettings />} />
-            <Route path="cart" element={<Cart />} />
             <Route path="bid" element={<BidListing />} />
             <Route path="requirements" element={<Requirements />} />
             <Route path="deal" element={<CloseDeal />} />
