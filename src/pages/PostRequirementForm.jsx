@@ -42,7 +42,7 @@ const PostRequirementForm = () => {
       categoryId: '',
       subCategoryId: '',
       items: [
-        { particulars: '', quantity: '', quantityUnit: 'pcs', brand: 'Any' }
+        { itemName: '', itemDescription: '', quantity: '', quantityUnit: 'pcs', brand: 'Any' }
       ],
       otherTerms: '',
       deliveryDate: undefined,
@@ -126,7 +126,7 @@ const PostRequirementForm = () => {
         categoryId: data.categoryId,
         items: data.items.map(item => ({
           subCategoryId: data.subCategoryId,
-          typeOfProduct: item.particulars,
+          typeOfProduct: item.itemDescription ? `${item.itemName} - ${item.itemDescription}` : item.itemName,
           quantity: item.quantity,
           quantityUnit: item.quantityUnit,
           brand: item.brand,
@@ -223,9 +223,10 @@ const PostRequirementForm = () => {
           
           {/* Header Row for Desktop */}
           <div className="hidden md:grid grid-cols-12 gap-3 mb-2 px-2 text-xs font-extrabold text-slate-500 uppercase tracking-wider">
-            <div className="col-span-5">Particulars of Item Required</div>
+            <div className="col-span-3">Item Name</div>
+            <div className="col-span-3">Description / Specs</div>
             <div className="col-span-2">Quantity</div>
-            <div className="col-span-2">Units</div>
+            <div className="col-span-1">Units</div>
             <div className="col-span-2">Brand</div>
             <div className="col-span-1 text-center">Action</div>
           </div>
@@ -233,9 +234,14 @@ const PostRequirementForm = () => {
           <div className="space-y-4">
             {fields.map((item, index) => (
               <div key={item.id} className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-50/50 p-3 rounded-md border border-slate-200 hover:border-orange-300 transition-colors">
-                <div className="md:col-span-5">
-                  <label className="block md:hidden text-xs font-bold text-slate-500 mb-1">Particulars</label>
-                  <Input placeholder="Description / Specs (e.g., PIPE DN65 ASTM A106)" {...register(`items.${index}.particulars`)} className="bg-white border-slate-200 font-medium" />
+                <div className="md:col-span-3">
+                  <label className="block md:hidden text-xs font-bold text-slate-500 mb-1">Item Name</label>
+                  <Input placeholder="e.g., Pipe" {...register(`items.${index}.itemName`)} className="bg-white border-slate-200 font-medium" />
+                </div>
+
+                <div className="md:col-span-3">
+                  <label className="block md:hidden text-xs font-bold text-slate-500 mb-1">Description / Specs</label>
+                  <Input placeholder="e.g., DN65 ASTM A106" {...register(`items.${index}.itemDescription`)} className="bg-white border-slate-200 font-medium" />
                 </div>
                 
                 <div className="md:col-span-2">
@@ -243,7 +249,7 @@ const PostRequirementForm = () => {
                   <Input type="number" placeholder="Qty" {...register(`items.${index}.quantity`)} className="bg-white border-slate-200 font-medium" min="1" />
                 </div>
                 
-                <div className="md:col-span-2">
+                <div className="md:col-span-1">
                   <label className="block md:hidden text-xs font-bold text-slate-500 mb-1">Units</label>
                   <Controller
                     name={`items.${index}.quantityUnit`}
@@ -295,7 +301,7 @@ const PostRequirementForm = () => {
           <Button
             type="button"
             variant="ghost"
-            onClick={() => append({ particulars: '', quantity: '', quantityUnit: 'pcs', brand: 'Any' })}
+            onClick={() => append({ itemName: '', itemDescription: '', quantity: '', quantityUnit: 'pcs', brand: 'Any' })}
             className="mt-4 text-orange-600 hover:text-orange-700 hover:bg-orange-50 font-extrabold border border-dashed border-orange-200"
           >
             <Plus className="w-4 h-4 mr-1" /> Add Another Item
