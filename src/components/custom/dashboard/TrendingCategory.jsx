@@ -20,20 +20,15 @@ const TrendingCategory = ({ categories }) => {
           Trending Categories
         </p>
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-5 px-5 sm:px-10  mt-10  ">
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-4 px-5 sm:px-10 mt-8">
         {categories &&
           categories.map((category, idx) => (
             <div
               key={idx}
               onClick={() => handleNavigate(category.category._id)}
-              className="flex justify-center items-center flex-col cursor-pointer"
+              className="flex justify-center items-center py-5 px-6 bg-white border border-slate-200 hover:border-slate-400 hover:shadow-md rounded-lg cursor-pointer transition-all"
             >
-              <div
-                className={`ring-4 ${RING_CLASS[idx]} rounded-full  h-32 w-32 overflow-hidden mx-auto `}
-              >
-                <img src={category.category.image} className="w-full h-full object-contain" />
-              </div>
-              <p className="text-gray-600 text-center mt-3 capitalize">
+              <p className="text-slate-800 font-extrabold text-sm text-center capitalize">
                 {category.category.categoryName}
               </p>
             </div>

@@ -43,18 +43,9 @@ const DyanmicHomeCard = ({ bg, item }) => {
               </Button>
             </div>
 
-            {/* image */}
-            <div className="flex  justify-between mt-5 items-center flex-row-reverse">
-              <div className="w-24 h-24 flex-shrink-0">
-                <img
-                  src={item?.image || '/no-image.webp'}
-                  alt={'No Image'}
-                  className="w-full h-full object-contain rounded-lg"
-                />
-              </div>
-
+            <div className="flex justify-between mt-5 items-center">
               {/* Content */}
-              <div className="space-y-1">
+              <div className="space-y-2 w-full">
                 <h2 className="font-bold text-md text-gray-700  capitalize">{item?.title}</h2>
 
                 <div className="flex items-center text-sm text-gray-700 gap-2">
