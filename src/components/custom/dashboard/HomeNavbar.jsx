@@ -547,19 +547,19 @@ const HomeNavbar = () => {
       <div className="mb-2 relative z-9 max-w-7xl mx-auto">
         <div className="p-3 sticky top-0">
           {/* ── Desktop Nav ─────────────────────────────────────────────── */}
-          <nav className="hidden justify-evenly lg:flex items-center gap-5">
-            {/* Logo + Location */}
-            <div className="flex items-center gap-6">
-              <Link to={'/'} className="flex items-center gap-2">
+          <nav className="hidden justify-between lg:flex items-center gap-4 xl:gap-8 w-full">
+            {/* Logo + Navigation Links */}
+            <div className="flex items-center gap-4 xl:gap-6 shrink-0">
+              <Link to={'/'} className="flex items-center">
                 <img
                   src={saralBuyLogo}
-                  className="max-h-20 mix-blend-darken dark:invert"
+                  className="h-12 md:h-16 w-auto object-contain mix-blend-darken dark:invert transform scale-150 ml-4 mr-2"
                   alt={'company logo'}
                 />
               </Link>
               
               {/* B2B Navigation Links */}
-              <div className="hidden lg:flex items-center gap-6 ml-2">
+              <div className="hidden lg:flex items-center gap-4 xl:gap-6 ml-4">
                 <Link to={'/product-listing'} className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors">EXPLORE</Link>
                 <Link to={'/'} className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors">HOW IT WORKS</Link>
                 <Link to={'/post-requirement'} className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors">RFQ/INQUIRIES</Link>
@@ -587,7 +587,7 @@ const HomeNavbar = () => {
             </div>
 
             {/* Search */}
-            <div className="relative w-1/2 flex items-center bg-white rounded-sm border border-gray-300 focus-within:ring-1 focus-within:ring-gray-900 focus-within:border-gray-900 overflow-hidden">
+            <div className="relative flex-1 max-w-xl flex items-center bg-white rounded-sm border border-gray-300 focus-within:ring-1 focus-within:ring-gray-900 focus-within:border-gray-900 overflow-hidden mx-4">
               <select
                 value={selectedSearchCategory}
                 onChange={e => setSelectedSearchCategory(e.target.value)}
