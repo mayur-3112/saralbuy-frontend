@@ -547,9 +547,9 @@ const HomeNavbar = () => {
       <div className="mb-2 relative z-9 max-w-7xl mx-auto">
         <div className="p-3 sticky top-0">
           {/* ── Desktop Nav ─────────────────────────────────────────────── */}
-          <nav className="hidden justify-between lg:flex items-center gap-4 xl:gap-8 w-full">
+          <nav className="hidden justify-between lg:flex items-center gap-2 xl:gap-4 w-full">
             {/* Logo + Navigation Links */}
-            <div className="flex items-center gap-4 xl:gap-6 shrink-0">
+            <div className="flex items-center gap-3 xl:gap-5 shrink-0">
               <Link to={'/'} className="flex items-center">
                 <img
                   src={saralBuyLogo}
@@ -559,7 +559,7 @@ const HomeNavbar = () => {
               </Link>
               
               {/* B2B Navigation Links */}
-              <div className="hidden lg:flex items-center gap-4 xl:gap-6 ml-4">
+              <div className="hidden lg:flex items-center gap-3 xl:gap-5 ml-2">
                 <Link to={'/product-listing'} className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors">EXPLORE</Link>
                 <Link to={'/'} className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors">HOW IT WORKS</Link>
                 <Link to={'/post-requirement'} className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors">RFQ/INQUIRIES</Link>
@@ -587,7 +587,7 @@ const HomeNavbar = () => {
             </div>
 
             {/* Search */}
-            <div className="relative flex-1 max-w-xl flex items-center bg-white rounded-sm border border-gray-300 focus-within:ring-1 focus-within:ring-gray-900 focus-within:border-gray-900 overflow-hidden mx-4">
+            <div className="relative flex-1 min-w-[150px] max-w-xl flex items-center bg-white rounded-sm border border-gray-300 focus-within:ring-1 focus-within:ring-gray-900 focus-within:border-gray-900 overflow-hidden mx-2">
               <select
                 value={selectedSearchCategory}
                 onChange={e => setSelectedSearchCategory(e.target.value)}
@@ -656,8 +656,10 @@ const HomeNavbar = () => {
               )}
             </div>
 
-            {/* Icons Row */}
-            <div className="flex gap-5 items-center space-x-1">
+            {/* Right Side Actions */}
+            <div className="flex items-center gap-3 xl:gap-5 shrink-0">
+              {/* Icons Row */}
+              <div className="flex gap-3 items-center space-x-1">
               {/* Messages Popover */}
               {user && (
                 <Popover open={showMessageDropdown} onOpenChange={setShowMessageDropdown}>
@@ -885,6 +887,7 @@ const HomeNavbar = () => {
               <UserRound className="w-4 h-4" />
               My Account
             </Button>
+          </div>
           </nav>
 
           {/* ── Mobile Nav ──────────────────────────────────────────────── */}
