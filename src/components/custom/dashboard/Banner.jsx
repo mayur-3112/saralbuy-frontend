@@ -27,7 +27,7 @@ const Banner = () => {
       textClass: 'banner-text-1',
       buttonClass: 'banner-button-1',
       containerClass: 'banner-content-1',
-      linkUrl: '/post-requirement',
+      linkUrl: '/requirement',
     },
     {
       image: raiseAQuotationBanner,
@@ -38,7 +38,7 @@ const Banner = () => {
       buttonClass: 'banner-button-2',
       containerClass: 'banner-content-2',
       headerClass: 'banner-header-2',
-      linkUrl: '/post-requirement',
+      linkUrl: '/requirement',
     },
   ]);
 
