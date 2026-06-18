@@ -20,7 +20,7 @@ import Authentication from '@/components/custom/auth/Authenticate';
 import { Spinner } from '@/components/ui/spinner';
 import instance from '@/helper/instance';
 
-const MOCK_BRANDS = ['Tata', 'Jindal', 'L&T', 'Ambuja', 'Ultratech', 'Any'];
+
 
 const PostRequirementForm = () => {
   const navigate = useNavigate();
@@ -62,6 +62,10 @@ const PostRequirementForm = () => {
   const selectedCategoryId = watch('categoryId');
   const selectedCategory = categories?.find(c => c._id === selectedCategoryId);
   const subCategories = selectedCategory?.subCategories || [];
+  const selectedSubCategoryId = watch('subCategoryId');
+  const selectedSubCategory = subCategories.find(sub => sub._id === selectedSubCategoryId);
+  const dynamicBrands = selectedSubCategory?.brands || [];
+  const availableBrands = [...dynamicBrands, 'Any'];
   const gstField = watch('gstRequired');
 
   const handleFileChange = (e) => {
@@ -280,7 +284,7 @@ const PostRequirementForm = () => {
                           <SelectValue placeholder="Brand" />
                         </SelectTrigger>
                         <SelectContent>
-                          {MOCK_BRANDS.map(b => (
+                          {availableBrands.map(b => (
                             <SelectItem key={b} value={b}>{b}</SelectItem>
                           ))}
                         </SelectContent>
