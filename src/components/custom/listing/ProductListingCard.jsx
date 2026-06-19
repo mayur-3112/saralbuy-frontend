@@ -12,51 +12,71 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }
     if (onActionClick) {
       onActionClick(product);
     } else {
-      return navigate('/product-overview?productId=' + (product?._id || ''));
+      const navId = product?.productId?._id || product?._id || '';
+      return navigate('/product-overview?productId=' + navId);
     }
   };
 
-  // Correctly extract the real data from commonDetails if available
-  const dbCompanyName = product?.commonDetails?.paymentAndDelivery?.organizationName || product?.userId?.companyName || product?.organization;
-  const dbFirstName = product?.userId?.firstName;
-  const rawBuyerName = dbCompanyName || (dbFirstName ? `${dbFirstName} ${product?.userId?.lastName || ''}` : 'Undisclosed Buyer');
+  // === DATA EXTRACTION ===
+  // The card receives data in different shapes depending on the source:
+  //   1. Requirement object (dashboard): { buyerId: {firstName, businessName, address}, productId: {title, paymentAndDelivery, categoryId} }
+  //   2. Product object (profile/listings): { userId: {firstName, businessName, address}, paymentAndDelivery: {...}, title, categoryId }
+  //   3. Mock/Landing page data: { organization, location, userId: {companyName, address} }
   
+  const user = product?.buyerId || product?.userId || {};
+  const prod = product?.productId || product;
+  
+  // Buyer name: try organizationName from product, then businessName from user, then firstName+lastName
+  const orgName = prod?.paymentAndDelivery?.organizationName;
+  const bizName = user?.businessName || user?.companyName || product?.organization;
+  const fullName = user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : null;
+  const rawBuyerName = orgName || bizName || fullName || null;
+  
+  // Masking: "silentmesh private limited" → "*****mesh private limited"
   const maskName = (name) => {
-    if (!name || name === 'Undisclosed Buyer') return name;
-    // Mask the first 5 characters (or half the string if it's very short) with 5 asterisks
+    if (!name) return 'Buyer Name Hidden';
     const charsToMask = Math.min(5, Math.ceil(name.length / 2));
     return '*'.repeat(charsToMask) + name.slice(charsToMask);
   };
   const buyerName = maskName(rawBuyerName);
 
-  // Generate dynamic RFQ number from DB ID
-  const rfqCode = product?.rfqId || (product?._id ? `RFQ-${product._id.toString().slice(-6).toUpperCase()}` : 'RFQ-PENDING');
+  // RFQ Code from the actual DB _id
+  const productId = prod?._id || product?._id;
+  const rfqCode = product?.rfqId || (productId ? `RFQ-${productId.toString().slice(-6).toUpperCase()}` : null);
   
-  const country = product?.country || product?.userId?.country || 'India';
+  const country = product?.country || user?.country || 'India';
   
-  // Extract and partially mask address
-  const rawAddress = product?.commonDetails?.paymentAndDelivery?.organizationAddress || product?.deliveryLocation || product?.location || product?.userId?.address || 'Location not specified';
-  const maskAddress = (address) => {
-    if (!address || address === 'Location not specified') return address;
-    const parts = address.split(',');
+  // Address: try organizationAddress, then user address, then location
+  const rawAddress = prod?.paymentAndDelivery?.organizationAddress || user?.address || product?.location || null;
+  const maskAddress = (addr) => {
+    if (!addr) return null;
+    const parts = addr.split(',');
     if (parts.length > 1) {
-      // Return ******, last part (usually city/state)
       return `******, ${parts[parts.length - 1].trim()}`;
     }
-    const charsToMask = Math.min(8, Math.ceil(address.length / 2));
-    return '*'.repeat(charsToMask) + address.slice(charsToMask);
+    const charsToMask = Math.min(8, Math.ceil(addr.length / 2));
+    return '*'.repeat(charsToMask) + addr.slice(charsToMask);
   };
   const address = maskAddress(rawAddress);
 
+  // Product title & category
+  const productTitle = prod?.title || product?.title;
+  const categoryName = prod?.categoryId?.categoryName || product?.categoryId?.categoryName;
+
   // Product categories/items
   const items = [];
-  if (product?.isMergeQuote && product?.products?.length > 0) {
-    items.push(...product.products.map(p => p.title || p.categoryName));
-  } else if (product?.categoryId?.categoryName) {
-    items.push(product.categoryId.categoryName);
-  } else {
-    items.push(product?.title || 'Fasteners');
+  if (prod?.isMergeQuote && prod?.products?.length > 0) {
+    items.push(...prod.products.map(p => p.title || p.categoryName));
+  } else if (categoryName) {
+    items.push(categoryName);
   }
+  if (productTitle && !items.includes(productTitle)) {
+    items.unshift(productTitle);
+  }
+
+  // Timeline
+  const createdAt = product?.createdAt || prod?.createdAt;
+  const timeline = prod?.bidActiveDuration || prod?.timeline || product?.timeline;
 
   return (
     <>
@@ -74,9 +94,11 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }
 
           {/* Tags Row */}
           <div className="flex flex-wrap items-center gap-2">
-            <span className="px-3 py-0.5 border border-gray-200 rounded-full text-xs text-gray-500 bg-white">
-              RFQ Code: {rfqCode}
-            </span>
+            {rfqCode && (
+              <span className="px-3 py-0.5 border border-gray-200 rounded-full text-xs text-gray-500 bg-white">
+                RFQ Code: {rfqCode}
+              </span>
+            )}
             <span className="px-3 py-0.5 border border-gray-200 rounded-full text-xs text-gray-500 bg-white">
               Country: {country}
             </span>
@@ -92,11 +114,13 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }
           </div>
 
           {/* Address */}
-          <div className="pt-4">
-            <p className="text-[11px] text-gray-500">
-              Delivery Address: <span className="text-gray-500">{address.length > 40 ? address.substring(0, 40) + '...' : address}</span>
-            </p>
-          </div>
+          {address && (
+            <div className="pt-4">
+              <p className="text-[11px] text-gray-500">
+                Delivery Address: <span className="text-gray-500">{address}</span>
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Right Side */}
@@ -105,14 +129,16 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }
           <div className="text-right space-y-1">
             <p className="text-[11px] text-gray-400">
               Posted <span className="font-bold text-gray-600 ml-1">
-                {format(new Date(product?.createdAt || Date.now()), 'MMM d, yyyy')}
+                {format(new Date(createdAt || Date.now()), 'MMM d, yyyy')}
               </span>
             </p>
-            <p className="text-[11px] text-gray-400">
-              Last Submission <span className="font-bold text-gray-600 ml-1">
-                {format(new Date(product?.timeline || Date.now() + 86400000 * 7), 'MMM d, yyyy')}
-              </span>
-            </p>
+            {timeline && (
+              <p className="text-[11px] text-gray-400">
+                Last Submission <span className="font-bold text-gray-600 ml-1">
+                  {format(new Date(timeline), 'MMM d, yyyy')}
+                </span>
+              </p>
+            )}
           </div>
 
           {/* Action Button */}
