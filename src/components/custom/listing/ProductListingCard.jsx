@@ -16,13 +16,16 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }
     }
   };
 
-  // Helper to generate a consistent masked company name
-  const rawBuyerName = product?.userId?.companyName || product?.organization || (product?.userId?.firstName ? `${product?.userId?.firstName} ${product?.userId?.lastName || ''}` : 'Undisclosed Buyer');
+  // Correctly extract the real data from commonDetails if available
+  const dbCompanyName = product?.commonDetails?.paymentAndDelivery?.organizationName || product?.userId?.companyName || product?.organization;
+  const dbFirstName = product?.userId?.firstName;
+  const rawBuyerName = dbCompanyName || (dbFirstName ? `${dbFirstName} ${product?.userId?.lastName || ''}` : 'Undisclosed Buyer');
   
   const maskName = (name) => {
     if (!name || name === 'Undisclosed Buyer') return name;
-    const words = name.trim().split(' ');
-    return words.map(w => w.length > 2 ? w.charAt(0) + '*'.repeat(w.length - 2) + w.charAt(w.length - 1) : w).join(' ');
+    // Mask the first 5 characters (or half the string if it's very short) with 5 asterisks
+    const charsToMask = Math.min(5, Math.ceil(name.length / 2));
+    return '*'.repeat(charsToMask) + name.slice(charsToMask);
   };
   const buyerName = maskName(rawBuyerName);
 
@@ -30,7 +33,20 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }
   const rfqCode = product?.rfqId || (product?._id ? `RFQ-${product._id.toString().slice(-6).toUpperCase()}` : 'RFQ-PENDING');
   
   const country = product?.country || product?.userId?.country || 'India';
-  const address = product?.deliveryLocation || product?.location || product?.userId?.address || 'Location not specified';
+  
+  // Extract and partially mask address
+  const rawAddress = product?.commonDetails?.paymentAndDelivery?.organizationAddress || product?.deliveryLocation || product?.location || product?.userId?.address || 'Location not specified';
+  const maskAddress = (address) => {
+    if (!address || address === 'Location not specified') return address;
+    const parts = address.split(',');
+    if (parts.length > 1) {
+      // Return ******, last part (usually city/state)
+      return `******, ${parts[parts.length - 1].trim()}`;
+    }
+    const charsToMask = Math.min(8, Math.ceil(address.length / 2));
+    return '*'.repeat(charsToMask) + address.slice(charsToMask);
+  };
+  const address = maskAddress(rawAddress);
 
   // Product categories/items
   const items = [];
