@@ -87,7 +87,7 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }
         <div className="flex-1 space-y-4">
           {/* Title Row */}
           <div className="flex items-center gap-3">
-            <h2 className="text-lg font-black text-slate-900 uppercase tracking-wide">
+            <h2 className="text-lg font-semibold text-slate-900 uppercase tracking-wide">
               {buyerName}
             </h2>
           </div>
@@ -128,13 +128,13 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }
           {/* Dates */}
           <div className="text-right space-y-1">
             <p className="text-[11px] text-gray-400">
-              Posted <span className="font-bold text-gray-600 ml-1">
+              Posted <span className="font-medium text-gray-600 ml-1">
                 {format(new Date(createdAt || Date.now()), 'MMM d, yyyy')}
               </span>
             </p>
             {timeline && (
               <p className="text-[11px] text-gray-400">
-                Last Submission <span className="font-bold text-gray-600 ml-1">
+                Last Submission <span className="font-medium text-gray-600 ml-1">
                   {format(new Date(timeline), 'MMM d, yyyy')}
                 </span>
               </p>
@@ -144,7 +144,7 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }
           {/* Action Button */}
           <Button
             onClick={handleAction}
-            className="w-28 bg-orange-600 hover:bg-orange-500 text-white font-bold rounded-lg py-4 shadow-md mt-6"
+            className="w-28 bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-lg py-4 shadow-md mt-6"
           >
             {actionLabel}
           </Button>
