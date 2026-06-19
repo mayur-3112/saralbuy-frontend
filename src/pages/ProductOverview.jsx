@@ -1067,35 +1067,33 @@ const ProductOverview = () => {
                     </div>
                   )}
 
-                {(bidOverviewRes?.product?.isMultiple || productResponse?.mainProduct?.isMultiple) && (
-                  <div className="mt-6 border border-gray-200 rounded-lg overflow-hidden">
-                    <div className="bg-gray-100 px-4 py-2 border-b border-gray-200 font-semibold text-gray-700">
-                      Requested Items List
+                  {(bidOverviewRes?.product?.isMultiple || productResponse?.mainProduct?.isMultiple) && (
+                    <div className="mt-6 border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm">
+                      <div className="bg-gray-50 px-5 py-4 border-b border-gray-200 flex items-center justify-between">
+                        <h3 className="font-bold text-gray-800 text-lg">Requested Items</h3>
+                        <span className="text-sm font-medium text-gray-500">{(bidOverviewRes?.product?.items || productResponse?.mainProduct?.items || []).length} items listed</span>
+                      </div>
+                      <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50/50">
+                        {(bidOverviewRes?.product?.items || productResponse?.mainProduct?.items || []).map((item, idx) => (
+                          <div key={idx} className="bg-white border border-gray-200 rounded-md p-4 flex flex-col justify-between hover:border-orange-300 hover:shadow-sm transition-all">
+                            <div className="mb-3">
+                              <h4 className="font-bold text-gray-900 text-base mb-1">{item.subCategoryName || 'N/A'}</h4>
+                              <div className="text-sm text-gray-500 space-y-1">
+                                <p><span className="font-medium text-gray-400">Brand:</span> {item.brand || 'N/A'}</p>
+                                <p><span className="font-medium text-gray-400">Model/Type:</span> {item.typeOfProduct || item.model || 'N/A'}</p>
+                              </div>
+                            </div>
+                            <div className="pt-3 border-t border-gray-100 flex justify-between items-center">
+                              <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">Required Qty</span>
+                              <div className="font-black text-orange-600 text-lg">
+                                {item.quantity} <span className="text-sm font-bold text-gray-500 ml-0.5">{item.quantityUnit}</span>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-sm text-left text-gray-600">
-                        <thead className="text-xs text-gray-500 bg-gray-50 uppercase border-b border-gray-200">
-                          <tr>
-                            <th className="px-4 py-3">Subcategory</th>
-                            <th className="px-4 py-3">Brand</th>
-                            <th className="px-4 py-3">Type/Model</th>
-                            <th className="px-4 py-3">Quantity</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {(bidOverviewRes?.product?.items || productResponse?.mainProduct?.items || []).map((item, idx) => (
-                            <tr key={idx} className="bg-white border-b hover:bg-orange-50/50">
-                              <td className="px-4 py-3 font-medium text-gray-900">{item.subCategoryName || 'N/A'}</td>
-                              <td className="px-4 py-3">{item.brand || 'N/A'}</td>
-                              <td className="px-4 py-3">{item.typeOfProduct || item.model || 'N/A'}</td>
-                              <td className="px-4 py-3 font-semibold text-orange-600">{item.quantity} {item.quantityUnit}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                )}
+                  )}
 
                 {soldProduct && dealSellerRating > 0 && (
                   <div className="flex items-center gap-0.5">

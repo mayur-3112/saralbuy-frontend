@@ -4,12 +4,16 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Authentication from '../auth/Authenticate';
 
-const ProductListingCard = ({ product }) => {
+const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }) => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
-  const handleSendOtp = () => {
-    return navigate('/product-overview?productId=' + product._id);
+  const handleAction = () => {
+    if (onActionClick) {
+      onActionClick(product);
+    } else {
+      return navigate('/product-overview?productId=' + (product?._id || ''));
+    }
   };
 
   // Helper to generate a consistent masked company name
@@ -109,10 +113,10 @@ const ProductListingCard = ({ product }) => {
 
           {/* Action Button */}
           <Button
-            onClick={handleSendOtp}
+            onClick={handleAction}
             className="w-28 bg-[#3ba2d5] hover:bg-[#2b8bc0] text-white font-bold rounded-lg py-4 shadow-md mt-6"
           >
-            View RFQ
+            {actionLabel}
           </Button>
         </div>
 

@@ -3,6 +3,7 @@ import { useFetch } from '@/hooks/useFetch';
 import requirementService from '@/services/requirement.service';
 import { Search, MapPin, Grid, Briefcase, FileText, Gavel, MessageSquare, Plus, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import ProductListingCard from '@/components/custom/listing/ProductListingCard';
 
 const MOCK_DB_REQUIREMENTS = [
   {
@@ -308,82 +309,14 @@ export default function SourcingWorkspace({ user, userBidsCount, userDraftsCount
         </div>
 
         {filteredRequirements.length > 0 ? (
-          <div className="overflow-hidden border border-slate-300 rounded bg-white shadow-sm">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse min-w-[900px]">
-                <thead>
-                  <tr className="border-b border-slate-300 bg-slate-50 text-slate-700 text-xs uppercase font-extrabold">
-                    <th className="p-4 w-[35%]">Project Material Needs</th>
-                    <th className="p-4 w-[12%]">Quantity</th>
-                    <th className="p-4 w-[20%]">Buyer & Project Site</th>
-                    <th className="p-4 w-[10%] text-center">Quotes Received</th>
-                    <th className="p-4 w-[10%]">Date Posted</th>
-                    <th className="p-4 w-[13%] text-center">Action</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200 text-sm text-slate-700">
-                  {filteredRequirements.map((req) => {
-                    const buyerName = req.buyerId ? `${req.buyerId.firstName} ${req.buyerId.lastName || ''}` : 'Buyer';
-                    const buyerLocation = req.currentLocation || req.buyerId?.address || 'Karnataka';
-                    const specs = req.productId?.description || req.specs || 'Project specifications provided.';
-                    return (
-                      <tr key={req._id} className="hover:bg-slate-50/40 transition-colors">
-                        <td className="p-4">
-                          <div className="font-extrabold text-slate-950 text-[15px]">{req.productId?.title || req.title}</div>
-                          <div className="text-xs text-slate-400 font-semibold mt-1">Category: {req.productId?.categoryId?.categoryName || 'General'}</div>
-                          <div className="text-xs text-slate-500 mt-1.5 leading-relaxed font-medium bg-slate-50 border border-slate-100 rounded p-2">{specs}</div>
-                        </td>
-                          <td className="p-4">
-                            {req.productId?.isUpload ? (
-                              <div className="text-orange-600 text-[13px] font-bold bg-orange-50 px-2 py-1 rounded inline-block">Document Uploaded</div>
-                            ) : req.productId?.isMultiple ? (
-                              <div className="text-sm text-slate-700">
-                                <ul className="list-disc pl-4 text-xs space-y-1 font-medium">
-                                  {(req.productId?.items || req.items || []).slice(0, 3).map((subItem, idx) => (
-                                    <li key={idx} className="truncate">
-                                      {subItem.subCategoryName} <span className="text-slate-400">({subItem.quantity} {subItem.quantityUnit})</span>
-                                    </li>
-                                  ))}
-                                </ul>
-                                {(req.productId?.items || req.items || []).length > 3 && (
-                                  <div className="text-xs text-blue-600 mt-1 italic pl-1 font-semibold">+ {(req.productId?.items || req.items || []).length - 3} more items</div>
-                                )}
-                              </div>
-                            ) : (
-                              <div className="font-black text-slate-900 text-[15px]">
-                                {req.productId?.quantity || req.quantity} Units
-                              </div>
-                            )}
-                          </td>
-                        <td className="p-4">
-                          <div className="font-bold text-slate-800">{buyerName}</div>
-                          <div className="text-xs text-slate-500 flex items-center gap-1 mt-1 font-semibold">
-                            <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                            <span>{buyerLocation}</span>
-                          </div>
-                        </td>
-                        <td className="p-4 text-center">
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-orange-50 border border-orange-100 text-orange-700 text-xs font-bold rounded">
-                            <Gavel className="w-3.5 h-3.5" /> {req.productId?.totalBidCount || req.bidsCount || 0} Quotes
-                          </span>
-                        </td>
-                        <td className="p-4 text-xs text-slate-500 font-bold">
-                          {new Date(req.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
-                        </td>
-                        <td className="p-4 text-center">
-                          <button
-                            onClick={() => navigate(`/product-overview?productId=${req.productId?._id || req._id}`)}
-                            className="w-full py-2 bg-orange-600 hover:bg-orange-500 text-white text-xs font-black rounded border border-orange-600 transition-colors cursor-pointer"
-                          >
-                            Place Quote
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+          <div className="flex flex-col gap-4">
+            {filteredRequirements.map((req) => (
+              <ProductListingCard 
+                key={req._id}
+                product={req}
+                actionLabel="Quote Now"
+              />
+            ))}
           </div>
         ) : (
           <div className="bg-white border border-slate-200 rounded p-12 text-center max-w-md mx-auto space-y-3">

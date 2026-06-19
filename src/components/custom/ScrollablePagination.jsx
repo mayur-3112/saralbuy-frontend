@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import RequirementSlider from './profile/RequirementSlider';
 import { RequirementCardSkeleton } from '@/const/CustomSkeletons';
+import ProductListingCard from '@/components/custom/listing/ProductListingCard';
 import productService from '@/services/product.service';
 import TooltipComp from '@/lib/TooltipComp';
 import { MoveRight, SquarePen, X } from 'lucide-react';
@@ -122,56 +123,34 @@ const ScrollablePagination = ({
       className="grid grid-cols-1 gap-4"
     >
       {products?.map((item, idx) => (
-        <div
-          key={item._id || idx}
-          className="border-2 border-gray-300 p-4 rounded-md w-full relative"
-        >
-          {/* {
-          target === 'requirements' && <div className='absolute top-1 left-1 z-10 bg-orange-50 text-orange-400 rounded-sm  p-1 cursor-pointer'
-          onClick={()=>{
-            setOpen?.(true)
-            setSelectedTileId?.(item._id)
-          }}
-          >
-            <TooltipComp
-              hoverChildren={<X className='h-4 w-4' />}
-              contentChildren={<p>Delete Requirement</p>}
-            ></TooltipComp>
-          </div>
-          
-        } */}
+        <div key={item._id || idx} className="w-full relative">
           {target === 'drafts' && (
-            <>
-              <div
-                className="absolute top-2 right-2 z-10 bg-orange-100 text-orange-500 rounded-sm  p-1 cursor-pointer"
-                onClick={() => {
-                  console.log(item);
-                  setOpen?.(true);
-                  setSelectedTileId?.(item._id);
-                }}
-              >
-                <TooltipComp
-                  hoverChildren={<X className="h-4 w-4" />}
-                  contentChildren={<p>Delete Draft</p>}
-                ></TooltipComp>
-              </div>
-              <Button
-                className="absolute bottom-5 right-5 z-10 cursor-pointer text-xs  bc"
-                onClick={() => navigate('/update-draft/' + item._id)}
-                size={'default'}
-              >
-                Edit Draft
-                <MoveRight className="w-5 h-5" />
-              </Button>
-            </>
+            <div
+              className="absolute top-2 right-2 z-10 bg-orange-100 text-orange-500 rounded-sm p-1 cursor-pointer"
+              onClick={() => {
+                console.log(item);
+                setOpen?.(true);
+                setSelectedTileId?.(item._id);
+              }}
+            >
+              <TooltipComp
+                hoverChildren={<X className="h-4 w-4" />}
+                contentChildren={<p>Delete Draft</p>}
+              ></TooltipComp>
+            </div>
           )}
-          <div
-            onClick={() => {
-              // if(target ==='drafts')  navigate('/update-draft/' + item._id);
+          
+          <ProductListingCard 
+            product={item} 
+            actionLabel={target === 'drafts' ? 'Edit Draft' : 'View RFQ'}
+            onActionClick={() => {
+              if (target === 'drafts') {
+                navigate('/update-draft/' + item._id);
+              } else {
+                navigate('/product-overview?productId=' + item._id);
+              }
             }}
-          >
-            <RequirementSlider product={item} target={target} tab={tab} />
-          </div>
+          />
         </div>
       ))}
     </InfiniteScroll>
