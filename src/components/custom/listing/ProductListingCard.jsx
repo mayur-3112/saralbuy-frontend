@@ -18,21 +18,14 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }
   };
 
   // === DATA EXTRACTION ===
-  // The card receives data in different shapes depending on the source:
-  //   1. Requirement object (dashboard): { buyerId: {firstName, businessName, address}, productId: {title, paymentAndDelivery, categoryId} }
-  //   2. Product object (profile/listings): { userId: {firstName, businessName, address}, paymentAndDelivery: {...}, title, categoryId }
-  //   3. Mock/Landing page data: { organization, location, userId: {companyName, address} }
-  
   const user = product?.buyerId || product?.userId || {};
   const prod = product?.productId || product;
   
-  // Buyer name: try organizationName from product, then businessName from user, then firstName+lastName
   const orgName = prod?.paymentAndDelivery?.organizationName;
   const bizName = user?.businessName || user?.companyName || product?.organization;
   const fullName = user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : null;
   const rawBuyerName = orgName || bizName || fullName || null;
   
-  // Masking: "silentmesh private limited" → "*****mesh private limited"
   const maskName = (name) => {
     if (!name) return 'Buyer Name Hidden';
     const charsToMask = Math.min(5, Math.ceil(name.length / 2));
@@ -40,13 +33,11 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }
   };
   const buyerName = maskName(rawBuyerName);
 
-  // RFQ Code from the actual DB _id
   const productId = prod?._id || product?._id;
   const rfqCode = product?.rfqId || (productId ? `RFQ-${productId.toString().slice(-6).toUpperCase()}` : null);
   
   const country = product?.country || user?.country || 'India';
   
-  // Address: try organizationAddress, then user address, then location
   const rawAddress = prod?.paymentAndDelivery?.organizationAddress || user?.address || product?.location || null;
   const maskAddress = (addr) => {
     if (!addr) return null;
@@ -59,11 +50,9 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }
   };
   const address = maskAddress(rawAddress);
 
-  // Product title & category
   const productTitle = prod?.title || product?.title;
   const categoryName = prod?.categoryId?.categoryName || product?.categoryId?.categoryName;
 
-  // Product categories/items
   const items = [];
   if (prod?.isMergeQuote && prod?.products?.length > 0) {
     items.push(...prod.products.map(p => p.title || p.categoryName));
@@ -74,20 +63,25 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }
     items.unshift(productTitle);
   }
 
-  // Timeline
   const createdAt = product?.createdAt || prod?.createdAt;
   const timeline = prod?.bidActiveDuration || prod?.timeline || product?.timeline;
 
   return (
     <>
       <Authentication setOpen={setOpen} open={open} />
-      <div className="w-full rounded-xl border border-orange-200 p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col md:flex-row justify-between mb-4" style={{background: 'linear-gradient(135deg, #ffffff 0%, #fff7ed 50%, #ffedd5 100%)'}}>
+      <div 
+        className="group w-full rounded-xl border border-orange-200 p-5 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 ease-out flex flex-col md:flex-row justify-between mb-4 relative overflow-hidden cursor-pointer"
+        style={{background: 'linear-gradient(135deg, #ffffff 0%, #fff7ed 50%, #ffedd5 100%)'}}
+        onClick={handleAction}
+      >
+        {/* Left accent bar that slides in on hover */}
+        <div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-500 scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-top rounded-l-xl" />
         
         {/* Left Side */}
         <div className="flex-1 space-y-4">
           {/* Title Row */}
           <div className="flex items-center gap-3">
-            <h2 className="text-lg font-semibold text-slate-900 uppercase tracking-wide">
+            <h2 className="text-lg font-semibold text-slate-900 uppercase tracking-wide group-hover:text-orange-800 transition-colors duration-300">
               {buyerName}
             </h2>
           </div>
@@ -95,11 +89,11 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }
           {/* Tags Row */}
           <div className="flex flex-wrap items-center gap-2">
             {rfqCode && (
-              <span className="px-3 py-0.5 border border-orange-200 rounded-full text-xs text-orange-700 bg-white/70">
+              <span className="px-3 py-0.5 border border-orange-200 rounded-full text-xs text-orange-700 bg-white/70 hover:bg-orange-100 hover:border-orange-300 hover:scale-105 transition-all duration-200 cursor-default">
                 RFQ Code: {rfqCode}
               </span>
             )}
-            <span className="px-3 py-0.5 border border-orange-200 rounded-full text-xs text-orange-700 bg-white/70">
+            <span className="px-3 py-0.5 border border-orange-200 rounded-full text-xs text-orange-700 bg-white/70 hover:bg-orange-100 hover:border-orange-300 hover:scale-105 transition-all duration-200 cursor-default">
               Country: {country}
             </span>
           </div>
@@ -107,7 +101,10 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }
           {/* Items Row */}
           <div className="flex flex-wrap items-center gap-2 pt-2">
             {items.slice(0, 4).map((item, idx) => (
-              <span key={idx} className="px-3 py-1 border border-orange-200 rounded-full text-xs text-slate-600 bg-white/70 shadow-sm">
+              <span 
+                key={idx} 
+                className="px-3 py-1 border border-orange-200 rounded-full text-xs text-slate-600 bg-white/70 shadow-sm hover:bg-white hover:shadow-md hover:scale-105 hover:border-orange-300 transition-all duration-200 cursor-default"
+              >
                 {item}
               </span>
             ))}
@@ -116,8 +113,8 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }
           {/* Address */}
           {address && (
             <div className="pt-4">
-              <p className="text-[11px] text-gray-500">
-                Delivery Address: <span className="text-gray-500">{address}</span>
+              <p className="text-[11px] text-gray-500 group-hover:text-gray-600 transition-colors duration-300">
+                Delivery Address: <span>{address}</span>
               </p>
             </div>
           )}
@@ -143,8 +140,8 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }
 
           {/* Action Button */}
           <Button
-            onClick={handleAction}
-            className="w-28 bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-lg py-4 shadow-md mt-6"
+            onClick={(e) => { e.stopPropagation(); handleAction(); }}
+            className="w-28 bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-lg py-4 shadow-md mt-6 hover:shadow-orange-300 hover:shadow-lg active:scale-95 transition-all duration-200"
           >
             {actionLabel}
           </Button>
