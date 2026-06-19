@@ -96,34 +96,38 @@ export default function B2BProductGrid({ onOpenAuth }) {
         {WHOLESALE_PRODUCTS.map((prod) => (
           <div
             key={prod.id}
-            className="bg-white border border-slate-200 hover:border-orange-300 rounded-lg p-5 flex flex-col justify-between shadow-sm hover:shadow transition-all"
+            className="group bg-white border border-orange-100/80 hover:border-orange-300 rounded-xl p-5 flex flex-col justify-between shadow-xs hover:shadow-md hover:-translate-y-1 transition-all duration-300 relative overflow-hidden"
+            style={{ background: 'linear-gradient(135deg, #ffffff 70%, #fff7ed 100%)' }}
           >
+            {/* Sliding Left Border Accent */}
+            <div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-500 scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-top"></div>
+
             {/* Info */}
-            <div className="space-y-1.5 flex-1 flex flex-col justify-between">
+            <div className="space-y-2 flex-1 flex flex-col justify-between">
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                <span className="inline-block text-[9px] font-bold uppercase tracking-wider text-orange-600 bg-orange-50/80 border border-orange-100 px-2 py-0.5 rounded-full">
                   {prod.category}
                 </span>
-                <h4 className="font-extrabold text-sm text-slate-950 line-clamp-2 mt-0.5 leading-snug">
+                <h4 className="font-extrabold text-sm text-slate-900 line-clamp-2 mt-2 leading-snug group-hover:text-orange-800 transition-colors duration-200">
                   {prod.title}
                 </h4>
-                <p className="text-[11px] text-slate-400 leading-normal mt-1 line-clamp-2">
+                <p className="text-[11px] text-slate-400 leading-normal mt-1.5 line-clamp-2">
                   {prod.specs}
                 </p>
               </div>
 
               {/* Price & MOQ */}
-              <div className="pt-2 border-t border-slate-100 mt-2">
-                <div className="text-xs text-slate-400 font-bold uppercase">Estimated Price</div>
-                <div className="font-black text-orange-600 text-sm">{prod.price}</div>
-                <div className="text-[10px] text-slate-500 font-bold mt-0.5">MOQ: {prod.moq}</div>
+              <div className="pt-2.5 border-t border-slate-100/70 mt-2.5">
+                <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Estimated Price</div>
+                <div className="font-black text-orange-600 text-sm mt-0.5">{prod.price}</div>
+                <div className="text-[10px] text-slate-500 font-bold mt-1">MOQ: {prod.moq}</div>
               </div>
             </div>
 
             {/* Button */}
             <button
               onClick={() => handleGetQuotes(prod.title)}
-              className="w-full mt-4 py-2 bg-orange-600 hover:bg-orange-500 text-white text-xs font-black rounded border border-orange-600 cursor-pointer flex items-center justify-center gap-1.5"
+              className="w-full mt-4 py-2.5 bg-orange-600 hover:bg-orange-500 active:scale-[0.98] text-white text-xs font-bold rounded-lg border border-orange-600 cursor-pointer flex items-center justify-center gap-1.5 transition-all duration-200 hover:shadow-md hover:shadow-orange-600/10"
             >
               <Gavel className="w-3.5 h-3.5" /> Get Best Price
             </button>

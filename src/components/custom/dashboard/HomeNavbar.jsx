@@ -559,10 +559,10 @@ const HomeNavbar = () => {
               </Link>
               
               {/* B2B Navigation Links */}
-              <div className="hidden lg:flex items-center gap-3 xl:gap-5 ml-2">
-                <Link to={'/product-listing'} className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors">EXPLORE</Link>
-                <Link to={'/'} className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors">HOW IT WORKS</Link>
-                <Link to={'/requirement'} className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors">RFQ/INQUIRIES</Link>
+              <div className="hidden lg:flex items-center gap-5 ml-4">
+                <Link to={'/product-listing'} className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors relative pb-1 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-orange-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 origin-left">EXPLORE</Link>
+                <Link to={'/'} className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors relative pb-1 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-orange-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 origin-left">HOW IT WORKS</Link>
+                <Link to={'/requirement'} className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors relative pb-1 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-orange-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 origin-left">RFQ/INQUIRIES</Link>
               </div>
 
               <div className="flex items-center relative group">
@@ -877,13 +877,17 @@ const HomeNavbar = () => {
               }}
               variant="default"
               size="sm"
-              className="bg-orange-600 text-white font-black px-5 py-2 rounded-md shadow-sm hover:bg-orange-700 transition-colors cursor-pointer text-sm"
+              className="bg-orange-600 hover:bg-orange-500 hover:shadow-lg hover:shadow-orange-600/15 active:scale-95 text-white font-bold px-5 py-2.5 rounded-lg transition-all duration-200 cursor-pointer text-sm border-0"
             >
               Post Requirements
             </Button>
 
             {/* My Account Button */}
-            <Button onClick={handleProfileClick} variant="outline" className="hidden lg:flex items-center gap-2 font-bold text-slate-700 border-slate-300 hover:bg-slate-100 hover:text-slate-900 px-4 py-2 rounded-full cursor-pointer transition-colors shadow-sm bg-white">
+            <Button 
+              onClick={handleProfileClick} 
+              variant="outline" 
+              className="hidden lg:flex items-center gap-2 font-bold text-slate-700 border border-slate-200 hover:border-orange-350 hover:bg-orange-50/50 hover:text-orange-600 px-4 py-2 rounded-full cursor-pointer transition-all duration-200 shadow-xs bg-white active:scale-95"
+            >
               <UserRound className="w-4 h-4" />
               My Account
             </Button>

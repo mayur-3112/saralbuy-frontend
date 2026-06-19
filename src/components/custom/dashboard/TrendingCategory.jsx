@@ -14,21 +14,25 @@ const TrendingCategory = ({ categories }) => {
     navigate(`/product-listing?category=${encodeURIComponent(categoryId)}&TOPTRENDING=true`);
   };
   return (
-    <div className="px-4  bg-no-repeat z-0 bg-cover  py-10  min-h-82  max-w-7xl mx-auto">
-      <div className="flex  items-center mb-4 ">
-        <p className="font-bold text-3xl border-l-4 whitespace-nowrap border-gray-600 pl-3 tracking-tight text-gray-600">
+    <div className="px-4 py-12 max-w-7xl mx-auto">
+      <div className="flex items-center mb-6 pl-1">
+        <p className="font-black text-2xl border-l-4 border-orange-600 pl-3 tracking-tight text-slate-900 uppercase">
           Trending Categories
         </p>
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-4 px-5 sm:px-10 mt-8">
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-4 mt-8">
         {categories &&
           categories.map((category, idx) => (
             <div
               key={idx}
               onClick={() => handleNavigate(category.category._id)}
-              className="flex justify-center items-center py-5 px-6 bg-white border border-slate-200 hover:border-slate-400 hover:shadow-md rounded-lg cursor-pointer transition-all"
+              className="group flex justify-center items-center py-6 px-5 bg-white border border-orange-100/60 hover:border-orange-300 hover:shadow-md hover:-translate-y-0.5 rounded-xl cursor-pointer transition-all duration-200 relative overflow-hidden"
+              style={{ background: 'linear-gradient(135deg, #ffffff 85%, #fff7ed 100%)' }}
             >
-              <p className="text-slate-800 font-extrabold text-sm text-center capitalize">
+              {/* Corner accent that pops on hover */}
+              <div className="absolute right-0 bottom-0 w-3.5 h-3.5 bg-orange-550 scale-0 group-hover:scale-100 transition-transform duration-200 origin-bottom-right rounded-tl-md"></div>
+
+              <p className="text-slate-800 group-hover:text-orange-700 font-extrabold text-sm text-center capitalize transition-colors duration-250">
                 {category.category.categoryName}
               </p>
             </div>
