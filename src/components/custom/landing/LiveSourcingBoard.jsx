@@ -103,7 +103,7 @@ export default function LiveSourcingBoard({ onOpenAuth }) {
           </p>
         </div>
 
-        {/* Category Tabs Grid (IndiaMART style blocky list) */}
+        {/* Category Tabs Grid */}
         <div className="flex flex-wrap items-center gap-1.5 mb-6">
           {CATEGORIES.map((cat) => (
             <button
@@ -120,22 +120,44 @@ export default function LiveSourcingBoard({ onOpenAuth }) {
           ))}
         </div>
 
-                          Post Similar
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        {/* Sourcing Board Exchange Cards */}
+        <div className="flex flex-col gap-4 mt-6">
+          {filteredRequirements.map((req) => (
+            <ProductListingCard 
+              key={req.id} 
+              product={{
+                _id: req.id.toString(),
+                rfqId: `EP#${5050 + req.id}`,
+                title: req.title,
+                createdAt: new Date(Date.now() - req.id * 86400000).toISOString(),
+                timeline: new Date(Date.now() + 86400000 * 7).toISOString(),
+                userId: {
+                  companyName: req.organization,
+                  address: req.location,
+                  country: 'India'
+                },
+                categoryId: { categoryName: req.category },
+                country: 'India'
+              }}
+              onActionClick={() => {
+                if (onOpenAuth) {
+                  onOpenAuth('buyer');
+                } else {
+                  setOpen(true);
+                }
+              }}
+              actionLabel="Sign in to Quote"
+            />
+          ))}
         </div>
-
+        
         {/* Counter Widget at bottom of board */}
         <div className="mt-4 text-right text-xs text-slate-500 font-bold">
-          ⚡ Sourcing directory updated: Just now
+          Sourcing directory updated: Just now
         </div>
 
+        {/* Authentication Modal Fallback */}
+        <Authentication setOpen={setOpen} open={open} />
       </div>
     </section>
   );
