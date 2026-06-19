@@ -81,7 +81,7 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }
   return (
     <>
       <Authentication setOpen={setOpen} open={open} />
-      <div className="w-full bg-white rounded-xl border-2 border-slate-900 p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col md:flex-row justify-between mb-4">
+      <div className="w-full rounded-xl border border-orange-200 p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col md:flex-row justify-between mb-4" style={{background: 'linear-gradient(135deg, #ffffff 0%, #fff7ed 50%, #ffedd5 100%)'}}>
         
         {/* Left Side */}
         <div className="flex-1 space-y-4">
@@ -95,11 +95,11 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }
           {/* Tags Row */}
           <div className="flex flex-wrap items-center gap-2">
             {rfqCode && (
-              <span className="px-3 py-0.5 border border-gray-200 rounded-full text-xs text-gray-500 bg-white">
+              <span className="px-3 py-0.5 border border-orange-200 rounded-full text-xs text-orange-700 bg-white/70">
                 RFQ Code: {rfqCode}
               </span>
             )}
-            <span className="px-3 py-0.5 border border-gray-200 rounded-full text-xs text-gray-500 bg-white">
+            <span className="px-3 py-0.5 border border-orange-200 rounded-full text-xs text-orange-700 bg-white/70">
               Country: {country}
             </span>
           </div>
@@ -107,7 +107,7 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }
           {/* Items Row */}
           <div className="flex flex-wrap items-center gap-2 pt-2">
             {items.slice(0, 4).map((item, idx) => (
-              <span key={idx} className="px-3 py-1 border border-gray-200 rounded-full text-xs text-gray-500 bg-white shadow-sm">
+              <span key={idx} className="px-3 py-1 border border-orange-200 rounded-full text-xs text-slate-600 bg-white/70 shadow-sm">
                 {item}
               </span>
             ))}
