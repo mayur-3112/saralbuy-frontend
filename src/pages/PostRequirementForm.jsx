@@ -142,14 +142,12 @@ const PostRequirementForm = () => {
         }))
       }];
 
-      formData.append('commonDetails', JSON.stringify(commonDetails));
-      formData.append('categoryGroups', JSON.stringify(categoryGroups));
+      const payload = {
+        commonDetails,
+        categoryGroups,
+      };
 
-      // We will need the backend to support 'allowUploadFields' on create-multiple
-      // For now, we will hit the endpoint. If it drops files, we will update backend in the next step.
-      const res = await instance.post('/product/create-multiple', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      const res = await instance.post('/product/create-multiple', payload);
 
       if (res.data.success) {
         toast.success('Requirement posted successfully!');

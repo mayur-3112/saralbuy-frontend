@@ -17,10 +17,19 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }
   };
 
   // Helper to generate a consistent masked company name
-  const buyerName = product?.userId?.companyName || product?.organization || (product?.userId?.firstName ? `${product?.userId?.firstName} ${product?.userId?.lastName || ''}` : 'Undisclosed Buyer');
-  const rfqCode = product?.rfqId || `EP#${product?._id?.substring(product._id.length - 4) || '5057'}`;
+  const rawBuyerName = product?.userId?.companyName || product?.organization || (product?.userId?.firstName ? `${product?.userId?.firstName} ${product?.userId?.lastName || ''}` : 'Undisclosed Buyer');
+  
+  const maskName = (name) => {
+    if (!name || name === 'Undisclosed Buyer') return name;
+    const words = name.trim().split(' ');
+    return words.map(w => w.length > 2 ? w.charAt(0) + '*'.repeat(w.length - 2) + w.charAt(w.length - 1) : w).join(' ');
+  };
+  const buyerName = maskName(rawBuyerName);
+
+  // Generate dynamic RFQ number from DB ID
+  const rfqCode = product?.rfqId || (product?._id ? `RFQ-${product._id.toString().slice(-6).toUpperCase()}` : 'RFQ-PENDING');
+  
   const country = product?.country || product?.userId?.country || 'India';
-  const currency = product?.currency || 'INR';
   const address = product?.deliveryLocation || product?.location || product?.userId?.address || 'Location not specified';
 
   // Product categories/items
@@ -43,7 +52,7 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }
           {/* Title Row */}
           <div className="flex items-center gap-3">
             <h2 className="text-lg font-black text-slate-900 uppercase tracking-wide">
-              ********** {buyerName}
+              {buyerName}
             </h2>
           </div>
 
@@ -54,9 +63,6 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }
             </span>
             <span className="px-3 py-0.5 border border-gray-200 rounded-full text-xs text-gray-500 bg-white">
               Country: {country}
-            </span>
-            <span className="px-3 py-0.5 border border-gray-200 rounded-full text-xs text-gray-500 bg-white">
-              Quote in: {currency}
             </span>
           </div>
 
