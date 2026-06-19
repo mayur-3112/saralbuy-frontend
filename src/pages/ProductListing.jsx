@@ -451,13 +451,9 @@ export default function ProductListing() {
 
               {/* Product grid */}
               <div className="lg:col-span-3">
-                <div className="mb-4 space-y-4">
+                <div className="flex justify-between items-center mb-4">
                   <div className="flex items-center text-sm text-gray-600">
                     Showing <span className="font-bold mx-1">1-{products.length || 0}</span> of <span className="font-bold mx-1">{total || 0}</span> RFQs
-                  </div>
-                  
-                  <div className="bg-[#fffcf0] text-[#8a6d3b] text-sm p-4 rounded-md border border-[#fce99f]">
-                    Some buyer details are masked. Upgrade to Premium to view full buyer information and delivery details.
                   </div>
                 </div>
 
