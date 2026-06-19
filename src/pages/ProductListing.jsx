@@ -451,16 +451,19 @@ export default function ProductListing() {
 
               {/* Product grid */}
               <div className="lg:col-span-3">
-                <div className="flex justify-between items-center mb-4">
-                  <p className="font-bold text-2xl border-l-4 border-gray-800 pl-3 tracking-tight text-gray-800">
-                    Results
-                  </p>
-                  <p className="text-sm text-gray-600 font-medium">{total || 0} Requirements</p>
+                <div className="mb-4 space-y-4">
+                  <div className="flex items-center text-sm text-gray-600">
+                    Showing <span className="font-bold mx-1">1-{products.length || 0}</span> of <span className="font-bold mx-1">{total || 0}</span> RFQs
+                  </div>
+                  
+                  <div className="bg-[#fffcf0] text-[#8a6d3b] text-sm p-4 rounded-md border border-[#fce99f]">
+                    Some buyer details are masked. Upgrade to Premium to view full buyer information and delivery details.
+                  </div>
                 </div>
 
                 <div className="min-h-[300px]">
                   {isLoading ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4">
                       {new Array(6).fill(0).map((_, i) => (
                         <ProductListingCardSkeleton key={`init-skeleton-${i}`} />
                       ))}
@@ -476,13 +479,13 @@ export default function ProductListing() {
                       next={fetchMoreData}
                       hasMore={hasMore}
                       loader={
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+                        <div className="grid grid-cols-1 gap-4 mt-4">
                           {new Array(2).fill(0).map((_, i) => (
                             <ProductListingCardSkeleton key={`more-skeleton-${i}`} />
                           ))}
                         </div>
                       }
-                      className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+                      className="grid grid-cols-1 gap-4"
                     >
                       {products.map(product => (
                         <ProductListingCard key={product._id} product={product} />
