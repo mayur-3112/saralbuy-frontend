@@ -17,24 +17,11 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }
   };
 
   // Helper to generate a consistent masked company name
-  const buyerName = product?.userId?.companyName || (product?.userId?.firstName ? `${product?.userId?.firstName} ${product?.userId?.lastName}` : 'ENERGY SERVICES LLC');
+  const buyerName = product?.userId?.companyName || product?.organization || (product?.userId?.firstName ? `${product?.userId?.firstName} ${product?.userId?.lastName || ''}` : 'Undisclosed Buyer');
   const rfqCode = product?.rfqId || `EP#${product?._id?.substring(product._id.length - 4) || '5057'}`;
-  const country = product?.country || product?.userId?.country || 'United Arab Emirates';
-  const currency = product?.currency || 'AED';
-  const address = product?.deliveryLocation || product?.userId?.address || 'Sultanate of Oman...';
-  
-  const getCountryCode = (c) => {
-    const codes = {
-      'United Arab Emirates': 'ae',
-      'India': 'in',
-      'Nigeria': 'ng',
-      'Indonesia': 'id',
-      'Oman': 'om',
-      'United States': 'us',
-      'United Kingdom': 'gb'
-    };
-    return codes[c] || 'ae';
-  };
+  const country = product?.country || product?.userId?.country || 'India';
+  const currency = product?.currency || 'INR';
+  const address = product?.deliveryLocation || product?.location || product?.userId?.address || 'Location not specified';
 
   // Product categories/items
   const items = [];
@@ -49,18 +36,13 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }
   return (
     <>
       <Authentication setOpen={setOpen} open={open} />
-      <div className="w-full bg-white rounded-xl border border-[#42a5f5] p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col md:flex-row justify-between mb-4">
+      <div className="w-full bg-white rounded-xl border-2 border-slate-900 p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col md:flex-row justify-between mb-4">
         
         {/* Left Side */}
         <div className="flex-1 space-y-4">
           {/* Title Row */}
           <div className="flex items-center gap-3">
-            <img 
-              src={`https://flagcdn.com/w40/${getCountryCode(country)}.png`} 
-              alt={country}
-              className="h-5 w-auto object-cover rounded-sm shadow-sm"
-            />
-            <h2 className="text-lg font-bold text-[#5e5e5e] uppercase tracking-wide">
+            <h2 className="text-lg font-black text-slate-900 uppercase tracking-wide">
               ********** {buyerName}
             </h2>
           </div>
@@ -114,7 +96,7 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }
           {/* Action Button */}
           <Button
             onClick={handleAction}
-            className="w-28 bg-[#3ba2d5] hover:bg-[#2b8bc0] text-white font-bold rounded-lg py-4 shadow-md mt-6"
+            className="w-28 bg-orange-600 hover:bg-orange-500 text-white font-bold rounded-lg py-4 shadow-md mt-6"
           >
             {actionLabel}
           </Button>
