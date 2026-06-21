@@ -1,16 +1,14 @@
 import { Skeleton } from '@/components/ui/skeleton';
 import { useFetch } from '@/hooks/useFetch';
 import bidService from '@/services/bid.service';
-import productService from '@/services/product.service';
 import { dateFormatter } from '@/utils/dateFormatter';
 import React, { useEffect, useState } from 'react';
 import { useUserState } from '@/redux/hooks/useUser';
 import LandingPage from '@/components/custom/landing/LandingPage';
-import SourcingWorkspace from '@/components/custom/dashboard/SourcingWorkspace';
 import OnboardingTour from '@/components/custom/dashboard/OnboardingTour';
 import BidListing from './profile/BidListing';
 import Requirements from './profile/Requirements';
-import { Briefcase, Gavel, FileText } from 'lucide-react';
+import { Gavel, FileText } from 'lucide-react';
 
 const ItemSkeleton = () => (
   <div className="flex flex-col space-y-5">
@@ -24,7 +22,7 @@ const ItemSkeleton = () => (
 
 const Dashboard = () => {
   const { user } = useUserState();
-  const [activeTab, setActiveTab] = useState('sourcing');
+  const [activeTab, setActiveTab] = useState('quotes');
   const [bids, setBids] = useState([]);
   const [drafts, setDrafts] = useState([]);
   const {
@@ -82,7 +80,7 @@ const Dashboard = () => {
               Partner Workspace
             </h1>
             <p className="text-slate-500 text-xs mt-0.5 font-medium">
-              Manage quotes, requirements, and find live sourcing leads.
+              Manage quotes, requirements, and handle negotiations.
             </p>
           </div>
         </div>
@@ -90,20 +88,8 @@ const Dashboard = () => {
         {/* Physical Tabs Navigation */}
         <div className="flex flex-wrap border-b border-slate-200 mb-8 bg-white rounded-xl p-2 gap-1.5 shadow-sm">
           <button
-            onClick={() => setActiveTab('sourcing')}
-            className={`flex items-center gap-2 px-5 py-3 font-bold text-xs rounded-lg transition-all cursor-pointer ${
-              activeTab === 'sourcing'
-                ? 'bg-orange-600 text-white shadow-md'
-                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'
-            }`}
-          >
-            <Briefcase className="w-4 h-4" />
-            Live Sourcing Leads
-          </button>
-          
-          <button
             onClick={() => setActiveTab('quotes')}
-            className={`flex items-center gap-2 px-5 py-3 font-bold text-xs rounded-lg transition-all cursor-pointer ${
+            className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-3.5 font-bold text-xs rounded-lg transition-all cursor-pointer ${
               activeTab === 'quotes'
                 ? 'bg-orange-600 text-white shadow-md'
                 : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'
@@ -115,7 +101,7 @@ const Dashboard = () => {
           
           <button
             onClick={() => setActiveTab('requirements')}
-            className={`flex items-center gap-2 px-5 py-3 font-bold text-xs rounded-lg transition-all cursor-pointer ${
+            className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-3.5 font-bold text-xs rounded-lg transition-all cursor-pointer ${
               activeTab === 'requirements'
                 ? 'bg-orange-600 text-white shadow-md'
                 : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'
@@ -128,24 +114,14 @@ const Dashboard = () => {
 
         {/* Tab Content Panels */}
         <div className="space-y-6">
-          {activeTab === 'sourcing' && (
-            <div className="space-y-8">
-              <SourcingWorkspace 
-                user={user} 
-                userBidsCount={bids.length} 
-                userDraftsCount={drafts.length} 
-              />
-            </div>
-          )}
-
           {activeTab === 'quotes' && (
-            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-6 shadow-sm overflow-x-auto">
               <BidListing />
             </div>
           )}
 
           {activeTab === 'requirements' && (
-            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-6 shadow-sm overflow-x-auto">
               <Requirements />
             </div>
           )}
