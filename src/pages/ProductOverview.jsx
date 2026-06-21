@@ -1,4 +1,4 @@
-import { Box, Home, Paperclip, Star } from 'lucide-react';
+import { Box, Home, Paperclip, Star, Package } from 'lucide-react';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -894,23 +894,34 @@ const ProductOverview = () => {
             {/* Content */}
             <div className="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
               {/* Image */}
-              <div className="lg:col-span-4 bg-gray-100 flex justify-center items-center rounded-lg p-4 max-h-64 relative">
-                <div className="w-full h-full flex justify-center items-center">
-                  <img
-                    src={
-                      (bidOverviewRes
-                        ? bidOverviewRes?.product?.image
-                        : productResponse?.mainProduct?.image) || '/no-image.webp'
-                    }
-                    alt="Product"
-                    className="object-contain max-h-56"
-                  />
+              <div className="lg:col-span-4 bg-slate-50 border border-slate-100 flex justify-center items-center rounded-xl p-8 max-h-64 relative overflow-hidden shadow-sm">
+                {/* Subtle background decoration */}
+                <div className="absolute -bottom-10 -right-10 text-slate-200/50 rotate-12">
+                  <Package className="w-48 h-48" strokeWidth={1} />
+                </div>
+                
+                <div className="w-full h-full flex justify-center items-center relative z-10">
+                  {((bidOverviewRes ? bidOverviewRes?.product?.image : productResponse?.mainProduct?.image)) ? (
+                    <img
+                      src={bidOverviewRes ? bidOverviewRes?.product?.image : productResponse?.mainProduct?.image}
+                      alt="Product"
+                      className="object-contain max-h-48 drop-shadow-sm rounded"
+                    />
+                  ) : (
+                    <div className="flex flex-col items-center justify-center text-center">
+                      <div className="w-20 h-20 bg-white shadow-sm border border-slate-100 rounded-full flex items-center justify-center mb-4">
+                        <Package className="w-10 h-10 text-orange-400" />
+                      </div>
+                      <span className="text-slate-700 font-semibold text-lg">No Image Provided</span>
+                      <span className="text-slate-500 text-sm mt-1 max-w-[200px]">See the specifications below for material details.</span>
+                    </div>
+                  )}
                 </div>
                 {soldProduct && (
                   <img
                     src="sold.png"
                     alt="Sold"
-                    className="absolute top-[-34px] right-[-20px] w-28"
+                    className="absolute top-[-34px] right-[-20px] w-28 z-20"
                   />
                 )}
               </div>
