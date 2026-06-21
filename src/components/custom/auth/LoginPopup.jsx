@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import QuotexLogo from '/image/Logo/QuotexLogo.png';
+import QuotexLogo from '/image/Logo/saralBuyLogo.png';
 
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';

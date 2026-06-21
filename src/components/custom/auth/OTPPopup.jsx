@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import QuotexLogo from '/image/Logo/QuotexLogo.png';
+import QuotexLogo from '/image/Logo/saralBuyLogo.png';
 import { useFetch } from '@/hooks/useFetch';
 import { Button } from '@/components/ui/button';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
