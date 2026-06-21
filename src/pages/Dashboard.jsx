@@ -1,4 +1,3 @@
-import DyanmicHomeCard from '@/components/custom/dashboard/DynamicHomeCard';
 import Requirement from '@/components/custom/dashboard/Requirement';
 import SwiperSlider from '@/components/custom/dashboard/SwiperSlider';
 import TrendingCategory from '@/components/custom/dashboard/TrendingCategory';
@@ -29,7 +28,6 @@ const Dashboard = () => {
   const { user } = useUserState();
   const [bids, setBids] = useState([]);
   const [drafts, setDrafts] = useState([]);
-  const { fn, data } = useFetch(productService.getHomeCards);
   const { fn: trendingFn, data: trendingRes } = useFetch(productService.getTrendingCategory);
   const {
     fn: getLatestThreeBidsFn,
@@ -40,7 +38,6 @@ const Dashboard = () => {
   useEffect(() => {
     getLatestThreeBidsFn();
     trendingFn();
-    fn();
   }, []);
 
   useEffect(() => {
@@ -129,14 +126,6 @@ const Dashboard = () => {
             <TrendingCategory categories={trendingRes} />
           </div>
         )}
-
-        {/* Dynamic content cards */}
-        <div className="mt-8">
-          {data &&
-            data.map((item, idx) => (
-              <DyanmicHomeCard key={idx + 1} bg={idx === 0 ? 'gray' : ''} item={item} />
-            ))}
-        </div>
       </div>
     </main>
   );
