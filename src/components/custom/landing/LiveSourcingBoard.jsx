@@ -3,6 +3,8 @@ import { MapPin, Gavel, Clock, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { maskOrganizationName } from '../../../utils/maskName';
 import ProductListingCard from '@/components/custom/listing/ProductListingCard';
 import Authentication from '../auth/Authenticate';
+import { useUserState } from '../../../redux/hooks/useUser';
+import { useNavigate } from 'react-router-dom';
 
 const MOCK_REQUIREMENTS = [
   {
@@ -84,6 +86,8 @@ const CATEGORIES = ['All Projects', 'Building Materials', 'Electrical & Lighting
 export default function LiveSourcingBoard({ onOpenAuth }) {
   const [selectedCategory, setSelectedCategory] = useState('All Projects');
   const [open, setOpen] = useState(false);
+  const { user } = useUserState();
+  const navigate = useNavigate();
 
   const filteredRequirements = selectedCategory === 'All Projects'
     ? MOCK_REQUIREMENTS
@@ -140,13 +144,15 @@ export default function LiveSourcingBoard({ onOpenAuth }) {
                 country: 'India'
               }}
               onActionClick={() => {
-                if (onOpenAuth) {
+                if (user) {
+                  navigate('/product-overview?productId=' + req.id);
+                } else if (onOpenAuth) {
                   onOpenAuth('buyer');
                 } else {
                   setOpen(true);
                 }
               }}
-              actionLabel="Sign in to Quote"
+              actionLabel={user ? "Quote Now" : "Sign in to Quote"}
             />
           ))}
         </div>

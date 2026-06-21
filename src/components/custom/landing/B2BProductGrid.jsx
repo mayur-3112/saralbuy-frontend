@@ -1,5 +1,7 @@
 import React from 'react';
 import { Gavel, ShieldCheck } from 'lucide-react';
+import { useUserState } from '../../../redux/hooks/useUser';
+import { useNavigate } from 'react-router-dom';
 
 const WHOLESALE_PRODUCTS = [
   {
@@ -77,10 +79,17 @@ const WHOLESALE_PRODUCTS = [
 ];
 
 export default function B2BProductGrid({ onOpenAuth }) {
+  const { user } = useUserState();
+  const navigate = useNavigate();
+
   const handleGetQuotes = (productTitle) => {
     localStorage.setItem('pending_rfq_product', productTitle);
     localStorage.setItem('pending_rfq_qty', 'Bulk');
-    onOpenAuth('buyer');
+    if (user) {
+      navigate('/requirement');
+    } else {
+      onOpenAuth('buyer');
+    }
   };
 
   return (

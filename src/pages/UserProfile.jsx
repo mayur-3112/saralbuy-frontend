@@ -100,11 +100,6 @@ const UserProfile = () => {
                     >
                       {data?.status || '—'}
                     </Badge>
-                    {data?.isAadhaarVerified && (
-                      <Badge variant="outline" className="border-blue-500 text-blue-600 text-xs">
-                        Aadhaar Verified
-                      </Badge>
-                    )}
                   </div>
                 </div>
               </div>

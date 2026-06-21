@@ -55,9 +55,6 @@ export const ProfileSchema = z.object({
   email: z.string().email('Invalid email'),
   phone: z.string().optional(),
   address: z.string().min(1, 'Address is required').min(3, 'Address is too short'),
-  aadhaarNumber: z.string().refine(value => !value || /^[2-9]{1}[0-9]{11}$/.test(value), {
-    message: 'Invalid Aadhaar Number',
-  }),
   businessName: z.string().optional(),
 });
 

@@ -562,7 +562,19 @@ const HomeNavbar = () => {
               <div className="hidden lg:flex items-center gap-5 ml-4">
                 <Link to={'/product-listing'} className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors relative pb-1 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-orange-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 origin-left">EXPLORE</Link>
                 <Link to={'/'} className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors relative pb-1 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-orange-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 origin-left">HOW IT WORKS</Link>
-                <Link to={'/requirement'} className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors relative pb-1 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-orange-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 origin-left">RFQ/INQUIRIES</Link>
+                <Link
+                  to={user ? '/dashboard' : '#'}
+                  onClick={(e) => {
+                    if (!user) {
+                      e.preventDefault();
+                      localStorage.setItem('auth_default_role', 'buyer');
+                      window.dispatchEvent(new Event('session-expired'));
+                    }
+                  }}
+                  className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors relative pb-1 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-orange-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 origin-left"
+                >
+                  RFQ/INQUIRIES
+                </Link>
               </div>
 
               <div className="flex items-center relative group">

@@ -35,6 +35,7 @@ import TermsAndPrivacy from './pages/TermsAndPrivacy';
 import PolicyConsentPopup from './components/custom/popups/PolicyConsentPopup';
 import { useUserState } from './redux/hooks/useUser';
 import DiscussionChatbox from './components/custom/dashboard/DiscussionChatbox';
+import LandingPage from './components/custom/landing/LandingPage';
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Chatbot = lazy(() => import('./pages/Chatbot'));
 
@@ -73,7 +74,7 @@ export default function AppRoutes() {
       <HomeNavbar />
       <Suspense fallback={<Loader />}>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/" element={<LandingPage />} />
           <Route path="/requirement" element={<Requirement />} />
           <Route path="/post-requirement" element={<PostRequirementForm />} />
           <Route path="/category/:categoryId/:subCategoryId" element={<CreateProductForm />} />
@@ -97,6 +98,7 @@ export default function AppRoutes() {
           <Route path="/chat" element={<Chatbot />} />
           <Route path="/user-profile/:userId" element={<UserProfile />} />
           <Route element={<ProtectRoute />}>
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/bid-overview/:bidId" element={<BidOverview />} />
           </Route>
           <Route path="*" element={<NoRouteFound />} />

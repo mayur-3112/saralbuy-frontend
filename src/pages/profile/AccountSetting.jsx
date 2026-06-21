@@ -25,7 +25,6 @@ export function AccountSettings() {
   const { user } = useUserState();
   const { updateUserState } = useDispatchUser();
   const [open, setOpen] = useState(false);
-  const [showAadhaar, setShowAadhaar] = useState(false);
 
   const {
     fn: updateProfilefn,
@@ -48,7 +47,6 @@ export function AccountSettings() {
       email: '',
       phone: '',
       address: '',
-      aadhaarNumber: '',
       businessName: '',
     },
   });
@@ -65,7 +63,6 @@ export function AccountSettings() {
         lastName: '',
         email: '',
         address: '',
-        aadhaarNumber: '',
         businessName: '',
       });
     }
@@ -79,7 +76,6 @@ export function AccountSettings() {
         lastName: user?.lastName || '',
         email: user?.email || '',
         address: user?.address || '',
-        aadhaarNumber: user?.aadhaarNumber || '',
         businessName: user?.businessName || '',
       });
     }
@@ -102,7 +98,6 @@ export function AccountSettings() {
     formData.append('lastName', data.lastName);
     formData.append('email', data.email);
     formData.append('address', data.address);
-    formData.append('aadhaarNumber', data.aadhaarNumber);
     formData.append('businessName', data.businessName);
 
     if (fileDoc) {
@@ -199,30 +194,7 @@ export function AccountSettings() {
               </div>
             </div>
 
-            {/* Aadhaar Number */}
-            <div className="grid grid-cols-1 gap-4">
-              <div className="space-y-2 w-full">
-                <Label className="text-gray-600 text-sm" htmlFor="aadhaar">
-                  Aadhaar Number
-                </Label>
-                <div className="relative flex items-center">
-                  <Input
-                    id="aadhaar"
-                    type={showAadhaar ? 'text' : 'password'}
-                    placeholder="Enter 12-digit Aadhaar number"
-                    {...register('aadhaarNumber')}
-                    className="pr-10 bg-transparent w-full"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowAadhaar(!showAadhaar)}
-                    className="absolute right-3 text-gray-500 hover:text-gray-700 cursor-pointer"
-                  >
-                    {showAadhaar ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                </div>
-              </div>
-            </div>
+
 
             {/* Email + Phone */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
