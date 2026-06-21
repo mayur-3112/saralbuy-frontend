@@ -1,9 +1,6 @@
-import Requirement from '@/components/custom/dashboard/Requirement';
-import SwiperSlider from '@/components/custom/dashboard/SwiperSlider';
 import TrendingCategory from '@/components/custom/dashboard/TrendingCategory';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useFetch } from '@/hooks/useFetch';
-import { useCategory, useCategoryState } from '@/redux/hooks/useCategory';
 import bidService from '@/services/bid.service';
 import productService from '@/services/product.service';
 import { dateFormatter } from '@/utils/dateFormatter';
@@ -12,7 +9,9 @@ import { useUserState } from '@/redux/hooks/useUser';
 import LandingPage from '@/components/custom/landing/LandingPage';
 import SourcingWorkspace from '@/components/custom/dashboard/SourcingWorkspace';
 import OnboardingTour from '@/components/custom/dashboard/OnboardingTour';
-
+import BidListing from './profile/BidListing';
+import Requirements from './profile/Requirements';
+import { Briefcase, Gavel, FileText } from 'lucide-react';
 
 const ItemSkeleton = () => (
   <div className="flex flex-col space-y-5">
@@ -26,6 +25,7 @@ const ItemSkeleton = () => (
 
 const Dashboard = () => {
   const { user } = useUserState();
+  const [activeTab, setActiveTab] = useState('sourcing');
   const [bids, setBids] = useState([]);
   const [drafts, setDrafts] = useState([]);
   const { fn: trendingFn, data: trendingRes } = useFetch(productService.getTrendingCategory);
@@ -55,7 +55,7 @@ const Dashboard = () => {
       }));
       setBids(formattedBids);
 
-      //  drafts
+      // drafts
       const formattedDrafts = getLatestBidandDrafts?.drafts.map(draft => ({
         _id: draft._id,
         date: dateFormatter(draft.createdAt),
@@ -77,55 +77,88 @@ const Dashboard = () => {
     <main className="relative min-h-screen bg-slate-50 pb-16">
       <OnboardingTour />
       <div className="w-full max-w-7xl mx-auto px-4">
+        
         {/* Welcome Header */}
-        <div className="pt-8 pb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div className="pt-8 pb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">
-              Welcome, {user?.firstName || 'Partner'}
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight uppercase">
+              Partner Workspace
             </h1>
-            <p className="text-slate-500 text-sm mt-0.5">
-              Your procurement dashboard
+            <p className="text-slate-500 text-xs mt-0.5 font-medium">
+              Manage quotes, requirements, and find live sourcing leads.
             </p>
           </div>
         </div>
 
-        {/* Serious B2B Sourcing Board with Interactive Filters */}
-        <SourcingWorkspace 
-          user={user} 
-          userBidsCount={bids.length} 
-          userDraftsCount={drafts.length} 
-        />
-
-        {/* Sliders for Bids and Drafts */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 mt-8 gap-6">
-          {bidResponseLoading ? (
-            <ItemSkeleton />
-          ) : bids.length > 0 ? (
-            <SwiperSlider key={'bid'} title="Your Quotes" target="bids" color="gray" data={bids} />
-          ) : (
-            <SwiperSlider title="Your Quotes" target="bids" color="gray" data={[]} />
-          )}
-          {bidResponseLoading ? (
-            <ItemSkeleton />
-          ) : drafts.length > 0 ? (
-            <SwiperSlider
-              key={'draft'}
-              title="Your Draft Requirements"
-              target="drafts"
-              color="orange"
-              data={drafts}
-            />
-          ) : (
-            <SwiperSlider title="Your Draft Requirements" target="draft" color="orange" data={[]} />
-          )}
+        {/* Physical Tabs Navigation */}
+        <div className="flex flex-wrap border-b border-slate-200 mb-8 bg-white rounded-xl p-2 gap-1.5 shadow-sm">
+          <button
+            onClick={() => setActiveTab('sourcing')}
+            className={`flex items-center gap-2 px-5 py-3 font-bold text-xs rounded-lg transition-all cursor-pointer ${
+              activeTab === 'sourcing'
+                ? 'bg-orange-600 text-white shadow-md'
+                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'
+            }`}
+          >
+            <Briefcase className="w-4 h-4" />
+            Live Sourcing Leads
+          </button>
+          
+          <button
+            onClick={() => setActiveTab('quotes')}
+            className={`flex items-center gap-2 px-5 py-3 font-bold text-xs rounded-lg transition-all cursor-pointer ${
+              activeTab === 'quotes'
+                ? 'bg-orange-600 text-white shadow-md'
+                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'
+            }`}
+          >
+            <Gavel className="w-4 h-4" />
+            My Submitted Quotes ({bids.length})
+          </button>
+          
+          <button
+            onClick={() => setActiveTab('requirements')}
+            className={`flex items-center gap-2 px-5 py-3 font-bold text-xs rounded-lg transition-all cursor-pointer ${
+              activeTab === 'requirements'
+                ? 'bg-orange-600 text-white shadow-md'
+                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'
+            }`}
+          >
+            <FileText className="w-4 h-4" />
+            My Sourcing Needs & Drafts ({drafts.length})
+          </button>
         </div>
 
-        {/* Category browsing grid */}
-        {trendingRes && (
-          <div className="mt-12 bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm">
-            <TrendingCategory categories={trendingRes} />
-          </div>
-        )}
+        {/* Tab Content Panels */}
+        <div className="space-y-6">
+          {activeTab === 'sourcing' && (
+            <div className="space-y-8">
+              <SourcingWorkspace 
+                user={user} 
+                userBidsCount={bids.length} 
+                userDraftsCount={drafts.length} 
+              />
+              {/* Category browsing grid */}
+              {trendingRes && (
+                <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm">
+                  <TrendingCategory categories={trendingRes} />
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeTab === 'quotes' && (
+            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+              <BidListing />
+            </div>
+          )}
+
+          {activeTab === 'requirements' && (
+            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+              <Requirements />
+            </div>
+          )}
+        </div>
       </div>
     </main>
   );
