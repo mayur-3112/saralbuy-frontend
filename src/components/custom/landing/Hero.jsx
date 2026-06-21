@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
-import { ArrowRight, Search } from 'lucide-react';
+import { ArrowRight, Search, Gavel } from 'lucide-react';
+import { useUserState } from '../../../redux/hooks/useUser';
+import { useNavigate } from 'react-router-dom';
 
 export default function Hero({ onOpenAuth }) {
   const [searchQuery, setSearchQuery] = useState('');
+  const { user } = useUserState();
+  const navigate = useNavigate();
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -15,7 +19,19 @@ export default function Hero({ onOpenAuth }) {
   };
 
   const handlePostRequirement = () => {
-    onOpenAuth('buyer');
+    if (user) {
+      navigate('/requirement');
+    } else {
+      onOpenAuth('buyer');
+    }
+  };
+
+  const handleFindLeads = () => {
+    if (user) {
+      navigate('/dashboard');
+    } else {
+      onOpenAuth('seller');
+    }
   };
 
   return (
@@ -29,12 +45,12 @@ export default function Hero({ onOpenAuth }) {
           
           {/* Main Headline */}
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 leading-tight tracking-tight">
-            Get Wholesale Price Quotes <br className="hidden sm:inline" />
-            <span className="bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">Directly From Builders & Suppliers</span>
+            Get Wholesale Price Quotes & <br className="hidden sm:inline" />
+            <span className="bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">Direct Sourcing Leads in Karnataka</span>
           </h1>
           
           <p className="text-slate-600 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto">
-            SaralBuy is Karnataka's business directory for building materials, TMT steel, plumbing conduits, and electrical contract goods. Post what you need and local vetted suppliers will bid their lowest rates.
+            SaralBuy is the leading B2B exchange connecting contractors and builders with verified materials suppliers. Post bulk requirements to get quotes, or browse live requests to submit bids.
           </p>
 
           {/* Search Bar */}
@@ -72,14 +88,22 @@ export default function Hero({ onOpenAuth }) {
             ))}
           </div>
 
-          {/* Post Requirement CTA */}
-          <div className="pt-4">
+          {/* Dual CTAs for Buyer and Seller */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <button
               onClick={handlePostRequirement}
-              className="group inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-500 hover:shadow-lg hover:shadow-orange-600/15 active:scale-95 text-white font-bold text-sm px-7 py-4 rounded-xl cursor-pointer transition-all duration-200"
+              className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-500 hover:shadow-lg hover:shadow-orange-600/15 active:scale-95 text-white font-bold text-sm px-7 py-4 rounded-xl cursor-pointer transition-all duration-200"
             >
-              Post Your Requirement 
+              Post a Requirement (For Buyers)
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
+            </button>
+
+            <button
+              onClick={handleFindLeads}
+              className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white hover:bg-orange-50/50 border border-orange-200 hover:border-orange-400 hover:shadow-md active:scale-95 text-slate-800 hover:text-orange-700 font-bold text-sm px-7 py-4 rounded-xl cursor-pointer transition-all duration-200"
+            >
+              Find Sourcing Leads (For Sellers)
+              <Gavel className="w-4 h-4 text-orange-500 group-hover:rotate-12 transition-transform duration-200" />
             </button>
           </div>
         </div>
