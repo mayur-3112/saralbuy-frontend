@@ -25,7 +25,7 @@ import { Button } from '@/components/ui/button';
 // ─── Rich mock sourcing listings so the Explore page is NEVER empty ───
 const MOCK_EXPLORE_LISTINGS = [
   {
-    _id: 'explore_mock_1',
+    _id: 'prod_mock_1',
     rfqId: 'EP#5051',
     title: 'UltraTech OPC 53 Grade Cement',
     createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
@@ -35,7 +35,7 @@ const MOCK_EXPLORE_LISTINGS = [
     country: 'India',
   },
   {
-    _id: 'explore_mock_2',
+    _id: 'prod_mock_2',
     rfqId: 'EP#5052',
     title: 'Fe 550 TMT Steel Reinforcement Bars',
     createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
@@ -45,7 +45,7 @@ const MOCK_EXPLORE_LISTINGS = [
     country: 'India',
   },
   {
-    _id: 'explore_mock_3',
+    _id: 'prod_mock_3',
     rfqId: 'EP#5053',
     title: 'Heavy Duty PVC Conduit Pipes (20mm)',
     createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
@@ -55,7 +55,7 @@ const MOCK_EXPLORE_LISTINGS = [
     country: 'India',
   },
   {
-    _id: 'explore_mock_4',
+    _id: 'prod_mock_4',
     rfqId: 'EP#5054',
     title: 'Double Charge Vitrified Floor Tiles (600x600mm)',
     createdAt: new Date(Date.now() - 36 * 60 * 60 * 1000).toISOString(),
@@ -65,7 +65,7 @@ const MOCK_EXPLORE_LISTINGS = [
     country: 'India',
   },
   {
-    _id: 'explore_mock_5',
+    _id: 'prod_mock_5',
     rfqId: 'EP#5055',
     title: 'Polished Granite Slabs (Sira Grey, 18mm)',
     createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(),
@@ -75,7 +75,7 @@ const MOCK_EXPLORE_LISTINGS = [
     country: 'India',
   },
   {
-    _id: 'explore_mock_6',
+    _id: 'prod_mock_6',
     rfqId: 'EP#5056',
     title: 'Recessed LED Panel Lights (15W, Warm White)',
     createdAt: new Date(Date.now() - 72 * 60 * 60 * 1000).toISOString(),
@@ -85,7 +85,7 @@ const MOCK_EXPLORE_LISTINGS = [
     country: 'India',
   },
   {
-    _id: 'explore_mock_7',
+    _id: 'prod_mock_7',
     rfqId: 'EP#5057',
     title: 'Waterproof Commercial Plywood (18mm BWP)',
     createdAt: new Date(Date.now() - 4 * 86400000).toISOString(),
@@ -95,7 +95,7 @@ const MOCK_EXPLORE_LISTINGS = [
     country: 'India',
   },
   {
-    _id: 'explore_mock_8',
+    _id: 'prod_mock_8',
     rfqId: 'EP#5058',
     title: 'Premium Exterior Emulsion Weatherproof Paint',
     createdAt: new Date(Date.now() - 5 * 86400000).toISOString(),
@@ -105,7 +105,7 @@ const MOCK_EXPLORE_LISTINGS = [
     country: 'India',
   },
   {
-    _id: 'explore_mock_9',
+    _id: 'prod_mock_9',
     rfqId: 'EP#5059',
     title: 'Industrial Safety Shoes & Helmets Combo',
     createdAt: new Date(Date.now() - 6 * 86400000).toISOString(),
@@ -115,7 +115,7 @@ const MOCK_EXPLORE_LISTINGS = [
     country: 'India',
   },
   {
-    _id: 'explore_mock_10',
+    _id: 'prod_mock_10',
     rfqId: 'EP#5060',
     title: 'Submersible Water Pumps (5 HP, 3 Phase)',
     createdAt: new Date(Date.now() - 7 * 86400000).toISOString(),
@@ -125,7 +125,7 @@ const MOCK_EXPLORE_LISTINGS = [
     country: 'India',
   },
   {
-    _id: 'explore_mock_11',
+    _id: 'prod_mock_11',
     rfqId: 'EP#5061',
     title: 'CPVC Pipes & Fittings (SDR 11, 1 inch)',
     createdAt: new Date(Date.now() - 8 * 86400000).toISOString(),
@@ -135,7 +135,7 @@ const MOCK_EXPLORE_LISTINGS = [
     country: 'India',
   },
   {
-    _id: 'explore_mock_12',
+    _id: 'prod_mock_12',
     rfqId: 'EP#5062',
     title: 'AAC Blocks (600x200x150mm) Lightweight',
     createdAt: new Date(Date.now() - 9 * 86400000).toISOString(),
