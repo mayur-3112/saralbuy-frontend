@@ -15,7 +15,9 @@ export default function Hero({ onOpenAuth }) {
     { url: '/image/Category/plumbing_sanitary.png', caption: 'Plumbing & Sanitaryware' },
     { url: '/image/Category/tiles_flooring.png', caption: 'Flooring, Tiles & Granite' },
     { url: '/image/Category/paints_waterproofing.png', caption: 'Interior Finishing & Paints' },
-    { url: '/image/Category/safetyEquipment.png', caption: 'Safety Gear & Uniforms' }
+    { url: '/image/Category/plywood_hardware.png', caption: 'Plywood & Hardware' },
+    { url: '/image/Category/safetyEquipment.png', caption: 'Safety Gear & Uniforms' },
+    { url: '/image/Category/industrial_tools.png', caption: 'Industrial Tools & Pumps' }
   ];
 
   useEffect(() => {
