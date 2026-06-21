@@ -121,9 +121,9 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }
         </div>
 
         {/* Right Side */}
-        <div className="mt-4 md:mt-0 flex flex-col justify-between items-end md:w-64 shrink-0">
+        <div className="mt-4 md:mt-0 flex flex-col justify-between items-start md:items-end md:w-64 shrink-0">
           {/* Dates */}
-          <div className="text-right space-y-1">
+          <div className="text-left md:text-right space-y-1">
             <p className="text-[11px] text-gray-400">
               Posted <span className="font-medium text-gray-600 ml-1">
                 {format(new Date(createdAt || Date.now()), 'MMM d, yyyy')}
@@ -141,7 +141,7 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }
           {/* Action Button */}
           <Button
             onClick={(e) => { e.stopPropagation(); handleAction(); }}
-            className="w-28 bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-lg py-4 shadow-md mt-6 hover:shadow-orange-300 hover:shadow-lg active:scale-95 transition-all duration-200"
+            className="w-full md:w-28 bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-lg py-4 shadow-md mt-4 md:mt-6 hover:shadow-orange-300 hover:shadow-lg active:scale-95 transition-all duration-200"
           >
             {actionLabel}
           </Button>
