@@ -25,6 +25,7 @@ import UpdateCreateProductForm from './pages/UpdateCreateProductForm';
 import RequirementOverview from './pages/RequirementOverview';
 import PostRequirementForm from './pages/PostRequirementForm';
 import FAQ from './pages/FAQ';
+import HowItWorks from './pages/HowItWorks';
 import AboutUs from './pages/AboutUs';
 import ContactUs from './pages/ContactUs';
 import NoRouteFound from './pages/404';
@@ -83,6 +84,7 @@ export default function AppRoutes() {
           <Route path="/product-overview" element={<ProductOverview />} />
           <Route path="/terms" element={<TermsAndPrivacy />} />
           <Route path="/privacy" element={<TermsAndPrivacy />} />
+          <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/contact-us" element={<ContactUs />} />
