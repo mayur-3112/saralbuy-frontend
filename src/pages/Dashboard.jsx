@@ -1,4 +1,3 @@
-import TrendingCategory from '@/components/custom/dashboard/TrendingCategory';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useFetch } from '@/hooks/useFetch';
 import bidService from '@/services/bid.service';
@@ -28,7 +27,6 @@ const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('sourcing');
   const [bids, setBids] = useState([]);
   const [drafts, setDrafts] = useState([]);
-  const { fn: trendingFn, data: trendingRes } = useFetch(productService.getTrendingCategory);
   const {
     fn: getLatestThreeBidsFn,
     data: getLatestBidandDrafts,
@@ -37,7 +35,6 @@ const Dashboard = () => {
 
   useEffect(() => {
     getLatestThreeBidsFn();
-    trendingFn();
   }, []);
 
   useEffect(() => {
@@ -138,12 +135,6 @@ const Dashboard = () => {
                 userBidsCount={bids.length} 
                 userDraftsCount={drafts.length} 
               />
-              {/* Category browsing grid */}
-              {trendingRes && (
-                <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm">
-                  <TrendingCategory categories={trendingRes} />
-                </div>
-              )}
             </div>
           )}
 
