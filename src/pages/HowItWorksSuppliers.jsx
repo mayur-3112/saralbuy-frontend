@@ -61,7 +61,7 @@ const STEPS = [
     num: '04',
     icon: Receipt,
     title: 'Win the Order & Get Paid Directly',
-    desc: 'When the buyer accepts your quote, you receive a purchase order. Deliver the materials and get paid directly by the buyer. SaralBuy takes zero commission.',
+    desc: 'When the buyer accepts your quote, you receive a purchase order. Deliver the materials and get paid directly by the buyer. Quotex takes zero commission.',
     details: [
       'No platform fees — you keep 100% of every rupee you earn',
       'Payment goes directly from buyer to you',
@@ -73,7 +73,7 @@ const STEPS = [
 
 const BENEFITS = [
   { icon: ClipboardList, title: 'Qualified, Genuine Leads', desc: 'Every sourcing request comes from a real project with genuine purchase intent and defined budgets. No window-shoppers.' },
-  { icon: IndianRupee, title: 'Zero Commission Forever', desc: 'SaralBuy charges suppliers nothing. No subscription fees, no transaction cuts, no hidden charges. You keep every rupee.' },
+  { icon: IndianRupee, title: 'Zero Commission Forever', desc: 'Quotex charges suppliers nothing. No subscription fees, no transaction cuts, no hidden charges. You keep every rupee.' },
   { icon: Send, title: 'Direct Buyer Access', desc: 'Chat directly with contractors and project managers who make the buying decisions. No middlemen, agents, or gatekeepers.' },
   { icon: TrendingUp, title: 'Grow Your Customer Base', desc: 'Reach new contractors and builders across all of Karnataka that you would never discover through your existing network.' },
   { icon: Target, title: 'Targeted Leads', desc: 'Filter requirements by your product category, delivery location, and budget range. Only see leads relevant to your business.' },
@@ -81,12 +81,12 @@ const BENEFITS = [
 ];
 
 const FAQS = [
-  { q: 'Is SaralBuy free for suppliers?', a: 'Yes, completely free. There are no subscription fees, no listing charges, and no commissions on any deal you close through the platform. You keep 100% of your earnings.' },
-  { q: 'What kind of buyers are on SaralBuy?', a: 'Verified contractors, project builders, civil engineers, and procurement managers handling real construction and infrastructure projects across Karnataka.' },
+  { q: 'Is Quotex free for suppliers?', a: 'Yes, completely free. There are no subscription fees, no listing charges, and no commissions on any deal you close through the platform. You keep 100% of your earnings.' },
+  { q: 'What kind of buyers are on Quotex?', a: 'Verified contractors, project builders, civil engineers, and procurement managers handling real construction and infrastructure projects across Karnataka.' },
   { q: 'How do I get notified about new leads?', a: 'You receive real-time notifications whenever a new sourcing requirement matching your product category is posted. You can also browse all active leads anytime.' },
   { q: 'Can I quote on any requirement?', a: 'Yes. As long as you can supply the materials requested, you can submit your quote on any active requirement on the platform.' },
   { q: 'What if the buyer wants to negotiate?', a: 'That is encouraged. Buyers can initiate chat with you to discuss pricing, delivery terms, brand alternatives, credit periods, and more. Negotiation is a normal part of B2B trading.' },
-  { q: 'How do I get paid?', a: 'Payment is handled directly between you and the buyer. SaralBuy does not process payments or take any cut. Once the buyer accepts your quote, you agree on payment terms and settle directly.' },
+  { q: 'How do I get paid?', a: 'Payment is handled directly between you and the buyer. Quotex does not process payments or take any cut. Once the buyer accepts your quote, you agree on payment terms and settle directly.' },
 ];
 
 export default function HowItWorksSuppliers() {
@@ -144,7 +144,7 @@ export default function HowItWorksSuppliers() {
         <div className="text-center mb-16">
           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">Step-by-step</p>
           <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-            How to Win Orders on SaralBuy
+            How to Win Orders on Quotex
           </h2>
           <p className="text-slate-500 text-sm mt-2 max-w-lg mx-auto">
             From browsing your first lead to receiving payment — here's exactly how it works for suppliers.
@@ -220,9 +220,9 @@ export default function HowItWorksSuppliers() {
       <section className="bg-slate-50/70 border-t border-b border-slate-200/50 py-16 sm:py-24">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-14">
-            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">Why SaralBuy</p>
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">Why Quotex</p>
             <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-              Why Suppliers Choose SaralBuy
+              Why Suppliers Choose Quotex
             </h2>
           </div>
 

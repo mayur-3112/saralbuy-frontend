@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import saralBuyLogo from '/image/Logo/saralBuyLogo.png';
+import QuotexLogo from '/image/Logo/QuotexLogo.png';
 
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
@@ -54,7 +54,7 @@ const LoginPopup = ({ open, setOpen, setNumber, setOtpPopup, setSessionId }) => 
         <DialogContent>
           <form onSubmit={handleSendOTP} className=" p-3 max-w-md inline-block space-y-5 ">
             <div className="h-16 flex justify-center">
-              <img src={saralBuyLogo} alt="Logo" className="w-full h-full object-contain" />
+              <img src={QuotexLogo} alt="Logo" className="w-full h-full object-contain" />
             </div>
 
             <div className="space-y-2">

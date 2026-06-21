@@ -13,7 +13,7 @@ export default function TermsAndPrivacy() {
           Platform Legal & Policies
         </h1>
         <p className="text-slate-500 text-sm max-w-2xl mx-auto">
-          Please review the Terms of Service and Privacy Policy governing the SaralBuy procurement exchange.
+          Please review the Terms of Service and Privacy Policy governing the Quotex procurement exchange.
         </p>
       </div>
 
@@ -25,7 +25,7 @@ export default function TermsAndPrivacy() {
         <div className="space-y-2">
           <h3 className="font-extrabold text-amber-950 text-base">Important Zero Liability Disclaimer</h3>
           <p className="text-xs text-amber-800 leading-relaxed">
-            SaralBuy is exclusively a B2B matching and reverse-bidding exchange platform. We do not participate in, control, verify, or assume any liability for the transactions, payments, material inspections, or delivery negotiations between buyers and suppliers. 
+            Quotex is exclusively a B2B matching and reverse-bidding exchange platform. We do not participate in, control, verify, or assume any liability for the transactions, payments, material inspections, or delivery negotiations between buyers and suppliers. 
           </p>
           <p className="text-xs text-amber-950 font-bold leading-relaxed">
             If a buyer rejects materials, or if either party defaults on payments, delivery terms, or contracts, the platform bears absolutely no liability, responsibility, or financial obligation. All trades are conducted at the sole risk of the participants.
@@ -53,7 +53,7 @@ export default function TermsAndPrivacy() {
               1. Platform Nature and Matching
             </h2>
             <p className="text-sm text-slate-600 leading-relaxed">
-              SaralBuy provides a digital bulletin board and reverse-bidding exchange where buyers post procurement requirements, and suppliers offer pricing quotes. The platform does not buy, sell, warehouse, inspect, transport, or deliver any products.
+              Quotex provides a digital bulletin board and reverse-bidding exchange where buyers post procurement requirements, and suppliers offer pricing quotes. The platform does not buy, sell, warehouse, inspect, transport, or deliver any products.
             </p>
           </section>
 
@@ -73,7 +73,7 @@ export default function TermsAndPrivacy() {
               3. Verification of Identity & GST
             </h2>
             <p className="text-sm text-slate-600 leading-relaxed">
-              While SaralBuy uses Aadhaar checks and GSTIN verification tools to promote authenticity, users must perform their own due diligence before transferring funds or delivering materials. We do not warrant the creditworthiness, capacity, or performance of any user.
+              While Quotex uses Aadhaar checks and GSTIN verification tools to promote authenticity, users must perform their own due diligence before transferring funds or delivering materials. We do not warrant the creditworthiness, capacity, or performance of any user.
             </p>
           </section>
         </TabsContent>
@@ -95,7 +95,7 @@ export default function TermsAndPrivacy() {
               2. Transactional and Chat Logging
             </h2>
             <p className="text-sm text-slate-600 leading-relaxed">
-              To resolve potential matching disputes, SaralBuy logs all reverse-bidding interactions, chat histories, delivery agreements, and quote budgets. Chat histories are private and only accessed for dispute mediation when requested by both parties.
+              To resolve potential matching disputes, Quotex logs all reverse-bidding interactions, chat histories, delivery agreements, and quote budgets. Chat histories are private and only accessed for dispute mediation when requested by both parties.
             </p>
           </section>
         </TabsContent>

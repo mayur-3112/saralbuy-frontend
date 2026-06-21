@@ -6,31 +6,31 @@ export default function CompareSection() {
     {
       feature: 'Supplier Reach',
       traditional: 'Call individual vendors one-by-one',
-      saralbuy: 'Post once, reach dozens of verified sellers instantly',
+      Quotex: 'Post once, reach dozens of verified sellers instantly',
       better: true,
     },
     {
       feature: 'Price Discovery',
       traditional: 'Negotiating manually (zero price comparison)',
-      saralbuy: 'Transparent bidding drives competitive prices down',
+      Quotex: 'Transparent bidding drives competitive prices down',
       better: true,
     },
     {
       feature: 'Chat & Coordination',
       traditional: 'Messy WhatsApp chats, emails, and phone calls',
-      saralbuy: 'Centralized live chat room for each order',
+      Quotex: 'Centralized live chat room for each order',
       better: true,
     },
     {
       feature: 'Vendor Safety',
       traditional: 'Risk of advance payment scams / unverified vendors',
-      saralbuy: 'Mandatory GSTIN and Aadhaar business vetting',
+      Quotex: 'Mandatory GSTIN and Aadhaar business vetting',
       better: true,
     },
     {
       feature: 'Intermediary Cost',
       traditional: 'Brokers charging 2% to 5% commission',
-      saralbuy: '0% commission. Deal directly with the supplier.',
+      Quotex: '0% commission. Deal directly with the supplier.',
       better: true,
     },
   ];
@@ -40,10 +40,10 @@ export default function CompareSection() {
       <div className="max-w-5xl mx-auto px-6">
         <div className="text-center mb-16 max-w-2xl mx-auto">
           <h2 className="text-3xl font-extrabold sm:text-4xl text-slate-900 tracking-tight">
-            Why Use SaralBuy Over Traditional Ways?
+            Why Use Quotex Over Traditional Ways?
           </h2>
           <p className="text-slate-600 mt-3 text-base">
-            Buying via bulk phone directories, middleman brokers, or random WhatsApp groups is slow, expensive, and risky. Here is how SaralBuy simplifies it.
+            Buying via bulk phone directories, middleman brokers, or random WhatsApp groups is slow, expensive, and risky. Here is how Quotex simplifies it.
           </p>
         </div>
 
@@ -55,7 +55,7 @@ export default function CompareSection() {
                 <tr className="border-b border-slate-200 bg-slate-50">
                   <th className="p-5 font-bold text-slate-700 w-[25%] text-sm uppercase tracking-wider">Feature</th>
                   <th className="p-5 font-bold text-slate-400 w-[37.5%] text-sm uppercase tracking-wider">Brokers & WhatsApp</th>
-                  <th className="p-5 font-bold text-orange-600 w-[37.5%] text-sm uppercase tracking-wider">The SaralBuy Way</th>
+                  <th className="p-5 font-bold text-orange-600 w-[37.5%] text-sm uppercase tracking-wider">The Quotex Way</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -69,7 +69,7 @@ export default function CompareSection() {
                     </td>
                     <td className="p-5 text-slate-900 font-medium text-sm">
                       <span className="flex items-center gap-2">
-                        <Check className="w-4.5 h-4.5 text-emerald-600 shrink-0" /> {row.saralbuy}
+                        <Check className="w-4.5 h-4.5 text-emerald-600 shrink-0" /> {row.Quotex}
                       </span>
                     </td>
                   </tr>

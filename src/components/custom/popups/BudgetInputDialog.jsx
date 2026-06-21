@@ -73,7 +73,7 @@ const BudgetInputDialog = ({ open, setOpen, onConfirm, loading }) => {
               className="mt-1 w-4 h-4 text-orange-600 border-slate-300 rounded focus:ring-orange-500 cursor-pointer shrink-0"
             />
             <label htmlFor="budget-dialog-agreed" className="text-xs text-slate-500 cursor-pointer leading-normal">
-              I agree to the SaralBuy Deal Closure Policy (the platform holds Zero Liability for any material disputes, quality issues, or payment/delivery defaults).
+              I agree to the Quotex Deal Closure Policy (the platform holds Zero Liability for any material disputes, quality issues, or payment/delivery defaults).
             </label>
           </div>
         </div>

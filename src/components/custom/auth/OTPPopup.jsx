@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import saralBuyLogo from '/image/Logo/saralBuyLogo.png';
+import QuotexLogo from '/image/Logo/QuotexLogo.png';
 import { useFetch } from '@/hooks/useFetch';
 import { Button } from '@/components/ui/button';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
@@ -89,7 +89,7 @@ const OtpPopup = ({ open, setOpen, number, sessionId, setSessionId }) => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="max-w-md w-full p-6 space-y-3">
         <div className="h-16 flex justify-center">
-          <img src={saralBuyLogo} alt="Logo" className="w-full h-full object-contain" />
+          <img src={QuotexLogo} alt="Logo" className="w-full h-full object-contain" />
         </div>
         <div className="space-y-2">
           <DialogTitle className=" text-gray-700 text-3xl font-extrabold ">

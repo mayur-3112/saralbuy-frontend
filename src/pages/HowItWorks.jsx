@@ -11,7 +11,7 @@ export default function HowItWorksPage() {
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-radial from-orange-200/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
         <div className="max-w-4xl mx-auto px-4 py-20 sm:py-32 text-center relative z-10">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 leading-tight tracking-tight mb-4">
-            How <span className="bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">SaralBuy</span> Works
+            How <span className="bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">Quotex</span> by SaralBuy Works
           </h1>
           <p className="text-slate-600 text-base sm:text-lg max-w-xl mx-auto leading-relaxed mb-12">
             Choose your role to see a step-by-step guide tailored to you.
