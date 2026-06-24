@@ -135,7 +135,7 @@ const CategoryForm = ({
   }, [brand, setValue]);
 
   useEffect(() => {
-    if (brand !== 'other') setValue('brandName', '');
+    if (brand !== 'others') setValue('brandName', '');
   }, [brand]);
 
   useEffect(() => {

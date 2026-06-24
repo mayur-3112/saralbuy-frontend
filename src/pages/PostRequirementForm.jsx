@@ -282,20 +282,19 @@ const PostRequirementForm = () => {
                     <Controller
                       name={`items.${index}.brand`}
                       control={control}
-                      render={({ field: { onChange, value } }) => (
-                        value === '__custom__' ? (
+                      render={({ field: { onChange, value } }) => {
+                        const isCustom = value === '__custom__' || (!availableBrands.includes(value) && value !== 'Any');
+                        return isCustom ? (
                           <div className="flex gap-1.5">
                             <Input
                               type="text"
+                              value={value === '__custom__' ? '' : value}
                               placeholder="Type brand name..."
                               className="bg-white border-slate-200 font-medium flex-1"
-                              autoFocus
-                              onChange={(e) => {
-                                if (!e.target.value) return;
-                                onChange(e.target.value);
-                              }}
+                              autoFocus={value === '__custom__'}
+                              onChange={(e) => onChange(e.target.value)}
                               onBlur={(e) => {
-                                if (!e.target.value) onChange('Any');
+                                if (!e.target.value.trim()) onChange('Any');
                               }}
                             />
                             <button
@@ -306,10 +305,7 @@ const PostRequirementForm = () => {
                             >✕</button>
                           </div>
                         ) : (
-                          <Select value={value} onValueChange={(v) => {
-                            if (v === '__custom__') onChange('__custom__');
-                            else onChange(v);
-                          }}>
+                          <Select value={value} onValueChange={onChange}>
                             <SelectTrigger className="bg-white border-slate-200 font-medium">
                               <SelectValue placeholder="Brand" />
                             </SelectTrigger>
@@ -322,8 +318,8 @@ const PostRequirementForm = () => {
                               </SelectItem>
                             </SelectContent>
                           </Select>
-                        )
-                      )}
+                        );
+                      }}
                     />
                   </div>
 
