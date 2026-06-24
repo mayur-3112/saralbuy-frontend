@@ -581,25 +581,11 @@ const HomeNavbar = () => {
                 />
               </Link>
               
-              {/* B2B Navigation Links */}
-              <div className="hidden lg:flex items-center gap-5 ml-4">
-                <Link to={'/product-listing'} className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors relative pb-1 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-orange-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 origin-left">EXPLORE</Link>
-                <Link to={'/how-it-works'} className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors relative pb-1 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-orange-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 origin-left">HOW IT WORKS</Link>
-                <Link to={'/supplier-tools'} className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors relative pb-1 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-orange-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 origin-left">SUPPLIER TOOLS</Link>
-                <Link to={'/buyer-tools'} className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors relative pb-1 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-orange-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 origin-left">BUYER TOOLS</Link>
-                 <Link
-                  to={user ? '/dashboard' : '#'}
-                  onClick={(e) => {
-                    if (!user) {
-                      e.preventDefault();
-                      localStorage.setItem('auth_default_role', 'buyer');
-                      window.dispatchEvent(new Event('session-expired'));
-                    }
-                  }}
-                  className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors relative pb-1 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-orange-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 origin-left"
-                >
-                  {user ? 'MY DASHBOARD' : 'RFQ/INQUIRIES'}
-                </Link>
+              {/* Desktop Burger Menu Trigger */}
+              <div className="hidden lg:flex items-center ml-2">
+                <Button variant="outline" size="icon" className="shrink-0 rounded-md border-0 bg-transparent hover:bg-slate-100" onClick={() => setOpenSheet(true)}>
+                  <Menu className="size-6 text-slate-700" />
+                </Button>
               </div>
 
               <div className="flex items-center relative group">
