@@ -23,6 +23,7 @@ import {
   CuboidIcon,
   NotebookPen,
   Calculator,
+  LayoutDashboard,
 } from 'lucide-react';
 
 import { Accordion, AccordionItem, AccordionTrigger } from '../../../components/ui/accordion';
@@ -60,6 +61,11 @@ import { getNotifMeta } from '@/helper/notif.icons';
 import { toast } from 'sonner';
 
 const menu = [
+  {
+    title: 'My Dashboard',
+    url: '/dashboard',
+    icon: <LayoutDashboard className="w-5 h-5" />,
+  },
   {
     title: 'Explore',
     url: '/product-listing',
