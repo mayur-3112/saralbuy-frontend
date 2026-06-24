@@ -24,6 +24,8 @@ const LoginPopup = ({ open, setOpen, setNumber, setOtpPopup, setSessionId }) => 
     }
   };
 
+  const [role, setRole] = useState('buyer');
+
   const handleSendOTP = async e => {
     e.preventDefault();
     if (mobileNumber.length !== 10) {
@@ -52,24 +54,44 @@ const LoginPopup = ({ open, setOpen, setNumber, setOtpPopup, setSessionId }) => 
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
-          <form onSubmit={handleSendOTP} className=" p-3 max-w-md inline-block space-y-5 ">
-            <div className="h-16 flex justify-center">
+        <DialogContent className="sm:max-w-[450px]">
+          <form onSubmit={handleSendOTP} className="p-3 w-full inline-block space-y-6">
+            <div className="h-12 flex justify-center mb-2">
               <img src={QuotexLogo} alt="Logo" className="w-full h-full object-contain" />
             </div>
 
-            <div className="space-y-2">
-              <DialogTitle className=" text-gray-800 text-3xl font-extrabold ">
-                Login here
+            {/* Role Segregation Tabs */}
+            <div className="flex bg-slate-100 rounded-lg p-1 w-full relative">
+              <button
+                type="button"
+                onClick={() => setRole('buyer')}
+                className={`flex-1 py-2 text-sm font-semibold transition-all duration-200 z-10 rounded-md ${role === 'buyer' ? 'text-orange-600 bg-white shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+              >
+                I am a Buyer
+              </button>
+              <button
+                type="button"
+                onClick={() => setRole('supplier')}
+                className={`flex-1 py-2 text-sm font-semibold transition-all duration-200 z-10 rounded-md ${role === 'supplier' ? 'text-orange-600 bg-white shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+              >
+                I am a Supplier
+              </button>
+            </div>
+
+            <div className="space-y-2 text-center">
+              <DialogTitle className="text-gray-800 text-2xl font-extrabold">
+                {role === 'buyer' ? 'Post & Compare Quotes' : 'Find Verified Leads'}
               </DialogTitle>
-              <DialogTitle className=" text-sm text-gray-600">
-                {' '}
-                Enter your Phone Number to Sign In / Sign Up Your Account
+              <DialogTitle className="text-sm text-gray-500 font-medium">
+                {role === 'buyer' 
+                  ? 'Sign in to post requirements and compare competitive quotes instantly.'
+                  : 'Sign in to access verified leads and submit competitive quotes.'}
               </DialogTitle>
             </div>
+
             <div className="space-y-5 w-full">
               <Input
-                className="w-full py-5"
+                className="w-full py-6 bg-slate-50/50"
                 type="text"
                 placeholder="Enter your Mobile Number"
                 value={mobileNumber}
@@ -86,17 +108,28 @@ const LoginPopup = ({ open, setOpen, setNumber, setOtpPopup, setSessionId }) => 
                   onChange={(e) => setAccepted(e.target.checked)}
                 />
                 <label htmlFor="terms-checkbox" className="leading-tight">
-                  I accept the <a href="/terms" className="text-orange-600 underline">Terms</a> & <a href="/privacy" className="text-orange-600 underline">Privacy Policy</a>. I acknowledge that Quotex is a connection platform and is not liable for transactions, material quality, or GST compliance between buyers and suppliers.
+                  I accept the <a href="/terms" className="text-orange-600 underline hover:text-orange-700">Terms</a> & <a href="/privacy" className="text-orange-600 underline hover:text-orange-700">Privacy Policy</a>. 
+                  {role === 'supplier' 
+                    ? ' I acknowledge that Quotex is a connection platform and is not liable for transactions, material quality, or GST compliance.' 
+                    : ' I acknowledge Quotex does not guarantee supplier fulfillment or material quality.'}
                 </label>
               </div>
 
-              <Button
-                type="submit"
-                disabled={loading || mobileNumber.length < 10 || !accepted}
-                className="w-full rounded-sm py-5  text-white font-bold cursor-pointer "
-              >
-                {loading ? <Spinner className="w-5 h-5 animate-spin" /> : 'Send OTP'}
-              </Button>
+              <div className="pt-2">
+                <Button
+                  type="submit"
+                  disabled={loading || mobileNumber.length < 10 || !accepted}
+                  className="w-full rounded-md py-6 bg-orange-600 hover:bg-orange-700 text-white font-bold cursor-pointer transition-colors"
+                >
+                  {loading ? <Spinner className="w-5 h-5 animate-spin" /> : 'Send OTP'}
+                </Button>
+                
+                {/* E2E Trust Signal */}
+                <div className="flex items-center justify-center gap-1.5 mt-4 text-[11px] text-slate-400 font-medium">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  End-to-End Encrypted Messaging
+                </div>
+              </div>
             </div>
           </form>
         </DialogContent>

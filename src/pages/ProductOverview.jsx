@@ -1,4 +1,4 @@
-import { Box, Home, Paperclip, Star, Package } from 'lucide-react';
+import { Box, Home, Paperclip, Star, Package, Calculator, ShieldCheck } from 'lucide-react';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -243,6 +243,7 @@ const SellerForm = ({
   createBidLoading,
   updateUserBidDetsLoading,
   soldProduct,
+  watch,
 }) => {
   return (
     <form
@@ -315,18 +316,46 @@ const SellerForm = ({
           />
         </div>
 
-        {/* Quoted Price */}
-        <div className="w-full">
-          <Label htmlFor="budgetQuation" className="mb-2 text-sm block">
-            Quoted Price(₹)
-          </Label>
-
-          <Input
-            type="number"
-            placeholder="Quoted Price"
-            className="bg-white w-full"
-            {...register('budgetQuation')}
-          />
+        {/* Item-by-Item Pricing & Totaler */}
+        <div className="w-full sm:col-span-2 bg-white rounded-md border border-orange-100 overflow-hidden mb-2">
+          <div className="bg-orange-50/50 px-4 py-3 border-b border-orange-100 flex justify-between items-center">
+            <div>
+              <h4 className="font-semibold text-sm text-slate-800 flex items-center gap-2">
+                <Package className="w-4 h-4 text-orange-600" />
+                Line Item Pricing
+              </h4>
+              <p className="text-xs text-slate-500 mt-0.5">{productResponse?.mainProduct?.title}</p>
+            </div>
+            
+            {/* Contextual Quick-Link to Profit Engine */}
+            <a 
+              href="/supplier-tools" 
+              target="_blank"
+              className="text-xs font-semibold text-orange-600 hover:text-orange-700 bg-orange-100 hover:bg-orange-200 px-3 py-1.5 rounded-full transition-colors flex items-center gap-1.5"
+            >
+              <Calculator className="w-3.5 h-3.5" />
+              Margin Calculator
+            </a>
+          </div>
+          
+          <div className="p-4 grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="col-span-2 sm:col-span-1">
+              <Label className="mb-1.5 text-xs text-slate-500">Unit Price (₹)</Label>
+              <Input type="number" step="0.01" min="0" placeholder="0.00" className="h-9" {...register('unitPrice')} />
+            </div>
+            <div className="col-span-2 sm:col-span-1">
+              <Label className="mb-1.5 text-xs text-slate-500">Discount (%)</Label>
+              <Input type="number" step="0.1" min="0" max="100" placeholder="0%" className="h-9" {...register('discount')} />
+            </div>
+            <div className="col-span-2 sm:col-span-1">
+              <Label className="mb-1.5 text-xs text-slate-500">Qty ({productResponse?.mainProduct?.quantityUnit})</Label>
+              <Input type="text" disabled value={productResponse?.mainProduct?.quantity || 1} className="h-9 bg-slate-50" />
+            </div>
+            <div className="col-span-2 sm:col-span-1">
+              <Label className="mb-1.5 text-xs text-slate-500">Freight Cost (₹)</Label>
+              <Input type="number" step="0.01" min="0" placeholder="0.00" className="h-9" {...register('freightCost')} />
+            </div>
+          </div>
         </div>
 
         {/* Price Basis */}
@@ -371,11 +400,10 @@ const SellerForm = ({
 
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="inclusive_gst">Inclusive of GST</SelectItem>
-
-                    <SelectItem value="exclusive_gst">Exclusive of GST</SelectItem>
-
-                    <SelectItem value="gst_rate">GST Rate (%)</SelectItem>
+                    <SelectItem value="18">18% GST</SelectItem>
+                    <SelectItem value="12">12% GST</SelectItem>
+                    <SelectItem value="5">5% GST</SelectItem>
+                    <SelectItem value="0">Inclusive/Exempt</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -484,6 +512,42 @@ const SellerForm = ({
         </div>
       </div>
 
+      {/* Live Totaler Panel */}
+      {(() => {
+        const uPrice = parseFloat(watch('unitPrice')) || 0;
+        const disc = parseFloat(watch('discount')) || 0;
+        const fCost = parseFloat(watch('freightCost')) || 0;
+        const tRate = parseFloat(watch('taxes')) || 0;
+        const qty = productResponse?.mainProduct?.quantity || 1;
+        
+        const subtotal = (uPrice * (1 - disc/100)) * qty;
+        const taxAmount = (subtotal + fCost) * (tRate/100);
+        const grandTotal = subtotal + fCost + taxAmount;
+
+        return (
+          <div className="mt-6 border-t border-slate-200 pt-4 pb-2">
+            <div className="flex flex-col gap-2 max-w-sm ml-auto text-sm">
+              <div className="flex justify-between text-slate-600">
+                <span>Subtotal (After Discount):</span>
+                <span>₹ {subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+              </div>
+              <div className="flex justify-between text-slate-600">
+                <span>Freight:</span>
+                <span>₹ {fCost.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+              </div>
+              <div className="flex justify-between text-slate-600">
+                <span>Estimated Tax ({tRate}%):</span>
+                <span>₹ {taxAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+              </div>
+              <div className="flex justify-between font-bold text-lg text-slate-800 border-t pt-2 mt-1">
+                <span>Grand Total:</span>
+                <span className="text-orange-600">₹ {grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
       {/* Button */}
       <div className="flex justify-end pt-2">
         {!bidOverviewRes ? (
@@ -575,12 +639,15 @@ const ProductOverview = () => {
     control,
     getValues,
     setValue,
+    watch,
   } = useForm({
     resolver: zodResolver(productOverviewBidSchema),
     defaultValues: {
       firstName: '',
       lastName: '',
-      budgetQuation: '',
+      unitPrice: '',
+      discount: '',
+      freightCost: '',
       earliestDeliveryDate: undefined,
       sellerType: '',
       priceBasis: '',
@@ -979,6 +1046,18 @@ const ProductOverview = () => {
                     <div>
                       <span className="block text-xs text-gray-500 uppercase font-semibold">Highest Quote</span>
                       <span className="text-lg font-bold text-red-600">₹{bidStats.highestQuote}</span>
+                    </div>
+                    
+                    {/* Buyer Trust Signal */}
+                    <div className="mt-3 flex items-center gap-3">
+                      <div className="flex items-center gap-1 text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md border border-emerald-100">
+                        <ShieldCheck className="w-3.5 h-3.5" />
+                        Phone Verified
+                      </div>
+                      <div className="flex items-center gap-1 text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md border border-emerald-100">
+                        <ShieldCheck className="w-3.5 h-3.5" />
+                        GST Verified
+                      </div>
                     </div>
                   </div>
                 )}
@@ -1381,6 +1460,7 @@ const ProductOverview = () => {
                   createBidLoading={createBidLoading}
                   updateUserBidDetsLoading={updateUserBidDetsLoading}
                   soldProduct={soldProduct}
+                  watch={watch}
                 />
               )}
             </div>

@@ -59,20 +59,21 @@ export const ProfileSchema = z.object({
 });
 
 export const productOverviewBidSchema = z.object({
-  budgetQuation: z.coerce
+  unitPrice: z.coerce
     .number({
-      error: 'Quation Price is required',
+      error: 'Unit Price is required',
     })
-    .positive('Budget Quation must be positive'),
-  // availableBrand: z.string().min(1, "Available Brand is required"),
+    .positive('Unit Price must be positive'),
+  discount: z.coerce.number().min(0).max(100).optional(),
+  freightCost: z.coerce.number().min(0).optional(),
+  
   earliestDeliveryDate: z
     .union([z.coerce.date(), z.undefined()]) // it can be date or undefined
     .refine(value => value !== undefined, {
-      // firsty check if value is not undefined
       message: 'Delivery Timeline is required',
     }),
   sellerType: z.string().optional(),
-  taxes: z.string().optional(),
+  taxes: z.string().optional(), // We'll parse this as a percentage in the UI
   buyerNote: z.string().optional(),
   freightTerms: z.string().optional(),
   location: z.string().optional(),
