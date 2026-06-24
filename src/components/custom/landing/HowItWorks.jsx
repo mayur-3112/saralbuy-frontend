@@ -20,8 +20,8 @@ export default function HowItWorks({ onOpenAuth }) {
     },
     {
       num: '04',
-      title: 'Pay Direct (0% Fee)',
-      desc: 'Approve the best quote, issue your purchase order, and pay the supplier directly. No commissions, no middleman markups.',
+      title: 'Pay Direct (Early Access)',
+      desc: 'Approve the best quote, issue your purchase order, and pay the supplier directly. Currently no commissions during early access.',
     },
   ];
 

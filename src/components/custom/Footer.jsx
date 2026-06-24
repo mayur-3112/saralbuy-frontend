@@ -26,7 +26,7 @@ const Footer = () => {
             />
           </Link>
           <p className="footer-description">
-            Quotex is Karnataka's leading B2B bulk procurement platform. We connect verified buyers and industrial suppliers directly, bringing transparent reverse-bidding and 0% commission to bulk trade.
+            Quotex is Karnataka's leading B2B bulk procurement platform. We connect verified buyers and industrial suppliers directly, bringing transparent reverse-bidding and direct trade to bulk procurement.
           </p>
         </div>
 

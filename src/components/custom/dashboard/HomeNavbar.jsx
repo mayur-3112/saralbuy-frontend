@@ -3,8 +3,10 @@ import {
   Bell,
   Box,
   CircleUserRound,
+  Compass,
   Gavel,
   Handshake,
+  HelpCircle,
   MapPin,
   Menu,
   MessageCircle,
@@ -20,6 +22,7 @@ import {
   XCircle,
   CuboidIcon,
   NotebookPen,
+  Calculator,
 } from 'lucide-react';
 
 import { Accordion, AccordionItem, AccordionTrigger } from '../../../components/ui/accordion';
@@ -57,6 +60,21 @@ import { getNotifMeta } from '@/helper/notif.icons';
 import { toast } from 'sonner';
 
 const menu = [
+  {
+    title: 'Explore',
+    url: '/product-listing',
+    icon: <Compass className="w-5 h-5" />,
+  },
+  {
+    title: 'How It Works',
+    url: '/how-it-works',
+    icon: <HelpCircle className="w-5 h-5" />,
+  },
+  {
+    title: 'Supplier Tools',
+    url: '/supplier-tools',
+    icon: <Calculator className="w-5 h-5" />,
+  },
   {
     title: 'Settings',
     url: '/account',

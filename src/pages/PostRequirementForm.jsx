@@ -283,16 +283,46 @@ const PostRequirementForm = () => {
                       name={`items.${index}.brand`}
                       control={control}
                       render={({ field: { onChange, value } }) => (
-                        <Select value={value} onValueChange={onChange}>
-                          <SelectTrigger className="bg-white border-slate-200 font-medium">
-                            <SelectValue placeholder="Brand" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {availableBrands.map(b => (
-                              <SelectItem key={b} value={b}>{b}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        value === '__custom__' ? (
+                          <div className="flex gap-1.5">
+                            <Input
+                              type="text"
+                              placeholder="Type brand name..."
+                              className="bg-white border-slate-200 font-medium flex-1"
+                              autoFocus
+                              onChange={(e) => {
+                                if (!e.target.value) return;
+                                onChange(e.target.value);
+                              }}
+                              onBlur={(e) => {
+                                if (!e.target.value) onChange('Any');
+                              }}
+                            />
+                            <button
+                              type="button"
+                              className="text-xs text-slate-400 hover:text-slate-600 px-1 shrink-0"
+                              onClick={() => onChange('Any')}
+                              title="Back to dropdown"
+                            >✕</button>
+                          </div>
+                        ) : (
+                          <Select value={value} onValueChange={(v) => {
+                            if (v === '__custom__') onChange('__custom__');
+                            else onChange(v);
+                          }}>
+                            <SelectTrigger className="bg-white border-slate-200 font-medium">
+                              <SelectValue placeholder="Brand" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {availableBrands.map(b => (
+                                <SelectItem key={b} value={b}>{b}</SelectItem>
+                              ))}
+                              <SelectItem value="__custom__" className="text-orange-600 font-semibold border-t border-slate-100 mt-1">
+                                ✏️ Other (type your own)
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        )
                       )}
                     />
                   </div>

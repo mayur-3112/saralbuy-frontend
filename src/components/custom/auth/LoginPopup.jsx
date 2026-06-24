@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 
 const LoginPopup = ({ open, setOpen, setNumber, setOtpPopup, setSessionId }) => {
   const [mobileNumber, setMobileNumber] = useState('');
+  const [accepted, setAccepted] = useState(false);
 
   const [error, setError] = useState('');
   const { fn, data, loading } = useFetch(authService.sendOtp);
@@ -75,9 +76,23 @@ const LoginPopup = ({ open, setOpen, setNumber, setOtpPopup, setSessionId }) => 
                 onChange={handleNumberChange}
               />
               {error && <div className="text-red-500 text-sm">{error}</div>}
+              
+              <div className="flex items-start gap-2 text-xs text-gray-500">
+                <input 
+                  type="checkbox" 
+                  id="terms-checkbox" 
+                  className="mt-0.5 shrink-0" 
+                  checked={accepted}
+                  onChange={(e) => setAccepted(e.target.checked)}
+                />
+                <label htmlFor="terms-checkbox" className="leading-tight">
+                  I accept the <a href="/terms" className="text-orange-600 underline">Terms</a> & <a href="/privacy" className="text-orange-600 underline">Privacy Policy</a>. I acknowledge that Quotex is a connection platform and is not liable for transactions, material quality, or GST compliance between buyers and suppliers.
+                </label>
+              </div>
+
               <Button
                 type="submit"
-                disabled={loading || mobileNumber.length < 10}
+                disabled={loading || mobileNumber.length < 10 || !accepted}
                 className="w-full rounded-sm py-5  text-white font-bold cursor-pointer "
               >
                 {loading ? <Spinner className="w-5 h-5 animate-spin" /> : 'Send OTP'}

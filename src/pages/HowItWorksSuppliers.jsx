@@ -61,9 +61,9 @@ const STEPS = [
     num: '04',
     icon: Receipt,
     title: 'Win the Order & Get Paid Directly',
-    desc: 'When the buyer accepts your quote, you receive a purchase order. Deliver the materials and get paid directly by the buyer. Quotex takes zero commission.',
+    desc: 'When the buyer accepts your quote, you receive a purchase order. Deliver the materials and get paid directly by the buyer. Quotex charges no commission during early access.',
     details: [
-      'No platform fees — you keep 100% of every rupee you earn',
+      'No platform fees during early access — you keep 100% of every rupee you earn',
       'Payment goes directly from buyer to you',
       'Build your supplier rating with every successful delivery',
       'Higher ratings = more visibility = more leads in the future',
@@ -73,7 +73,7 @@ const STEPS = [
 
 const BENEFITS = [
   { icon: ClipboardList, title: 'Qualified, Genuine Leads', desc: 'Every sourcing request comes from a real project with genuine purchase intent and defined budgets. No window-shoppers.' },
-  { icon: IndianRupee, title: 'Zero Commission Forever', desc: 'Quotex charges suppliers nothing. No subscription fees, no transaction cuts, no hidden charges. You keep every rupee.' },
+  { icon: IndianRupee, title: 'Zero Commission (Early Access)', desc: 'Quotex is currently free for all suppliers during our early access period. No subscription fees, no transaction cuts, no hidden charges.' },
   { icon: Send, title: 'Direct Buyer Access', desc: 'Chat directly with contractors and project managers who make the buying decisions. No middlemen, agents, or gatekeepers.' },
   { icon: TrendingUp, title: 'Grow Your Customer Base', desc: 'Reach new contractors and builders across all of Karnataka that you would never discover through your existing network.' },
   { icon: Target, title: 'Targeted Leads', desc: 'Filter requirements by your product category, delivery location, and budget range. Only see leads relevant to your business.' },
@@ -81,7 +81,7 @@ const BENEFITS = [
 ];
 
 const FAQS = [
-  { q: 'Is Quotex free for suppliers?', a: 'Yes, completely free. There are no subscription fees, no listing charges, and no commissions on any deal you close through the platform. You keep 100% of your earnings.' },
+  { q: 'Is Quotex free for suppliers?', a: 'Yes, Quotex is currently free for all suppliers during our early access period. There are no subscription fees, no listing charges, and no commissions. We will introduce pricing tiers in the future with plenty of advance notice.' },
   { q: 'What kind of buyers are on Quotex?', a: 'Verified contractors, project builders, civil engineers, and procurement managers handling real construction and infrastructure projects across Karnataka.' },
   { q: 'How do I get notified about new leads?', a: 'You receive real-time notifications whenever a new sourcing requirement matching your product category is posted. You can also browse all active leads anytime.' },
   { q: 'Can I quote on any requirement?', a: 'Yes. As long as you can supply the materials requested, you can submit your quote on any active requirement on the platform.' },
@@ -119,7 +119,7 @@ export default function HowItWorksSuppliers() {
             <span className="bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent"> Verified Contractors & Builders</span>
           </h1>
           <p className="text-slate-600 text-base sm:text-lg mt-5 max-w-2xl mx-auto leading-relaxed">
-            Stop waiting for dealers to send you orders. Browse live sourcing requests from real project sites, submit your best quotes directly, and win orders with zero commissions.
+            Stop waiting for dealers to send you orders. Browse live sourcing requests from real project sites, submit your best quotes directly, and win orders — free during early access.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
             <button
@@ -287,7 +287,7 @@ export default function HowItWorksSuppliers() {
             onClick={handleCTA}
             className="group inline-flex items-center gap-2 bg-white hover:bg-blue-50 text-blue-700 font-bold text-sm px-8 py-4 rounded-xl cursor-pointer transition-all duration-200 shadow-lg hover:shadow-xl active:scale-95"
           >
-            Browse Active Leads — It's Free
+            Browse Active Leads — Free During Early Access
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
           </button>
         </div>

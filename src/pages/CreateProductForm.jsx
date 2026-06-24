@@ -218,45 +218,55 @@ const CategoryForm = ({
               {currentCategoryName !== 'service' && currentCategoryName !== 'others' && (
                 <div className="col-span-1 md:col-span-3">
                   <Label className="mb-1.5 text-sm block">Quick Brand Selection</Label>
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    {brandRenderItems.slice(0, 5).map((b) => {
-                      const brandName = typeof b === 'string' ? b : b.name || b.label || '';
-                      return (
+                  {brandRenderItems.length > 0 ? (
+                    <>
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        {brandRenderItems.slice(0, 5).map((b) => {
+                          const brandName = typeof b === 'string' ? b : b.name || b.label || '';
+                          return (
+                            <button
+                              key={brandName}
+                              type="button"
+                              onClick={() => setbrand(brandName)}
+                              className={`px-3 py-1.5 text-xs font-semibold rounded-full border transition-all ${
+                                brand === brandName
+                                  ? 'bg-orange-600 text-white border-orange-600 shadow-xs'
+                                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                              }`}
+                            >
+                              {brandName}
+                            </button>
+                          );
+                        })}
                         <button
-                          key={brandName}
                           type="button"
-                          onClick={() => setbrand(brandName)}
+                          onClick={() => setbrand('others')}
                           className={`px-3 py-1.5 text-xs font-semibold rounded-full border transition-all ${
-                            brand === brandName
+                            brand === 'others'
                               ? 'bg-orange-600 text-white border-orange-600 shadow-xs'
                               : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
                           }`}
                         >
-                          {brandName}
+                          ✏️ Other
                         </button>
-                      );
-                    })}
-                    {brandRenderItems.length > 5 && (
-                      <button
-                        type="button"
-                        onClick={() => setbrand('others')}
-                        className={`px-3 py-1.5 text-xs font-semibold rounded-full border transition-all ${
-                          brand === 'others'
-                            ? 'bg-orange-600 text-white border-orange-600 shadow-xs'
-                            : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                        }`}
-                      >
-                        Others
-                      </button>
-                    )}
-                  </div>
-                  <SearchableDropdown
-                    setValue={setbrand}
-                    value={brand}
-                    className="w-full"
-                    dropdownTitle="Or search/select brand*"
-                    renderItems={brandRenderItems}
-                  />
+                      </div>
+                      <SearchableDropdown
+                        setValue={setbrand}
+                        value={brand}
+                        className="w-full"
+                        dropdownTitle="Or search/select brand*"
+                        renderItems={brandRenderItems}
+                      />
+                    </>
+                  ) : (
+                    <Input
+                      type="text"
+                      placeholder="Type your brand name..."
+                      value={brand}
+                      onChange={e => setbrand(e.target.value)}
+                      className="bg-white"
+                    />
+                  )}
                 </div>
               )}
 

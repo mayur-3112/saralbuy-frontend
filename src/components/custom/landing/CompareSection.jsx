@@ -30,7 +30,7 @@ export default function CompareSection() {
     {
       feature: 'Intermediary Cost',
       traditional: 'Brokers charging 2% to 5% commission',
-      Quotex: '0% commission. Deal directly with the supplier.',
+      Quotex: 'No commission during early access. Deal directly with the supplier.',
       better: true,
     },
   ];

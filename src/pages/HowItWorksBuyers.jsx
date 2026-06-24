@@ -59,9 +59,9 @@ const STEPS = [
     num: '04',
     icon: Handshake,
     title: 'Close the Deal & Pay Direct',
-    desc: 'Accept the best quote, issue your purchase order, and pay the supplier directly. Zero commissions, zero hidden fees, zero middlemen.',
+    desc: 'Accept the best quote, issue your purchase order, and pay the supplier directly. No middlemen, no hidden fees — free during early access.',
     details: [
-      'No platform commission — Quotex charges 0% on every transaction',
+      'No platform commission during early access — Quotex charges 0% on transactions',
       'Payment flows directly between you and the supplier',
       'Rate suppliers post-delivery to help the community',
       'Reorder from trusted suppliers with one click',
@@ -77,7 +77,7 @@ const BENEFITS = [
 ];
 
 const FAQS = [
-  { q: 'Is Quotex free for buyers?', a: 'Yes, 100% free. No subscription fees, no transaction commissions, no hidden charges. Buyers never pay Quotex anything.' },
+  { q: 'Is Quotex free for buyers?', a: 'Yes, Quotex is currently free for all buyers during our early access period. No subscription fees, no transaction commissions, no hidden charges. We will introduce pricing tiers in the future with advance notice.' },
   { q: 'How do I know suppliers are genuine?', a: 'Every supplier is verified for GST registration and business legitimacy before they can quote on the platform. You can also see ratings from past transactions.' },
   { q: 'What materials can I source?', a: 'All construction and project materials — cement, TMT steel, bricks, tiles, granite, plumbing, electrical, paints, plywood, hardware, safety equipment, industrial tools, and more.' },
   { q: 'How fast do I get quotes?', a: 'Most requirements receive their first quote within 2-4 hours. Complex or niche requirements may take up to 24 hours.' },
@@ -256,7 +256,7 @@ export default function HowItWorksBuyers() {
             onClick={handleCTA}
             className="group inline-flex items-center gap-2 bg-white hover:bg-orange-50 text-orange-700 font-bold text-sm px-8 py-4 rounded-xl cursor-pointer transition-all duration-200 shadow-lg hover:shadow-xl active:scale-95"
           >
-            Post a Requirement — It's Free
+            Post a Requirement — Free During Early Access
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
           </button>
         </div>

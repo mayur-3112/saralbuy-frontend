@@ -260,13 +260,23 @@ const CategoryForm = ({
               </Select>
 
               {currentCategoryName !== 'service' && currentCategoryName !== 'others' && (
-                <SearchableDropdown
-                  setValue={setbrand}
-                  value={brand}
-                  className="w-full"
-                  dropdownTitle="Brands*"
-                  renderItems={brandRenderItems}
-                />
+                brandRenderItems.length > 0 ? (
+                  <SearchableDropdown
+                    setValue={setbrand}
+                    value={brand}
+                    className="w-full"
+                    dropdownTitle="Brands*"
+                    renderItems={brandRenderItems}
+                  />
+                ) : (
+                  <Input
+                    type="text"
+                    placeholder="Type your brand name..."
+                    value={brand}
+                    onChange={e => setbrand(e.target.value)}
+                    className="bg-white"
+                  />
+                )
               )}
 
               {currentCategoryName === 'others' && (

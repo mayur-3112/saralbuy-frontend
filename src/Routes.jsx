@@ -41,6 +41,7 @@ import DiscussionChatbox from './components/custom/dashboard/DiscussionChatbox';
 import LandingPage from './components/custom/landing/LandingPage';
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Chatbot = lazy(() => import('./pages/Chatbot'));
+const SupplierTools = lazy(() => import('./pages/SupplierTools'));
 
 const ProtectRoute = () => {
   const { user } = useUserState();
@@ -89,6 +90,7 @@ export default function AppRoutes() {
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/how-it-works/buyers" element={<HowItWorksBuyers />} />
           <Route path="/how-it-works/suppliers" element={<HowItWorksSuppliers />} />
+          <Route path="/supplier-tools" element={<SupplierTools />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/contact-us" element={<ContactUs />} />
