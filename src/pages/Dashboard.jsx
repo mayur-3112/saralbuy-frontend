@@ -16,10 +16,12 @@ import {
   MessageSquare,
   Plus,
   ArrowRight,
-  Search,
   TrendingUp,
   Clock,
   Compass,
+  PieChart,
+  BarChart4,
+  Search
 } from 'lucide-react';
 
 const Dashboard = () => {
@@ -89,7 +91,7 @@ const Dashboard = () => {
         </div>
 
         {/* KPI Metrics Row */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+        <div className="grid grid-cols-2 lg:grid-cols-6 gap-3 mb-6">
           {/* Quotes Submitted */}
           <div 
             onClick={() => setActiveTab('quotes')}
@@ -147,6 +149,36 @@ const Dashboard = () => {
             <div className="min-w-0">
               <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider truncate">Messages</p>
               <p className="text-sm font-black text-purple-600 mt-0.5">Open Chat</p>
+            </div>
+          </div>
+
+          {/* Deals Closed (Sales Tracker) */}
+          <div 
+            onClick={() => setActiveTab('quotes')}
+            className="group bg-white border border-slate-200 hover:border-emerald-300 rounded-xl p-4 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-3 cursor-pointer relative overflow-hidden hidden lg:flex"
+            style={{ background: 'linear-gradient(135deg, #ffffff 80%, #ecfdf5 100%)' }}
+          >
+            <div className="w-10 h-10 rounded-lg bg-emerald-100 border border-emerald-200 flex items-center justify-center text-emerald-700 shrink-0 group-hover:scale-110 group-hover:bg-emerald-200 transition-all duration-300">
+              <PieChart className="w-4 h-4" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider truncate">Win Rate</p>
+              <p className="text-xl font-black text-slate-900 mt-0.5">32%</p>
+            </div>
+          </div>
+
+          {/* Est Margin (Profit Tracker) */}
+          <div 
+            onClick={() => window.open('/supplier-tools', '_blank')}
+            className="group bg-white border border-slate-200 hover:border-amber-300 rounded-xl p-4 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-3 cursor-pointer relative overflow-hidden hidden lg:flex"
+            style={{ background: 'linear-gradient(135deg, #ffffff 80%, #fffbeb 100%)' }}
+          >
+            <div className="w-10 h-10 rounded-lg bg-amber-100 border border-amber-200 flex items-center justify-center text-amber-700 shrink-0 group-hover:scale-110 group-hover:bg-amber-200 transition-all duration-300">
+              <BarChart4 className="w-4 h-4" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider truncate">Est. Profit</p>
+              <p className="text-xl font-black text-slate-900 mt-0.5">₹42k</p>
             </div>
           </div>
         </div>

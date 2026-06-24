@@ -42,6 +42,7 @@ import LandingPage from './components/custom/landing/LandingPage';
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Chatbot = lazy(() => import('./pages/Chatbot'));
 const SupplierTools = lazy(() => import('./pages/SupplierTools'));
+const BuyerTools = lazy(() => import('./pages/BuyerTools'));
 
 const ProtectRoute = () => {
   const { user } = useUserState();
@@ -91,6 +92,7 @@ export default function AppRoutes() {
           <Route path="/how-it-works/buyers" element={<HowItWorksBuyers />} />
           <Route path="/how-it-works/suppliers" element={<HowItWorksSuppliers />} />
           <Route path="/supplier-tools" element={<SupplierTools />} />
+          <Route path="/buyer-tools" element={<BuyerTools />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/contact-us" element={<ContactUs />} />

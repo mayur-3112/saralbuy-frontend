@@ -76,6 +76,11 @@ const menu = [
     icon: <Calculator className="w-5 h-5" />,
   },
   {
+    title: 'Buyer Tools',
+    url: '/buyer-tools',
+    icon: <Compass className="w-5 h-5" />,
+  },
+  {
     title: 'Settings',
     url: '/account',
     icon: <CircleUserRound className="w-5 h-5" />,
@@ -581,6 +586,7 @@ const HomeNavbar = () => {
                 <Link to={'/product-listing'} className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors relative pb-1 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-orange-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 origin-left">EXPLORE</Link>
                 <Link to={'/how-it-works'} className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors relative pb-1 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-orange-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 origin-left">HOW IT WORKS</Link>
                 <Link to={'/supplier-tools'} className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors relative pb-1 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-orange-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 origin-left">SUPPLIER TOOLS</Link>
+                <Link to={'/buyer-tools'} className="text-[13px] font-extrabold text-slate-700 hover:text-orange-600 transition-colors relative pb-1 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-orange-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 origin-left">BUYER TOOLS</Link>
                  <Link
                   to={user ? '/dashboard' : '#'}
                   onClick={(e) => {

@@ -55,6 +55,11 @@ export const ProfileSchema = z.object({
   email: z.string().email('Invalid email'),
   phone: z.string().optional(),
   address: z.string().min(1, 'Address is required').min(3, 'Address is too short'),
+  accountRole: z.string().optional(),
+  organizationName: z.string().optional(),
+  procurementRole: z.string().optional(),
+  gstin: z.string().optional(),
+  supplierCategories: z.string().optional(),
   businessName: z.string().optional(),
 });
 

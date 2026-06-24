@@ -39,17 +39,25 @@ export function AccountSettings() {
     formState: { errors },
     register,
     reset,
+    watch,
   } = useForm({
     resolver: zodResolver(ProfileSchema),
     defaultValues: {
+      accountRole: 'buyer',
       firstName: '',
       lastName: '',
       email: '',
       phone: '',
       address: '',
       businessName: '',
+      organizationName: '',
+      procurementRole: '',
+      gstin: '',
+      supplierCategories: '',
     },
   });
+
+  const selectedRole = watch('accountRole');
 
   useEffect(() => {
     if (logoutRes) {
@@ -71,12 +79,17 @@ export function AccountSettings() {
   useEffect(() => {
     if (user) {
       reset({
+        accountRole: user?.accountRole || 'buyer',
         phone: user?.phone || '',
         firstName: user?.firstName || '',
         lastName: user?.lastName || '',
         email: user?.email || '',
         address: user?.address || '',
         businessName: user?.businessName || '',
+        organizationName: user?.organizationName || '',
+        procurementRole: user?.procurementRole || '',
+        gstin: user?.gstin || '',
+        supplierCategories: user?.supplierCategories || '',
       });
     }
   }, [user, reset]);
@@ -98,7 +111,16 @@ export function AccountSettings() {
     formData.append('lastName', data.lastName);
     formData.append('email', data.email);
     formData.append('address', data.address);
-    formData.append('businessName', data.businessName);
+    formData.append('accountRole', data.accountRole);
+    
+    if (data.accountRole === 'supplier') {
+      formData.append('businessName', data.businessName || '');
+      formData.append('gstin', data.gstin || '');
+      formData.append('supplierCategories', data.supplierCategories || '');
+    } else {
+      formData.append('organizationName', data.organizationName || '');
+      formData.append('procurementRole', data.procurementRole || '');
+    }
 
     if (fileDoc) {
       formData.append('document', fileDoc);
@@ -144,6 +166,28 @@ export function AccountSettings() {
           className="p-2 sm:p-3 md:p-4"
         >
           <div className="space-y-4 p-3 sm:p-5 rounded-md">
+            
+            {/* Account Role Segregation */}
+            <div className="mb-6">
+              <Label className="text-gray-600 gap-0 text-sm mb-2 block">
+                Primary Account Role
+              </Label>
+              <div className="flex bg-slate-100 rounded-lg p-1 w-full max-w-sm relative">
+                <label className="flex-1 cursor-pointer">
+                  <input type="radio" value="buyer" {...register('accountRole')} className="peer sr-only" />
+                  <div className="py-2 text-center text-sm font-semibold transition-all duration-200 rounded-md peer-checked:text-orange-600 peer-checked:bg-white peer-checked:shadow-sm text-slate-500 hover:text-slate-700">
+                    I am a Buyer
+                  </div>
+                </label>
+                <label className="flex-1 cursor-pointer">
+                  <input type="radio" value="supplier" {...register('accountRole')} className="peer sr-only" />
+                  <div className="py-2 text-center text-sm font-semibold transition-all duration-200 rounded-md peer-checked:text-orange-600 peer-checked:bg-white peer-checked:shadow-sm text-slate-500 hover:text-slate-700">
+                    I am a Supplier
+                  </div>
+                </label>
+              </div>
+            </div>
+
             {/* First + Last Name */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2 w-full">
@@ -175,28 +219,44 @@ export function AccountSettings() {
               </div>
             </div>
 
-            {/* Business Name */}
-            <div className="grid grid-cols-1 gap-4">
-              <div className="space-y-2 w-full">
-                <Label className="text-gray-600 text-sm" htmlFor="business">
-                  Business Name
-                </Label>
-
-                <div className="flex items-center gap-2 relative">
-                  <Input
-                    id="business"
-                    type="text"
-                    placeholder="Business Name"
-                    {...register('businessName')}
-                    className="pr-16 bg-transparent w-full"
-                  />
+            {/* Role-Specific Fields */}
+            {selectedRole === 'supplier' ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-orange-50/50 p-4 rounded-md border border-orange-100">
+                <div className="space-y-2 w-full sm:col-span-2">
+                  <Label className="text-gray-600 text-sm" htmlFor="business">
+                    Registered Business Name
+                  </Label>
+                  <Input id="business" type="text" placeholder="e.g. Acme Corp Ltd." {...register('businessName')} className="bg-white w-full" />
+                </div>
+                <div className="space-y-2 w-full">
+                  <Label className="text-gray-600 text-sm" htmlFor="gstin">
+                    GSTIN Number
+                  </Label>
+                  <Input id="gstin" type="text" placeholder="27XXXXX..." {...register('gstin')} className="bg-white w-full uppercase" />
+                </div>
+                <div className="space-y-2 w-full">
+                  <Label className="text-gray-600 text-sm" htmlFor="supplierCategories">
+                    Primary Categories Supplied
+                  </Label>
+                  <Input id="supplierCategories" type="text" placeholder="e.g. Cement, Steel, Electrical" {...register('supplierCategories')} className="bg-white w-full" />
                 </div>
               </div>
-            </div>
-
-
-
-            {/* Email + Phone */}
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-md border border-slate-200">
+                <div className="space-y-2 w-full">
+                  <Label className="text-gray-600 text-sm" htmlFor="orgName">
+                    Organization Name
+                  </Label>
+                  <Input id="orgName" type="text" placeholder="e.g. BuildRight Projects" {...register('organizationName')} className="bg-white w-full" />
+                </div>
+                <div className="space-y-2 w-full">
+                  <Label className="text-gray-600 text-sm" htmlFor="procurementRole">
+                    Procurement Role
+                  </Label>
+                  <Input id="procurementRole" type="text" placeholder="e.g. Purchasing Manager" {...register('procurementRole')} className="bg-white w-full" />
+                </div>
+              </div>
+            )}            {/* Email + Phone */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2 w-full">
                 <Label className="text-gray-600 gap-0 text-sm" htmlFor="email">
