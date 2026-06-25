@@ -1106,15 +1106,7 @@ const UpdateCreateProductForm = () => {
   }, [updateDraftRes]);
 
   const categoryLabel = () => {
-    const map = {
-      beauty: 'Personal Care',
-      electronics: 'Mobile, Tablet and Wearables',
-      sports: 'Sports & Stationery',
-      home: 'Home Appliances',
-      industrial: 'Industrial & Construction Material',
-      furniture: 'Furniture and Decor',
-    };
-    return map[currentCategoryName] || currentCategoryName;
+    return currentCategoryName;
   };
 
   return (

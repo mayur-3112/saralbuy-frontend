@@ -1,22 +1,20 @@
-import { ChevronDown, Factory, Laptop, Home, Box, Wrench, Sofa, Car, Activity, ShieldCheck } from 'lucide-react';
-import { useEffect, useState, useMemo } from 'react';
+import { ChevronDown, Factory, Hexagon, Paintbrush, AppWindow, Droplet, Zap, Wrench, Package, Box } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const ELECTRONICS_ORDER = ['mobile', 'tablets', 'wearables', 'accessories', 'other'];
-
 const getCategoryIcon = (categoryName) => {
-  switch(categoryName.toLowerCase()) {
-    case 'industrial': return <Factory className="w-6 h-6 text-orange-500" />;
-    case 'electronics': return <Laptop className="w-6 h-6 text-orange-500" />;
-    case 'home': return <Home className="w-6 h-6 text-orange-500" />;
-    case 'furniture': return <Sofa className="w-6 h-6 text-orange-500" />;
-    case 'service': return <Wrench className="w-6 h-6 text-orange-500" />;
-    case 'automobile': return <Car className="w-6 h-6 text-orange-500" />;
-    case 'sports': return <Activity className="w-6 h-6 text-orange-500" />;
-    case 'fashion': return <ShieldCheck className="w-6 h-6 text-orange-500" />;
-    case 'beauty': return <ShieldCheck className="w-6 h-6 text-orange-500" />;
-    default: return <Box className="w-6 h-6 text-orange-500" />;
-  }
+  const name = categoryName?.toLowerCase() || '';
+  if (name.includes('cement')) return <Factory className="w-6 h-6 text-orange-500" />;
+  if (name.includes('steel')) return <Hexagon className="w-6 h-6 text-orange-500" />;
+  if (name.includes('chemical') || name.includes('paint')) return <Paintbrush className="w-6 h-6 text-orange-500" />;
+  if (name.includes('tile') || name.includes('stone')) return <AppWindow className="w-6 h-6 text-orange-500" />;
+  if (name.includes('plumb')) return <Droplet className="w-6 h-6 text-orange-500" />;
+  if (name.includes('electr')) return <Zap className="w-6 h-6 text-orange-500" />;
+  if (name.includes('glass')) return <AppWindow className="w-6 h-6 text-orange-500" />;
+  if (name.includes('plywood') || name.includes('hardware')) return <Wrench className="w-6 h-6 text-orange-500" />;
+  if (name.includes('tool')) return <Wrench className="w-6 h-6 text-orange-500" />;
+  if (name.includes('other')) return <Package className="w-6 h-6 text-orange-500" />;
+  return <Box className="w-6 h-6 text-orange-500" />;
 };
 
 const ItemCard = ({ categoryName, subCategories, _id, onSelect }) => {
@@ -36,19 +34,7 @@ const ItemCard = ({ categoryName, subCategories, _id, onSelect }) => {
     return () => document.removeEventListener('mousedown', handleClick);
   }, [open, _id]);
 
-  const sortedSubCategories = useMemo(() => {
-    if (categoryName !== 'electronics') return subCategories;
 
-    return [...subCategories].sort((a, b) => {
-      const aIndex = ELECTRONICS_ORDER.indexOf(a.name.toLowerCase());
-      const bIndex = ELECTRONICS_ORDER.indexOf(b.name.toLowerCase());
-      if (aIndex === -1 && bIndex === -1) return 0;
-      if (aIndex === -1) return 1;
-      if (bIndex === -1) return -1;
-
-      return aIndex - bIndex;
-    });
-  }, [subCategories, categoryName]);
 
   return (
     <div className="group flex flex-col w-full relative" id={`itemcard-${_id}`}>
@@ -64,19 +50,7 @@ const ItemCard = ({ categoryName, subCategories, _id, onSelect }) => {
             {getCategoryIcon(categoryName)}
           </div>
           <p className="text-[14px] capitalize font-bold text-slate-800">
-            {categoryName === 'beauty'
-              ? 'Personal Care'
-              : categoryName === 'electronics'
-                ? 'Mobile, Tablet and Wearables'
-                : categoryName === 'sports'
-                  ? 'Sports & Stationery'
-                  : categoryName === 'home'
-                    ? 'Home and Electrical Appliances'
-                    : categoryName === 'industrial'
-                      ? 'Industrial & Construction Material'
-                      : categoryName === 'furniture'
-                        ? 'furniture and decor'
-                        : categoryName}
+            {categoryName}
           </p>
         </div>
         <ChevronDown
@@ -96,7 +70,7 @@ const ItemCard = ({ categoryName, subCategories, _id, onSelect }) => {
         `}
       >
         <div className="overflow-y-auto max-h-56 scroll-visible">
-          {sortedSubCategories.map((item, index) => (
+          {subCategories?.map((item, index) => (
             <div key={index}>
               <div
                 onClick={() => {
