@@ -12,6 +12,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { DatePicker } from '@/lib/DatePicker';
 import { toast } from 'sonner';
 import { useCategory, useCategoryState } from '@/redux/hooks/useCategory';
@@ -37,6 +47,10 @@ const PostRequirementForm = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const fileInputRef = useRef(null);
 
+  const [showCustomCategoryWarning, setShowCustomCategoryWarning] = useState(false);
+  const [pendingSubCategoryId, setPendingSubCategoryId] = useState(null);
+  const [isCustomCategoryAccepted, setIsCustomCategoryAccepted] = useState(false);
+
   useEffect(() => {
     dispatachCategory();
   }, []);
@@ -56,6 +70,8 @@ const PostRequirementForm = () => {
       gstNumber: '',
       organizationName: '',
       deliveryAddress: '',
+      customCategoryName: '',
+      customSubcategoryName: '',
     },
   });
 
@@ -103,6 +119,28 @@ const PostRequirementForm = () => {
       return;
     }
 
+    if (isCustomCategoryAccepted) {
+      if (!data.customCategoryName || !data.customSubcategoryName) {
+        toast.error('Custom Category Name and Subcategory Name are required');
+        return;
+      }
+      
+      const customCatTrimmed = data.customCategoryName.trim().toLowerCase();
+      const customSubTrimmed = data.customSubcategoryName.trim().toLowerCase();
+
+      const isDuplicate = categories?.some(cat => {
+        if (cat.categoryName.toLowerCase() === customCatTrimmed) {
+           return cat.subCategories?.some(sub => sub.name.toLowerCase() === customSubTrimmed);
+        }
+        return false;
+      });
+
+      if (isDuplicate) {
+        toast.error('This category already exists. Please select it from the dropdown.');
+        return;
+      }
+    }
+
     if (data.items.length === 0) {
       toast.error('Please add at least one item.');
       return;
@@ -142,6 +180,8 @@ const PostRequirementForm = () => {
           quantity: item.quantity,
           quantityUnit: item.quantityUnit,
           brand: item.brand,
+          customCategoryName: isCustomCategoryAccepted ? data.customCategoryName : undefined,
+          customSubcategoryName: isCustomCategoryAccepted ? data.customSubcategoryName : undefined,
         }))
       }];
 
@@ -185,6 +225,28 @@ const PostRequirementForm = () => {
         <h2 className="text-2xl font-black text-slate-900 tracking-tight">Post Your Requirement (RFQ)</h2>
       </div>
 
+      <AlertDialog open={showCustomCategoryWarning} onOpenChange={setShowCustomCategoryWarning}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>⚠️ Custom Category Notice</AlertDialogTitle>
+            <AlertDialogDescription>
+              Please note: Any custom requirement you enter must be aligned with our existing construction and building material offerings. Unrelated products may be removed.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => {
+              setShowCustomCategoryWarning(false);
+              setPendingSubCategoryId(null);
+            }}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={() => {
+              setShowCustomCategoryWarning(false);
+              setIsCustomCategoryAccepted(true);
+              setValue('subCategoryId', pendingSubCategoryId);
+            }}>Accept & Continue</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
         
         {/* Top Info Section */}
@@ -221,7 +283,20 @@ const PostRequirementForm = () => {
                 name="subCategoryId"
                 control={control}
                 render={({ field: { onChange, value } }) => (
-                  <Select value={value} onValueChange={onChange} disabled={!selectedCategoryId}>
+                  <Select 
+                    value={value} 
+                    onValueChange={(val) => {
+                      const selectedSub = subCategories.find(s => s._id === val);
+                      if (selectedSub && (selectedSub.name.toLowerCase() === 'other' || selectedSub.name.toLowerCase() === 'others')) {
+                        setPendingSubCategoryId(val);
+                        setShowCustomCategoryWarning(true);
+                      } else {
+                        setIsCustomCategoryAccepted(false);
+                        onChange(val);
+                      }
+                    }} 
+                    disabled={!selectedCategoryId}
+                  >
                     <SelectTrigger className="w-full bg-slate-50 border-slate-200 focus:ring-orange-500">
                       <SelectValue placeholder="Select Subcategory" />
                     </SelectTrigger>
@@ -234,6 +309,27 @@ const PostRequirementForm = () => {
                 )}
               />
             </div>
+
+            {isCustomCategoryAccepted && (
+              <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 mt-4 p-4 bg-orange-50 rounded-lg border border-orange-200">
+                <div>
+                  <label className="block text-sm font-bold text-slate-800 mb-2">Custom Category Name*</label>
+                  <Input 
+                    {...register('customCategoryName')} 
+                    placeholder="Enter custom category" 
+                    className="bg-white border-slate-200 focus:ring-orange-500" 
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-slate-800 mb-2">Custom Subcategory Name*</label>
+                  <Input 
+                    {...register('customSubcategoryName')} 
+                    placeholder="Enter custom subcategory" 
+                    className="bg-white border-slate-200 focus:ring-orange-500" 
+                  />
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
