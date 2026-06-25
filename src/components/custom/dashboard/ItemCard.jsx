@@ -37,10 +37,10 @@ const ItemCard = ({ categoryName, subCategories, _id, onSelect }) => {
 
 
   return (
-    <div className="group flex flex-col w-full relative" id={`itemcard-${_id}`}>
+    <div className="group flex flex-col w-full h-full relative" id={`itemcard-${_id}`}>
       {/* Card Trigger */}
       <div
-        className="cursor-pointer border border-slate-200 bg-white rounded-lg p-5 hover:border-orange-500 hover:shadow-md transition-all flex justify-between items-center group"
+        className="cursor-pointer border border-slate-200 bg-white rounded-lg p-5 hover:border-orange-500 hover:shadow-md transition-all flex justify-between items-center group h-full"
         onClick={() => {
           setOpen(prev => !prev);
         }}
