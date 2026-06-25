@@ -20,6 +20,16 @@ import {
 } from '@/components/ui/select';
 import { DatePicker } from '@/lib/DatePicker';
 import { Range } from 'react-range';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { CategoryFormSchema } from '@/validations/Schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -140,6 +150,23 @@ const CategoryForm = ({
   const toolTypeValue = watch('toolType');
   const rateAServiceValue = watch('rateAService');
 
+  const [showCustomCategoryWarning, setShowCustomCategoryWarning] = useState(false);
+  const [isCustomCategoryAccepted, setIsCustomCategoryAccepted] = useState(false);
+  const [pendingSubCategoryId, setPendingSubCategoryId] = useState(null);
+
+  const handleSubCategoryChange = (val) => {
+    const selectedCategory = subCategroies.find(c => c._id === val);
+    if (selectedCategory && (selectedCategory.name.toLowerCase() === 'other' || selectedCategory.name.toLowerCase() === 'others')) {
+      setPendingSubCategoryId(val);
+      setShowCustomCategoryWarning(true);
+    } else {
+      setValue('subCategoryId', val);
+      setIsCustomCategoryAccepted(false);
+      setValue('customCategoryName', '');
+      setValue('customSubcategoryName', '');
+    }
+  };
+
   useEffect(() => {
     setValue('oldProductValue.min', values[0].toString());
     setValue('oldProductValue.max', values[1].toString());
@@ -204,6 +231,28 @@ const CategoryForm = ({
 
   return (
     <div className="relative">
+      <AlertDialog open={showCustomCategoryWarning} onOpenChange={setShowCustomCategoryWarning}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>⚠️ Custom Category Notice</AlertDialogTitle>
+            <AlertDialogDescription>
+              Please note: Any custom requirement you enter must be aligned with our existing construction and building material offerings. Unrelated products may be removed.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => {
+              setShowCustomCategoryWarning(false);
+              setPendingSubCategoryId(null);
+            }}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={() => {
+              setShowCustomCategoryWarning(false);
+              setIsCustomCategoryAccepted(true);
+              setValue('subCategoryId', pendingSubCategoryId);
+            }}>Accept & Continue</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Left Panel */}
         <div className="md:col-span-1 lg:col-span-1 bg-transparent border-0 p-6 xs:grid xs:grid-cols-2 gap-6 space-y-4">
@@ -245,7 +294,7 @@ const CategoryForm = ({
               {/* SubCategory — editable (unlike CreateProductForm where it's disabled) */}
               <Select
                 value={selectedSubCategoryId}
-                onValueChange={value => setValue('subCategoryId', value)}
+                onValueChange={handleSubCategoryChange}
               >
                 <SelectTrigger className="w-full bg-white">
                   <SelectValue placeholder="Category*" />
@@ -258,6 +307,23 @@ const CategoryForm = ({
                   ))}
                 </SelectContent>
               </Select>
+
+              {isCustomCategoryAccepted && (
+                <>
+                  <Input
+                    type="text"
+                    placeholder="Custom Category Name*"
+                    {...register('customCategoryName')}
+                    className="bg-white col-span-1 md:col-span-1"
+                  />
+                  <Input
+                    type="text"
+                    placeholder="Custom Subcategory Name*"
+                    {...register('customSubcategoryName')}
+                    className="bg-white col-span-1 md:col-span-2"
+                  />
+                </>
+              )}
 
               {currentCategoryName !== 'service' && currentCategoryName !== 'others' && (
                 brandRenderItems.length > 0 ? (
@@ -863,6 +929,8 @@ const UpdateCreateProductForm = () => {
       brandName: '',
       typeOfVehicle: '',
       typeOfProduct: '',
+      customCategoryName: '',
+      customSubcategoryName: '',
     },
   });
 
@@ -910,7 +978,12 @@ const UpdateCreateProductForm = () => {
         organizationName: d.paymentAndDelivery?.organizationName || '',
         organizationAddress: d.paymentAndDelivery?.organizationAddress || '',
       },
+      customCategoryName: d.customCategoryName || '',
+      customSubcategoryName: d.customSubcategoryName || '',
     };
+    if (d.customCategoryName || d.customSubcategoryName) {
+      setIsCustomCategoryAccepted(true);
+    }
     Object.entries(fields).forEach(([key, val]) => setValue(key, val));
   }, [getDraftRes]);
 
@@ -990,6 +1063,36 @@ const UpdateCreateProductForm = () => {
         return false;
       }
     }
+
+    if (formData.subCategoryId) {
+      const selectedSub = subCategroies.find(c => c._id === formData.subCategoryId);
+      if (selectedSub && (selectedSub.name.toLowerCase() === 'other' || selectedSub.name.toLowerCase() === 'others') && !isDraft) {
+        const customCat = formData.customCategoryName?.trim()?.toLowerCase();
+        const customSub = formData.customSubcategoryName?.trim()?.toLowerCase();
+        
+        if (!customCat || !customSub) {
+          toast.error('Custom Category Name and Subcategory Name are required');
+          return false;
+        }
+
+        let exists = false;
+        categories.forEach(cat => {
+          if (cat.categoryName?.toLowerCase() === customCat) {
+            cat.subCategories?.forEach(sub => {
+              if (sub.name?.toLowerCase() === customSub) {
+                exists = true;
+              }
+            });
+          }
+        });
+
+        if (exists) {
+          toast.error('This category already exists. Please select it from the dropdown.');
+          return false;
+        }
+      }
+    }
+
     return true;
   };
 
@@ -1081,6 +1184,9 @@ const UpdateCreateProductForm = () => {
     multipartData.append('subCategoryId', formData.subCategoryId);
     multipartData.append('products', JSON.stringify([{ _id: draftState?._id }]));
     multipartData.append('productId', draftState?._id || '');
+
+    if (formData.customCategoryName) multipartData.append('customCategoryName', formData.customCategoryName);
+    if (formData.customSubcategoryName) multipartData.append('customSubcategoryName', formData.customSubcategoryName);
 
     if (isDraft) {
       multipartData.append('createRequirement', 'false');
