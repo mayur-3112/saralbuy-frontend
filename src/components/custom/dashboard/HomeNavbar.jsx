@@ -579,6 +579,13 @@ const HomeNavbar = () => {
           <nav className="hidden justify-between lg:flex items-center gap-2 xl:gap-4 w-full">
             {/* Logo + Navigation Links */}
             <div className="flex items-center gap-3 xl:gap-5 shrink-0">
+              {/* Desktop Burger Menu Trigger */}
+              <div className="hidden lg:flex items-center ml-2">
+                <Button variant="outline" size="icon" className="shrink-0 rounded-md border-0 bg-transparent hover:bg-slate-100" onClick={() => setOpenSheet(true)}>
+                  <Menu className="size-6 text-slate-700" />
+                </Button>
+              </div>
+
               <Link to={'/'} className="flex items-center">
                 <img
                   src={QuotexLogo}
@@ -586,13 +593,6 @@ const HomeNavbar = () => {
                   alt={'company logo'}
                 />
               </Link>
-              
-              {/* Desktop Burger Menu Trigger */}
-              <div className="hidden lg:flex items-center ml-2">
-                <Button variant="outline" size="icon" className="shrink-0 rounded-md border-0 bg-transparent hover:bg-slate-100" onClick={() => setOpenSheet(true)}>
-                  <Menu className="size-6 text-slate-700" />
-                </Button>
-              </div>
 
               <div className="flex items-center relative group">
                 <MapPin 
@@ -925,17 +925,95 @@ const HomeNavbar = () => {
 
           {/* ── Mobile Nav ──────────────────────────────────────────────── */}
           <div className="block lg:hidden">
-            <div className="flex items-center justify-between">
-              {/* Logo */}
-              <Link to={'/'}>
-                <img
-                  src={QuotexLogo}
-                  className="max-h-12 mix-blend-darken  dark:invert"
-                  alt={'company logo'}
-                />
-              </Link>
+            <div className="flex items-center justify-between gap-2">
+              
+              {/* Hamburger and Logo Group */}
+              <div className="flex items-center">
+                {/* Sheet Trigger */}
+                <Sheet open={openSheet} onOpenChange={setOpenSheet}>
+                  <SheetTrigger asChild>
+                    <Button variant="outline" size="icon" className="shrink-0 rounded-md border-0 bg-transparent hover:bg-slate-100 -ml-2">
+                      <Menu className="size-6 text-slate-700" />
+                    </Button>
+                  </SheetTrigger>
+
+                  <SheetContent side="left" className="w-[85vw] sm:w-[400px] p-0 overflow-y-auto">
+                    {/* Header */}
+                    <SheetHeader className="border-b bg-white px-4 py-4 sticky top-0 z-10">
+                      <SheetTitle className="w-full space-y-3">
+                        {user && (
+                          <p className="text-sm font-medium text-gray-700">Hello, {user?.firstName || 'Guest'}!</p>
+                        )}
+                        <div className="flex items-center relative w-full">
+                          <MapPin 
+                            onClick={getGeoLocation}
+                            className="w-4 h-4 text-orange-500 absolute left-3 top-1/2 -translate-y-1/2 cursor-pointer hover:scale-110 transition-transform"
+                            title="Detect my location"
+                          />
+
+                          <Input
+                            placeholder="Location..."
+                            className="w-full bg-gray-50 pl-9 text-sm border border-gray-200 shadow-none focus-visible:ring-0"
+                            value={currentLocation}
+                            onChange={handleLocationChange}
+                            onKeyDown={handleLocationKeyDown}
+                          />
+                        </div>
+                      </SheetTitle>
+                    </SheetHeader>
+
+                    {/* Menu Items */}
+                    <div className="flex flex-col px-2">
+                      <Accordion type="single" collapsible className="flex w-full flex-col gap-1">
+                        {menu.map(item => (
+                          <React.Fragment key={item.title}>
+                            {renderMobileMenuItem(item, setOpenSheet, navigate)}
+                          </React.Fragment>
+                        ))}
+                      </Accordion>
+
+                      {/* Log out for Mobile */}
+                      {user ? (
+                        <button
+                          className="mt-4 w-full flex items-center justify-center gap-2 rounded-lg bg-red-50 py-3 text-sm font-bold text-red-600 hover:bg-red-100 transition-colors"
+                          onClick={() => {
+                            updateUserState(null);
+                            socket.disconnect();
+                            localStorage.removeItem('token');
+                            toast.success('Logged out successfully');
+                            setOpenSheet(false);
+                            navigate('/login');
+                          }}
+                        >
+                          Log out
+                        </button>
+                      ) : (
+                        <button
+                          className="mt-4 w-full flex items-center justify-center gap-2 rounded-lg bg-orange-600 py-3 text-sm font-bold text-white hover:bg-orange-500 transition-colors"
+                          onClick={() => {
+                            setOpenSheet(false);
+                            navigate('/login');
+                          }}
+                        >
+                          Login / Register
+                        </button>
+                      )}
+                    </div>
+                  </SheetContent>
+                </Sheet>
+
+                {/* Logo */}
+                <Link to={'/'} className="ml-1">
+                  <img
+                    src={QuotexLogo}
+                    className="max-h-12 mix-blend-darken  dark:invert"
+                    alt={'company logo'}
+                  />
+                </Link>
+              </div>
+
               {/* Mobile Search */}
-              <div className="relative w-1/2 flex items-center bg-white rounded-sm border border-gray-300 focus-within:ring-1 focus-within:ring-gray-900 focus-within:border-gray-900 overflow-hidden">
+              <div className="relative w-[55%] flex items-center bg-white rounded-sm border border-gray-300 focus-within:ring-1 focus-within:ring-gray-900 focus-within:border-gray-900 overflow-hidden">
                 <select
                   value={selectedSearchCategory}
                   onChange={e => setSelectedSearchCategory(e.target.value)}
@@ -962,62 +1040,6 @@ const HomeNavbar = () => {
                 <SearchIcon className="absolute right-2 top-2 h-3.5 w-3.5 pointer-events-none opacity-50" />
                 <SearchDropdown id="mobile-search-dropdown" />
               </div>
-
-              {/* Sheet Trigger */}
-              <Sheet open={openSheet} onOpenChange={setOpenSheet}>
-                <SheetTrigger asChild>
-                  <Button variant="outline" size="icon" className="shrink-0 rounded-md">
-                    <Menu className="size-5" />
-                  </Button>
-                </SheetTrigger>
-
-                <SheetContent side="left" className="w-[85vw] sm:w-[400px] p-0 overflow-y-auto">
-                  {/* Header */}
-                  <SheetHeader className="border-b bg-white px-4 py-4 sticky top-0 z-10">
-                    <SheetTitle className="w-full space-y-3">
-                      {user && (
-                        <p className="text-sm font-medium text-gray-700">Hello, {user?.firstName || 'Guest'}!</p>
-                      )}
-                      <div className="flex items-center relative w-full">
-                        <MapPin 
-                          onClick={getGeoLocation}
-                          className="w-4 h-4 text-orange-500 absolute left-3 top-1/2 -translate-y-1/2 cursor-pointer hover:scale-110 transition-transform"
-                          title="Detect my location"
-                        />
-
-                        <Input
-                          placeholder="Location..."
-                          className="w-full bg-gray-50 pl-9 text-sm border border-gray-200 shadow-none focus-visible:ring-0"
-                          value={currentLocation}
-                          onChange={handleLocationChange}
-                          onKeyDown={handleLocationKeyDown}
-                        />
-                      </div>
-                    </SheetTitle>
-                  </SheetHeader>
-
-                  {/* Menu Items */}
-                  <div className="flex flex-col px-2">
-                    <Accordion type="single" collapsible className="flex w-full flex-col gap-1">
-                      {menu.map(item => (
-                        <React.Fragment key={item.title}>
-                          {renderMobileMenuItem(item, setOpenSheet, navigate)}
-                        </React.Fragment>
-                      ))}
-                    </Accordion>
-                  </div>
-
-                  {/* Footer */}
-                  <SheetFooter className="px-4 pb-5 pt-2 mt-auto">
-                    <Button
-                      onClick={handleRaiseARequirement}
-                      className="w-full h-11 text-sm font-medium border border-orange-600 bg-orange-600 text-white rounded-md transition-all duration-300 hover:bg-orange-500 hover:text-white"
-                    >
-                      Post a Requirement
-                    </Button>
-                  </SheetFooter>
-                </SheetContent>
-              </Sheet>
             </div>
           </div>
         </div>

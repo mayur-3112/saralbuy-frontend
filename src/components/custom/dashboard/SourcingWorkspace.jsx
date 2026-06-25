@@ -4,6 +4,7 @@ import requirementService from '@/services/requirement.service';
 import { Search, MapPin, Grid, Briefcase, FileText, Gavel, MessageSquare, Plus, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ProductListingCard from '@/components/custom/listing/ProductListingCard';
+import { useCategoryState, useCategory } from '@/redux/hooks/useCategory';
 
 const MOCK_DB_REQUIREMENTS = [
   {
@@ -140,13 +141,7 @@ const MOCK_DB_REQUIREMENTS = [
   },
 ];
 
-const CATEGORIES = [
-  { value: 'All', label: 'All Project Scopes' },
-  { value: 'industrial', label: 'Building & Structural Materials' },
-  { value: 'electronics', label: 'Electrical & Lighting' },
-  { value: 'home', label: 'Plumbing & Hardware' },
-  { value: 'furniture', label: 'Finishing, Tiles & Granite' },
-];
+
 
 const CITIES = ['All Locations', 'Bengaluru', 'Mangaluru', 'Hubballi', 'Mysuru', 'Belagavi', 'Tumakuru'];
 
@@ -159,8 +154,12 @@ export default function SourcingWorkspace({ user, userBidsCount, userDraftsCount
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedLocation, setSelectedLocation] = useState('All Locations');
 
+  const { categories: serverCategories } = useCategoryState();
+  const dispatchCategories = useCategory();
+
   useEffect(() => {
     loadReqsFn();
+    dispatchCategories();
   }, []);
 
   // Merge server data and mock data to guarantee the board is never empty
@@ -290,8 +289,11 @@ export default function SourcingWorkspace({ user, userBidsCount, userDraftsCount
               onChange={(e) => setSelectedCategory(e.target.value)}
               className="pl-10 w-full p-3.5 text-sm focus:outline-none appearance-none bg-white text-slate-800"
             >
-              {CATEGORIES.map(cat => (
-                <option key={cat.value} value={cat.value}>{cat.label}</option>
+              <option value="All">All Project Scopes</option>
+              {serverCategories?.map(cat => (
+                <option key={cat._id} value={cat.categoryName.toLowerCase()}>
+                  {cat.categoryName}
+                </option>
               ))}
             </select>
           </div>

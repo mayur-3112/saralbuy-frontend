@@ -13,124 +13,14 @@ import {
 } from '@/components/ui/accordion';
 import { useCategory, useCategoryState } from '@/redux/hooks/useCategory';
 
-const FALLBACK_CATEGORIES = [
-  {
-    _id: 'cat_industrial',
-    categoryName: 'industrial',
-    image: '/image/Category/industrialImage.png',
-    subCategories: [
-      { _id: 'sub_cement', name: 'Cement' },
-      { _id: 'sub_tmt', name: 'TMT Steel' },
-      { _id: 'sub_bricks', name: 'Bricks & Blocks' },
-      { _id: 'sub_pipes', name: 'Pipes & Fittings' },
-      { _id: 'sub_other_ind', name: 'Other' },
-    ],
-  },
-  {
-    _id: 'cat_electronics',
-    categoryName: 'electronics',
-    image: '/image/Category/electronicsImage.png',
-    subCategories: [
-      { _id: 'sub_smartphones', name: 'Smartphones' },
-      { _id: 'sub_tablets', name: 'Tablets' },
-      { _id: 'sub_wearables', name: 'Wearables' },
-      { _id: 'sub_accessories', name: 'Accessories' },
-      { _id: 'sub_other_elec', name: 'Other' },
-    ],
-  },
-  {
-    _id: 'cat_fashion',
-    categoryName: 'fashion',
-    image: '/image/Category/fashionImage.png',
-    subCategories: [
-      { _id: 'sub_safety_suits', name: 'Boiler Suits' },
-      { _id: 'sub_jackets', name: 'Safety Jackets' },
-      { _id: 'sub_shoes', name: 'Safety Shoes' },
-      { _id: 'sub_uniforms', name: 'Corporate Uniforms' },
-      { _id: 'sub_other_fash', name: 'Other' },
-    ],
-  },
-  {
-    _id: 'cat_home',
-    categoryName: 'home',
-    image: '/image/Category/homeAppliancesImage.png',
-    subCategories: [
-      { _id: 'sub_appliances', name: 'Home Appliances' },
-      { _id: 'sub_electrical', name: 'Electrical Switches' },
-      { _id: 'sub_lighting', name: 'Industrial Lighting' },
-      { _id: 'sub_other_home', name: 'Other' },
-    ],
-  },
-  {
-    _id: 'cat_furniture',
-    categoryName: 'furniture',
-    image: '/image/Category/furnitureImage.png',
-    subCategories: [
-      { _id: 'sub_chairs', name: 'Office Chairs' },
-      { _id: 'sub_desks', name: 'Office Desks' },
-      { _id: 'sub_cabinets', name: 'Storage Cabinets' },
-      { _id: 'sub_other_furn', name: 'Other' },
-    ],
-  },
-  {
-    _id: 'cat_automobile',
-    categoryName: 'automobile',
-    image: '/image/Category/automobileImage.png',
-    subCategories: [
-      { _id: 'sub_tyres', name: 'Commercial Tyres' },
-      { _id: 'sub_parts', name: 'Spare Parts' },
-      { _id: 'sub_oil', name: 'Lubricants & Engine Oil' },
-      { _id: 'sub_other_auto', name: 'Other' },
-    ],
-  },
-  {
-    _id: 'cat_sports',
-    categoryName: 'sports',
-    image: '/image/Category/sportsImage.png',
-    subCategories: [
-      { _id: 'sub_stationery', name: 'Office Stationery' },
-      { _id: 'sub_paper', name: 'Copier Paper' },
-      { _id: 'sub_fitness', name: 'Fitness Equipment' },
-      { _id: 'sub_other_sports', name: 'Other' },
-    ],
-  },
-  {
-    _id: 'cat_beauty',
-    categoryName: 'beauty',
-    image: '/image/Category/beautyImage.png',
-    subCategories: [
-      { _id: 'sub_detergents', name: 'Soaps & Cleaners' },
-      { _id: 'sub_sanitizer', name: 'Sanitization Goods' },
-      { _id: 'sub_other_beauty', name: 'Other' },
-    ],
-  },
-  {
-    _id: 'cat_service',
-    categoryName: 'service',
-    image: '/image/Category/serviceImage.png',
-    subCategories: [
-      { _id: 'sub_logistics', name: 'Logistics & Shipping' },
-      { _id: 'sub_fabrication', name: 'Metal Fabrication' },
-      { _id: 'sub_other_serv', name: 'Other' },
-    ],
-  },
-];
+
 
 const Requirement = () => {
   const [postMode, setPostMode] = useState('single');
   const disptachCategories = useCategory();
   const { categories: serverCategories } = useCategoryState();
   
-  // Filter out the 4 legacy test categories by name so it works on both local and live DBs
-  const legacyNames = [
-    'Building Materials',
-    'Electrical & Lights',
-    'Plumbing & Sanitary',
-    'Paints & Waterproofing'
-  ];
-  const filteredCategories = serverCategories?.filter(cat => !legacyNames.includes(cat.categoryName));
-  
-  const data = (filteredCategories && filteredCategories.length > 0) ? filteredCategories : FALLBACK_CATEGORIES;
+  const data = serverCategories || [];
   const [currentWinSize, setCurrentWinSize] = useState(window.innerWidth);
   const navigate = useNavigate();
   useEffect(() => {
