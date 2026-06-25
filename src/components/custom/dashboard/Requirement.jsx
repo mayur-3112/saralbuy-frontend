@@ -56,7 +56,7 @@ const Requirement = () => {
             </div>
             <h2 className={`text-xl font-bold ${postMode === 'single' ? 'text-orange-600' : 'text-gray-800'}`}>Post a Single Requirement</h2>
           </div>
-          <p className="text-gray-600 text-sm">Have one specific product in mind? Fill out a simple form with your particulars.</p>
+          <p className="text-gray-600 text-sm">Looking for a particular product? Provide the details to get fast, accurate quotes.</p>
         </div>
         
         <div 
