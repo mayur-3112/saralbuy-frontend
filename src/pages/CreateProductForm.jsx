@@ -173,7 +173,6 @@ const CategoryForm = ({
 
   const subCategoryIdValue = watch('subCategoryId');
   const [showCustomCategoryWarning, setShowCustomCategoryWarning] = useState(false);
-  const [isCustomCategoryAccepted, setIsCustomCategoryAccepted] = useState(false);
   const [pendingSubCategoryId, setPendingSubCategoryId] = useState(null);
 
   const handleSubCategoryChange = (val) => {
@@ -183,9 +182,6 @@ const CategoryForm = ({
       setShowCustomCategoryWarning(true);
     } else {
       setValue('subCategoryId', val);
-      setIsCustomCategoryAccepted(false);
-      setValue('customCategoryName', '');
-      setValue('customSubcategoryName', '');
     }
   };
 
@@ -207,7 +203,6 @@ const CategoryForm = ({
             }}>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={() => {
               setShowCustomCategoryWarning(false);
-              setIsCustomCategoryAccepted(true);
               setValue('subCategoryId', pendingSubCategoryId);
             }}>Accept & Continue</AlertDialogAction>
           </AlertDialogFooter>
@@ -264,23 +259,6 @@ const CategoryForm = ({
                   ))}
                 </SelectContent>
               </Select>
-
-              {isCustomCategoryAccepted && (
-                <>
-                  <Input
-                    type="text"
-                    placeholder="Custom Category Name*"
-                    {...register('customCategoryName')}
-                    className="bg-white col-span-1 md:col-span-1"
-                  />
-                  <Input
-                    type="text"
-                    placeholder="Custom Subcategory Name*"
-                    {...register('customSubcategoryName')}
-                    className="bg-white col-span-1 md:col-span-2"
-                  />
-                </>
-              )}
 
               {currentCategoryName !== 'service' && currentCategoryName !== 'others' && (
                 <div className="col-span-1 md:col-span-3">
@@ -877,8 +855,6 @@ const CreateProductForm = () => {
       brandName: '',
       typeOfVehicle: '',
       typeOfProduct: '',
-      customCategoryName: '',
-      customSubcategoryName: '',
     },
   });
 
@@ -956,33 +932,6 @@ const CreateProductForm = () => {
       }
     }
 
-    if (formData.subCategoryId) {
-      const selectedSub = subCategroies.find(c => c._id === formData.subCategoryId);
-      if (selectedSub && (selectedSub.name.toLowerCase() === 'other' || selectedSub.name.toLowerCase() === 'others') && !isDraft) {
-        const customCat = formData.customCategoryName?.trim()?.toLowerCase();
-        const customSub = formData.customSubcategoryName?.trim()?.toLowerCase();
-        
-        if (!customCat || !customSub) {
-          toast.error('Custom Category Name and Subcategory Name are required');
-          return false;
-        }
-
-        let exists = false;
-        categories.forEach(cat => {
-          if (cat.categoryName?.toLowerCase() === customCat) {
-            cat.subCategories?.forEach(sub => {
-              if (sub.name?.toLowerCase() === customSub) {
-                exists = true;
-              }
-            });
-          }
-        });
-
-        if (exists) {
-          toast.error('This category already exists. Please select it from the dropdown.');
-          return false;
-        }
-      }
     }
 
     return true;
@@ -1095,9 +1044,6 @@ const CreateProductForm = () => {
     multipartData.append('draft', isDraft);
     multipartData.append('categoryId', categoryId);
     multipartData.append('subCategoryId', formData.subCategoryId || subCategoryId);
-    
-    if (formData.customCategoryName) multipartData.append('customCategoryName', formData.customCategoryName);
-    if (formData.customSubcategoryName) multipartData.append('customSubcategoryName', formData.customSubcategoryName);
 
     if (!isDraft && resolvedBidDuration) {
       multipartData.append('bidActiveDuration', resolvedBidDuration);

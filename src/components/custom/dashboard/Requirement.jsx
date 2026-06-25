@@ -23,6 +23,16 @@ const Requirement = () => {
   const data = serverCategories || [];
   const [currentWinSize, setCurrentWinSize] = useState(window.innerWidth);
   const navigate = useNavigate();
+
+  const handleOtherClick = (e) => {
+    e.preventDefault();
+    const otherCategory = data?.find(c => c.categoryName.toLowerCase() === 'other');
+    const otherSubCategory = otherCategory?.subCategories?.find(s => s.name.toLowerCase() === 'other');
+    const catId = otherCategory?._id || 'other';
+    const subId = otherSubCategory?._id || 'other';
+    navigate(`/post-requirement?mode=${postMode}&cat=${catId}&sub=${subId}`);
+  };
+
   useEffect(() => {
     disptachCategories();
   }, []);
@@ -127,15 +137,18 @@ const Requirement = () => {
           <p className="text-gray-500 text-sm">
             We know not every category fits into a box. If your need doesn't match one of the
             listed options, click{' '}
-            <Link
-              // to={"/category/691a295d6e6c415cf765deed/691b6a586e6c415cf765def1"}
-              className="text-blue-600 underline"
+            <a
+              href="#"
+              onClick={handleOtherClick}
+              className="text-blue-600 underline cursor-pointer"
             >
               Other{' '}
-            </Link>{' '}
+            </a>{' '}
             to tell us more.
           </p>
-          <MoveRight className="h-4 w-4 text-gray-600" />
+          <button onClick={handleOtherClick} className="cursor-pointer hover:bg-orange-100 p-2 rounded-full transition-colors">
+            <MoveRight className="h-4 w-4 text-gray-600" />
+          </button>
         </div>
       </div>
     </div>

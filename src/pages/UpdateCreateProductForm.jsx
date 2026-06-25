@@ -151,7 +151,6 @@ const CategoryForm = ({
   const rateAServiceValue = watch('rateAService');
 
   const [showCustomCategoryWarning, setShowCustomCategoryWarning] = useState(false);
-  const [isCustomCategoryAccepted, setIsCustomCategoryAccepted] = useState(false);
   const [pendingSubCategoryId, setPendingSubCategoryId] = useState(null);
 
   const handleSubCategoryChange = (val) => {
@@ -161,9 +160,6 @@ const CategoryForm = ({
       setShowCustomCategoryWarning(true);
     } else {
       setValue('subCategoryId', val);
-      setIsCustomCategoryAccepted(false);
-      setValue('customCategoryName', '');
-      setValue('customSubcategoryName', '');
     }
   };
 
@@ -246,7 +242,6 @@ const CategoryForm = ({
             }}>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={() => {
               setShowCustomCategoryWarning(false);
-              setIsCustomCategoryAccepted(true);
               setValue('subCategoryId', pendingSubCategoryId);
             }}>Accept & Continue</AlertDialogAction>
           </AlertDialogFooter>
@@ -307,23 +302,6 @@ const CategoryForm = ({
                   ))}
                 </SelectContent>
               </Select>
-
-              {isCustomCategoryAccepted && (
-                <>
-                  <Input
-                    type="text"
-                    placeholder="Custom Category Name*"
-                    {...register('customCategoryName')}
-                    className="bg-white col-span-1 md:col-span-1"
-                  />
-                  <Input
-                    type="text"
-                    placeholder="Custom Subcategory Name*"
-                    {...register('customSubcategoryName')}
-                    className="bg-white col-span-1 md:col-span-2"
-                  />
-                </>
-              )}
 
               {currentCategoryName !== 'service' && currentCategoryName !== 'others' && (
                 brandRenderItems.length > 0 ? (
@@ -929,8 +907,6 @@ const UpdateCreateProductForm = () => {
       brandName: '',
       typeOfVehicle: '',
       typeOfProduct: '',
-      customCategoryName: '',
-      customSubcategoryName: '',
     },
   });
 
@@ -978,12 +954,7 @@ const UpdateCreateProductForm = () => {
         organizationName: d.paymentAndDelivery?.organizationName || '',
         organizationAddress: d.paymentAndDelivery?.organizationAddress || '',
       },
-      customCategoryName: d.customCategoryName || '',
-      customSubcategoryName: d.customSubcategoryName || '',
     };
-    if (d.customCategoryName || d.customSubcategoryName) {
-      setIsCustomCategoryAccepted(true);
-    }
     Object.entries(fields).forEach(([key, val]) => setValue(key, val));
   }, [getDraftRes]);
 
@@ -1061,35 +1032,6 @@ const UpdateCreateProductForm = () => {
       if (!gstRegex.test(formData.paymentAndDelivery.gstNumber.trim())) {
         toast.error('Invalid GST Number format');
         return false;
-      }
-    }
-
-    if (formData.subCategoryId) {
-      const selectedSub = subCategroies.find(c => c._id === formData.subCategoryId);
-      if (selectedSub && (selectedSub.name.toLowerCase() === 'other' || selectedSub.name.toLowerCase() === 'others') && !isDraft) {
-        const customCat = formData.customCategoryName?.trim()?.toLowerCase();
-        const customSub = formData.customSubcategoryName?.trim()?.toLowerCase();
-        
-        if (!customCat || !customSub) {
-          toast.error('Custom Category Name and Subcategory Name are required');
-          return false;
-        }
-
-        let exists = false;
-        categories.forEach(cat => {
-          if (cat.categoryName?.toLowerCase() === customCat) {
-            cat.subCategories?.forEach(sub => {
-              if (sub.name?.toLowerCase() === customSub) {
-                exists = true;
-              }
-            });
-          }
-        });
-
-        if (exists) {
-          toast.error('This category already exists. Please select it from the dropdown.');
-          return false;
-        }
       }
     }
 
@@ -1184,9 +1126,6 @@ const UpdateCreateProductForm = () => {
     multipartData.append('subCategoryId', formData.subCategoryId);
     multipartData.append('products', JSON.stringify([{ _id: draftState?._id }]));
     multipartData.append('productId', draftState?._id || '');
-
-    if (formData.customCategoryName) multipartData.append('customCategoryName', formData.customCategoryName);
-    if (formData.customSubcategoryName) multipartData.append('customSubcategoryName', formData.customSubcategoryName);
 
     if (isDraft) {
       multipartData.append('createRequirement', 'false');
