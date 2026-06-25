@@ -932,8 +932,6 @@ const CreateProductForm = () => {
       }
     }
 
-    }
-
     return true;
   };
 
