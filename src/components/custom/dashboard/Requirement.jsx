@@ -125,8 +125,8 @@ const Requirement = () => {
         <h1 className="text-lg font-bold text-start">Did not find what you are looking for</h1>
         <div className="flex justify-between items-center m-1">
           <p className="text-gray-500 text-sm">
-            What know not every category fit into a box. if your need doesn't match one of the
-            listed options. Click{' '}
+            We know not every category fits into a box. If your need doesn't match one of the
+            listed options, click{' '}
             <Link
               // to={"/category/691a295d6e6c415cf765deed/691b6a586e6c415cf765def1"}
               className="text-blue-600 underline"
