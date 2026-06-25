@@ -42,6 +42,7 @@ const BidListing = () => {
   const [limit, setLimit] = useState(10);
   const [search, setSearch] = useState('');
   const [value, { isPending }] = useDebounce(search, 600);
+  const [activeTab, setActiveTab] = useState('pending');
   const columns = [
     {
       accessorKey: 'avtar',
@@ -113,29 +114,17 @@ const BidListing = () => {
       header: 'Status',
       cell: ({ row }) => {
         const status = row.original?.status?.toLowerCase();
-        // || status === 'waiting for seller approval'
-        if (!status) {
-          return (
-            <Badge className="bg-gray-100 text-gray-600 rounded-full px-3 w-28">Pending</Badge>
-          );
+        
+        if (status === 'accepted') {
+          return <Badge className="bg-green-100 text-green-600 rounded-full px-3 w-28 text-center flex justify-center">Accepted</Badge>;
         }
-
         if (status === 'rejected') {
-          return <Badge className="bg-red-100 text-red-500 rounded-full px-3 w-28">Rejected</Badge>;
+          return <Badge className="bg-red-100 text-red-500 rounded-full px-3 w-28 text-center flex justify-center">Rejected</Badge>;
         }
-
-        if (status === 'closed') {
-          return (
-            <Badge className="bg-green-100 text-green-600 rounded-full px-3 w-28">Closed</Badge>
-          );
+        if (status === 'shortlisted') {
+          return <Badge className="bg-blue-100 text-blue-600 rounded-full px-3 w-28 text-center flex justify-center">Shortlisted</Badge>;
         }
-
-        // Progress / ongoing
-        return (
-          <Badge className="bg-yellow-100 text-yellow-600 rounded-full px-3 w-28">
-            In Progress
-          </Badge>
-        );
+        return <Badge className="bg-gray-100 text-gray-600 rounded-full px-3 w-28 text-center flex justify-center">Pending</Badge>;
       },
     },
     {
@@ -225,15 +214,7 @@ const BidListing = () => {
           location: item.product?.paymentAndDelivery?.organizationAddress || 'N/A',
           min_budget: item?.product?.minimumBudget,
           your_budget: currencyConvertor(item?.budgetQuation),
-          status:
-            item?.closedDealStatus === 'waiting_seller_approval' ||
-            item?.closedDealStatus === 'pending'
-              ? 'Waiting for seller approval'
-              : item?.closedDealStatus === 'rejected'
-                ? 'Rejected'
-                : item?.closedDealStatus === 'completed'
-                  ? 'Closed'
-                  : 'Progress',
+          status: item?.quoteStatus || 'pending',
         };
       });
 
@@ -258,6 +239,13 @@ const BidListing = () => {
     }
   }, [deletBidResponse]);
 
+  const filteredData = data.filter(item => {
+    if (activeTab === 'pending') {
+      return item.status === 'pending' || item.status === 'shortlisted';
+    }
+    return item.status === activeTab;
+  });
+
   return (
     <>
       <AlertPopup
@@ -272,21 +260,46 @@ const BidListing = () => {
       {bidLoading && !fetchBidsResponse ? (
         <SkeletonTable />
       ) : (
-        <TableListing
-          data={data}
-          columns={columns}
-          filters={true}
-          title="Quotes Submitted"
-          colorPalette="gray"
-          page={page}
-          setPage={setPage}
-          total={total}
-          limit={limit}
-          setSearch={setSearch}
-          search={search}
-          isPending={bidLoading}
-          placeholer="Search Product..."
-        />
+        <div className="space-y-4">
+          <div className="flex gap-2">
+            <Button 
+              variant={activeTab === 'pending' ? 'default' : 'outline'} 
+              onClick={() => setActiveTab('pending')}
+              className={activeTab === 'pending' ? 'bg-orange-600 hover:bg-orange-700 text-white' : ''}
+            >
+              Pending
+            </Button>
+            <Button 
+              variant={activeTab === 'accepted' ? 'default' : 'outline'} 
+              onClick={() => setActiveTab('accepted')}
+              className={activeTab === 'accepted' ? 'bg-orange-600 hover:bg-orange-700 text-white' : ''}
+            >
+              Accepted
+            </Button>
+            <Button 
+              variant={activeTab === 'rejected' ? 'default' : 'outline'} 
+              onClick={() => setActiveTab('rejected')}
+              className={activeTab === 'rejected' ? 'bg-orange-600 hover:bg-orange-700 text-white' : ''}
+            >
+              Rejected
+            </Button>
+          </div>
+          <TableListing
+            data={filteredData}
+            columns={columns}
+            filters={true}
+            title="Quotes Submitted"
+            colorPalette="gray"
+            page={page}
+            setPage={setPage}
+            total={total}
+            limit={limit}
+            setSearch={setSearch}
+            search={search}
+            isPending={bidLoading}
+            placeholer="Search Product..."
+          />
+        </div>
       )}
     </>
   );

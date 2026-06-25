@@ -16,6 +16,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import requirementService from '@/services/requirement.service';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Badge } from '@/components/ui/badge';
 import { CategoryFormSkeleton } from '@/const/CustomSkeletons';
 import { currencyConvertor } from '@/utils/currencyConvertor';
 import bidService from '@/services/bid.service';
@@ -182,6 +183,7 @@ const RequirementOverview = () => {
   const [timeLeft, setTimeLeft] = useState('');
   const [isSoldProduct, setIsSoldProduct] = useState(false);
   const [openQuoteDetails, setOpenQuoteDetails] = useState(false);
+  const [activeTab, setActiveTab] = useState('pending');
 
   let intervalRef = useRef(null);
 
@@ -240,6 +242,8 @@ const RequirementOverview = () => {
             sellerId: seller.seller?._id || seller._id || seller.userId,
             location: seller.seller?.currentLocation || seller.seller?.address,
             status: seller.seller?.status,
+            quoteStatus: seller.quoteStatus || 'pending',
+            bidId: seller._id,
           }));
 
           setBidData(transformedBids);
@@ -263,6 +267,22 @@ const RequirementOverview = () => {
       });
     }
   };
+
+  const handleUpdateQuoteStatus = async (bidId, status) => {
+    try {
+      await bidService.updateQuoteStatus(bidId, { quoteStatus: status });
+      setBidData(prev => prev.map(bid => {
+        if (bid.bidId === bidId) {
+          return { ...bid, quoteStatus: status };
+        }
+        return bid;
+      }));
+    } catch (error) {
+      console.error('Error updating quote status', error);
+    }
+  };
+
+  const hasAccepted = bidData.some(bid => bid.quoteStatus === 'accepted');
 
   const columns = [
     {
@@ -342,6 +362,41 @@ const RequirementOverview = () => {
                 contentChildren={<p>View Quote</p>}
               ></TooltipComp>
             </div>
+            
+            {!hasAccepted && row.original.quoteStatus === 'pending' && (
+              <>
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  className="text-blue-600 border-blue-600 hover:bg-blue-50"
+                  onClick={() => handleUpdateQuoteStatus(row.original.bidId, 'shortlisted')}
+                >
+                  Shortlist
+                </Button>
+                <Button 
+                  size="sm" 
+                  className="bg-green-600 text-white hover:bg-green-700"
+                  onClick={() => handleUpdateQuoteStatus(row.original.bidId, 'accepted')}
+                >
+                  Accept
+                </Button>
+              </>
+            )}
+            {!hasAccepted && row.original.quoteStatus === 'shortlisted' && (
+              <Button 
+                size="sm" 
+                className="bg-green-600 text-white hover:bg-green-700"
+                onClick={() => handleUpdateQuoteStatus(row.original.bidId, 'accepted')}
+              >
+                Accept
+              </Button>
+            )}
+            {row.original.quoteStatus === 'accepted' && (
+              <Badge className="bg-green-100 text-green-700 hover:bg-green-100 rounded-full px-3">Accepted</Badge>
+            )}
+            {row.original.quoteStatus === 'shortlisted' && (
+               <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 rounded-full px-3">Shortlisted</Badge>
+            )}
           </div>
         );
       },
@@ -539,10 +594,33 @@ const RequirementOverview = () => {
         ))}
 
         {/* Table */}
-        <div className="bg-orange-50 p-2 sm:p-4 rounded-xl overflow-hidden">
+        <div className="bg-orange-50 p-2 sm:p-4 rounded-xl overflow-hidden mt-4">
+          <div className="flex gap-2 mb-4">
+            <Button 
+              variant={activeTab === 'pending' ? 'default' : 'outline'} 
+              onClick={() => setActiveTab('pending')}
+              className={activeTab === 'pending' ? 'bg-orange-600 hover:bg-orange-700 text-white' : ''}
+            >
+              New (Pending)
+            </Button>
+            <Button 
+              variant={activeTab === 'shortlisted' ? 'default' : 'outline'} 
+              onClick={() => setActiveTab('shortlisted')}
+              className={activeTab === 'shortlisted' ? 'bg-orange-600 hover:bg-orange-700 text-white' : ''}
+            >
+              Shortlisted
+            </Button>
+            <Button 
+              variant={activeTab === 'accepted' ? 'default' : 'outline'} 
+              onClick={() => setActiveTab('accepted')}
+              className={activeTab === 'accepted' ? 'bg-orange-600 hover:bg-orange-700 text-white' : ''}
+            >
+              Accepted
+            </Button>
+          </div>
           <div className="overflow-x-auto">
             <TableListing
-              data={bidData}
+              data={bidData.filter(bid => activeTab === 'pending' ? bid.quoteStatus === 'pending' : activeTab === 'shortlisted' ? bid.quoteStatus === 'shortlisted' : activeTab === 'accepted' ? bid.quoteStatus === 'accepted' : true)}
               columns={columns}
               filters={false}
               title={`Quote Recevied`}
