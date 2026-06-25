@@ -95,7 +95,10 @@ const PostRequirementForm = () => {
       return;
     }
 
-    if (!data.title || !data.categoryId || !data.subCategoryId) {
+    const selectedCat = categories?.find(c => c._id === data.categoryId);
+    const hasSubCategories = selectedCat?.subCategories?.length > 0;
+
+    if (!data.title || !data.categoryId || (hasSubCategories && !data.subCategoryId)) {
       toast.error('Please fill in the title, category, and subcategory.');
       return;
     }
@@ -142,12 +145,24 @@ const PostRequirementForm = () => {
         }))
       }];
 
-      const payload = {
-        commonDetails,
-        categoryGroups,
-      };
-
-      const res = await instance.post('/product/create-multiple', payload);
+      let res;
+      if (selectedFiles.length > 0) {
+        // Upload logic
+        const formData = new FormData();
+        formData.append('document', selectedFiles[0]); // Backend expects only 1 document in req.files.document[0]
+        formData.append('commonDetails', JSON.stringify(commonDetails));
+        formData.append('categories', JSON.stringify([data.categoryId]));
+        res = await instance.post('/product/upload-multiple-requirement', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+      } else {
+        // Standard data logic
+        const payload = {
+          commonDetails,
+          categoryGroups,
+        };
+        res = await instance.post('/product/create-multiple', payload);
+      }
 
       if (res.data.success) {
         toast.success('Requirement posted successfully!');
