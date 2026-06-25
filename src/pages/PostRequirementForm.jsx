@@ -82,7 +82,8 @@ const PostRequirementForm = () => {
 
   const selectedCategoryId = watch('categoryId');
   const selectedCategory = categories?.find(c => c._id === selectedCategoryId);
-  const subCategories = selectedCategory?.subCategories || [];
+  const dynamicSubcategories = selectedCategory?.subCategories || [];
+  const subCategories = [...dynamicSubcategories, { _id: 'other', name: 'Other', brands: [] }];
   const selectedSubCategoryId = watch('subCategoryId');
   const selectedSubCategory = subCategories.find(sub => sub._id === selectedSubCategoryId);
   const dynamicBrands = selectedSubCategory?.brands || [];
