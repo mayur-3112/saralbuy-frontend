@@ -131,24 +131,11 @@ export default function LiveSourcingBoard({ onOpenAuth }) {
           {filteredRequirements.length > 0 ? (
             filteredRequirements.map((req) => (
               <ProductListingCard 
-                key={req.id} 
-                product={{
-                  _id: req.id.toString(),
-                  rfqId: `EP#${5050 + req.id}`,
-                  title: req.title,
-                  createdAt: new Date(Date.now() - req.id * 86400000).toISOString(),
-                  timeline: new Date(Date.now() + 86400000 * 7).toISOString(),
-                  userId: {
-                    companyName: req.organization,
-                    address: req.location,
-                    country: 'India'
-                  },
-                  categoryId: { categoryName: req.category },
-                  country: 'India'
-                }}
+                key={req._id} 
+                product={req}
                 onActionClick={() => {
                   if (user) {
-                    navigate('/product-overview?productId=' + req.id);
+                    navigate('/product-overview?productId=' + req._id);
                   } else if (onOpenAuth) {
                     onOpenAuth('buyer');
                   } else {
