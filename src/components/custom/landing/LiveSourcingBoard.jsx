@@ -1,132 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useFetch } from '@/hooks/useFetch';
+import productService from '@/services/product.service';
 import { MapPin, Gavel, Clock, ArrowRight, CheckCircle2, Search } from 'lucide-react';
 import ProductListingCard from '@/components/custom/listing/ProductListingCard';
 import Authentication from '../auth/Authenticate';
 import { useUserState } from '../../../redux/hooks/useUser';
 import { useNavigate } from 'react-router-dom';
 
-const MOCK_REQUIREMENTS = [
-  {
-    id: 1,
-    title: 'UltraTech OPC 53 Grade Cement',
-    category: 'Building & Structural',
-    organization: 'LARSEN & TOUBRO LIMITED',
-    quantity: '1,500 Bags',
-    location: 'Peenya Project Site, Bengaluru',
-    postedTime: '2 hours ago',
-    bidsCount: 6,
-    specs: 'Delivery required at site, unloading in scope of supplier. ISI marked fresh stock only.',
-    status: 'Active',
-  },
-  {
-    id: 2,
-    title: 'Fe 550 TMT Steel Reinforcement Bars',
-    category: 'Building & Structural',
-    organization: 'PRESTIGE ESTATES PROJECTS',
-    quantity: '12 Tons',
-    location: 'Smart City Project, Mangaluru',
-    postedTime: '5 hours ago',
-    bidsCount: 8,
-    specs: 'Standard 12m length, sizes: 8mm, 12mm, 16mm mixed ratio. Mill test certificate required.',
-    status: 'Active',
-  },
-  {
-    id: 3,
-    title: 'Heavy Duty PVC Conduit Pipes (20mm)',
-    category: 'Plumbing & Sanitaryware',
-    organization: 'BRIGADE ENTERPRISES',
-    quantity: '2,500 Meters',
-    location: 'Commercial Complex, Hubballi',
-    postedTime: '1 day ago',
-    bidsCount: 4,
-    specs: 'FRLS (Fire Retardant Low Smoke) grade, standard light grey color with couplers.',
-    status: 'Active',
-  },
-  {
-    id: 4,
-    title: 'Double Charge Vitrified Floor Tiles (600x600mm)',
-    category: 'Flooring, Tiles & Granite',
-    organization: 'SOBHA DEVELOPERS',
-    quantity: '1,200 Sq Ft',
-    location: 'Residential Villa Project, Belagavi',
-    postedTime: 'Yesterday',
-    bidsCount: 5,
-    specs: 'Glossy finish, ivory/white base color, premium quality brand (Kajaria/Somany equivalent).',
-    status: 'Active',
-  },
-  {
-    id: 5,
-    title: 'Polished Granite Slabs (Sira Grey, 18mm)',
-    category: 'Flooring, Tiles & Granite',
-    organization: 'PURAVANKARA LIMITED',
-    quantity: '3,000 Sq Ft',
-    location: 'IT Park Site, Mysuru',
-    postedTime: '2 days ago',
-    bidsCount: 12,
-    specs: 'Uniform thickness, single-quarry lot, double-polished, pre-cut to standard counter size.',
-    status: 'Deal Closed',
-  },
-  {
-    id: 6,
-    title: 'Recessed LED Panel Lights (15W, Warm White)',
-    category: 'Electrical & Lighting',
-    organization: 'MAHINDRA LIFESPACES',
-    quantity: '500 Units',
-    location: 'Apartment Project, Tumakuru',
-    postedTime: '3 days ago',
-    bidsCount: 3,
-    specs: 'Round shape, aluminum body, driver included, minimum 2-year manufacturer warranty.',
-    status: 'Active',
-  },
-  {
-    id: 7,
-    title: 'Waterproof Commercial Plywood (18mm)',
-    category: 'Plywood & Hardware',
-    organization: 'SQUARE YARDS CONTRACTING',
-    quantity: '150 Sheets',
-    location: 'HSR Layout Residential Site, Bengaluru',
-    postedTime: '4 days ago',
-    bidsCount: 7,
-    specs: 'BWP grade marine plywood, ISI marked, dimension stable, high boiling water resistance.',
-    status: 'Active',
-  },
-  {
-    id: 8,
-    title: 'Premium Exterior Emulsion Weatherproof Paint',
-    category: 'Interior & Paints',
-    organization: 'TATA HOUSING PROJECTS',
-    quantity: '400 Litres',
-    location: 'Golf Course Extension, Mysuru',
-    postedTime: '5 days ago',
-    bidsCount: 9,
-    specs: 'High durability, anti-algal, dirt pick-up resistance, light cream/grey shades.',
-    status: 'Active',
-  },
-  {
-    id: 9,
-    title: 'Industrial Safety Shoes & Helmets Combo',
-    category: 'Safety Gear & Uniforms',
-    organization: 'SHAPOORJI PALLONJI',
-    quantity: '250 Sets',
-    location: 'Industrial Area Phase 2, Dharwad',
-    postedTime: '6 days ago',
-    bidsCount: 11,
-    specs: 'Steel toe cap shoes (S3 rating), high-density polyethylene shells helmets with chin straps.',
-    status: 'Active',
-  },
-  {
-    id: 10,
-    title: 'Submersible Water Pumps (5 HP, 3 Phase)',
-    category: 'Industrial Tools & Pumps',
-    organization: 'KIRLOSKAR CONSTRUCTIONS',
-    quantity: '15 Units',
-    location: 'Water Treatment Plant, Belagavi',
-    postedTime: '1 week ago',
-    bidsCount: 5,
-    specs: 'Cast iron body, copper winding, high discharge capacity, 1 year warranty.',
-    status: 'Active',
-  }
-];
+
 
 const CATEGORIES = [
   'All Projects',
@@ -150,17 +31,30 @@ export default function LiveSourcingBoard({ onOpenAuth }) {
   const { user } = useUserState();
   const navigate = useNavigate();
 
-  const filteredRequirements = MOCK_REQUIREMENTS.filter(req => {
-    const title = req.title.toLowerCase();
-    const specs = req.specs.toLowerCase();
-    const org = req.organization.toLowerCase();
+  const [requirements, setRequirements] = useState([]);
+  const { fn: fetchProducts, data: searchRes, loading } = useFetch(productService.getProductByTitle);
+
+  useEffect(() => {
+    fetchProducts('', 1, 50);
+  }, []);
+
+  useEffect(() => {
+    if (searchRes?.data?.products) {
+      setRequirements(searchRes.data.products);
+    }
+  }, [searchRes]);
+
+  const filteredRequirements = requirements.filter(req => {
+    const title = (req.title || '').toLowerCase();
+    const specs = (req.description || '').toLowerCase();
+    const org = (req.userId?.companyName || req.userId?.firstName || '').toLowerCase();
     const matchesSearch = title.includes(searchTerm.toLowerCase()) || 
                           specs.includes(searchTerm.toLowerCase()) ||
                           org.includes(searchTerm.toLowerCase());
 
-    const matchesCategory = selectedCategory === 'All Projects' || req.category === selectedCategory;
-
-    const matchesLocation = selectedLocation === 'All Locations' || req.location.toLowerCase().includes(selectedLocation.toLowerCase());
+    const matchesCategory = selectedCategory === 'All Projects' || req.categoryId?.categoryName === selectedCategory;
+    const reqLocation = (req.userId?.address || '').toLowerCase();
+    const matchesLocation = selectedLocation === 'All Locations' || reqLocation.includes(selectedLocation.toLowerCase());
 
     return matchesSearch && matchesCategory && matchesLocation;
   });
@@ -294,3 +188,4 @@ export default function LiveSourcingBoard({ onOpenAuth }) {
     </section>
   );
 }
+

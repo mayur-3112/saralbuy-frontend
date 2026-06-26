@@ -18,8 +18,8 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }
   };
 
   // === DATA EXTRACTION ===
-  const user = product?.buyerId || product?.userId || {};
-  const prod = product?.productId || product;
+  const user = product?.buyerId || product?.userId || product?.buyer || {};
+  const prod = product?.productId || product?.product || product;
   
   const orgName = prod?.paymentAndDelivery?.organizationName;
   const bizName = user?.businessName || user?.companyName || product?.organization;
