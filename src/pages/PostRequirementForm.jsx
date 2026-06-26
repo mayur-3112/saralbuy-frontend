@@ -178,11 +178,11 @@ const PostRequirementForm = () => {
         res = await instance.post('/product/create-multiple', payload);
       }
 
-      if (res.data.success) {
+      if (res.data.statusCode === 200 || res.data.statusCode === 201) {
         toast.success('Requirement posted successfully!');
         navigate('/');
       } else {
-        toast.error('Failed to post requirement.');
+        toast.error(res.data.message || 'Failed to post requirement.');
       }
     } catch (error) {
       console.error(error);
