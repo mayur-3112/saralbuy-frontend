@@ -39,8 +39,9 @@ export default function LiveSourcingBoard({ onOpenAuth }) {
   }, []);
 
   useEffect(() => {
-    if (searchRes?.data?.products) {
-      setRequirements(searchRes.data.products);
+    const productsData = searchRes?.data?.data?.products || searchRes?.data?.products;
+    if (productsData) {
+      setRequirements(productsData);
     }
   }, [searchRes]);
 

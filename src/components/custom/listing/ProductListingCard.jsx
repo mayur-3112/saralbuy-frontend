@@ -12,7 +12,8 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }
     if (onActionClick) {
       onActionClick(product);
     } else {
-      const navId = product?.productId?._id || product?._id || '';
+      const prod = product?.productId || product?.product || product;
+      const navId = prod?._id || '';
       return navigate('/product-overview?productId=' + navId);
     }
   };
