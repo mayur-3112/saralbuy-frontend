@@ -84,6 +84,7 @@ export default function AppRoutes() {
           <Route path="/post-requirement" element={<PostRequirementForm />} />
           <Route path="/category/:categoryId/:subCategoryId" element={<CreateProductForm />} />
           <Route path="/update-draft/:productId" element={<UpdateCreateProductForm />} />
+          <Route path="/update-product/:productId" element={<UpdateCreateProductForm />} />
           <Route path="/product-listing" element={<ProductListing />} />
           <Route path="/product-overview" element={<ProductOverview />} />
           <Route path="/terms" element={<TermsAndPrivacy />} />

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -833,6 +833,8 @@ const CategoryForm = ({
 const UpdateCreateProductForm = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isLiveProduct = location.pathname.includes('/update-product');
   const { user } = useUserState();
   const [open, setOpen] = useState(false);
   const [bidPopUpOpen, setBidPopUpOpen] = useState(false);
@@ -848,12 +850,12 @@ const UpdateCreateProductForm = () => {
     fn: getDraft,
     data: getDraftRes,
     loading: getDraftLoading,
-  } = useFetch(productService.getDraftById);
+  } = useFetch(isLiveProduct ? productService.getProductById : productService.getDraftById);
   const {
     fn: updateDraft,
     data: updateDraftRes,
     loading: updateLoading,
-  } = useFetch(productService.updateDrafts);
+  } = useFetch(isLiveProduct ? productService.updateProduct : productService.updateDrafts);
   const {
     fn: saveAsDraftFn,
     data: saveAsDraftRes,
@@ -1216,13 +1218,8 @@ const UpdateCreateProductForm = () => {
                 variant="outline"
                 className="w-32 cursor-pointer border-[#2C3E50]"
                 onClick={() => handleSubmit(true)}
-                disabled={saveAsDraftLoading}
+                disabled={saveAsDraftLoading || isLiveProduct}
               >
-                {/* {saveAsDraftLoading ? (
-                  <Spinner className="w-5 h-5 animate-spin" />
-                ) : (
-                  'Save as Draft'
-                )} */}
                 Save as Draft
               </Button>
               <Button

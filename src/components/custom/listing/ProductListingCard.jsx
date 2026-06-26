@@ -4,7 +4,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Authentication from '../auth/Authenticate';
 
-const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }) => {
+import { MoreVertical, Edit, Trash2 } from 'lucide-react';
+
+const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', showOwnerActions = false, onEdit, onDelete }) => {
+  const [showMenu, setShowMenu] = useState(false);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -81,10 +84,44 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ' }
         {/* Left Side */}
         <div className="flex-1 space-y-4">
           {/* Title Row */}
-          <div className="flex items-center gap-3">
-            <h2 className="text-lg font-semibold text-slate-900 uppercase tracking-wide group-hover:text-orange-800 transition-colors duration-300">
-              {buyerName}
-            </h2>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <h2 className="text-lg font-semibold text-slate-900 uppercase tracking-wide group-hover:text-orange-800 transition-colors duration-300">
+                {buyerName}
+              </h2>
+            </div>
+            {showOwnerActions && (
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); setShowMenu(!showMenu); }}
+                  className="p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-orange-100 transition-colors cursor-pointer"
+                >
+                  <MoreVertical size={20} />
+                </button>
+                {showMenu && (
+                  <div 
+                    className="absolute right-0 top-8 w-36 bg-white border border-slate-200 shadow-xl rounded-lg overflow-hidden z-10 animate-in fade-in zoom-in-95 duration-100"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <button
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); setShowMenu(false); onEdit?.(product); }}
+                      className="w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2 cursor-pointer transition-colors"
+                    >
+                      <Edit size={16} /> Edit RFQ
+                    </button>
+                    <button
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); setShowMenu(false); onDelete?.(productId); }}
+                      className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 cursor-pointer transition-colors border-t border-slate-100"
+                    >
+                      <Trash2 size={16} /> Delete
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Tags Row */}

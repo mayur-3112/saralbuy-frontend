@@ -65,8 +65,15 @@ class ProductService {
   async updateDrafts(payload) {
     return instance.patch(`/product/updatedraft`, payload).then(res => res.data?.data || res.data);
   }
+  async updateProduct(payload) {
+    const productId = payload.get ? payload.get('productId') : payload.productId;
+    return instance.patch(`/product/update-product/${productId}`, payload).then(res => res.data?.data || res.data);
+  }
   async saveAsDraft(payload) {
     return instance.put(`/product/save_as_draft`, payload).then(res => res.data?.data || res.data);
+  }
+  async deleteProduct(productId) {
+    return instance.delete(`/product/delete-product/${productId}`).then(res => res.data?.data || res.data);
   }
   async getLiveStats() {
     return instance.get('/product/live-stats').then(res => res.data?.data || res.data);

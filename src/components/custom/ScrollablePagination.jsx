@@ -150,6 +150,12 @@ const ScrollablePagination = ({
                 navigate('/product-overview?productId=' + item._id);
               }
             }}
+            showOwnerActions={target === 'requirements'}
+            onEdit={() => navigate('/update-product/' + item._id)}
+            onDelete={() => {
+              setSelectedTileId?.(item._id);
+              setOpen?.(true);
+            }}
           />
         </div>
       ))}

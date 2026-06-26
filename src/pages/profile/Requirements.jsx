@@ -26,6 +26,11 @@ const Requirement = () => {
     loading: deleteDraftResLoading,
   } = useFetch(productService.deleteDraft);
   const {
+    fn: deleteLiveReq,
+    data: deleteLiveReqRes,
+    loading: deleteLiveReqLoading,
+  } = useFetch(productService.deleteProduct);
+  const {
     fn: getMyRequirements,
     data: getMyRequirementsRes,
     loading: getMyRequirementsLoading,
@@ -86,9 +91,8 @@ const Requirement = () => {
 
   const handleDeleteRequirement = _id => {
     if (tab === 'requirements') {
-      //  delete the requirement process
+      deleteLiveReq(_id);
     } else {
-      // delete the draft process
       deletDraft(_id);
     }
   };
@@ -110,10 +114,24 @@ const Requirement = () => {
     }
   }, [deleteDraftRes]);
 
+  useEffect(() => {
+    if (deleteLiveReqRes) {
+      setGetMyRequirementsRes(prevState => {
+        if (!Array.isArray(prevState?.data)) return prevState;
+        const filtered = prevState.data.filter(item => item._id !== selectedId);
+        return {
+          ...prevState,
+          data: filtered,
+        };
+      });
+      setSelectedtId(null);
+    }
+  }, [deleteLiveReqRes]);
+
   return (
     <>
       <AlertPopup
-        loading={deleteDraftResLoading}
+        loading={tab === 'requirements' ? deleteLiveReqLoading : deleteDraftResLoading}
         setOpen={setOpen}
         open={open}
         message={message}
