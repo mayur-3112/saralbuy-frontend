@@ -231,10 +231,10 @@ const PostRequirementForm = () => {
         <div className="p-6 md:p-8 bg-white border border-slate-200 rounded-2xl shadow-sm relative overflow-hidden">
           <div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-400 rounded-l-2xl" />
           <div className="mb-6 border-b border-slate-100 pb-4 flex items-start gap-3">
-            <span className="shrink-0 w-7 h-7 rounded-full bg-orange-500 text-white text-xs font-bold flex items-center justify-center mt-0.5">1</span>
+            <span className="shrink-0 w-7 h-7 rounded-full bg-orange-100 text-orange-600 text-xs font-bold flex items-center justify-center mt-0.5">1</span>
             <div>
               <h3 className="text-lg font-black text-slate-900">Basic Information</h3>
-              <p className="text-sm text-slate-500 mt-0.5">Provide the primary details of your requirement to help suppliers quickly understand what you need.</p>
+              <p className="text-[13px] text-slate-400 mt-0.5">Provide the primary details of your requirement to help suppliers quickly understand what you need.</p>
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -300,12 +300,12 @@ const PostRequirementForm = () => {
         {/* Step 2 — Items */}
         {mode === 'single' && (
           <div className="p-6 md:p-8 bg-white border border-slate-200 rounded-2xl shadow-sm relative overflow-hidden">
-            <div className="absolute left-0 top-0 bottom-0 w-1 bg-amber-400 rounded-l-2xl" />
+            <div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-300 rounded-l-2xl" />
             <div className="border-b border-slate-200 pb-4 mb-4 flex items-start gap-3">
-              <span className="shrink-0 w-7 h-7 rounded-full bg-amber-500 text-white text-xs font-bold flex items-center justify-center mt-0.5">2</span>
+              <span className="shrink-0 w-7 h-7 rounded-full bg-orange-100 text-orange-600 text-xs font-bold flex items-center justify-center mt-0.5">2</span>
               <div>
                 <h3 className="text-lg font-black text-slate-900">List of Materials / Services</h3>
-                <p className="text-sm text-slate-500 mt-0.5">Add the specific items, materials, or services you need, including quantities and specifications.</p>
+                <p className="text-[13px] text-slate-400 mt-0.5">Add the specific items, materials, or services you need, including quantities and specifications.</p>
               </div>
             </div>
           
@@ -425,12 +425,12 @@ const PostRequirementForm = () => {
 
         {/* Step 3 — Documents & Terms */}
         <div className="p-6 md:p-8 bg-white border border-slate-200 rounded-2xl shadow-sm relative overflow-hidden">
-          <div className="absolute left-0 top-0 bottom-0 w-1 bg-sky-400 rounded-l-2xl" />
+          <div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-300 rounded-l-2xl" />
           <div className="border-b border-slate-200 pb-4 mb-6 flex items-start gap-3">
-            <span className="shrink-0 w-7 h-7 rounded-full bg-sky-500 text-white text-xs font-bold flex items-center justify-center mt-0.5">3</span>
+            <span className="shrink-0 w-7 h-7 rounded-full bg-orange-100 text-orange-600 text-xs font-bold flex items-center justify-center mt-0.5">3</span>
             <div>
               <h3 className="text-lg font-black text-slate-900">Other Details & Terms</h3>
-              <p className="text-sm text-slate-500 mt-0.5">Upload relevant documents, reference images, or specifications, and mention any specific terms.</p>
+              <p className="text-[13px] text-slate-400 mt-0.5">Upload relevant documents, reference images, or specifications, and mention any specific terms.</p>
             </div>
           </div>
           
@@ -481,12 +481,12 @@ const PostRequirementForm = () => {
 
         {/* Step 4 — Delivery & Organization */}
         <div className="p-6 md:p-8 bg-white border border-slate-200 rounded-2xl shadow-sm relative overflow-hidden">
-          <div className="absolute left-0 top-0 bottom-0 w-1 bg-emerald-400 rounded-l-2xl" />
+          <div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-400 rounded-l-2xl" />
           <div className="border-b border-slate-100 pb-5 mb-8 flex items-start gap-3">
-            <span className="shrink-0 w-7 h-7 rounded-full bg-emerald-500 text-white text-xs font-bold flex items-center justify-center mt-0.5">4</span>
+            <span className="shrink-0 w-7 h-7 rounded-full bg-orange-100 text-orange-600 text-xs font-bold flex items-center justify-center mt-0.5">4</span>
             <div>
-              <h3 className="text-xl font-extrabold text-slate-800 tracking-tight">Delivery & Organization Details</h3>
-              <p className="text-sm text-slate-500 mt-0.5">Specify your timeline, payment terms, and delivery location so suppliers can quote accurately.</p>
+              <h3 className="text-lg font-black text-slate-900">Delivery & Organization Details</h3>
+              <p className="text-[13px] text-slate-400 mt-0.5">Specify your timeline, payment terms, and delivery location so suppliers can quote accurately.</p>
             </div>
           </div>
           
