@@ -106,117 +106,135 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
         <div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-500 scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-top rounded-l-xl" />
         
         {/* Left Side */}
-        <div className="flex-1 space-y-4">
-          {/* Title Row - Description Prominent */}
-          <div className="flex items-center justify-between z-10 relative">
-            <div className="flex flex-col gap-1">
-              <h2 className="text-xl font-bold text-slate-900 capitalize tracking-wide group-hover:text-orange-800 transition-colors duration-300 line-clamp-2">
+        <div className="flex-1 flex flex-col justify-between space-y-4">
+          <div className="space-y-4">
+            {/* Title Row */}
+            <div className="flex items-start justify-between z-10 relative">
+              <h2 className="text-xl font-bold text-slate-900 capitalize tracking-wide group-hover:text-orange-800 transition-colors duration-300 line-clamp-2 pr-4">
                 {descriptionText}
               </h2>
-              <h3 className="text-md font-semibold text-slate-600 flex items-center gap-2">
-                {buyerName} 
-                {categoryName && (
-                  <>
-                    <span className="text-slate-300">•</span>
-                    <span className="text-sm font-medium text-orange-600">{categoryName}</span>
-                  </>
-                )}
-              </h3>
-            </div>
-            {showOwnerActions && (
-              <div className="relative self-start">
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); setShowMenu(!showMenu); }}
-                  className="p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-orange-100 transition-colors cursor-pointer"
-                >
-                  <MoreVertical size={20} />
-                </button>
-                {showMenu && (
-                  <div 
-                    className="absolute right-0 top-8 w-36 bg-white border border-slate-200 shadow-xl rounded-lg overflow-hidden z-10 animate-in fade-in zoom-in-95 duration-100"
-                    onClick={(e) => e.stopPropagation()}
+              {showOwnerActions && (
+                <div className="relative self-start shrink-0">
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); setShowMenu(!showMenu); }}
+                    className="p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-orange-100 transition-colors cursor-pointer"
                   >
-                    <button
-                      type="button"
-                      onClick={(e) => { e.stopPropagation(); setShowMenu(false); onDelete?.(productId); }}
-                      className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 cursor-pointer transition-colors"
+                    <MoreVertical size={20} />
+                  </button>
+                  {showMenu && (
+                    <div 
+                      className="absolute right-0 top-8 w-36 bg-white border border-slate-200 shadow-xl rounded-lg overflow-hidden z-10 animate-in fade-in zoom-in-95 duration-100"
+                      onClick={(e) => e.stopPropagation()}
                     >
-                      <Trash2 size={16} /> Delete
-                    </button>
-                  </div>
-                )}
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); setShowMenu(false); onDelete?.(productId); }}
+                        className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 cursor-pointer transition-colors"
+                      >
+                        <Trash2 size={16} /> Delete
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Grid of Key Details */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-4 gap-x-4">
+              <div className="flex flex-col">
+                <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Buyer</span>
+                <span className="text-[13px] font-semibold text-slate-700 line-clamp-1">{buyerName}</span>
+              </div>
+              {categoryName && (
+                <div className="flex flex-col">
+                  <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Category</span>
+                  <span className="text-[13px] font-semibold text-orange-600 line-clamp-1">{categoryName}</span>
+                </div>
+              )}
+              {rfqCode && (
+                <div className="flex flex-col">
+                  <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">RFQ ID</span>
+                  <span className="text-[13px] font-semibold text-slate-700 line-clamp-1">{rfqCode}</span>
+                </div>
+              )}
+              {user?.state && (
+                <div className="flex flex-col">
+                  <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">State</span>
+                  <span className="text-[13px] font-semibold text-slate-700 line-clamp-1">{user.state}</span>
+                </div>
+              )}
+              
+              {/* Dynamic Items (if few items, fit in grid, else span below) */}
+              {items.length > 0 && items.length <= 1 && (
+                <div className="flex flex-col">
+                  <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Item</span>
+                  <span className="text-[13px] font-semibold text-slate-700 line-clamp-1">{items[0]}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Large Items Array */}
+            {items.length > 1 && (
+              <div>
+                <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider block mb-1.5">Requested Items</span>
+                <div className="flex flex-wrap items-center gap-1.5">
+                  {items.map((item, idx) => (
+                    <span 
+                      key={idx} 
+                      className="px-2.5 py-1 rounded bg-slate-100 text-xs font-medium text-slate-700 hover:bg-slate-200 transition-colors duration-200 cursor-default"
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Address */}
+            {address && (
+              <div>
+                <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider block mb-1">Delivery Address</span>
+                <p className="text-[12px] text-gray-600 font-medium max-w-lg">
+                  {address}
+                </p>
               </div>
             )}
           </div>
-
-          {/* Tags Row */}
-          <div className="flex flex-wrap items-center gap-2 mt-2">
-            {rfqCode && (
-              <span className="px-3 py-0.5 border border-orange-200 rounded-full text-xs font-semibold text-orange-700 bg-white/70 hover:bg-orange-100 hover:border-orange-300 transition-all duration-200 cursor-default">
-                {rfqCode}
-              </span>
-            )}
-            {user?.state && (
-              <span className="px-3 py-0.5 border border-slate-200 rounded-full text-xs text-slate-600 bg-white/70 hover:bg-slate-100 transition-all duration-200 cursor-default">
-                State: {user.state}
-              </span>
-            )}
-          </div>
-
-          {/* Items Row as Badges */}
-          {items.length > 0 && (
-             <div className="flex flex-wrap items-center gap-2 pt-1">
-               {items.map((item, idx) => (
-                 <span 
-                   key={idx} 
-                   className="px-2.5 py-1 rounded bg-slate-100 text-xs font-medium text-slate-700 hover:bg-slate-200 transition-colors duration-200 cursor-default"
-                 >
-                   {item}
-                 </span>
-               ))}
-             </div>
-          )}
-
-          {/* Address */}
-          {address && (
-            <div className="pt-4">
-              <p className="text-[11px] text-gray-500 group-hover:text-gray-600 transition-colors duration-300">
-                Delivery Address: <span>{address}</span>
-              </p>
-            </div>
-          )}
         </div>
 
         {/* Right Side */}
-        <div className="mt-4 md:mt-0 flex flex-col justify-between items-start md:items-end md:w-64 shrink-0 z-10 relative">
-          {/* Dates */}
-          <div className="text-left md:text-right space-y-1">
-            <p className="text-[11px] text-gray-400">
-              Posted <span className="font-medium text-gray-600 ml-1">
+        <div className="mt-4 md:mt-0 flex flex-col justify-between items-start md:items-end md:w-56 shrink-0 z-10 relative border-t md:border-t-0 md:border-l border-orange-200/50 pt-4 md:pt-0 md:pl-5">
+          {/* Dates Box */}
+          <div className="w-full space-y-2.5 bg-white/40 p-3 rounded-lg border border-orange-100/50">
+            <div className="flex justify-between items-center gap-2">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Posted</span>
+              <span className="text-[12px] font-bold text-gray-700">
                 {createdAt ? format(new Date(createdAt), 'MMM d, yyyy') : format(new Date(), 'MMM d, yyyy')}
               </span>
-            </p>
+            </div>
             {expiryDateObj && !isNaN(expiryDateObj.getTime()) && (
-              <p className="text-[11px] text-gray-400">
-                Last Submission <span className="font-medium text-gray-600 ml-1">
+              <div className="flex justify-between items-center gap-2">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Deadline</span>
+                <span className="text-[12px] font-bold text-gray-700">
                   {format(expiryDateObj, 'MMM d, yyyy')}
                 </span>
-              </p>
+              </div>
             )}
             {deliveryDateObj && (
-              <p className="text-[11px] text-gray-400">
-                Delivery <span className="font-medium text-gray-600 ml-1">
+              <div className="flex justify-between items-center gap-2">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Delivery</span>
+                <span className="text-[12px] font-bold text-gray-700">
                   {format(deliveryDateObj, 'MMM d, yyyy')}
                 </span>
-              </p>
+              </div>
             )}
           </div>
 
           {/* Action Button */}
           <Button
             onClick={(e) => { e.stopPropagation(); handleAction(); }}
-            className="w-full md:w-28 bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-lg py-4 shadow-md mt-4 md:mt-6 hover:shadow-orange-300 hover:shadow-lg active:scale-95 transition-all duration-200"
+            className="w-full bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-lg py-4 shadow-md mt-4 md:mt-6 hover:shadow-orange-300 hover:shadow-lg active:scale-95 transition-all duration-200"
           >
             {actionLabel}
           </Button>
