@@ -99,25 +99,26 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
     <>
       <Authentication setOpen={setOpen} open={open} />
       <div 
-        className="group w-full rounded-2xl border border-slate-100 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-400 ease-out flex flex-col md:flex-row justify-between mb-5 relative overflow-hidden bg-white"
+        className="group w-full rounded-xl border border-orange-200 p-5 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 ease-out flex flex-col md:flex-row justify-between mb-4 relative overflow-hidden bg-white"
+        style={{background: 'linear-gradient(135deg, #ffffff 0%, #fff7ed 50%, #ffedd5 100%)'}}
       >
         {/* Left accent bar that slides in on hover */}
-        <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-orange-400 to-orange-600 scale-y-0 group-hover:scale-y-100 transition-transform duration-500 ease-in-out origin-top rounded-l-2xl" />
+        <div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-500 scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-top rounded-l-xl" />
         
         {/* Left Side */}
         <div className="flex-1 space-y-4">
           {/* Title Row - Description Prominent */}
           <div className="flex items-center justify-between z-10 relative">
-            <div className="flex flex-col gap-1.5">
-              <h2 className="text-[22px] font-extrabold text-slate-800 tracking-tight group-hover:text-orange-600 transition-colors duration-500 line-clamp-2 leading-tight">
+            <div className="flex flex-col gap-1">
+              <h2 className="text-xl font-bold text-slate-900 capitalize tracking-wide group-hover:text-orange-800 transition-colors duration-300 line-clamp-2">
                 {descriptionText}
               </h2>
-              <h3 className="text-sm font-semibold text-slate-500 flex items-center gap-2">
-                <span className="text-slate-700 bg-slate-100 px-2 py-0.5 rounded-md shadow-sm">{buyerName}</span> 
+              <h3 className="text-md font-semibold text-slate-600 flex items-center gap-2">
+                {buyerName} 
                 {categoryName && (
                   <>
                     <span className="text-slate-300">•</span>
-                    <span className="text-[13px] font-bold text-orange-600 uppercase tracking-wider">{categoryName}</span>
+                    <span className="text-sm font-medium text-orange-600">{categoryName}</span>
                   </>
                 )}
               </h3>
@@ -157,27 +158,26 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
           </div>
 
           {/* Tags Row */}
-          <div className="flex flex-wrap items-center gap-2.5 mt-2">
+          <div className="flex flex-wrap items-center gap-2 mt-2">
             {rfqCode && (
-              <span className="px-3.5 py-1 border border-orange-200/60 rounded-full text-[11px] font-bold text-orange-700 bg-orange-50 hover:bg-orange-100 transition-all duration-300 shadow-sm cursor-default flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse"></span>
+              <span className="px-3 py-0.5 border border-orange-200 rounded-full text-xs font-semibold text-orange-700 bg-white/70 hover:bg-orange-100 hover:border-orange-300 transition-all duration-200 cursor-default">
                 {rfqCode}
               </span>
             )}
             {user?.state && (
-              <span className="px-3 py-1 border border-slate-200/60 rounded-full text-[11px] font-semibold text-slate-600 bg-slate-50 hover:bg-slate-100 transition-all duration-300 shadow-sm cursor-default">
-                📍 {user.state}
+              <span className="px-3 py-0.5 border border-slate-200 rounded-full text-xs text-slate-600 bg-white/70 hover:bg-slate-100 transition-all duration-200 cursor-default">
+                State: {user.state}
               </span>
             )}
           </div>
 
           {/* Items Row as Badges */}
           {items.length > 0 && (
-             <div className="flex flex-wrap items-center gap-2 pt-2">
+             <div className="flex flex-wrap items-center gap-2 pt-1">
                {items.map((item, idx) => (
                  <span 
                    key={idx} 
-                   className="px-3 py-1.5 rounded-md border border-slate-200 bg-white text-[12px] font-medium text-slate-600 shadow-sm hover:shadow hover:-translate-y-0.5 hover:border-slate-300 transition-all duration-300 cursor-default"
+                   className="px-2.5 py-1 rounded bg-slate-100 text-xs font-medium text-slate-700 hover:bg-slate-200 transition-colors duration-200 cursor-default"
                  >
                    {item}
                  </span>
@@ -196,27 +196,24 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
         </div>
 
         {/* Right Side */}
-        <div className="mt-5 md:mt-0 flex flex-col justify-between items-start md:items-end md:w-64 shrink-0 z-10 relative">
+        <div className="mt-4 md:mt-0 flex flex-col justify-between items-start md:items-end md:w-64 shrink-0 z-10 relative">
           {/* Dates */}
-          <div className="text-left md:text-right space-y-1.5 bg-slate-50/80 p-3 rounded-lg border border-slate-100 w-full md:w-auto shadow-sm">
-            <p className="text-[11px] text-slate-400 font-medium uppercase tracking-wider flex justify-between md:justify-end gap-4 items-center">
-              <span>Posted:</span> 
-              <span className="font-bold text-slate-700">
+          <div className="text-left md:text-right space-y-1">
+            <p className="text-[11px] text-gray-400">
+              Posted <span className="font-medium text-gray-600 ml-1">
                 {createdAt ? format(new Date(createdAt), 'MMM d, yyyy') : format(new Date(), 'MMM d, yyyy')}
               </span>
             </p>
             {deliveryDateObj && (
-              <p className="text-[11px] text-slate-400 font-medium uppercase tracking-wider flex justify-between md:justify-end gap-4 items-center">
-                <span>Delivery:</span> 
-                <span className="font-bold text-slate-700">
+              <p className="text-[11px] text-gray-400">
+                Delivery <span className="font-medium text-gray-600 ml-1">
                   {format(deliveryDateObj, 'MMM d, yyyy')}
                 </span>
               </p>
             )}
             {expiryDateObj && !isNaN(expiryDateObj.getTime()) && (
-              <p className="text-[11px] text-slate-400 font-medium uppercase tracking-wider flex justify-between md:justify-end gap-4 items-center">
-                <span>Deadline:</span> 
-                <span className="font-bold text-red-500">
+              <p className="text-[11px] text-gray-400">
+                Last Submission <span className="font-medium text-gray-600 ml-1">
                   {format(expiryDateObj, 'MMM d, yyyy')}
                 </span>
               </p>
@@ -226,10 +223,9 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
           {/* Action Button */}
           <Button
             onClick={(e) => { e.stopPropagation(); handleAction(); }}
-            className="w-full md:w-auto px-8 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold rounded-xl py-5 shadow-lg mt-4 md:mt-6 hover:shadow-orange-500/30 hover:-translate-y-1 active:scale-95 active:translate-y-0 transition-all duration-300"
+            className="w-full md:w-28 bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-lg py-4 shadow-md mt-4 md:mt-6 hover:shadow-orange-300 hover:shadow-lg active:scale-95 transition-all duration-200"
           >
             {actionLabel}
-            <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
           </Button>
         </div>
 
