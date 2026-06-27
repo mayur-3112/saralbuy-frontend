@@ -8,14 +8,14 @@ export default function PolicyConsentPopup() {
 
   useEffect(() => {
     // Check if user has already accepted policies
-    const isAccepted = localStorage.getItem('Quotex_policy_accepted');
+    const isAccepted = localStorage.getItem('SaralBuy_policy_accepted');
     if (!isAccepted) {
       setOpen(true);
     }
   }, []);
 
   const handleAccept = () => {
-    localStorage.setItem('Quotex_policy_accepted', 'true');
+    localStorage.setItem('SaralBuy_policy_accepted', 'true');
     setOpen(false);
   };
 
@@ -36,7 +36,7 @@ export default function PolicyConsentPopup() {
           </DialogTitle>
 
           <DialogDescription className="text-xs text-slate-500 text-center leading-relaxed">
-            Welcome to Quotex! By continuing to use this B2B exchange, you acknowledge and agree that Quotex is solely a reverse-bidding procurement platform.
+            Welcome to SaralBuy! By continuing to use this B2B exchange, you acknowledge and agree that SaralBuy is solely a reverse-bidding procurement platform.
           </DialogDescription>
 
           {/* Core Zero Liability Disclaimer */}

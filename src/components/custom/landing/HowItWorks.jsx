@@ -33,7 +33,7 @@ export default function HowItWorks({ onOpenAuth }) {
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="text-center mb-16 max-w-2xl mx-auto space-y-3">
           <h2 className="text-3xl font-extrabold sm:text-4xl text-slate-900 tracking-tight">
-            How Quotex Works
+            How SaralBuy Works
           </h2>
           <div className="w-12 h-1 bg-orange-550 mx-auto rounded-full"></div>
           <p className="text-slate-600 text-base sm:text-lg">

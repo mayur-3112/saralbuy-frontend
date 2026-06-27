@@ -42,7 +42,7 @@ import { Input } from '../../../components/ui/input';
 import { Card } from '../../../components/ui/card';
 import { Badge } from '../../../components/ui/badge';
 import { format } from 'date-fns';
-import QuotexLogo from '/image/Logo/navbarLogo.png';
+import SaralBuyLogo from '/image/Logo/navbarLogo.png';
 import { Popover, PopoverContent, PopoverTrigger } from '../../../components/ui/popover';
 import { fallBackName } from '@/utils/fallBackName';
 import { mergeName } from '@/utils/mergerName';
@@ -162,7 +162,7 @@ const HomeNavbar = () => {
   const [selectedSearchCategory, setSelectedSearchCategory] = useState('all');
 
   const [currentLocation, setCurrentLocation] = useState(() => {
-    return localStorage.getItem('Quotex_location') || user?.currentLocation || '';
+    return localStorage.getItem('SaralBuy_location') || user?.currentLocation || '';
   });
 
   // Filter out legacy categories
@@ -310,7 +310,7 @@ const HomeNavbar = () => {
   const handleLocationChange = e => {
     const val = e.target.value;
     setCurrentLocation(val);
-    localStorage.setItem('Quotex_location', val);
+    localStorage.setItem('SaralBuy_location', val);
   };
 
   const handleLocationKeyDown = e => {
@@ -321,7 +321,7 @@ const HomeNavbar = () => {
   };
 
   useEffect(() => {
-    const savedLocation = localStorage.getItem('Quotex_location');
+    const savedLocation = localStorage.getItem('SaralBuy_location');
     if (savedLocation) {
       setCurrentLocation(savedLocation);
     } else if (user) {
@@ -588,7 +588,7 @@ const HomeNavbar = () => {
 
               <Link to={'/'} className="flex items-center">
                 <img
-                  src={QuotexLogo}
+                  src={SaralBuyLogo}
                   className="h-12 md:h-16 w-auto object-contain mix-blend-darken dark:invert transform scale-150 ml-4 mr-2"
                   alt={'company logo'}
                 />
@@ -1006,7 +1006,7 @@ const HomeNavbar = () => {
                 {/* Logo */}
                 <Link to={'/'} className="ml-1">
                   <img
-                    src={QuotexLogo}
+                    src={SaralBuyLogo}
                     className="max-h-12 mix-blend-darken  dark:invert"
                     alt={'company logo'}
                   />

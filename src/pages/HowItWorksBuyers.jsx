@@ -71,18 +71,18 @@ const STEPS = [
 
 const BENEFITS = [
   { icon: TrendingUp, title: 'Save 10-25% on Materials', desc: 'Direct factory/distributor pricing eliminates layers of middleman markups that inflate your project costs.' },
-  { icon: ShieldCheck, title: 'Only Verified Suppliers', desc: 'Every supplier on Quotex is GST-registered and vetted. No anonymous dealers, no fly-by-night operators.' },
+  { icon: ShieldCheck, title: 'Only Verified Suppliers', desc: 'Every supplier on SaralBuy is GST-registered and vetted. No anonymous dealers, no fly-by-night operators.' },
   { icon: Package, title: 'All Categories, One Platform', desc: 'Source cement, steel, tiles, electrical, plumbing, paints, hardware, safety gear, and tools — all from one place.' },
   { icon: Clock, title: 'Save Hours of Effort', desc: 'Stop calling 20 dealers for rates. Post once, get multiple quotes, compare, and close — all from your phone.' },
 ];
 
 const FAQS = [
-  { q: 'Is Quotex free for buyers?', a: 'Yes, Quotex is currently free for all buyers during our early access period. No subscription fees, no transaction commissions, no hidden charges. We will introduce pricing tiers in the future with advance notice.' },
+  { q: 'Is SaralBuy free for buyers?', a: 'Yes, SaralBuy is currently free for all buyers during our early access period. No subscription fees, no transaction commissions, no hidden charges. We will introduce pricing tiers in the future with advance notice.' },
   { q: 'How do I know suppliers are genuine?', a: 'Every supplier is verified for GST registration and business legitimacy before they can quote on the platform. You can also see ratings from past transactions.' },
   { q: 'What materials can I source?', a: 'All construction and project materials — cement, TMT steel, bricks, tiles, granite, plumbing, electrical, paints, plywood, hardware, safety equipment, industrial tools, and more.' },
   { q: 'How fast do I get quotes?', a: 'Most requirements receive their first quote within 2-4 hours. Complex or niche requirements may take up to 24 hours.' },
   { q: 'Can I negotiate with suppliers?', a: 'Absolutely. You can chat directly with any supplier who quotes, discuss pricing, terms, delivery dates, and close the deal on your terms.' },
-  { q: 'Do I pay Quotex or the supplier?', a: 'You pay the supplier directly. Quotex never touches your money. We simply connect you with the right suppliers.' },
+  { q: 'Do I pay SaralBuy or the supplier?', a: 'You pay the supplier directly. SaralBuy never touches your money. We simply connect you with the right suppliers.' },
 ];
 
 export default function HowItWorksBuyers() {
@@ -140,7 +140,7 @@ export default function HowItWorksBuyers() {
         <div className="text-center mb-16">
           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-orange-500 mb-2">Step-by-step</p>
           <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-            How to Source Materials on Quotex
+            How to Source Materials on SaralBuy
           </h2>
           <p className="text-slate-500 text-sm mt-2 max-w-lg mx-auto">
             From posting your first requirement to closing the deal — here's exactly how it works.
@@ -189,9 +189,9 @@ export default function HowItWorksBuyers() {
       <section className="bg-slate-50/70 border-t border-b border-slate-200/50 py-16 sm:py-24">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-14">
-            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-orange-500 mb-2">Why Quotex</p>
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-orange-500 mb-2">Why SaralBuy</p>
             <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-              Why Thousands of Contractors Trust Quotex
+              Why Thousands of Contractors Trust SaralBuy
             </h2>
           </div>
 
@@ -250,7 +250,7 @@ export default function HowItWorksBuyers() {
             Ready to Source Smarter?
           </h2>
           <p className="text-orange-100 text-base mb-8 max-w-xl mx-auto">
-            Join thousands of contractors and builders who save time and money sourcing materials on Quotex. Post your first requirement in under 60 seconds.
+            Join thousands of contractors and builders who save time and money sourcing materials on SaralBuy. Post your first requirement in under 60 seconds.
           </p>
           <button
             onClick={handleCTA}

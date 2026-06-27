@@ -11,7 +11,7 @@ import {
   FaPhone,
 } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import QuotexLogo from '/footer-logo.png';
+import SaralBuyLogo from '/footer-logo.png';
 const Footer = () => {
   return (
     <footer className=" footer-container">
@@ -20,13 +20,13 @@ const Footer = () => {
         <div className="footer-section">
           <Link to={'/'} className="flex items-center gap-2">
             <img
-              src={QuotexLogo}
+              src={SaralBuyLogo}
               className="max-h-20  dark:invert mix-blend-light"
               alt={'company logo'}
             />
           </Link>
           <p className="footer-description">
-            Quotex is Karnataka's leading B2B bulk procurement platform. We connect verified buyers and industrial suppliers directly, bringing transparent reverse-bidding and direct trade to bulk procurement.
+            SaralBuy is Karnataka's leading B2B bulk procurement platform. We connect verified buyers and industrial suppliers directly, bringing transparent reverse-bidding and direct trade to bulk procurement.
           </p>
         </div>
 
@@ -61,7 +61,7 @@ const Footer = () => {
               <FaMapMarkerAlt /> Peenya Industrial Area, Bengaluru, Karnataka, India
             </li>
             <li>
-              <FaEnvelope /> support@Quotex.com
+              <FaEnvelope /> support@SaralBuy.com
             </li>
             <li>
               <FaPhone /> +91 98765 43210
@@ -80,7 +80,7 @@ const Footer = () => {
           <FaYoutube />
         </div>
 
-        <p>Copyright@Quotex2025</p>
+        <p>Copyright@SaralBuy2025</p>
         <div className="footer-payments">
           <img src="https://img.icons8.com/color/48/000000/paypal.png" alt="PayPal" />
           <img src="https://img.icons8.com/color/48/000000/visa.png" alt="Visa" />

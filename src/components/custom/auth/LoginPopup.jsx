@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import QuotexLogo from '/image/Logo/saralBuyLogo.png';
+import SaralBuyLogo from '/image/Logo/saralBuyLogo.png';
 
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
@@ -58,7 +58,7 @@ const LoginPopup = ({ open, setOpen, setNumber, setOtpPopup, setSessionId }) => 
           <form onSubmit={handleSendOTP} className="p-8 w-full inline-block space-y-7 bg-white relative">
             <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-orange-400 via-pink-500 to-indigo-500" />
             <div className="h-12 flex justify-center mb-2">
-              <img src={QuotexLogo} alt="Logo" className="w-full h-full object-contain" />
+              <img src={SaralBuyLogo} alt="Logo" className="w-full h-full object-contain" />
             </div>
 
             {/* Role Segregation Tabs */}
@@ -111,8 +111,8 @@ const LoginPopup = ({ open, setOpen, setNumber, setOtpPopup, setSessionId }) => 
                 <label htmlFor="terms-checkbox" className="leading-tight">
                   I accept the <a href="/terms" className="text-orange-600 underline hover:text-orange-700">Terms</a> & <a href="/privacy" className="text-orange-600 underline hover:text-orange-700">Privacy Policy</a>. 
                   {role === 'supplier' 
-                    ? ' I acknowledge that Quotex is a connection platform and is not liable for transactions, material quality, or GST compliance.' 
-                    : ' I acknowledge Quotex does not guarantee supplier fulfillment or material quality.'}
+                    ? ' I acknowledge that SaralBuy is a connection platform and is not liable for transactions, material quality, or GST compliance.' 
+                    : ' I acknowledge SaralBuy does not guarantee supplier fulfillment or material quality.'}
                 </label>
               </div>
 

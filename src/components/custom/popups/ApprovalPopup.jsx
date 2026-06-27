@@ -43,7 +43,7 @@ const ApprovalPopup = ({ open, setOpen, dealId, budget, partnerName, onAction, l
                 className="mt-1 w-4 h-4 text-orange-600 border-slate-300 rounded focus:ring-orange-500 cursor-pointer shrink-0"
               />
               <label htmlFor="approval-popup-agreed" className="text-xs text-slate-500 cursor-pointer leading-normal">
-                I agree that Quotex holds Zero Liability if the materials are rejected upon delivery, or if payment disputes arise.
+                I agree that SaralBuy holds Zero Liability if the materials are rejected upon delivery, or if payment disputes arise.
               </label>
             </div>
           </div>

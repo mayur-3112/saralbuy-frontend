@@ -70,7 +70,7 @@ export default function Hero({ onOpenAuth }) {
           </h1>
           
           <p className="text-slate-600 text-base sm:text-lg leading-relaxed max-w-2xl">
-            Quotex is the leading B2B exchange connecting contractors and builders with verified materials suppliers. Post bulk requirements to get quotes, or browse live requests to submit bids.
+            SaralBuy is the leading B2B exchange connecting contractors and builders with verified materials suppliers. Post bulk requirements to get quotes, or browse live requests to submit bids.
           </p>
 
           {/* Search Bar */}
@@ -149,7 +149,7 @@ export default function Hero({ onOpenAuth }) {
               {/* Floating Tag */}
               <div className="absolute bottom-6 left-6 text-white z-20 space-y-1 text-left">
                 <span className="text-[9px] font-black uppercase tracking-wider bg-orange-600 text-white px-2 py-0.5 rounded-md">
-                  Quotex by SaralBuy
+                  SaralBuy
                 </span>
                 <p className="font-extrabold text-lg drop-shadow-md">
                   {img.caption}

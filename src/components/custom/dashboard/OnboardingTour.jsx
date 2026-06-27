@@ -8,7 +8,7 @@ export default function OnboardingTour() {
 
   const steps = [
     {
-      title: 'Welcome to Quotex V2!',
+      title: 'Welcome to SaralBuy V2!',
       description: 'Welcome to Karnataka\'s premier B2B bulk procurement console. Let us show you around your workspace to help you source and bid efficiently.',
       selector: null,
     },
@@ -40,13 +40,13 @@ export default function OnboardingTour() {
   ];
 
   useEffect(() => {
-    const isCompleted = localStorage.getItem('Quotex_onboarded');
+    const isCompleted = localStorage.getItem('SaralBuy_onboarded');
     if (!isCompleted) {
       setIsOpen(true);
     }
 
     const handleRetake = () => {
-      localStorage.removeItem('Quotex_onboarded');
+      localStorage.removeItem('SaralBuy_onboarded');
       setCurrentStep(0);
       setIsOpen(true);
     };
@@ -75,7 +75,7 @@ export default function OnboardingTour() {
   };
 
   const handleComplete = () => {
-    localStorage.setItem('Quotex_onboarded', 'true');
+    localStorage.setItem('SaralBuy_onboarded', 'true');
     setIsOpen(false);
     clearHighlight();
   };

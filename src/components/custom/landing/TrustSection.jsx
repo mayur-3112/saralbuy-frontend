@@ -38,7 +38,7 @@ export default function TrustSection({ onOpenAuth }) {
               A Sourcing Network Built on Strict Verification
             </h2>
             <p className="text-slate-600 text-base leading-relaxed">
-              B2B marketplaces only work when people are real. At Quotex, we vet every registered contractor and supplier so you can focus on trading without worrying about advance payment frauds or fake leads.
+              B2B marketplaces only work when people are real. At SaralBuy, we vet every registered contractor and supplier so you can focus on trading without worrying about advance payment frauds or fake leads.
             </p>
             
             <div className="space-y-6 pt-4">
