@@ -129,22 +129,36 @@ export default function LiveSourcingBoard({ onOpenAuth }) {
         {/* Sourcing Board Exchange Cards */}
         <div className="flex flex-col gap-4 mt-6">
           {filteredRequirements.length > 0 ? (
-            filteredRequirements.map((req) => (
-              <ProductListingCard 
-                key={req._id} 
-                product={req}
-                onActionClick={() => {
-                  if (user) {
-                    navigate('/product-overview?productId=' + req._id);
-                  } else if (onOpenAuth) {
-                    onOpenAuth('buyer');
-                  } else {
-                    setOpen(true);
-                  }
-                }}
-                actionLabel={user ? "Quote Now" : "Sign in to Quote"}
-              />
-            ))
+            <>
+              {filteredRequirements.slice(0, 6).map((req) => (
+                <ProductListingCard 
+                  key={req._id} 
+                  product={req}
+                  onActionClick={() => {
+                    if (user) {
+                      navigate('/product-overview?productId=' + req._id);
+                    } else if (onOpenAuth) {
+                      onOpenAuth('buyer');
+                    } else {
+                      setOpen(true);
+                    }
+                  }}
+                  actionLabel={user ? "Quote Now" : "Sign in to Quote"}
+                />
+              ))}
+              {filteredRequirements.length > 6 && (
+                <div className="text-center pt-4">
+                  <button
+                    type="button"
+                    onClick={() => navigate('/product-listing')}
+                    className="group inline-flex items-center gap-2 px-8 py-3.5 bg-white hover:bg-orange-50 border border-orange-300 text-orange-700 font-bold text-sm rounded-xl transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md active:scale-95"
+                  >
+                    View All {filteredRequirements.length} Requirements
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </div>
+              )}
+            </>
           ) : (
             <div className="bg-slate-50 border border-slate-200 rounded-xl p-12 text-center max-w-md mx-auto space-y-4">
               <p className="text-4xl">🔍</p>
@@ -166,8 +180,9 @@ export default function LiveSourcingBoard({ onOpenAuth }) {
         </div>
         
         {/* Counter Widget at bottom of board */}
-        <div className="mt-4 text-right text-xs text-slate-500 font-bold">
-          Sourcing directory updated: Just now
+        <div className="mt-4 flex items-center justify-between text-xs text-slate-500 font-bold">
+          <span>Showing {Math.min(6, filteredRequirements.length)} of {filteredRequirements.length} active requirements</span>
+          <span>Updated: Just now</span>
         </div>
 
         {/* Authentication Modal Fallback */}
