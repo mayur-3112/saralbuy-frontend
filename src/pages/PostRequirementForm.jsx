@@ -537,8 +537,8 @@ const PostRequirementForm = () => {
             )}
 
             <div className="sm:col-span-2 md:col-span-3">
-              <label className="block text-sm font-extrabold text-slate-800 mb-2">Locality (City/State)*</label>
-              <p className="text-xs text-slate-500 mb-2 font-medium">⚠️ Privacy Warning: Please do not enter your full street address here. Only provide the general locality, city, or state. Full details should only be shared when closing the deal.</p>
+              <label className="block text-sm font-extrabold text-slate-800 mb-2">Location (City, State)*</label>
+              <p className="text-xs text-slate-500 mb-2 font-medium">⚠️ For your privacy, please provide only the city, state, or general area. Do not enter your full street address.</p>
               <Input placeholder="e.g. Rajajinagar, Bangalore, Karnataka" {...register('deliveryAddress')} className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium" />
             </div>
           </div>
