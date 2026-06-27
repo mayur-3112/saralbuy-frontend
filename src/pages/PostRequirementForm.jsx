@@ -64,6 +64,7 @@ const PostRequirementForm = () => {
       ],
       otherTerms: '',
       deliveryDate: undefined,
+      expiryDate: undefined,
       paymentMode: '',
       gstRequired: 'no',
       gstNumber: '',
@@ -138,6 +139,7 @@ const PostRequirementForm = () => {
       const commonDetails = {
         title: data.title,
         description: data.otherTerms,
+        bidExpiryDate: data.expiryDate,
         paymentAndDelivery: {
           ex_deliveryDate: data.deliveryDate,
           paymentMode: data.paymentMode,
@@ -471,6 +473,17 @@ const PostRequirementForm = () => {
             </div>
 
             <div>
+              <label className="block text-sm font-extrabold text-slate-800 mb-2">Bid Expiry Deadline</label>
+              <Controller
+                control={control}
+                name="expiryDate"
+                render={({ field: { onChange, value } }) => (
+                  <DatePicker date={value} title="Select Expiry" disabledBeforeDate={new Date()} setDate={onChange} />
+                )}
+              />
+            </div>
+
+            <div>
               <label className="block text-sm font-extrabold text-slate-800 mb-2">Payment Mode</label>
               <Controller
                 name="paymentMode"
@@ -524,8 +537,9 @@ const PostRequirementForm = () => {
             )}
 
             <div className="sm:col-span-2 md:col-span-3">
-              <label className="block text-sm font-extrabold text-slate-800 mb-2">Delivery Address*</label>
-              <Input placeholder="Enter complete delivery address or Google Maps link" {...register('deliveryAddress')} className="bg-slate-50 border-slate-200 font-medium" />
+              <label className="block text-sm font-extrabold text-slate-800 mb-2">Locality (City/State)*</label>
+              <p className="text-xs text-slate-500 mb-2 font-medium">⚠️ Privacy Warning: Please do not enter your full street address here. Only provide the general locality, city, or state. Full details should only be shared when closing the deal.</p>
+              <Input placeholder="e.g. Rajajinagar, Bangalore, Karnataka" {...register('deliveryAddress')} className="bg-slate-50 border-slate-200 font-medium" />
             </div>
           </div>
         </div>

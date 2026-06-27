@@ -10,6 +10,7 @@ import {
 } from 'react-router';
 import HomeNavbar from './components/custom/dashboard/HomeNavbar';
 import Footer from './components/custom/Footer';
+import { toast } from 'sonner';
 const Requirement = lazy(() => import('./components/custom/dashboard/Requirement'));
 import Authentication from './components/custom/auth/Authenticate';
 import CreateProductForm from './pages/CreateProductForm';
@@ -61,6 +62,23 @@ const ScrollToTop = () => {
 
   return null;
 };
+
+const ProfileCompletionEffect = () => {
+  const { user } = useUserState();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user && !pathname.startsWith('/account')) {
+      if (!user.firstName || !user.lastName || !user.address) {
+        toast.error('Please complete your profile (Name & Address) to continue.');
+        navigate('/account', { replace: true });
+      }
+    }
+  }, [user, pathname, navigate]);
+  return null;
+};
+
 // const Profile = lazy(() => import("./pages/profile/Profile"));
 export default function AppRoutes() {
   const [open, setOpen] = useState(false);
@@ -73,6 +91,7 @@ export default function AppRoutes() {
   return (
     <Router>
       <ScrollToTop />
+      <ProfileCompletionEffect />
       <Authentication open={open} setOpen={setOpen} />
       <PolicyConsentPopup />
       <DiscussionChatbox />

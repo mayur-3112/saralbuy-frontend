@@ -32,8 +32,14 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
   
   const maskName = (name) => {
     if (!name) return 'Buyer Name Hidden';
-    if (name.length <= 2) return name;
-    return name[0] + '*'.repeat(name.length - 2) + name[name.length - 1];
+    const parts = name.trim().split(/\s+/);
+    if (parts.length === 1) {
+      if (name.length <= 1) return name;
+      return name[0] + '*'.repeat(name.length - 1);
+    }
+    const first = parts[0];
+    const last = parts[parts.length - 1];
+    return first[0] + '*'.repeat(first.length - 1) + ' ' + last[0] + '*'.repeat(last.length - 1);
   };
   const buyerName = maskName(rawBuyerName);
 
@@ -54,8 +60,9 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
   };
   const address = maskAddress(rawAddress);
 
-  const productTitle = prod?.title || product?.title;
+  const productTitle = prod?.title || product?.title || 'Requirements';
   const categoryName = prod?.categoryId?.categoryName || product?.categoryId?.categoryName;
+  const descriptionText = prod?.description || product?.description || productTitle;
 
   const items = [];
   if (prod?.isMergeQuote && prod?.products?.length > 0) {
@@ -68,7 +75,17 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
   }
 
   const createdAt = product?.createdAt || prod?.createdAt;
-  const timeline = prod?.bidActiveDuration || prod?.timeline || product?.timeline;
+  const expiryDateStr = prod?.bidExpiryDate || product?.bidExpiryDate || prod?.timeline || product?.timeline;
+  
+  // Safe date parsing to avoid Jan 1 2001 for numbers like "1"
+  let expiryDateObj = null;
+  if (expiryDateStr && isNaN(Number(expiryDateStr))) {
+    expiryDateObj = new Date(expiryDateStr);
+  } else if (expiryDateStr && !isNaN(Number(expiryDateStr))) {
+     // it's a duration in days like "1", "3", "7"
+     const days = Number(expiryDateStr);
+     expiryDateObj = new Date(new Date(createdAt || Date.now()).getTime() + days * 24 * 60 * 60 * 1000);
+  }
 
   return (
     <>
@@ -83,15 +100,24 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
         
         {/* Left Side */}
         <div className="flex-1 space-y-4">
-          {/* Title Row */}
+          {/* Title Row - Description Prominent */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <h2 className="text-lg font-semibold text-slate-900 uppercase tracking-wide group-hover:text-orange-800 transition-colors duration-300">
-                {buyerName}
+            <div className="flex flex-col gap-1">
+              <h2 className="text-xl font-bold text-slate-900 capitalize tracking-wide group-hover:text-orange-800 transition-colors duration-300 line-clamp-2">
+                {descriptionText}
               </h2>
+              <h3 className="text-md font-semibold text-slate-600 flex items-center gap-2">
+                {buyerName} 
+                {categoryName && (
+                  <>
+                    <span className="text-slate-300">•</span>
+                    <span className="text-sm font-medium text-orange-600">{categoryName}</span>
+                  </>
+                )}
+              </h3>
             </div>
             {showOwnerActions && (
-              <div className="relative">
+              <div className="relative self-start">
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); setShowMenu(!showMenu); }}
@@ -127,26 +153,30 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
           {/* Tags Row */}
           <div className="flex flex-wrap items-center gap-2">
             {rfqCode && (
-              <span className="px-3 py-0.5 border border-orange-200 rounded-full text-xs text-orange-700 bg-white/70 hover:bg-orange-100 hover:border-orange-300 hover:scale-105 transition-all duration-200 cursor-default">
-                RFQ Code: {rfqCode}
+              <span className="px-3 py-0.5 border border-orange-200 rounded-full text-xs font-semibold text-orange-700 bg-white/70 hover:bg-orange-100 hover:border-orange-300 transition-all duration-200 cursor-default">
+                {rfqCode}
               </span>
             )}
-            <span className="px-3 py-0.5 border border-orange-200 rounded-full text-xs text-orange-700 bg-white/70 hover:bg-orange-100 hover:border-orange-300 hover:scale-105 transition-all duration-200 cursor-default">
-              Country: {country}
-            </span>
+            {user?.state && (
+              <span className="px-3 py-0.5 border border-slate-200 rounded-full text-xs text-slate-600 bg-white/70 hover:bg-slate-100 transition-all duration-200 cursor-default">
+                State: {user.state}
+              </span>
+            )}
           </div>
 
-          {/* Items Row */}
-          <div className="flex flex-wrap items-center gap-2 pt-2">
-            {items.slice(0, 4).map((item, idx) => (
-              <span 
-                key={idx} 
-                className="px-3 py-1 border border-orange-200 rounded-full text-xs text-slate-600 bg-white/70 shadow-sm hover:bg-white hover:shadow-md hover:scale-105 hover:border-orange-300 transition-all duration-200 cursor-default"
-              >
-                {item}
-              </span>
-            ))}
-          </div>
+          {/* Items Row as Badges */}
+          {items.length > 0 && (
+             <div className="flex flex-wrap items-center gap-2 pt-1">
+               {items.map((item, idx) => (
+                 <span 
+                   key={idx} 
+                   className="px-2.5 py-1 rounded bg-slate-100 text-xs font-medium text-slate-700 hover:bg-slate-200 transition-colors duration-200 cursor-default"
+                 >
+                   {item}
+                 </span>
+               ))}
+             </div>
+          )}
 
           {/* Address */}
           {address && (
@@ -164,13 +194,13 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
           <div className="text-left md:text-right space-y-1">
             <p className="text-[11px] text-gray-400">
               Posted <span className="font-medium text-gray-600 ml-1">
-                {format(new Date(createdAt || Date.now()), 'MMM d, yyyy')}
+                {createdAt ? format(new Date(createdAt), 'MMM d, yyyy') : format(new Date(), 'MMM d, yyyy')}
               </span>
             </p>
-            {timeline && (
+            {expiryDateObj && !isNaN(expiryDateObj.getTime()) && (
               <p className="text-[11px] text-gray-400">
                 Last Submission <span className="font-medium text-gray-600 ml-1">
-                  {format(new Date(timeline), 'MMM d, yyyy')}
+                  {format(expiryDateObj, 'MMM d, yyyy')}
                 </span>
               </p>
             )}
