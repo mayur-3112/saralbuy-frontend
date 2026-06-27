@@ -77,7 +77,7 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
   }
 
   const createdAt = product?.createdAt || prod?.createdAt;
-  const expiryDateStr = prod?.bidExpiryDate || product?.bidExpiryDate || prod?.timeline || product?.timeline;
+  const expiryDateStr = prod?.bidExpiryDate || product?.bidExpiryDate || prod?.timeline || product?.timeline || prod?.bidActiveDuration || product?.bidActiveDuration;
 
   // Safe date parsing to avoid Jan 1 2001 for numbers like "1"
   let expiryDateObj = null;
@@ -197,17 +197,17 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
                 {createdAt ? format(new Date(createdAt), 'MMM d, yyyy') : format(new Date(), 'MMM d, yyyy')}
               </span>
             </p>
-            {deliveryDateObj && (
-              <p className="text-[11px] text-gray-400">
-                Delivery <span className="font-medium text-gray-600 ml-1">
-                  {format(deliveryDateObj, 'MMM d, yyyy')}
-                </span>
-              </p>
-            )}
             {expiryDateObj && !isNaN(expiryDateObj.getTime()) && (
               <p className="text-[11px] text-gray-400">
                 Last Submission <span className="font-medium text-gray-600 ml-1">
                   {format(expiryDateObj, 'MMM d, yyyy')}
+                </span>
+              </p>
+            )}
+            {deliveryDateObj && (
+              <p className="text-[11px] text-gray-400">
+                Delivery <span className="font-medium text-gray-600 ml-1">
+                  {format(deliveryDateObj, 'MMM d, yyyy')}
                 </span>
               </p>
             )}

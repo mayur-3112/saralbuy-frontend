@@ -1315,14 +1315,6 @@ const ProductOverview = () => {
                       )}
                     </p>
                   )}
-                  <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100">
-                    <span className="font-semibold">Required Delivery Date:</span>
-                    {dateFormatter(
-                      bidOverviewRes
-                        ? bidOverviewRes?.product?.paymentAndDelivery?.ex_deliveryDate
-                        : productResponse?.mainProduct?.paymentAndDelivery?.ex_deliveryDate
-                    ) || 'N/A'}
-                  </p>
                   {(bidOverviewRes
                     ? bidOverviewRes?.product?.bidActiveDuration
                     : productResponse?.mainProduct?.bidActiveDuration) && (
@@ -1335,7 +1327,7 @@ const ProductOverview = () => {
                     </p>
                   )}
                   {(() => {
-                    const expiryDateStr = bidOverviewRes?.product?.bidExpiryDate || productResponse?.mainProduct?.bidExpiryDate || bidOverviewRes?.product?.timeline || productResponse?.mainProduct?.timeline;
+                    const expiryDateStr = bidOverviewRes?.product?.bidExpiryDate || productResponse?.mainProduct?.bidExpiryDate || bidOverviewRes?.product?.timeline || productResponse?.mainProduct?.timeline || bidOverviewRes?.product?.bidActiveDuration || productResponse?.mainProduct?.bidActiveDuration;
                     const createdAt = bidOverviewRes?.product?.createdAt || productResponse?.mainProduct?.createdAt;
                     let expiryDateObj = null;
                     if (expiryDateStr && isNaN(Number(expiryDateStr))) {
@@ -1354,6 +1346,14 @@ const ProductOverview = () => {
                     }
                     return null;
                   })()}
+                  <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100">
+                    <span className="font-semibold">Required Delivery Date:</span>
+                    {dateFormatter(
+                      bidOverviewRes
+                        ? bidOverviewRes?.product?.paymentAndDelivery?.ex_deliveryDate
+                        : productResponse?.mainProduct?.paymentAndDelivery?.ex_deliveryDate
+                    ) || 'N/A'}
+                  </p>
                   {(bidOverviewRes
                     ? bidOverviewRes?.product?.color
                     : productResponse?.mainProduct?.color) && (
