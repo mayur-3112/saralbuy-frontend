@@ -32,8 +32,8 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
   
   const maskName = (name) => {
     if (!name) return 'Buyer Name Hidden';
-    const charsToMask = Math.min(5, Math.ceil(name.length / 2));
-    return '*'.repeat(charsToMask) + name.slice(charsToMask);
+    if (name.length <= 2) return name;
+    return name[0] + '*'.repeat(name.length - 2) + name[name.length - 1];
   };
   const buyerName = maskName(rawBuyerName);
 

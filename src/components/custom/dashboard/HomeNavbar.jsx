@@ -982,7 +982,7 @@ const HomeNavbar = () => {
                             localStorage.removeItem('token');
                             toast.success('Logged out successfully');
                             setOpenSheet(false);
-                            navigate('/login');
+                            navigate('/');
                           }}
                         >
                           Log out
@@ -992,7 +992,7 @@ const HomeNavbar = () => {
                           className="mt-4 w-full flex items-center justify-center gap-2 rounded-lg bg-orange-600 py-3 text-sm font-bold text-white hover:bg-orange-500 transition-colors"
                           onClick={() => {
                             setOpenSheet(false);
-                            navigate('/login');
+                            window.dispatchEvent(new Event('session-expired'));
                           }}
                         >
                           Login / Register

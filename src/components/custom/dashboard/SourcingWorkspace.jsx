@@ -6,148 +6,11 @@ import { useNavigate } from 'react-router-dom';
 import ProductListingCard from '@/components/custom/listing/ProductListingCard';
 import { useCategoryState, useCategory } from '@/redux/hooks/useCategory';
 
-const MOCK_DB_REQUIREMENTS = [
-  {
-    _id: 'req_mock_1',
-    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-    currentLocation: 'Bengaluru, KA',
-    quantity: 1500,
-    title: 'UltraTech OPC 53 Grade Cement',
-    image: '/image/Category/industrialImage.png',
-    productId: {
-      _id: 'prod_mock_1',
-      title: 'UltraTech OPC 53 Grade Cement',
-      image: '/image/Category/industrialImage.png',
-      isMergeQuote: false,
-      quantity: 1500,
-      categoryId: { categoryName: 'industrial' },
-    },
-    buyerId: {
-      firstName: 'Mayur',
-      lastName: 'Agarwal',
-      address: 'Peenya Project Site, Bengaluru',
-    },
-    specs: 'Delivery required at site, unloading in scope of supplier. ISI marked fresh stock only.',
-  },
-  {
-    _id: 'req_mock_2',
-    createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
-    currentLocation: 'Mangaluru, KA',
-    quantity: 12,
-    title: 'Fe 550 TMT Steel Reinforcement Bars',
-    image: '/image/Category/industrialImage.png',
-    productId: {
-      _id: 'prod_mock_2',
-      title: 'Fe 550 TMT Steel Reinforcement Bars',
-      image: '/image/Category/industrialImage.png',
-      isMergeQuote: true,
-      quantity: 12,
-      categoryId: { categoryName: 'industrial' },
-    },
-    buyerId: {
-      firstName: 'Ramesh',
-      lastName: 'Kumar',
-      address: 'Smart City Project, Mangaluru',
-    },
-    specs: 'Standard 12m length, sizes: 8mm, 12mm, 16mm mixed ratio. Mill test certificate required.',
-  },
-  {
-    _id: 'req_mock_3',
-    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-    currentLocation: 'Hubballi, KA',
-    quantity: 2500,
-    title: 'Heavy Duty PVC Conduit Pipes (20mm)',
-    image: '/image/Category/industrialImage.png',
-    productId: {
-      _id: 'prod_mock_3',
-      title: 'Heavy Duty PVC Conduit Pipes (20mm)',
-      image: '/image/Category/industrialImage.png',
-      isMergeQuote: false,
-      quantity: 2500,
-      categoryId: { categoryName: 'industrial' },
-    },
-    buyerId: {
-      firstName: 'Kiran',
-      lastName: 'Patel',
-      address: 'Commercial Complex, Hubballi',
-    },
-    specs: 'FRLS (Fire Retardant Low Smoke) grade, standard light grey color with couplers.',
-  },
-  {
-    _id: 'req_mock_4',
-    createdAt: new Date(Date.now() - 36 * 60 * 60 * 1000).toISOString(),
-    currentLocation: 'Belagavi, KA',
-    quantity: 1200,
-    title: 'Double Charge Vitrified Tiles (600x600)',
-    image: '/image/Category/sportsImage.png',
-    productId: {
-      _id: 'prod_mock_4',
-      title: 'Double Charge Vitrified Tiles (600x600)',
-      image: '/image/Category/sportsImage.png',
-      isMergeQuote: false,
-      quantity: 1200,
-      categoryId: { categoryName: 'sports' },
-    },
-    buyerId: {
-      firstName: 'Sanjay',
-      lastName: 'Shetty',
-      address: 'Residential Villa Project, Belagavi',
-    },
-    specs: 'Glossy finish, ivory/white base color, premium quality brand (Kajaria/Somany equivalent).',
-  },
-  {
-    _id: 'req_mock_5',
-    createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(),
-    currentLocation: 'Mysuru, KA',
-    quantity: 3000,
-    title: 'Polished Granite Slabs (Sira Grey, 18mm)',
-    image: '/image/Category/furnitureImage.png',
-    productId: {
-      _id: 'prod_mock_5',
-      title: 'Polished Granite Slabs (Sira Grey, 18mm)',
-      image: '/image/Category/furnitureImage.png',
-      isMergeQuote: true,
-      quantity: 3000,
-      categoryId: { categoryName: 'furniture' },
-    },
-    buyerId: {
-      firstName: 'Anand',
-      lastName: 'Gowda',
-      address: 'IT Park Site, Mysuru',
-    },
-    specs: 'Uniform thickness, single-quarry lot, double-polished, pre-cut to standard counter size.',
-  },
-  {
-    _id: 'req_mock_6',
-    createdAt: new Date(Date.now() - 72 * 60 * 60 * 1000).toISOString(),
-    currentLocation: 'Tumakuru, KA',
-    quantity: 500,
-    title: 'Recessed LED Panel Lights (15W, Warm)',
-    image: '/image/Category/homeAppliancesImage.png',
-    productId: {
-      _id: 'prod_mock_6',
-      title: 'Recessed LED Panel Lights (15W, Warm)',
-      image: '/image/Category/homeAppliancesImage.png',
-      isMergeQuote: false,
-      quantity: 500,
-      categoryId: { categoryName: 'home' },
-    },
-    buyerId: {
-      firstName: 'Vijay',
-      lastName: 'Rao',
-      address: 'Apartment Project, Tumakuru',
-    },
-    specs: 'Round shape, aluminum body, driver included, minimum 2-year manufacturer warranty.',
-  },
-];
-
-
-
 const CITIES = ['All Locations', 'Bengaluru', 'Mangaluru', 'Hubballi', 'Mysuru', 'Belagavi', 'Tumakuru'];
 
 export default function SourcingWorkspace({ user, userBidsCount, userDraftsCount }) {
   const navigate = useNavigate();
-  const { fn: loadReqsFn, data: serverReqs } = useFetch(requirementService.getRecentRequiremnts);
+  const { fn: loadReqsFn, data: serverReqs, loading: reqsLoading, error: reqsError } = useFetch(requirementService.getRecentRequiremnts);
   
   // State variables for filter inputs
   const [searchTerm, setSearchTerm] = useState('');
@@ -162,18 +25,10 @@ export default function SourcingWorkspace({ user, userBidsCount, userDraftsCount
     dispatchCategories();
   }, []);
 
-  // Merge server data and mock data to guarantee the board is never empty
-  const combinedRequirements = React.useMemo(() => {
-    const serverList = serverReqs || [];
-    // Ensure we do not duplicate elements
-    const ids = new Set(serverList.map(r => r._id));
-    const finalMock = MOCK_DB_REQUIREMENTS.filter(r => !ids.has(r._id));
-    return [...serverList, ...finalMock];
-  }, [serverReqs]);
-
   // Apply filters client-side for immediate responsive interaction
   const filteredRequirements = React.useMemo(() => {
-    return combinedRequirements.filter(req => {
+    const requirementsToFilter = serverReqs || [];
+    return requirementsToFilter.filter(req => {
       const title = (req.productId?.title || req.title || '').toLowerCase();
       const matchesSearch = title.includes(searchTerm.toLowerCase());
       
@@ -185,7 +40,7 @@ export default function SourcingWorkspace({ user, userBidsCount, userDraftsCount
 
       return matchesSearch && matchesCategory && matchesLocation;
     });
-  }, [combinedRequirements, searchTerm, selectedCategory, selectedLocation]);
+  }, [serverReqs, searchTerm, selectedCategory, selectedLocation]);
 
   return (
     <div className="space-y-8 py-6">
@@ -203,7 +58,7 @@ export default function SourcingWorkspace({ user, userBidsCount, userDraftsCount
           </div>
           <div>
             <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Active Sourcing Leads</p>
-            <p className="text-2xl font-black text-slate-900 mt-1">{combinedRequirements.length}</p>
+            <p className="text-2xl font-black text-slate-900 mt-1">{serverReqs?.length || 0}</p>
           </div>
         </div>
 
@@ -322,7 +177,25 @@ export default function SourcingWorkspace({ user, userBidsCount, userDraftsCount
           </p>
         </div>
 
-        {filteredRequirements.length > 0 ? (
+        {reqsLoading ? (
+          <div className="flex flex-col gap-4">
+            {[1, 2, 3].map((skeleton) => (
+              <div key={skeleton} className="h-32 bg-slate-100 animate-pulse rounded-xl border border-slate-200"></div>
+            ))}
+          </div>
+        ) : reqsError ? (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-12 text-center max-w-md mx-auto space-y-3">
+            <p className="text-4xl text-red-500 font-bold">!</p>
+            <h3 className="font-extrabold text-red-800 text-lg">Failed to load sourcing data</h3>
+            <p className="text-xs text-red-600">{reqsError}</p>
+            <button
+              onClick={() => loadReqsFn()}
+              className="mt-2 px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 font-bold rounded-lg text-xs transition-colors cursor-pointer"
+            >
+              Retry Connection
+            </button>
+          </div>
+        ) : filteredRequirements.length > 0 ? (
           <div className="flex flex-col gap-4">
             {filteredRequirements.map((req) => (
               <ProductListingCard 
@@ -333,7 +206,7 @@ export default function SourcingWorkspace({ user, userBidsCount, userDraftsCount
             ))}
           </div>
         ) : (
-          <div className="bg-white border border-slate-200 rounded p-12 text-center max-w-md mx-auto space-y-3">
+          <div className="bg-white border border-slate-200 rounded-xl p-12 text-center max-w-md mx-auto space-y-3">
             <p className="text-4xl">🔍</p>
             <h3 className="font-extrabold text-slate-800 text-lg">No sourcing items match your filters</h3>
             <p className="text-xs text-slate-500">Try adjusting your search keywords, location filters, or category selections.</p>
