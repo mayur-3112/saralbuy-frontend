@@ -1334,6 +1334,26 @@ const ProductOverview = () => {
                       day(s)
                     </p>
                   )}
+                  {(() => {
+                    const expiryDateStr = bidOverviewRes?.product?.bidExpiryDate || productResponse?.mainProduct?.bidExpiryDate || bidOverviewRes?.product?.timeline || productResponse?.mainProduct?.timeline;
+                    const createdAt = bidOverviewRes?.product?.createdAt || productResponse?.mainProduct?.createdAt;
+                    let expiryDateObj = null;
+                    if (expiryDateStr && isNaN(Number(expiryDateStr))) {
+                      expiryDateObj = new Date(expiryDateStr);
+                    } else if (expiryDateStr && !isNaN(Number(expiryDateStr))) {
+                       const days = Number(expiryDateStr);
+                       expiryDateObj = new Date(new Date(createdAt || Date.now()).getTime() + days * 24 * 60 * 60 * 1000);
+                    }
+                    if (expiryDateObj && !isNaN(expiryDateObj.getTime())) {
+                      return (
+                        <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 text-red-600">
+                          <span className="font-semibold">Bid Expiry Deadline:</span>
+                          {dateFormatter(expiryDateObj)}
+                        </p>
+                      );
+                    }
+                    return null;
+                  })()}
                   {(bidOverviewRes
                     ? bidOverviewRes?.product?.color
                     : productResponse?.mainProduct?.color) && (

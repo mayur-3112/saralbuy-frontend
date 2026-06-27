@@ -101,9 +101,6 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
       <div 
         className="group w-full rounded-2xl border border-slate-100 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-400 ease-out flex flex-col md:flex-row justify-between mb-5 relative overflow-hidden bg-white"
       >
-        {/* Animated Gradient Border Effect */}
-        <div className="absolute inset-0 bg-gradient-to-r from-orange-400 via-pink-500 to-indigo-500 opacity-0 group-hover:opacity-10 transition-opacity duration-500 rounded-2xl pointer-events-none" />
-        
         {/* Left accent bar that slides in on hover */}
         <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-orange-400 to-orange-600 scale-y-0 group-hover:scale-y-100 transition-transform duration-500 ease-in-out origin-top rounded-l-2xl" />
         
@@ -112,7 +109,7 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
           {/* Title Row - Description Prominent */}
           <div className="flex items-center justify-between z-10 relative">
             <div className="flex flex-col gap-1.5">
-              <h2 className="text-[22px] font-extrabold text-slate-800 tracking-tight group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-orange-600 group-hover:to-pink-600 transition-all duration-500 line-clamp-2 leading-tight">
+              <h2 className="text-[22px] font-extrabold text-slate-800 tracking-tight group-hover:text-orange-600 transition-colors duration-500 line-clamp-2 leading-tight">
                 {descriptionText}
               </h2>
               <h3 className="text-sm font-semibold text-slate-500 flex items-center gap-2">
@@ -201,25 +198,25 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
         {/* Right Side */}
         <div className="mt-5 md:mt-0 flex flex-col justify-between items-start md:items-end md:w-64 shrink-0 z-10 relative">
           {/* Dates */}
-          <div className="text-left md:text-right space-y-2 bg-slate-50/80 p-3.5 rounded-xl border border-slate-100 w-full md:w-auto shadow-sm">
-            <p className="text-[11px] text-slate-500 font-bold uppercase tracking-wider flex justify-between md:justify-end gap-4 items-center">
+          <div className="text-left md:text-right space-y-1.5 bg-slate-50/80 p-3 rounded-lg border border-slate-100 w-full md:w-auto shadow-sm">
+            <p className="text-[11px] text-slate-400 font-medium uppercase tracking-wider flex justify-between md:justify-end gap-4 items-center">
               <span>Posted:</span> 
-              <span className="text-[13px] font-black text-slate-700 bg-white px-2 py-0.5 rounded border border-slate-200 shadow-sm">
+              <span className="font-bold text-slate-700">
                 {createdAt ? format(new Date(createdAt), 'MMM d, yyyy') : format(new Date(), 'MMM d, yyyy')}
               </span>
             </p>
             {deliveryDateObj && (
-              <p className="text-[11px] text-slate-500 font-bold uppercase tracking-wider flex justify-between md:justify-end gap-4 items-center">
+              <p className="text-[11px] text-slate-400 font-medium uppercase tracking-wider flex justify-between md:justify-end gap-4 items-center">
                 <span>Delivery:</span> 
-                <span className="text-[13px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 shadow-sm">
+                <span className="font-bold text-slate-700">
                   {format(deliveryDateObj, 'MMM d, yyyy')}
                 </span>
               </p>
             )}
             {expiryDateObj && !isNaN(expiryDateObj.getTime()) && (
-              <p className="text-[11px] text-slate-500 font-bold uppercase tracking-wider flex justify-between md:justify-end gap-4 items-center">
+              <p className="text-[11px] text-slate-400 font-medium uppercase tracking-wider flex justify-between md:justify-end gap-4 items-center">
                 <span>Deadline:</span> 
-                <span className="text-[13px] font-black text-red-600 bg-red-50 px-2 py-0.5 rounded border border-red-100 shadow-sm">
+                <span className="font-bold text-red-500">
                   {format(expiryDateObj, 'MMM d, yyyy')}
                 </span>
               </p>
