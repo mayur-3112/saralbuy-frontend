@@ -418,7 +418,7 @@ const PostRequirementForm = () => {
         <div className="p-6 md:p-8 bg-white/90 backdrop-blur-xl border border-white/50 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
           <div className="border-b border-slate-200 pb-4 mb-6">
             <h3 className="text-lg font-black text-slate-900">Other Details & Terms</h3>
-            <p className="text-sm text-slate-500 font-medium mt-1">Upload relevant documents, specifications, or CAD drawings, and mention any specific terms.</p>
+            <p className="text-sm text-slate-500 font-medium mt-1">Upload relevant documents, reference images, or specifications, and mention any specific terms.</p>
           </div>
           
           <div className="mb-8">
