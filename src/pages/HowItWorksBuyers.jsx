@@ -22,24 +22,24 @@ const STEPS = [
   {
     num: '01',
     icon: FileText,
-    title: 'Post Your Material Requirement',
-    desc: 'Describe what your project needs — cement, TMT steel, tiles, plumbing, electrical, paints — with quantities, specifications, and delivery location.',
+    title: 'Post Your Requirement in 4 Simple Steps',
+    desc: 'Our guided form walks you through everything — basic details, item list with quantities and specs, supporting documents, and delivery preferences. It takes under 2 minutes.',
     details: [
-      'Upload drawings, BOQ sheets, or spec documents for precise matching',
-      'Set your preferred delivery date and payment terms',
-      'Choose from 8+ material categories covering all construction needs',
-      'Takes under 60 seconds to post',
+      'Step 1: Enter a title, category, and subcategory for your requirement',
+      'Step 2: Add materials with item name, quantity, unit, and brand preference',
+      'Step 3: Attach reference documents or images if needed',
+      'Step 4: Set delivery date, bid deadline, payment mode, and location',
     ],
   },
   {
     num: '02',
     icon: Users,
     title: 'Verified Suppliers Send You Quotes',
-    desc: 'Our network of GST-registered, vetted suppliers review your requirement and submit direct, competitive price quotes — usually within hours.',
+    desc: 'Your requirement goes live on the sourcing board. GST-registered, vetted suppliers in your area review it and submit competitive quotes — usually within hours.',
     details: [
-      'Every supplier is verified for GST registration and track record',
+      'Every supplier is verified for GST registration and business legitimacy',
       'Receive multiple quotes to compare pricing, brands, and terms',
-      'See supplier ratings from past transactions',
+      'See supplier ratings and track record from past transactions',
       'No need to call dealers or visit shops — quotes come to you',
     ],
   },
@@ -47,7 +47,7 @@ const STEPS = [
     num: '03',
     icon: MessageSquare,
     title: 'Negotiate & Compare in Real-Time',
-    desc: 'Chat directly with bidding suppliers. Discuss delivery schedules, credit terms, material specifications, brand preferences, or bulk discounts.',
+    desc: 'Chat directly with bidding suppliers. Discuss delivery schedules, credit terms, material specs, brand preferences, or bulk discounts — all within the platform.',
     details: [
       'Real-time messaging with read receipts',
       'Share images, documents, and counter-offers',
@@ -59,9 +59,9 @@ const STEPS = [
     num: '04',
     icon: Handshake,
     title: 'Close the Deal & Pay Direct',
-    desc: 'Accept the best quote, issue your purchase order, and pay the supplier directly. No middlemen, no hidden fees — free during early access.',
+    desc: 'Accept the best quote, finalize your purchase order, and pay the supplier directly. No middlemen, no hidden fees — completely free during early access.',
     details: [
-      'No platform commission during early access — Quotex charges 0% on transactions',
+      'No platform commission during early access — 0% on all transactions',
       'Payment flows directly between you and the supplier',
       'Rate suppliers post-delivery to help the community',
       'Reorder from trusted suppliers with one click',
@@ -115,7 +115,7 @@ export default function HowItWorksBuyers() {
             <span className="bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent"> Wholesale Prices, Directly</span>
           </h1>
           <p className="text-slate-600 text-base sm:text-lg mt-5 max-w-2xl mx-auto leading-relaxed">
-            Stop calling 20 dealers for rates. Post your material requirement once, get multiple competitive quotes from verified suppliers, negotiate in real-time, and close deals — all from one platform.
+            Our simple 4-step guided form helps you post your material requirement in under 2 minutes. Get multiple competitive quotes from verified suppliers, negotiate in real-time, and close deals — all from one platform.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
             <button

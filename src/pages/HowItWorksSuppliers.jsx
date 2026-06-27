@@ -25,11 +25,11 @@ const STEPS = [
     num: '01',
     icon: Search,
     title: 'Browse Live Sourcing Leads',
-    desc: 'Explore hundreds of active bulk material requests posted by verified contractors, builders, and project managers across Karnataka — updated in real-time.',
+    desc: 'Explore active bulk material requests posted by verified contractors and builders. Each RFQ card shows the buyer, category, items needed, bid deadline, and delivery date — so you can decide instantly.',
     details: [
       'Filter leads by material category (cement, steel, electrical, tiles, etc.)',
-      'Narrow by city and delivery location',
-      'See requirement details: quantities, specs, delivery dates',
+      'See all key details at a glance: buyer, items, deadline, and delivery date',
+      'Structured RFQ cards with labeled fields — no guessing what each detail means',
       'New leads posted daily — never run out of opportunities',
     ],
   },
@@ -37,9 +37,9 @@ const STEPS = [
     num: '02',
     icon: Gavel,
     title: 'Submit Your Best Quote',
-    desc: 'Found a requirement that matches your inventory? Submit a competitive quote with your best price, available delivery date, and terms.',
+    desc: 'Found a requirement that matches your inventory? Open the RFQ, review the full specifications, and submit a competitive quote with your best price, delivery date, and terms.',
     details: [
-      'Quote in under 30 seconds — just enter price, delivery date, and notes',
+      'Quote in under 30 seconds — enter price, delivery date, and notes',
       'Attach product catalogs, test certificates, or sample images',
       'Stand out by offering better delivery terms or brand alternatives',
       'Track all your submitted quotes from your dashboard',
@@ -49,21 +49,21 @@ const STEPS = [
     num: '03',
     icon: MessagesSquare,
     title: 'Negotiate & Build Relationships',
-    desc: 'When a buyer is interested, engage them in direct real-time chat. Clarify specifications, discuss credit terms, offer volume discounts, and build lasting supply partnerships.',
+    desc: 'When a buyer is interested, engage them in direct real-time chat. Clarify specs, discuss credit terms, offer volume discounts, and build lasting supply partnerships.',
     details: [
       'Direct messaging with decision-makers — no brokers in between',
       'Share product images, specifications, and counter-proposals',
       'Discuss credit periods, advance payments, and delivery logistics',
-      'Build repeat business relationships with satisfied project buyers',
+      'Build repeat business relationships with satisfied buyers',
     ],
   },
   {
     num: '04',
     icon: Receipt,
     title: 'Win the Order & Get Paid Directly',
-    desc: 'When the buyer accepts your quote, you receive a purchase order. Deliver the materials and get paid directly by the buyer. Quotex charges no commission during early access.',
+    desc: 'When the buyer accepts your quote, you receive a purchase order. Deliver the materials and get paid directly. No platform commission during early access.',
     details: [
-      'No platform fees during early access — you keep 100% of every rupee you earn',
+      'No platform fees during early access — keep 100% of every rupee you earn',
       'Payment goes directly from buyer to you',
       'Build your supplier rating with every successful delivery',
       'Higher ratings = more visibility = more leads in the future',
@@ -119,7 +119,7 @@ export default function HowItWorksSuppliers() {
             <span className="bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent"> Verified Contractors & Builders</span>
           </h1>
           <p className="text-slate-600 text-base sm:text-lg mt-5 max-w-2xl mx-auto leading-relaxed">
-            Stop waiting for dealers to send you orders. Browse live sourcing requests from real project sites, submit your best quotes directly, and win orders — free during early access.
+            Browse live sourcing requests from real project sites with clear, structured RFQ cards. Submit your best quotes directly, negotiate terms, and win orders — free during early access.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
             <button

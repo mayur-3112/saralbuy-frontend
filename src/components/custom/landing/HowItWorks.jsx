@@ -5,23 +5,23 @@ export default function HowItWorks({ onOpenAuth }) {
   const steps = [
     {
       num: '01',
-      title: 'Post Your Project Need',
-      desc: 'Fill in what materials your project needs (e.g. cement, TMT steel, plumbing conduits), quantities required, and upload drawings or specs in 60 seconds.',
+      title: 'Post Your Requirement',
+      desc: 'Our guided 4-step form walks you through it — enter basic details, add items with quantities and specs, attach documents, and set delivery preferences. Done in under 2 minutes.',
     },
     {
       num: '02',
       title: 'Get Competitive Quotes',
-      desc: 'Our network of verified, GST-registered suppliers review your request and submit direct, competitive price quotes.',
+      desc: 'Your RFQ goes live with all details clearly structured. Verified, GST-registered suppliers review it and submit direct, competitive price quotes.',
     },
     {
       num: '03',
       title: 'Negotiate Live',
-      desc: 'Chat directly with bidding suppliers in real-time. Discuss delivery schedules, credit terms, unloading, or bulk discounts.',
+      desc: 'Chat directly with bidding suppliers in real-time. Discuss delivery schedules, credit terms, brand alternatives, or bulk discounts — all within the platform.',
     },
     {
       num: '04',
-      title: 'Pay Direct (Early Access)',
-      desc: 'Approve the best quote, issue your purchase order, and pay the supplier directly. Currently no commissions during early access.',
+      title: 'Close & Pay Direct',
+      desc: 'Accept the best quote, finalize your purchase order, and pay the supplier directly. No middlemen, no commissions during early access.',
     },
   ];
 
