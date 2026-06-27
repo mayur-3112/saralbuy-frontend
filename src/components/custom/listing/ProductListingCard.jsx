@@ -139,15 +139,8 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
                   >
                     <button
                       type="button"
-                      onClick={(e) => { e.stopPropagation(); setShowMenu(false); onEdit?.(product); }}
-                      className="w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2 cursor-pointer transition-colors"
-                    >
-                      <Edit size={16} /> Edit RFQ
-                    </button>
-                    <button
-                      type="button"
                       onClick={(e) => { e.stopPropagation(); setShowMenu(false); onDelete?.(productId); }}
-                      className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 cursor-pointer transition-colors border-t border-slate-100"
+                      className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 cursor-pointer transition-colors"
                     >
                       <Trash2 size={16} /> Delete
                     </button>
