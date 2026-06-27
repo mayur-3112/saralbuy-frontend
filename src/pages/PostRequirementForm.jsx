@@ -196,9 +196,12 @@ const PostRequirementForm = () => {
 
   return (
     <div className="w-full max-w-5xl mx-auto px-4 min-h-screen py-10 bg-slate-50">
-      <div className="flex gap-2 items-center mb-6 border-b border-slate-200 pb-4">
+      <div className="flex gap-3 items-center mb-8 pb-4 border-b border-slate-200">
         <MoveLeft className="w-6 h-6 cursor-pointer text-slate-600 hover:text-orange-600 transition-colors" onClick={() => navigate(-1)} />
-        <h2 className="text-2xl font-black text-slate-900 tracking-tight">Post Your Requirement (RFQ)</h2>
+        <div>
+          <h2 className="text-2xl font-black text-slate-900 tracking-tight">Post Your Requirement (RFQ)</h2>
+          <p className="text-sm text-slate-500 mt-0.5">Fill in the details below to get quotes from verified suppliers.</p>
+        </div>
       </div>
 
       <AlertDialog open={showCustomCategoryWarning} onOpenChange={setShowCustomCategoryWarning}>
@@ -222,13 +225,17 @@ const PostRequirementForm = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         
-        {/* Top Info Section */}
-        <div className="p-6 md:p-8 bg-white/90 backdrop-blur-xl border border-white/50 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-          <div className="mb-6 border-b border-slate-100 pb-4">
-            <h3 className="text-lg font-black text-slate-900">Basic Information</h3>
-            <p className="text-sm text-slate-500 font-medium mt-1">Provide the primary details of your requirement to help suppliers quickly understand what you need.</p>
+        {/* Step 1 — Basic Information */}
+        <div className="p-6 md:p-8 bg-white border border-slate-200 rounded-2xl shadow-sm relative overflow-hidden">
+          <div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-400 rounded-l-2xl" />
+          <div className="mb-6 border-b border-slate-100 pb-4 flex items-start gap-3">
+            <span className="shrink-0 w-7 h-7 rounded-full bg-orange-500 text-white text-xs font-bold flex items-center justify-center mt-0.5">1</span>
+            <div>
+              <h3 className="text-lg font-black text-slate-900">Basic Information</h3>
+              <p className="text-sm text-slate-500 mt-0.5">Provide the primary details of your requirement to help suppliers quickly understand what you need.</p>
+            </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
@@ -290,14 +297,16 @@ const PostRequirementForm = () => {
           </div>
         </div>
 
-        {/* Dynamic Item Rows */}
+        {/* Step 2 — Items */}
         {mode === 'single' && (
-          <div className="p-6 md:p-8 bg-white/90 backdrop-blur-xl border border-white/50 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-            <div className="border-b border-slate-200 pb-4 mb-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-black text-slate-900">List of Materials/Services</h3>
+          <div className="p-6 md:p-8 bg-white border border-slate-200 rounded-2xl shadow-sm relative overflow-hidden">
+            <div className="absolute left-0 top-0 bottom-0 w-1 bg-amber-400 rounded-l-2xl" />
+            <div className="border-b border-slate-200 pb-4 mb-4 flex items-start gap-3">
+              <span className="shrink-0 w-7 h-7 rounded-full bg-amber-500 text-white text-xs font-bold flex items-center justify-center mt-0.5">2</span>
+              <div>
+                <h3 className="text-lg font-black text-slate-900">List of Materials / Services</h3>
+                <p className="text-sm text-slate-500 mt-0.5">Add the specific items, materials, or services you need, including quantities and specifications.</p>
               </div>
-              <p className="text-sm text-slate-500 font-medium mt-1">Add the specific items, materials, or services you need, including quantities and technical specifications.</p>
             </div>
           
             {/* Header Row for Desktop */}
@@ -414,11 +423,15 @@ const PostRequirementForm = () => {
           </div>
         )}
 
-        {/* Documents & Terms Section */}
-        <div className="p-6 md:p-8 bg-white/90 backdrop-blur-xl border border-white/50 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-          <div className="border-b border-slate-200 pb-4 mb-6">
-            <h3 className="text-lg font-black text-slate-900">Other Details & Terms</h3>
-            <p className="text-sm text-slate-500 font-medium mt-1">Upload relevant documents, reference images, or specifications, and mention any specific terms.</p>
+        {/* Step 3 — Documents & Terms */}
+        <div className="p-6 md:p-8 bg-white border border-slate-200 rounded-2xl shadow-sm relative overflow-hidden">
+          <div className="absolute left-0 top-0 bottom-0 w-1 bg-sky-400 rounded-l-2xl" />
+          <div className="border-b border-slate-200 pb-4 mb-6 flex items-start gap-3">
+            <span className="shrink-0 w-7 h-7 rounded-full bg-sky-500 text-white text-xs font-bold flex items-center justify-center mt-0.5">3</span>
+            <div>
+              <h3 className="text-lg font-black text-slate-900">Other Details & Terms</h3>
+              <p className="text-sm text-slate-500 mt-0.5">Upload relevant documents, reference images, or specifications, and mention any specific terms.</p>
+            </div>
           </div>
           
           <div className="mb-8">
@@ -466,11 +479,15 @@ const PostRequirementForm = () => {
           </div>
         </div>
 
-        {/* Contact & Delivery Details */}
-        <div className="p-6 md:p-8 bg-white/90 backdrop-blur-xl border border-white/50 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(234,88,12,0.08)] transition-all duration-300">
-          <div className="border-b border-slate-100 pb-5 mb-8">
-            <h3 className="text-xl font-extrabold text-slate-800 tracking-tight">Delivery & Organization Details</h3>
-            <p className="text-sm text-slate-500 font-medium mt-1">Specify your timeline, payment terms, and delivery location so suppliers can quote accurately.</p>
+        {/* Step 4 — Delivery & Organization */}
+        <div className="p-6 md:p-8 bg-white border border-slate-200 rounded-2xl shadow-sm relative overflow-hidden">
+          <div className="absolute left-0 top-0 bottom-0 w-1 bg-emerald-400 rounded-l-2xl" />
+          <div className="border-b border-slate-100 pb-5 mb-8 flex items-start gap-3">
+            <span className="shrink-0 w-7 h-7 rounded-full bg-emerald-500 text-white text-xs font-bold flex items-center justify-center mt-0.5">4</span>
+            <div>
+              <h3 className="text-xl font-extrabold text-slate-800 tracking-tight">Delivery & Organization Details</h3>
+              <p className="text-sm text-slate-500 mt-0.5">Specify your timeline, payment terms, and delivery location so suppliers can quote accurately.</p>
+            </div>
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
