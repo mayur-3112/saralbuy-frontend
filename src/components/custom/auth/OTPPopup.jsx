@@ -87,17 +87,19 @@ const OtpPopup = ({ open, setOpen, number, sessionId, setSessionId }) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-w-md w-full p-6 space-y-3">
-        <div className="h-16 flex justify-center">
-          <img src={QuotexLogo} alt="Logo" className="w-full h-full object-contain" />
-        </div>
-        <div className="space-y-2">
-          <DialogTitle className=" text-gray-700 text-3xl font-extrabold ">
-            OTP Verification
-          </DialogTitle>
-          <p className="text-sm">
-            Enter the OTP code sent on your number {number?.toString().slice(0, 4)}******
-          </p>
+      <DialogContent className="max-w-md w-full rounded-[24px] overflow-hidden border-slate-100 shadow-2xl p-0">
+        <div className="p-8 w-full inline-block space-y-6 bg-white relative">
+          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-orange-400 via-pink-500 to-indigo-500" />
+          <div className="h-12 flex justify-center mb-4">
+            <img src={QuotexLogo} alt="Logo" className="w-full h-full object-contain" />
+          </div>
+          <div className="space-y-2 text-center">
+            <DialogTitle className="text-gray-800 text-2xl font-extrabold tracking-tight">
+              OTP Verification
+            </DialogTitle>
+            <p className="text-sm text-slate-500 font-medium">
+              Enter the OTP code sent on your number <span className="text-orange-600 font-bold">{number?.toString().slice(0, 4)}******</span>
+            </p>
           {import.meta.env.MODE === 'development' && (
             <p className="text-xs text-amber-700 font-semibold bg-amber-50 p-2 rounded border border-amber-200">
               [DEV MODE] Check the toast notification or terminal console for the OTP code.
@@ -110,31 +112,14 @@ const OtpPopup = ({ open, setOpen, number, sessionId, setSessionId }) => {
           className="flex justify-center items-center flex-col space-y-5"
         >
           <InputOTP maxLength={6} value={value} onChange={value => setValue(value)}>
-            <InputOTPGroup className="space-x-4">
-              <InputOTPSlot
-                index={0}
-                className="bg-secondary rounded-md border-l border-accent shadow-none font-semibold h-10 w-10"
-              />
-              <InputOTPSlot
-                index={1}
-                className="bg-secondary rounded-md border-l border-accent shadow-none font-semibold"
-              />
-              <InputOTPSlot
-                index={2}
-                className="bg-secondary rounded-md border-l border-accent shadow-none font-semibold"
-              />
-              <InputOTPSlot
-                index={3}
-                className="bg-secondary rounded-md border-l border-accent shadow-none font-semibold"
-              />
-              <InputOTPSlot
-                index={4}
-                className="bg-secondary rounded-md border-l border-accent shadow-none font-semibold"
-              />
-              <InputOTPSlot
-                index={5}
-                className="bg-secondary rounded-md border-l border-accent shadow-none font-semibold"
-              />
+            <InputOTPGroup className="gap-2">
+              {[0, 1, 2, 3, 4, 5].map((index) => (
+                <InputOTPSlot
+                  key={index}
+                  index={index}
+                  className="bg-slate-50 border border-slate-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/30 rounded-xl shadow-sm text-xl font-bold h-14 w-12 transition-all"
+                />
+              ))}
             </InputOTPGroup>
           </InputOTP>
           <div className="grid gap-3 w-full">
@@ -154,12 +139,13 @@ const OtpPopup = ({ open, setOpen, number, sessionId, setSessionId }) => {
             <Button
               type="submit"
               disabled={loading || value.length !== 6}
-              className="w-full py-5 cursor-pointer  text-white font-bold rounded-sm"
+              className="w-full rounded-xl py-7 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold text-[17px] cursor-pointer transition-all duration-300 shadow-lg hover:shadow-orange-500/40 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 mt-2"
             >
-              {loading ? <Spinner className="w-5 h-5 animate-spin" /> : 'Continue'}
+              {loading ? <Spinner className="w-5 h-5 animate-spin" /> : 'Verify & Continue'}
             </Button>
           </div>
         </form>
+        </div>
       </DialogContent>
     </Dialog>
   );

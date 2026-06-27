@@ -237,18 +237,18 @@ const CategoryForm = ({
           </div>
         </div>
 
-        <div className="col-span-2 md:col-span-2 flex flex-col gap-3">
-          <div className="rounded-[5px] p-4 sm:p-6 bg-gray-200/50">
+        <div className="col-span-2 md:col-span-2 flex flex-col gap-5">
+          <div className="rounded-2xl p-6 sm:p-8 bg-white/90 backdrop-blur-xl border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
               <Input
                 type="text"
                 placeholder="Title* (Give a short title for your post - specify your required product in 3–4 words)"
-                className="bg-white col-span-1 md:col-span-3"
+                className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium col-span-1 md:col-span-3"
                 {...register('title')}
               />
 
               <Select value={subCategoryIdValue} onValueChange={handleSubCategoryChange}>
-                <SelectTrigger className="w-full bg-white">
+                <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
                   <SelectValue placeholder="Category*" />
                 </SelectTrigger>
                 <SelectContent>
@@ -298,7 +298,7 @@ const CategoryForm = ({
                       <SearchableDropdown
                         setValue={setbrand}
                         value={brand}
-                        className="w-full"
+                        className="w-full bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium"
                         dropdownTitle="Or search/select brand*"
                         renderItems={brandRenderItems}
                       />
@@ -309,7 +309,7 @@ const CategoryForm = ({
                       placeholder="Type your brand name..."
                       value={brand}
                       onChange={e => setbrand(e.target.value)}
-                      className="bg-white"
+                      className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium"
                     />
                   )}
                 </div>
@@ -323,7 +323,7 @@ const CategoryForm = ({
                   onChange={e => {
                     setbrand(e.target.value);
                   }}
-                  className="bg-white"
+                  className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium"
                 />
               )}
 
@@ -332,7 +332,7 @@ const CategoryForm = ({
                   type="text"
                   placeholder="Specific Brand Name..."
                   {...register('brandName')}
-                  className="bg-white"
+                  className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium"
                 />
               )}
 
@@ -344,7 +344,7 @@ const CategoryForm = ({
                   type="text"
                   placeholder="Enter a Budget range"
                   {...register('minimumBudget')}
-                  className="bg-white pl-5"
+                  className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium pl-6"
                 />
               </div>
 
@@ -357,7 +357,7 @@ const CategoryForm = ({
                 // />
                 <div className="flex items-center gap-2">
                   <Select value={quantityUnit} onValueChange={setQuantityUnit} defaultValue="pcs">
-                    <SelectTrigger className="w-[70px] bg-white">
+                    <SelectTrigger className="w-[85px] bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
                       <SelectValue placeholder="Unit" />
                     </SelectTrigger>
                     <SelectContent>
@@ -374,7 +374,7 @@ const CategoryForm = ({
                     placeholder="Qty"
                     value={quantityValue}
                     onChange={e => setQuantityValue(e.target.value)}
-                    className="flex-1 bg-white"
+                    className="flex-1 bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium"
                     min="0"
                   />
                 </div>
@@ -382,7 +382,7 @@ const CategoryForm = ({
 
               {currentCategoryName === 'fashion' && (
                 <Select value={genderValue} onValueChange={value => setValue('gender', value)}>
-                  <SelectTrigger className="w-full bg-white">
+                  <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
                     <SelectValue placeholder="Gender" />
                   </SelectTrigger>
                   <SelectContent>
@@ -400,7 +400,7 @@ const CategoryForm = ({
                       value={fuelTypeValue}
                       onValueChange={value => setValue('fuelType', value)}
                     >
-                      <SelectTrigger className="w-full bg-white">
+                      <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
                         <SelectValue placeholder="Fuel Type" />
                       </SelectTrigger>
                       <SelectContent>
@@ -414,24 +414,24 @@ const CategoryForm = ({
                     </Select>
 
                     {!subCatgoryName.toLowerCase().includes('accessories') && (
-                      <Input
-                        type="text"
-                        placeholder="Model"
-                        {...register('model')}
-                        className="bg-white col-span-1"
-                      />
+                        <Input
+                          type="text"
+                          placeholder="Model"
+                          {...register('model')}
+                          className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium col-span-1"
+                        />
                     )}
 
                     {!subCatgoryName.toLowerCase().includes('accessories') && (
-                      <Input
-                        type="text"
-                        placeholder="Color"
-                        value={colorValue}
-                        className="bg-white col-span-1"
-                        onChange={e => {
-                          setValue('color', e.target.value);
-                        }}
-                      />
+                        <Input
+                          type="text"
+                          placeholder="Color"
+                          value={colorValue}
+                          className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium col-span-1"
+                          onChange={e => {
+                            setValue('color', e.target.value);
+                          }}
+                        />
                     )}
 
                     {!['scooters', 'accessories', 'bicycles'].includes(
@@ -441,7 +441,7 @@ const CategoryForm = ({
                         value={transmissionValue}
                         onValueChange={value => setValue('transmission', value)}
                       >
-                        <SelectTrigger className="w-full bg-white">
+                        <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
                           <SelectValue placeholder="Transmission" />
                         </SelectTrigger>
                         <SelectContent>
@@ -458,7 +458,7 @@ const CategoryForm = ({
                   type="text"
                   placeholder="Model"
                   {...register('model')}
-                  className="bg-white col-span-1"
+                  className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium col-span-1"
                 />
               )}
 
@@ -475,7 +475,7 @@ const CategoryForm = ({
                         value={productField}
                         onValueChange={value => setValue('productType', value)}
                       >
-                        <SelectTrigger className="w-full bg-white">
+                        <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
                           <SelectValue placeholder="Product Condition" />
                         </SelectTrigger>
                         <SelectContent>
@@ -548,7 +548,7 @@ const CategoryForm = ({
                     type="text"
                     placeholder="Product Condition"
                     {...register('productCondition')}
-                    className="bg-white"
+                    className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium"
                   />
                 </>
               )}
@@ -558,7 +558,7 @@ const CategoryForm = ({
                   value={conditionOfProductValue}
                   onValueChange={value => setValue('conditionOfProduct', value)}
                 >
-                  <SelectTrigger className="w-full bg-white">
+                  <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
                     <SelectValue placeholder="Product Condition" />
                   </SelectTrigger>
                   <SelectContent>
@@ -582,7 +582,7 @@ const CategoryForm = ({
                     type="text"
                     placeholder="Type of Vehicle"
                     {...register('typeOfVehicle')}
-                    className="bg-white"
+                    className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium"
                   />
                 )}
 
@@ -590,12 +590,12 @@ const CategoryForm = ({
                 type="text"
                 placeholder={currentCategoryName === 'service' ? 'Service Type' : 'Product Type'}
                 {...register('typeOfProduct')}
-                className="bg-white"
+                className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium"
               />
 
               {currentCategoryName === 'industrial' && (
                 <Select value={toolTypeValue} onValueChange={value => setValue('toolType', value)}>
-                  <SelectTrigger className="w-full bg-white">
+                  <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
                     <SelectValue placeholder="Tool Type" />
                   </SelectTrigger>
                   <SelectContent>
@@ -607,7 +607,7 @@ const CategoryForm = ({
             </div>
           </div>
 
-          <div className="rounded-[5px] p-4 sm:p-6 bg-gray-200/50">
+          <div className="rounded-2xl p-6 sm:p-8 bg-white/90 backdrop-blur-xl border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all">
             <div className="mb-4">
               <h3 className="text-lg font-semibold text-gray-700">Other Details</h3>
               <sup className="italic text-gray-500">
@@ -713,11 +713,11 @@ const CategoryForm = ({
             <Textarea
               placeholder="Description*"
               {...register('description')}
-              className="bg-white min-h-24"
+              className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium min-h-24 mt-4"
             />
           </div>
 
-          <div className="rounded-[5px] p-4 sm:p-6 bg-gray-200/50">
+          <div className="rounded-2xl p-6 sm:p-8 bg-white/90 backdrop-blur-xl border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all mb-8 hover:shadow-[0_8px_30px_rgb(234,88,12,0.08)]">
             <h3 className="text-lg font-semibold mb-4 text-gray-700">Payment & Delivery Details</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
               <DatePicker
@@ -736,7 +736,7 @@ const CategoryForm = ({
                 value={paymentMode}
                 onValueChange={value => setValue('paymentAndDelivery.paymentMode', value)}
               >
-                <SelectTrigger className="w-full bg-white">
+                <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
                   <SelectValue placeholder="Payment Mode" />
                 </SelectTrigger>
                 <SelectContent>
@@ -747,7 +747,7 @@ const CategoryForm = ({
               </Select>
 
               <Select value={gstField} onValueChange={value => setValue('gst_requirement', value)}>
-                <SelectTrigger className="w-full bg-white">
+                <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
                   <SelectValue placeholder="GST Input Required" />
                 </SelectTrigger>
                 <SelectContent>
@@ -762,7 +762,7 @@ const CategoryForm = ({
                     type="text"
                     placeholder="GST Number (15 characters - Format: 22AAAAA0000A1Z5)"
                     {...register('paymentAndDelivery.gstNumber')}
-                    className="bg-white"
+                    className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium uppercase"
                     maxLength={15}
                     onChange={e => {
                       const value = e.target.value.toUpperCase();
@@ -775,13 +775,13 @@ const CategoryForm = ({
                     type="text"
                     placeholder="Entity Name"
                     {...register('paymentAndDelivery.organizationName')}
-                    className="bg-white"
+                    className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium"
                   />
                   <Input
                     type="text"
                     placeholder="Entity Address"
                     {...register('paymentAndDelivery.organizationAddress')}
-                    className="bg-white"
+                    className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium"
                   />
                 </>
               )}

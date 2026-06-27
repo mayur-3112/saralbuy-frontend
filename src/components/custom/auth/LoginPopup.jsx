@@ -54,8 +54,9 @@ const LoginPopup = ({ open, setOpen, setNumber, setOtpPopup, setSessionId }) => 
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-[450px]">
-          <form onSubmit={handleSendOTP} className="p-3 w-full inline-block space-y-6">
+        <DialogContent className="sm:max-w-[450px] rounded-[24px] overflow-hidden border-slate-100 shadow-2xl p-0">
+          <form onSubmit={handleSendOTP} className="p-8 w-full inline-block space-y-7 bg-white relative">
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-orange-400 via-pink-500 to-indigo-500" />
             <div className="h-12 flex justify-center mb-2">
               <img src={QuotexLogo} alt="Logo" className="w-full h-full object-contain" />
             </div>
@@ -91,7 +92,7 @@ const LoginPopup = ({ open, setOpen, setNumber, setOtpPopup, setSessionId }) => 
 
             <div className="space-y-5 w-full">
               <Input
-                className="w-full py-6 bg-slate-50/50"
+                className="w-full py-7 text-[17px] bg-slate-50/80 border-slate-200 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 rounded-xl transition-all shadow-sm tracking-wide"
                 type="text"
                 placeholder="Enter your Mobile Number"
                 value={mobileNumber}
@@ -119,7 +120,7 @@ const LoginPopup = ({ open, setOpen, setNumber, setOtpPopup, setSessionId }) => 
                 <Button
                   type="submit"
                   disabled={loading || mobileNumber.length < 10 || !accepted}
-                  className="w-full rounded-md py-6 bg-orange-600 hover:bg-orange-700 text-white font-bold cursor-pointer transition-colors"
+                  className="w-full rounded-xl py-7 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold text-[17px] cursor-pointer transition-all duration-300 shadow-lg hover:shadow-orange-500/40 hover:-translate-y-0.5 active:translate-y-0 active:scale-95"
                 >
                   {loading ? <Spinner className="w-5 h-5 animate-spin" /> : 'Send OTP'}
                 </Button>

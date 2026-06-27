@@ -78,7 +78,7 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
 
   const createdAt = product?.createdAt || prod?.createdAt;
   const expiryDateStr = prod?.bidExpiryDate || product?.bidExpiryDate || prod?.timeline || product?.timeline;
-  
+
   // Safe date parsing to avoid Jan 1 2001 for numbers like "1"
   let expiryDateObj = null;
   if (expiryDateStr && isNaN(Number(expiryDateStr))) {
@@ -87,6 +87,12 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
      // it's a duration in days like "1", "3", "7"
      const days = Number(expiryDateStr);
      expiryDateObj = new Date(new Date(createdAt || Date.now()).getTime() + days * 24 * 60 * 60 * 1000);
+  }
+
+  const deliveryDateStr = prod?.paymentAndDelivery?.ex_deliveryDate || product?.paymentAndDelivery?.ex_deliveryDate;
+  let deliveryDateObj = null;
+  if (deliveryDateStr && !isNaN(new Date(deliveryDateStr).getTime())) {
+    deliveryDateObj = new Date(deliveryDateStr);
   }
 
   return (
@@ -195,17 +201,25 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
         {/* Right Side */}
         <div className="mt-5 md:mt-0 flex flex-col justify-between items-start md:items-end md:w-64 shrink-0 z-10 relative">
           {/* Dates */}
-          <div className="text-left md:text-right space-y-1.5 bg-slate-50/80 p-3 rounded-lg border border-slate-100 w-full md:w-auto">
-            <p className="text-[11px] text-slate-400 font-medium uppercase tracking-wider flex justify-between md:justify-end gap-3">
+          <div className="text-left md:text-right space-y-2 bg-slate-50/80 p-3.5 rounded-xl border border-slate-100 w-full md:w-auto shadow-sm">
+            <p className="text-[11px] text-slate-500 font-bold uppercase tracking-wider flex justify-between md:justify-end gap-4 items-center">
               <span>Posted:</span> 
-              <span className="font-bold text-slate-700">
+              <span className="text-[13px] font-black text-slate-700 bg-white px-2 py-0.5 rounded border border-slate-200 shadow-sm">
                 {createdAt ? format(new Date(createdAt), 'MMM d, yyyy') : format(new Date(), 'MMM d, yyyy')}
               </span>
             </p>
+            {deliveryDateObj && (
+              <p className="text-[11px] text-slate-500 font-bold uppercase tracking-wider flex justify-between md:justify-end gap-4 items-center">
+                <span>Delivery:</span> 
+                <span className="text-[13px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 shadow-sm">
+                  {format(deliveryDateObj, 'MMM d, yyyy')}
+                </span>
+              </p>
+            )}
             {expiryDateObj && !isNaN(expiryDateObj.getTime()) && (
-              <p className="text-[11px] text-slate-400 font-medium uppercase tracking-wider flex justify-between md:justify-end gap-3">
+              <p className="text-[11px] text-slate-500 font-bold uppercase tracking-wider flex justify-between md:justify-end gap-4 items-center">
                 <span>Deadline:</span> 
-                <span className="font-bold text-red-500">
+                <span className="text-[13px] font-black text-red-600 bg-red-50 px-2 py-0.5 rounded border border-red-100 shadow-sm">
                   {format(expiryDateObj, 'MMM d, yyyy')}
                 </span>
               </p>

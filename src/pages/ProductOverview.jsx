@@ -959,12 +959,13 @@ const ProductOverview = () => {
 
           <div className="">
             {/* Content */}
-            <div className="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
               {/* Image */}
-              <div className="lg:col-span-4 bg-slate-50 border border-slate-100 flex justify-center items-center rounded-xl p-8 max-h-64 relative overflow-hidden shadow-sm">
+              <div className="lg:col-span-4 bg-white border border-slate-100 flex justify-center items-center rounded-2xl p-8 max-h-72 relative overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 group">
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-50 to-pink-50 opacity-50" />
                 {/* Subtle background decoration */}
-                <div className="absolute -bottom-10 -right-10 text-slate-200/50 rotate-12">
-                  <Package className="w-48 h-48" strokeWidth={1} />
+                <div className="absolute -bottom-10 -right-10 text-orange-200/30 rotate-12 group-hover:scale-110 transition-transform duration-700">
+                  <Package className="w-56 h-56" strokeWidth={1} />
                 </div>
                 
                 <div className="w-full h-full flex justify-center items-center relative z-10">
@@ -994,9 +995,10 @@ const ProductOverview = () => {
               </div>
 
               {/* Product Info */}
-              <div className="lg:col-span-8 bg-transparent rounded-lg p-4 space-y-4">
+              <div className="lg:col-span-8 bg-white border border-slate-100 shadow-sm rounded-2xl p-6 md:p-8 space-y-6 relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-orange-400 via-pink-500 to-indigo-500 opacity-80" />
                 <div>
-                  <h2 className="text-sm font-medium mb-2 flex justify-between items-center">
+                  <h2 className="text-sm font-bold tracking-wide uppercase text-slate-400 mb-2 flex justify-between items-center">
                     Date :{' '}
                     {dateFormatter(
                       bidOverviewRes
@@ -1026,12 +1028,14 @@ const ProductOverview = () => {
                   </h2>
                 </div>
 
-                <h2 className="text-xl font-bold capitalize">
+                <h2 className="text-2xl md:text-3xl font-extrabold capitalize text-slate-800 tracking-tight leading-tight">
                   {bidOverviewRes
                     ? bidOverviewRes?.product?.title
                     : productResponse?.mainProduct?.title}
                 </h2>
-                <p className="text-sm text-gray-600">{productResponse?.mainProduct?.description}</p>
+                <p className="text-[15px] text-slate-600 leading-relaxed font-medium">
+                  {productResponse?.mainProduct?.description || bidOverviewRes?.product?.description}
+                </p>
 
                 {bidStats && bidStats.totalBids > 0 && (
                   <div className="bg-orange-50/80 border border-orange-200 rounded-lg p-4 mt-4 grid grid-cols-3 gap-2 text-center max-w-lg">
@@ -1063,7 +1067,7 @@ const ProductOverview = () => {
                 )}
 
                 {/* Meta Info */}
-                <div className="flex flex-wrap gap-4 text-sm text-gray-600 ">
+                <div className="flex flex-wrap gap-4 text-sm text-slate-600 pt-4 border-t border-slate-100">
                   <div
                     onClick={() => {
                       navigate(
@@ -1073,21 +1077,14 @@ const ProductOverview = () => {
                             : productResponse?.mainProduct?.userId?._id)
                       );
                     }}
-                    className="flex items-center underline cursor-pointer gap-1 pr-3 border-r-2 py-1 min-w-32 max-w-[25%]"
+                    className="flex items-center gap-3 pr-4 border-r-2 border-slate-100 py-1 min-w-32 cursor-pointer group"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="size-4 text-gray-500"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    <span className="capitalize">
+                    <div className="w-9 h-9 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 group-hover:bg-orange-600 group-hover:text-white transition-colors">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                        <path fillRule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clipRule="evenodd"/>
+                      </svg>
+                    </div>
+                    <span className="capitalize font-bold text-[15px] group-hover:text-orange-600 transition-colors">
                       {mergeName(
                         bidOverviewRes
                           ? bidOverviewRes?.buyer
@@ -1096,39 +1093,25 @@ const ProductOverview = () => {
                       {isMe ? '(You)' : ''}
                     </span>
                   </div>
-                  <div className="flex items-center gap-1 pr-3 border-r-2 py-1 min-w-32 max-w-[50%]">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="size-4 text-gray-500"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="m11.54 22.351.07.04.028.016a.76.76 0 0 0 .723 0l.028-.015.071-.041a16.975 16.975 0 0 0 1.144-.742 19.58 19.58 0 0 0 2.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 0 0-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 0 0 2.682 2.282 16.975 16.975 0 0 0 1.145.742ZM12 13.5a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    <span className="line-clamp-2">
+                  <div className="flex items-center gap-3 pr-4 border-r-2 border-slate-100 py-1 min-w-32">
+                    <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                        <path fillRule="evenodd" d="m11.54 22.351.07.04.028.016a.76.76 0 0 0 .723 0l.028-.015.071-.041a16.975 16.975 0 0 0 1.144-.742 19.58 19.58 0 0 0 2.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 0 0-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 0 0 2.682 2.282 16.975 16.975 0 0 0 1.145.742ZM12 13.5a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" clipRule="evenodd"/>
+                      </svg>
+                    </div>
+                    <span className="line-clamp-2 font-medium max-w-[200px]">
                       {bidOverviewRes
                         ? bidOverviewRes?.buyer?.address
                         : productResponse?.mainProduct?.userId?.address || 'N/A'}
                     </span>
                   </div>
-                  <div className="flex items-center gap-1 py-1 min-w-32 max-w-[25%]">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="size-4 text-gray-500"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M2.625 6.75a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Zm4.875 0A.75.75 0 0 1 8.25 6h12a.75.75 0 0 1 0 1.5h-12a.75.75 0 0 1-.75-.75ZM2.625 12a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0ZM7.5 12a.75.75 0 0 1 .75-.75h12a.75.75 0 0 1 0 1.5h-12A.75.75 0 0 1 7.5 12Zm-4.875 5.25a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Zm4.875 0a.75.75 0 0 1 .75-.75h12a.75.75 0 0 1 0 1.5h-12a.75.75 0 0 1-.75-.75Z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    <span className="capitalize">
+                  <div className="flex items-center gap-3 py-1 min-w-32">
+                    <div className="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                        <path fillRule="evenodd" d="M2.625 6.75a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Zm4.875 0A.75.75 0 0 1 8.25 6h12a.75.75 0 0 1 0 1.5h-12a.75.75 0 0 1-.75-.75ZM2.625 12a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0ZM7.5 12a.75.75 0 0 1 .75-.75h12a.75.75 0 0 1 0 1.5h-12A.75.75 0 0 1 7.5 12Zm-4.875 5.25a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Zm4.875 0a.75.75 0 0 1 .75-.75h12a.75.75 0 0 1 0 1.5h-12a.75.75 0 0 1-.75-.75Z" clipRule="evenodd"/>
+                      </svg>
+                    </div>
+                    <span className="capitalize font-black text-[15px] text-indigo-700">
                       {(bidOverviewRes?.product?.isMultiple || productResponse?.mainProduct?.isMultiple) ? 
                         `${(bidOverviewRes?.product?.items || productResponse?.mainProduct?.items || []).length} Items` : 
                         `${bidOverviewRes ? bidOverviewRes?.product?.quantity : productResponse?.mainProduct?.quantity || 'N/A'} units`
@@ -1242,14 +1225,14 @@ const ProductOverview = () => {
                 </sup>
               )}
             </div>
-            <div className=" grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className=" grid grid-cols-1 lg:grid-cols-12 gap-8 mt-8">
               {/* Left: Requirement Spec */}
-              <div className="lg:col-span-7 rounded-lg p-6 space-y-3">
-                <h3 className="font-semibold text-orange-600 text-xl">
+              <div className="lg:col-span-7 bg-white rounded-2xl shadow-sm border border-slate-100 p-8 space-y-6 hover:shadow-md transition-shadow">
+                <h3 className="font-extrabold text-slate-800 text-2xl tracking-tight border-b border-slate-100 pb-4">
                   Requirement Specifications
                 </h3>
-                <div className="text-sm space-y-2 text-gray-600">
-                  <p className="flex items-center justify-between py-2 border-b-2 capitalize">
+                <div className="text-[15px] space-y-1 text-slate-600 font-medium">
+                  <p className="flex items-center justify-between py-3 border-b border-slate-100 capitalize">
                     <span className="font-semibold">Product Condition:</span>
                     {(bidOverviewRes
                       ? bidOverviewRes?.product?.subCategory?.name
@@ -1274,7 +1257,7 @@ const ProductOverview = () => {
                   {(bidOverviewRes
                     ? bidOverviewRes?.product?.productType
                     : productResponse?.mainProduct?.productType) && (
-                    <p className="flex items-center justify-between py-2 border-b-2 capitalize">
+                    <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 capitalize">
                       <span className="font-semibold">Product Type:</span>
                       {(bidOverviewRes
                         ? bidOverviewRes?.product?.productType
@@ -1285,7 +1268,7 @@ const ProductOverview = () => {
                   {(bidOverviewRes
                     ? bidOverviewRes?.product?.fuelType
                     : productResponse?.mainProduct?.fuelType) && (
-                    <p className="flex items-center justify-between py-2 border-b-2 capitalize">
+                    <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 capitalize">
                       <span className="font-semibold">Fuel Type:</span>
                       {(bidOverviewRes
                         ? bidOverviewRes?.product?.fuelType
@@ -1295,7 +1278,7 @@ const ProductOverview = () => {
                   {(bidOverviewRes
                     ? bidOverviewRes?.product?.transmission
                     : productResponse?.mainProduct?.transmission) && (
-                    <p className="flex items-center justify-between py-2 border-b-2 capitalize">
+                    <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 capitalize">
                       <span className="font-semibold">Transmission:</span>
                       {(bidOverviewRes
                         ? bidOverviewRes?.product?.transmission
@@ -1305,7 +1288,7 @@ const ProductOverview = () => {
                   {(bidOverviewRes
                     ? bidOverviewRes?.product?.oldProductValue
                     : productResponse?.mainProduct?.oldProductValue) && (
-                    <p className="flex items-center justify-between py-2 border-b-2">
+                    <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100">
                       <span className="font-semibold">Old Product In Year:</span>
                       {(bidOverviewRes
                         ? bidOverviewRes?.product?.oldProductValue?.min
@@ -1317,13 +1300,13 @@ const ProductOverview = () => {
                     </p>
                   )}
                   {productResponse?.mainProduct?.categoryId?.categoryName === 'industrial' && (
-                    <p className="flex items-center justify-between py-2 border-b-2">
+                    <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100">
                       <span className="font-semibold">Construction Tool Type:</span> Industrial Tool
                     </p>
                   )}
                   {(bidOverviewRes?.product?.minimumBudget ||
                     productResponse?.mainProduct?.minimumBudget) && (
-                    <p className="flex items-center justify-between py-2 border-b-2">
+                    <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100">
                       <span className="font-semibold">Budget:</span>
                       {currencyConvertor(
                         bidOverviewRes
@@ -1332,7 +1315,7 @@ const ProductOverview = () => {
                       )}
                     </p>
                   )}
-                  <p className="flex items-center justify-between py-2 border-b-2">
+                  <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100">
                     <span className="font-semibold">Required Delivery Date:</span>
                     {dateFormatter(
                       bidOverviewRes
@@ -1343,7 +1326,7 @@ const ProductOverview = () => {
                   {(bidOverviewRes
                     ? bidOverviewRes?.product?.bidActiveDuration
                     : productResponse?.mainProduct?.bidActiveDuration) && (
-                    <p className="flex items-center justify-between py-2 border-b-2">
+                    <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100">
                       <span className="font-semibold">Quote Active Duration:</span>
                       {bidOverviewRes
                         ? bidOverviewRes?.product?.bidActiveDuration
@@ -1354,7 +1337,7 @@ const ProductOverview = () => {
                   {(bidOverviewRes
                     ? bidOverviewRes?.product?.color
                     : productResponse?.mainProduct?.color) && (
-                    <p className="flex items-center justify-between py-2 border-b-2 capitalize">
+                    <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 capitalize">
                       <span className="font-semibold">Color:</span>
                       {(bidOverviewRes
                         ? bidOverviewRes?.product?.color
@@ -1364,7 +1347,7 @@ const ProductOverview = () => {
                   {(bidOverviewRes
                     ? bidOverviewRes?.product?.typeOfVehicle
                     : productResponse?.mainProduct?.typeOfVehicle) && (
-                    <p className="flex items-center justify-between py-2 border-b-2 capitalize">
+                    <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 capitalize">
                       <span className="font-semibold">Type of Vehicle:</span>
                       {(bidOverviewRes
                         ? bidOverviewRes?.product?.typeOfVehicle
@@ -1374,14 +1357,14 @@ const ProductOverview = () => {
                   {(bidOverviewRes
                     ? bidOverviewRes?.product?.typeOfProduct
                     : productResponse?.mainProduct?.typeOfProduct) && (
-                    <p className="flex items-center justify-between py-2 border-b-2 capitalize">
+                    <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 capitalize">
                       <span className="font-semibold">Type of Product:</span>
                       {(bidOverviewRes
                         ? bidOverviewRes?.product?.typeOfProduct
                         : productResponse?.mainProduct?.typeOfProduct) || 'N/A'}
                     </p>
                   )}
-                  <p className="flex items-center justify-between py-2 border-b-2 capitalize">
+                  <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 capitalize">
                     <span className="font-semibold">Payment Mode:</span>
                     {(bidOverviewRes
                       ? bidOverviewRes?.product?.paymentAndDelivery?.paymentMode
@@ -1390,7 +1373,7 @@ const ProductOverview = () => {
                   {(bidOverviewRes
                     ? bidOverviewRes?.product?.paymentAndDelivery?.organizationName
                     : productResponse?.mainProduct?.paymentAndDelivery?.organizationName) && (
-                    <p className="flex items-center justify-between py-2 border-b-2 capitalize">
+                    <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 capitalize">
                       <span className="font-semibold">Organization Name:</span>
                       {(bidOverviewRes
                         ? bidOverviewRes?.product?.paymentAndDelivery?.organizationName
@@ -1401,7 +1384,7 @@ const ProductOverview = () => {
                   {(bidOverviewRes
                     ? bidOverviewRes?.product?.paymentAndDelivery?.organizationAddress
                     : productResponse?.mainProduct?.paymentAndDelivery?.organizationAddress) && (
-                    <p className="flex items-center justify-between py-2 border-b-2 capitalize">
+                    <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 capitalize">
                       <span className="font-semibold">Organization Address:</span>
                       {(bidOverviewRes
                         ? bidOverviewRes?.product?.paymentAndDelivery?.organizationAddress
@@ -1412,14 +1395,14 @@ const ProductOverview = () => {
                   {(bidOverviewRes
                     ? bidOverviewRes?.product?.paymentAndDelivery?.gstNumber
                     : productResponse?.mainProduct?.paymentAndDelivery?.gstNumber) && (
-                    <p className="flex items-center justify-between py-2 border-b-2">
+                    <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100">
                       <span className="font-semibold">GST Number:</span>
                       {(bidOverviewRes
                         ? bidOverviewRes?.product?.paymentAndDelivery?.gstNumber
                         : productResponse?.mainProduct?.paymentAndDelivery?.gstNumber) || 'N/A'}
                     </p>
                   )}
-                  <p className="flex items-center justify-between py-2 border-b-2">
+                  <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100">
                     <span className="font-semibold">Supporting Documents:</span>
                     {productResponse?.mainProduct?.document || bidOverviewRes?.product?.document ? (
                       <p

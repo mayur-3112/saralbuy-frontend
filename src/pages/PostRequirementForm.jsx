@@ -225,11 +225,11 @@ const PostRequirementForm = () => {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
         
         {/* Top Info Section */}
-        <div className="p-6 bg-white border border-slate-200 rounded-lg shadow-sm">
+        <div className="p-6 md:p-8 bg-white/90 backdrop-blur-xl border border-white/50 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
               <label className="block text-sm font-extrabold text-slate-800 mb-2">Title of Requirement*</label>
-              <Input placeholder="e.g., Procurement of Seamless Pipes and Tubes" {...register('title')} className="bg-slate-50 border-slate-200 focus-visible:ring-orange-500 font-medium" />
+              <Input placeholder="e.g., Procurement of Seamless Pipes and Tubes" {...register('title')} className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium" />
             </div>
 
             <div>
@@ -239,7 +239,7 @@ const PostRequirementForm = () => {
                 control={control}
                 render={({ field: { onChange, value } }) => (
                   <Select value={value} onValueChange={(val) => { onChange(val); setValue('subCategoryId', ''); }}>
-                    <SelectTrigger className="w-full bg-slate-50 border-slate-200 focus:ring-orange-500">
+                    <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
                       <SelectValue placeholder="Select Main Category" />
                     </SelectTrigger>
                     <SelectContent>
@@ -271,7 +271,7 @@ const PostRequirementForm = () => {
                     }} 
                     disabled={!selectedCategoryId}
                   >
-                    <SelectTrigger className="w-full bg-slate-50 border-slate-200 focus:ring-orange-500">
+                    <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
                       <SelectValue placeholder="Select Subcategory" />
                     </SelectTrigger>
                     <SelectContent>
@@ -288,7 +288,7 @@ const PostRequirementForm = () => {
 
         {/* Dynamic Item Rows */}
         {mode === 'single' && (
-          <div className="p-6 bg-white border border-slate-200 rounded-lg shadow-sm">
+          <div className="p-6 md:p-8 bg-white/90 backdrop-blur-xl border border-white/50 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
             <div className="flex items-center justify-between border-b border-slate-200 pb-4 mb-4">
               <h3 className="text-lg font-black text-slate-900">List of Materials/Services</h3>
             </div>
@@ -305,20 +305,20 @@ const PostRequirementForm = () => {
 
             <div className="space-y-4">
               {fields.map((item, index) => (
-                <div key={item.id} className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-50/50 p-3 rounded-md border border-slate-200 hover:border-orange-300 transition-colors">
+                <div key={item.id} className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-white p-3 rounded-xl border border-slate-200 hover:border-orange-300 hover:shadow-md transition-all">
                   <div className="md:col-span-3">
                     <label className="block md:hidden text-xs font-bold text-slate-500 mb-1">Item Name</label>
-                    <Input placeholder="e.g., Pipe" {...register(`items.${index}.itemName`)} className="bg-white border-slate-200 font-medium" />
+                    <Input placeholder="e.g., Pipe" {...register(`items.${index}.itemName`)} className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium" />
                   </div>
 
                   <div className="md:col-span-3">
                     <label className="block md:hidden text-xs font-bold text-slate-500 mb-1">Description / Specs</label>
-                    <Input placeholder="e.g., DN65 ASTM A106" {...register(`items.${index}.itemDescription`)} className="bg-white border-slate-200 font-medium" />
+                    <Input placeholder="e.g., DN65 ASTM A106" {...register(`items.${index}.itemDescription`)} className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium" />
                   </div>
                   
                   <div className="md:col-span-2">
                     <label className="block md:hidden text-xs font-bold text-slate-500 mb-1">Qty</label>
-                    <Input type="number" placeholder="Qty" {...register(`items.${index}.quantity`)} className="bg-white border-slate-200 font-medium" min="1" />
+                    <Input type="number" placeholder="Qty" {...register(`items.${index}.quantity`)} className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium" min="1" />
                   </div>
                   
                   <div className="md:col-span-1">
@@ -328,7 +328,7 @@ const PostRequirementForm = () => {
                       control={control}
                       render={({ field: { onChange, value } }) => (
                         <Select value={value} onValueChange={onChange}>
-                          <SelectTrigger className="bg-white border-slate-200 font-medium">
+                          <SelectTrigger className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
                             <SelectValue placeholder="Unit" />
                           </SelectTrigger>
                           <SelectContent>
@@ -354,7 +354,7 @@ const PostRequirementForm = () => {
                               type="text"
                               value={value === '__custom__' ? '' : value}
                               placeholder="Type brand name..."
-                              className="bg-white border-slate-200 font-medium flex-1"
+                              className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium flex-1"
                               autoFocus={value === '__custom__'}
                               onChange={(e) => onChange(e.target.value)}
                               onBlur={(e) => {
@@ -370,7 +370,7 @@ const PostRequirementForm = () => {
                           </div>
                         ) : (
                           <Select value={value} onValueChange={onChange}>
-                            <SelectTrigger className="bg-white border-slate-200 font-medium">
+                            <SelectTrigger className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
                               <SelectValue placeholder="Brand" />
                             </SelectTrigger>
                             <SelectContent>
@@ -408,7 +408,7 @@ const PostRequirementForm = () => {
         )}
 
         {/* Documents & Terms Section */}
-        <div className="p-6 bg-white border border-slate-200 rounded-lg shadow-sm">
+        <div className="p-6 md:p-8 bg-white/90 backdrop-blur-xl border border-white/50 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
           <h3 className="text-lg font-black text-slate-900 border-b border-slate-200 pb-4 mb-6">Other Details & Terms</h3>
           
           <div className="mb-8">
@@ -451,14 +451,14 @@ const PostRequirementForm = () => {
             <Textarea
               placeholder="Any specific delivery terms, conditions, or quotation instructions..."
               {...register('otherTerms')}
-              className="bg-slate-50 border-slate-200 min-h-[100px] font-medium"
+              className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium min-h-[100px]"
             />
           </div>
         </div>
 
         {/* Contact & Delivery Details */}
-        <div className="p-6 bg-white border border-slate-200 rounded-lg shadow-sm">
-          <h3 className="text-lg font-black text-slate-900 border-b border-slate-200 pb-4 mb-6">Delivery & Organization Details</h3>
+        <div className="p-6 md:p-8 bg-white/90 backdrop-blur-xl border border-white/50 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(234,88,12,0.08)] transition-all duration-300">
+          <h3 className="text-xl font-extrabold text-slate-800 tracking-tight border-b border-slate-100 pb-5 mb-8">Delivery & Organization Details</h3>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             <div>
@@ -490,7 +490,7 @@ const PostRequirementForm = () => {
                 control={control}
                 render={({ field: { onChange, value } }) => (
                   <Select value={value} onValueChange={onChange}>
-                    <SelectTrigger className="bg-slate-50 border-slate-200 font-medium">
+                    <SelectTrigger className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
                       <SelectValue placeholder="Select Payment Mode" />
                     </SelectTrigger>
                     <SelectContent>
@@ -511,7 +511,7 @@ const PostRequirementForm = () => {
                 control={control}
                 render={({ field: { onChange, value } }) => (
                   <Select value={value} onValueChange={onChange}>
-                    <SelectTrigger className="bg-slate-50 border-slate-200 font-medium">
+                    <SelectTrigger className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
                       <SelectValue placeholder="Yes / No" />
                     </SelectTrigger>
                     <SelectContent>
@@ -527,11 +527,11 @@ const PostRequirementForm = () => {
               <div className="sm:col-span-2 md:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-6 p-4 bg-orange-50/50 border border-orange-100 rounded-md">
                 <div>
                   <label className="block text-sm font-extrabold text-slate-800 mb-2">GST Number*</label>
-                  <Input placeholder="Enter GSTIN" {...register('gstNumber')} className="bg-white border-slate-200 font-medium uppercase" maxLength={15} />
+                  <Input placeholder="Enter GSTIN" {...register('gstNumber')} className="bg-white border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium uppercase" maxLength={15} />
                 </div>
                 <div>
                   <label className="block text-sm font-extrabold text-slate-800 mb-2">Organization Name</label>
-                  <Input placeholder="Registered Company Name" {...register('organizationName')} className="bg-white border-slate-200 font-medium" />
+                  <Input placeholder="Registered Company Name" {...register('organizationName')} className="bg-white border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium" />
                 </div>
               </div>
             )}
@@ -539,7 +539,7 @@ const PostRequirementForm = () => {
             <div className="sm:col-span-2 md:col-span-3">
               <label className="block text-sm font-extrabold text-slate-800 mb-2">Locality (City/State)*</label>
               <p className="text-xs text-slate-500 mb-2 font-medium">⚠️ Privacy Warning: Please do not enter your full street address here. Only provide the general locality, city, or state. Full details should only be shared when closing the deal.</p>
-              <Input placeholder="e.g. Rajajinagar, Bangalore, Karnataka" {...register('deliveryAddress')} className="bg-slate-50 border-slate-200 font-medium" />
+              <Input placeholder="e.g. Rajajinagar, Bangalore, Karnataka" {...register('deliveryAddress')} className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium" />
             </div>
           </div>
         </div>
@@ -549,9 +549,10 @@ const PostRequirementForm = () => {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full md:w-auto px-12 h-14 bg-orange-600 hover:bg-orange-700 text-white font-black text-lg rounded shadow-md transition-all active:scale-[0.98]"
+            className="w-full md:w-auto px-14 h-16 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 hover:shadow-xl hover:shadow-orange-500/40 hover:-translate-y-1 active:translate-y-0 text-white font-bold text-lg rounded-2xl transition-all duration-300 group"
           >
             {loading ? <Spinner className="w-6 h-6 animate-spin mx-auto" /> : 'Post Requirement'}
+            {!loading && <span className="ml-2 opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-2 group-hover:translate-x-1 transition-all duration-300">→</span>}
           </Button>
         </div>
       </form>

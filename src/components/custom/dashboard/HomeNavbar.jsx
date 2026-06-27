@@ -572,9 +572,9 @@ const HomeNavbar = () => {
     };
   }, [user?._id]);
   return (
-    <section className="bg-gray-100">
-      <div className="mb-2 relative z-9 max-w-7xl mx-auto">
-        <div className="p-3 sticky top-0">
+    <section className="sticky top-0 z-50 w-full bg-white/70 backdrop-blur-xl border-b border-white/50 shadow-sm transition-all duration-300">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-3">
+        <div>
           {/* ── Desktop Nav ─────────────────────────────────────────────── */}
           <nav className="hidden justify-between lg:flex items-center gap-2 xl:gap-4 w-full">
             {/* Logo + Navigation Links */}
@@ -906,16 +906,17 @@ const HomeNavbar = () => {
               }}
               variant="default"
               size="sm"
-              className="bg-orange-600 hover:bg-orange-500 hover:shadow-lg hover:shadow-orange-600/15 active:scale-95 text-white font-bold px-5 py-2.5 rounded-lg transition-all duration-200 cursor-pointer text-sm border-0"
+              className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 hover:shadow-xl hover:shadow-orange-500/30 hover:-translate-y-0.5 active:scale-95 active:translate-y-0 text-white font-bold px-6 py-2.5 rounded-xl transition-all duration-300 cursor-pointer text-sm border-0 group"
             >
               Post Requirements
+              <span className="ml-1 opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-1 group-hover:translate-x-1 transition-all duration-300">→</span>
             </Button>
 
             {/* My Account Button */}
             <Button 
               onClick={handleProfileClick} 
               variant="outline" 
-              className="hidden lg:flex items-center gap-2 font-bold text-slate-700 border border-slate-200 hover:border-orange-350 hover:bg-orange-50/50 hover:text-orange-600 px-4 py-2 rounded-full cursor-pointer transition-all duration-200 shadow-xs bg-white active:scale-95"
+              className="hidden lg:flex items-center gap-2 font-bold text-slate-700 border border-slate-200/60 hover:border-orange-300 hover:bg-orange-50 hover:text-orange-600 hover:shadow-md hover:-translate-y-0.5 px-5 py-2.5 rounded-full cursor-pointer transition-all duration-300 shadow-sm bg-white/80 active:scale-95"
             >
               <UserRound className="w-4 h-4" />
               My Account
