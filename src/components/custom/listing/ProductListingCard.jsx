@@ -93,8 +93,7 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
     <>
       <Authentication setOpen={setOpen} open={open} />
       <div 
-        className="group w-full rounded-2xl border border-slate-100 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-400 ease-out flex flex-col md:flex-row justify-between mb-5 relative overflow-hidden cursor-pointer bg-white"
-        onClick={handleAction}
+        className="group w-full rounded-2xl border border-slate-100 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-400 ease-out flex flex-col md:flex-row justify-between mb-5 relative overflow-hidden bg-white"
       >
         {/* Animated Gradient Border Effect */}
         <div className="absolute inset-0 bg-gradient-to-r from-orange-400 via-pink-500 to-indigo-500 opacity-0 group-hover:opacity-10 transition-opacity duration-500 rounded-2xl pointer-events-none" />
