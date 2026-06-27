@@ -404,7 +404,7 @@ const PostRequirementForm = () => {
                   </div>
 
                   <div className="md:col-span-1 flex justify-end md:justify-center mt-2 md:mt-0">
-                    <button type="button" onClick={() => remove(index)} className="text-slate-400 hover:text-red-500 p-2 hover:bg-red-50 rounded transition-colors" title="Delete Row">
+                    <button type="button" onClick={() => remove(index)} disabled={fields.length <= 1} className={`p-2 rounded transition-colors ${fields.length <= 1 ? 'text-slate-200 cursor-not-allowed' : 'text-slate-400 hover:text-red-500 hover:bg-red-50'}`} title={fields.length <= 1 ? 'At least one item is required' : 'Delete Row'}>
                       <Trash2 className="w-5 h-5" />
                     </button>
                   </div>
