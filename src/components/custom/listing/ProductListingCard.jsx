@@ -65,13 +65,15 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
   const descriptionText = prod?.description || product?.description || productTitle;
 
   const items = [];
-  if (prod?.isMergeQuote && prod?.products?.length > 0) {
+  if (prod?.items && prod.items.length > 0) {
+    prod.items.forEach(item => {
+      const name = item.typeOfProduct || item.subCategoryName || item.brand || item.productType;
+      if (name && !items.includes(name)) items.push(name);
+    });
+  } else if (prod?.isMergeQuote && prod?.products?.length > 0) {
     items.push(...prod.products.map(p => p.title || p.categoryName));
   } else if (categoryName) {
     items.push(categoryName);
-  }
-  if (productTitle && !items.includes(productTitle)) {
-    items.unshift(productTitle);
   }
 
   const createdAt = product?.createdAt || prod?.createdAt;
