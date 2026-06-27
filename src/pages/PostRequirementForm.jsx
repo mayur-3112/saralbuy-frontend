@@ -226,6 +226,10 @@ const PostRequirementForm = () => {
         
         {/* Top Info Section */}
         <div className="p-6 md:p-8 bg-white/90 backdrop-blur-xl border border-white/50 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+          <div className="mb-6 border-b border-slate-100 pb-4">
+            <h3 className="text-lg font-black text-slate-900">Basic Information</h3>
+            <p className="text-sm text-slate-500 font-medium mt-1">Provide the primary details of your requirement to help suppliers quickly understand what you need.</p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
               <label className="block text-sm font-extrabold text-slate-800 mb-2">Title of Requirement*</label>
@@ -289,8 +293,11 @@ const PostRequirementForm = () => {
         {/* Dynamic Item Rows */}
         {mode === 'single' && (
           <div className="p-6 md:p-8 bg-white/90 backdrop-blur-xl border border-white/50 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-            <div className="flex items-center justify-between border-b border-slate-200 pb-4 mb-4">
-              <h3 className="text-lg font-black text-slate-900">List of Materials/Services</h3>
+            <div className="border-b border-slate-200 pb-4 mb-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-black text-slate-900">List of Materials/Services</h3>
+              </div>
+              <p className="text-sm text-slate-500 font-medium mt-1">Add the specific items, materials, or services you need, including quantities and technical specifications.</p>
             </div>
           
             {/* Header Row for Desktop */}
@@ -409,7 +416,10 @@ const PostRequirementForm = () => {
 
         {/* Documents & Terms Section */}
         <div className="p-6 md:p-8 bg-white/90 backdrop-blur-xl border border-white/50 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-          <h3 className="text-lg font-black text-slate-900 border-b border-slate-200 pb-4 mb-6">Other Details & Terms</h3>
+          <div className="border-b border-slate-200 pb-4 mb-6">
+            <h3 className="text-lg font-black text-slate-900">Other Details & Terms</h3>
+            <p className="text-sm text-slate-500 font-medium mt-1">Upload relevant documents, specifications, or CAD drawings, and mention any specific terms.</p>
+          </div>
           
           <div className="mb-8">
             <label className="block text-sm font-extrabold text-slate-800 mb-2">Attachments (Optional, max 2 docs)</label>
@@ -458,7 +468,10 @@ const PostRequirementForm = () => {
 
         {/* Contact & Delivery Details */}
         <div className="p-6 md:p-8 bg-white/90 backdrop-blur-xl border border-white/50 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(234,88,12,0.08)] transition-all duration-300">
-          <h3 className="text-xl font-extrabold text-slate-800 tracking-tight border-b border-slate-100 pb-5 mb-8">Delivery & Organization Details</h3>
+          <div className="border-b border-slate-100 pb-5 mb-8">
+            <h3 className="text-xl font-extrabold text-slate-800 tracking-tight">Delivery & Organization Details</h3>
+            <p className="text-sm text-slate-500 font-medium mt-1">Specify your timeline, payment terms, and delivery location so suppliers can quote accurately.</p>
+          </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             <div>
