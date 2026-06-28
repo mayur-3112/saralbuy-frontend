@@ -8,19 +8,6 @@ import { useUserState } from '../../../redux/hooks/useUser';
 import { useNavigate } from 'react-router-dom';
 
 
-
-const CATEGORIES = [
-  'All Projects',
-  'Building & Structural',
-  'Electrical & Lighting',
-  'Plumbing & Sanitaryware',
-  'Flooring, Tiles & Granite',
-  'Interior & Paints',
-  'Plywood & Hardware',
-  'Safety Gear & Uniforms',
-  'Industrial Tools & Pumps'
-];
-
 const CITIES = ['All Locations', 'Bengaluru', 'Mangaluru', 'Hubballi', 'Mysuru', 'Belagavi', 'Tumakuru', 'Dharwad'];
 
 export default function LiveSourcingBoard({ onOpenAuth }) {
@@ -108,7 +95,7 @@ export default function LiveSourcingBoard({ onOpenAuth }) {
           <div className="space-y-2 pt-2 border-t border-slate-200/60">
             <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Filter by Category:</p>
             <div className="flex flex-wrap items-center gap-1.5">
-              {CATEGORIES.map((cat) => (
+              {['All Projects', ...Array.from(new Set(requirements.map(req => req.categoryId?.categoryName).filter(Boolean)))].map((cat) => (
                 <button
                   key={cat}
                   type="button"

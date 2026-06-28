@@ -215,7 +215,7 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
             </div>
             {expiryDateObj && !isNaN(expiryDateObj.getTime()) && (
               <div className="flex justify-between items-center gap-2">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Deadline</span>
+                <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Validity</span>
                 <span className="text-[12px] font-bold text-gray-700">
                   {format(expiryDateObj, 'MMM d, yyyy')}
                 </span>
