@@ -317,46 +317,104 @@ const SellerForm = ({
         </div>
 
         {/* Item-by-Item Pricing & Totaler */}
-        <div className="w-full sm:col-span-2 bg-white rounded-md border border-orange-100 overflow-hidden mb-2">
-          <div className="bg-orange-50/50 px-4 py-3 border-b border-orange-100 flex justify-between items-center">
-            <div>
-              <h4 className="font-semibold text-sm text-slate-800 flex items-center gap-2">
-                <Package className="w-4 h-4 text-orange-600" />
-                Line Item Pricing
-              </h4>
-              <p className="text-xs text-slate-500 mt-0.5">{productResponse?.mainProduct?.title}</p>
-            </div>
-            
-            {/* Contextual Quick-Link to Profit Engine */}
-            <a 
-              href="/supplier-tools" 
-              target="_blank"
-              className="text-xs font-semibold text-orange-600 hover:text-orange-700 bg-orange-100 hover:bg-orange-200 px-3 py-1.5 rounded-full transition-colors flex items-center gap-1.5"
-            >
-              <Calculator className="w-3.5 h-3.5" />
-              Margin Calculator
-            </a>
-          </div>
+        {(() => {
+          const isMulti = productResponse?.mainProduct?.isMultiple;
+          const items = productResponse?.mainProduct?.items || [];
           
-          <div className="p-4 grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="col-span-2 sm:col-span-1">
-              <Label className="mb-1.5 text-xs text-slate-500">Unit Price (₹)</Label>
-              <Input type="number" step="0.01" min="0" placeholder="0.00" className="h-9" {...register('unitPrice')} />
+          if (isMulti && items.length > 1) {
+            return (
+              <div className="w-full sm:col-span-2 bg-white rounded-md border border-orange-100 overflow-hidden mb-2">
+                <div className="bg-orange-50/50 px-4 py-3 border-b border-orange-100 flex justify-between items-center">
+                  <div>
+                    <h4 className="font-semibold text-sm text-slate-800 flex items-center gap-2">
+                      <Package className="w-4 h-4 text-orange-600" />
+                      Line Item Pricing
+                    </h4>
+                    <p className="text-xs text-slate-500 mt-0.5">{items.length} items — price each item separately</p>
+                  </div>
+                  <a 
+                    href="/supplier-tools" 
+                    target="_blank"
+                    className="text-xs font-semibold text-orange-600 hover:text-orange-700 bg-orange-100 hover:bg-orange-200 px-3 py-1.5 rounded-full transition-colors flex items-center gap-1.5"
+                  >
+                    <Calculator className="w-3.5 h-3.5" />
+                    Margin Calculator
+                  </a>
+                </div>
+                <div className="divide-y divide-orange-50">
+                  {items.map((item, idx) => (
+                    <div key={idx} className="p-4">
+                      <div className="flex items-center gap-2 mb-3">
+                        <span className="w-6 h-6 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-xs font-bold">{idx + 1}</span>
+                        <span className="text-sm font-semibold text-slate-700">{item.subCategoryName || item.typeOfProduct || 'Item ' + (idx + 1)}</span>
+                        <span className="text-xs text-slate-400 ml-auto">{item.quantity} {item.quantityUnit}</span>
+                      </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div>
+                          <Label className="mb-1.5 text-xs text-slate-500">Unit Price (₹)</Label>
+                          <Input type="number" step="0.01" min="0" placeholder="0.00" className="h-9" {...register(`items.${idx}.unitPrice`)} />
+                        </div>
+                        <div>
+                          <Label className="mb-1.5 text-xs text-slate-500">Discount (%)</Label>
+                          <Input type="number" step="0.1" min="0" max="100" placeholder="0%" className="h-9" {...register(`items.${idx}.discount`)} />
+                        </div>
+                        <div>
+                          <Label className="mb-1.5 text-xs text-slate-500">Qty ({item.quantityUnit})</Label>
+                          <Input type="text" disabled value={item.quantity || 1} className="h-9 bg-slate-50" />
+                        </div>
+                        <div>
+                          <Label className="mb-1.5 text-xs text-slate-500">Freight Cost (₹)</Label>
+                          <Input type="number" step="0.01" min="0" placeholder="0.00" className="h-9" {...register(`items.${idx}.freightCost`)} />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          }
+          
+          // Single item — original layout
+          return (
+            <div className="w-full sm:col-span-2 bg-white rounded-md border border-orange-100 overflow-hidden mb-2">
+              <div className="bg-orange-50/50 px-4 py-3 border-b border-orange-100 flex justify-between items-center">
+                <div>
+                  <h4 className="font-semibold text-sm text-slate-800 flex items-center gap-2">
+                    <Package className="w-4 h-4 text-orange-600" />
+                    Line Item Pricing
+                  </h4>
+                  <p className="text-xs text-slate-500 mt-0.5">{productResponse?.mainProduct?.title}</p>
+                </div>
+                <a 
+                  href="/supplier-tools" 
+                  target="_blank"
+                  className="text-xs font-semibold text-orange-600 hover:text-orange-700 bg-orange-100 hover:bg-orange-200 px-3 py-1.5 rounded-full transition-colors flex items-center gap-1.5"
+                >
+                  <Calculator className="w-3.5 h-3.5" />
+                  Margin Calculator
+                </a>
+              </div>
+              <div className="p-4 grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div className="col-span-2 sm:col-span-1">
+                  <Label className="mb-1.5 text-xs text-slate-500">Unit Price (₹)</Label>
+                  <Input type="number" step="0.01" min="0" placeholder="0.00" className="h-9" {...register('unitPrice')} />
+                </div>
+                <div className="col-span-2 sm:col-span-1">
+                  <Label className="mb-1.5 text-xs text-slate-500">Discount (%)</Label>
+                  <Input type="number" step="0.1" min="0" max="100" placeholder="0%" className="h-9" {...register('discount')} />
+                </div>
+                <div className="col-span-2 sm:col-span-1">
+                  <Label className="mb-1.5 text-xs text-slate-500">Qty ({productResponse?.mainProduct?.quantityUnit})</Label>
+                  <Input type="text" disabled value={productResponse?.mainProduct?.quantity || 1} className="h-9 bg-slate-50" />
+                </div>
+                <div className="col-span-2 sm:col-span-1">
+                  <Label className="mb-1.5 text-xs text-slate-500">Freight Cost (₹)</Label>
+                  <Input type="number" step="0.01" min="0" placeholder="0.00" className="h-9" {...register('freightCost')} />
+                </div>
+              </div>
             </div>
-            <div className="col-span-2 sm:col-span-1">
-              <Label className="mb-1.5 text-xs text-slate-500">Discount (%)</Label>
-              <Input type="number" step="0.1" min="0" max="100" placeholder="0%" className="h-9" {...register('discount')} />
-            </div>
-            <div className="col-span-2 sm:col-span-1">
-              <Label className="mb-1.5 text-xs text-slate-500">Qty ({productResponse?.mainProduct?.quantityUnit})</Label>
-              <Input type="text" disabled value={productResponse?.mainProduct?.quantity || 1} className="h-9 bg-slate-50" />
-            </div>
-            <div className="col-span-2 sm:col-span-1">
-              <Label className="mb-1.5 text-xs text-slate-500">Freight Cost (₹)</Label>
-              <Input type="number" step="0.01" min="0" placeholder="0.00" className="h-9" {...register('freightCost')} />
-            </div>
-          </div>
-        </div>
+          );
+        })()}
 
         {/* Price Basis */}
         <div className="w-full">
@@ -514,15 +572,32 @@ const SellerForm = ({
 
       {/* Live Totaler Panel */}
       {(() => {
-        const uPrice = parseFloat(watch('unitPrice')) || 0;
-        const disc = parseFloat(watch('discount')) || 0;
-        const fCost = parseFloat(watch('freightCost')) || 0;
+        const isMulti = productResponse?.mainProduct?.isMultiple;
+        const items = productResponse?.mainProduct?.items || [];
         const tRate = parseFloat(watch('taxes')) || 0;
-        const qty = productResponse?.mainProduct?.quantity || 1;
         
-        const subtotal = (uPrice * (1 - disc/100)) * qty;
-        const taxAmount = (subtotal + fCost) * (tRate/100);
-        const grandTotal = subtotal + fCost + taxAmount;
+        let subtotal = 0;
+        let totalFreight = 0;
+        
+        if (isMulti && items.length > 1) {
+          items.forEach((item, idx) => {
+            const uPrice = parseFloat(watch(`items.${idx}.unitPrice`)) || 0;
+            const disc = parseFloat(watch(`items.${idx}.discount`)) || 0;
+            const fCost = parseFloat(watch(`items.${idx}.freightCost`)) || 0;
+            const qty = item.quantity || 1;
+            subtotal += (uPrice * (1 - disc/100)) * qty;
+            totalFreight += fCost;
+          });
+        } else {
+          const uPrice = parseFloat(watch('unitPrice')) || 0;
+          const disc = parseFloat(watch('discount')) || 0;
+          totalFreight = parseFloat(watch('freightCost')) || 0;
+          const qty = productResponse?.mainProduct?.quantity || 1;
+          subtotal = (uPrice * (1 - disc/100)) * qty;
+        }
+        
+        const taxAmount = (subtotal + totalFreight) * (tRate/100);
+        const grandTotal = subtotal + totalFreight + taxAmount;
 
         return (
           <div className="mt-6 border-t border-slate-200 pt-4 pb-2">
@@ -533,7 +608,7 @@ const SellerForm = ({
               </div>
               <div className="flex justify-between text-slate-600">
                 <span>Freight:</span>
-                <span>₹ {fCost.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                <span>₹ {totalFreight.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
               <div className="flex justify-between text-slate-600">
                 <span>Estimated Tax ({tRate}%):</span>
