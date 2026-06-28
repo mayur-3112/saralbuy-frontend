@@ -349,11 +349,17 @@ const SellerForm = ({
                 </div>
                 <div className="divide-y divide-orange-50">
                   {items.map((item, idx) => (
-                    <div key={idx} className="p-4">
-                      <div className="flex items-center gap-2 mb-3">
-                        <span className="w-6 h-6 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-xs font-bold">{idx + 1}</span>
-                        <span className="text-sm font-semibold text-slate-700">{item.subCategoryName || item.typeOfProduct || 'Item ' + (idx + 1)}</span>
-                        <span className="text-xs text-slate-400 ml-auto">{item.quantity} {item.quantityUnit}</span>
+                    <div key={idx} className="p-6">
+                      <div className="flex items-start gap-3 mb-5">
+                        <span className="w-7 h-7 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-sm font-bold mt-0.5">{idx + 1}</span>
+                        <div className="flex-1">
+                          <span className="text-base font-bold text-slate-800">{item.subCategoryName || item.typeOfProduct || 'Item ' + (idx + 1)}</span>
+                          <div className="text-sm text-slate-500 mt-1 flex flex-wrap gap-4">
+                            {item.brand && <span><span className="font-medium text-slate-400">Brand:</span> {item.brand}</span>}
+                            {(item.typeOfProduct || item.model) && <span><span className="font-medium text-slate-400">Type:</span> {item.typeOfProduct || item.model}</span>}
+                          </div>
+                        </div>
+                        <span className="text-sm font-semibold text-slate-500 whitespace-nowrap bg-slate-100 px-3 py-1 rounded-full">{item.quantity} {item.quantityUnit}</span>
                       </div>
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         <div>
@@ -1382,11 +1388,11 @@ const ProductOverview = () => {
                   </SheetTrigger>
                 </div>
                 
-                <SheetContent side="right" className="w-full sm:max-w-xl md:max-w-2xl overflow-y-auto bg-slate-50 p-0 border-l-0 sm:border-l">
-                  <SheetHeader className="p-6 bg-white border-b border-slate-100 sticky top-0 z-10 shadow-sm">
-                    <SheetTitle className="text-2xl font-extrabold text-slate-800">Submit Quotation</SheetTitle>
+                <SheetContent side="right" className="w-full sm:max-w-2xl md:max-w-3xl lg:max-w-4xl overflow-y-auto bg-slate-50 p-0 border-l-0 sm:border-l">
+                  <SheetHeader className="p-8 bg-white border-b border-slate-100 sticky top-0 z-10 shadow-sm">
+                    <SheetTitle className="text-3xl font-extrabold text-slate-800">Submit Quotation</SheetTitle>
                   </SheetHeader>
-                  <div className="p-6 pb-20">
+                  <div className="p-4 sm:p-8 lg:p-10 pb-24">
                     {isMergeQuote ? (
                       <MergeBidForm
                         productResponse={productResponse}
