@@ -1369,7 +1369,7 @@ const ProductOverview = () => {
                     navigate={navigate}
                   />
                 ) : (
-                  <SellerQuotationDetails
+                  <SellerForm
                     productResponse={productResponse}
                     bidOverviewRes={bidOverviewRes}
                     soldProduct={soldProduct}
