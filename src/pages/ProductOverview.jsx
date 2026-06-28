@@ -202,7 +202,7 @@ const MergeBidForm = ({ productResponse, userProfile, navigate }) => {
 
   return (
     <form
-      className="lg:col-span-5 bg-gray-200/80 rounded-lg p-6 space-y-4 my-auto h-fit"
+      className="w-full bg-gray-200/80 rounded-lg p-6 space-y-4 my-auto h-fit"
       onSubmit={handleSendMessage}
     >
       <h3 className="font-semibold text-orange-600">Merge Quote</h3>
@@ -247,7 +247,7 @@ const SellerForm = ({
 }) => {
   return (
     <form
-      className="w-full lg:col-span-5 bg-gray-200/80 rounded-lg p-3 sm:p-4 md:p-6 space-y-4"
+      className="w-full bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-6 sm:p-8 space-y-6"
       onSubmit={handleSubmit(onSubmit)}
     >
       <h3 className="font-semibold text-orange-600 text-base sm:text-lg">
@@ -1172,9 +1172,9 @@ const ProductOverview = () => {
                 </sup>
               )}
             </div>
-            <div className=" grid grid-cols-1 lg:grid-cols-12 gap-8 mt-8">
-              {/* Left Column: Sections */}
-              <div className="lg:col-span-7 space-y-6">
+            <div className="max-w-5xl mx-auto flex flex-col gap-10 mt-8">
+              {/* Top Section: Requirement Specifications */}
+              <div className="w-full space-y-6">
                 
                 {/* 1. Requirement Specifications */}
                 <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 space-y-6 hover:shadow-md transition-shadow">
@@ -1360,28 +1360,30 @@ const ProductOverview = () => {
                   </div>
                 </div>
               </div>
-              {/* Right: Form */}
-              {isMergeQuote ? (
-                <MergeBidForm
-                  productResponse={productResponse}
-                  userProfile={userProfile}
-                  navigate={navigate}
-                />
-              ) : (
-                <SellerForm
-                  handleSubmit={handleSubmit}
-                  onSubmit={onSubmit}
-                  register={register}
-                  control={control}
-                  userProfile={userProfile}
-                  bidOverviewRes={bidOverviewRes}
-                  productResponse={productResponse}
-                  createBidLoading={createBidLoading}
-                  updateUserBidDetsLoading={updateUserBidDetsLoading}
-                  soldProduct={soldProduct}
-                  watch={watch}
-                />
-              )}
+              {/* Bottom Section: Quotation Form */}
+              <div className="w-full">
+                {isMergeQuote ? (
+                  <MergeBidForm
+                    productResponse={productResponse}
+                    userProfile={userProfile}
+                    navigate={navigate}
+                  />
+                ) : (
+                  <SellerQuotationDetails
+                    productResponse={productResponse}
+                    bidOverviewRes={bidOverviewRes}
+                    soldProduct={soldProduct}
+                    createBidLoading={createBidLoading}
+                    updateUserBidDetsLoading={updateUserBidDetsLoading}
+                    userProfile={userProfile}
+                    isMultiple={productResponse?.mainProduct?.isMultiple}
+                    register={register}
+                    handleSubmit={handleSubmit}
+                    onSubmit={onSubmit}
+                    watch={watch}
+                  />
+                )}
+              </div>
             </div>
           </div>
         </div>
