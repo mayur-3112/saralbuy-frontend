@@ -1188,6 +1188,40 @@ const ProductOverview = () => {
                     Requirement Specifications
                   </h3>
 
+                  {/* Requested Items (Restored) */}
+                  {(bidOverviewRes?.product?.isMultiple || productResponse?.mainProduct?.isMultiple) && (
+                    <div className="mt-4 border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm">
+                      <div className="bg-gray-50 px-5 py-4 border-b border-gray-200 flex items-center justify-between">
+                        <h3 className="font-bold text-gray-800 text-lg">Requested Items</h3>
+                        <span className="text-sm font-medium text-gray-500">{(bidOverviewRes?.product?.items || productResponse?.mainProduct?.items || []).length} items</span>
+                      </div>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse">
+                          <thead>
+                            <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider border-b border-gray-200">
+                              <th className="px-5 py-3 font-semibold">Item Name</th>
+                              <th className="px-5 py-3 font-semibold">Brand</th>
+                              <th className="px-5 py-3 font-semibold">Model/Type</th>
+                              <th className="px-5 py-3 font-semibold text-right">Required Qty</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-gray-100 bg-white">
+                            {(bidOverviewRes?.product?.items || productResponse?.mainProduct?.items || []).map((item, idx) => (
+                              <tr key={idx} className="hover:bg-slate-50 transition-colors">
+                                <td className="px-5 py-4 text-sm font-bold text-gray-900">{item.subCategoryName || "N/A"}</td>
+                                <td className="px-5 py-4 text-sm text-gray-600">{item.brand || "N/A"}</td>
+                                <td className="px-5 py-4 text-sm text-gray-600">{item.typeOfProduct || item.model || "N/A"}</td>
+                                <td className="px-5 py-4 text-right">
+                                  <span className="font-black text-orange-600 text-base">{item.quantity}</span>
+                                  <span className="text-xs font-bold text-gray-500 ml-1">{item.quantityUnit}</span>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
 
                   {/* General Specs */}
                   <div className="text-[15px] space-y-1 text-slate-600 font-medium">
