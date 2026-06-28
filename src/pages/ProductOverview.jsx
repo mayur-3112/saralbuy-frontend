@@ -966,42 +966,8 @@ const ProductOverview = () => {
           <div className="">
             {/* Content */}
             <div className="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
-              {/* Image */}
-              <div className="lg:col-span-4 bg-white border border-slate-100 flex justify-center items-center rounded-2xl p-8 max-h-72 relative overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 group">
-                <div className="absolute inset-0 bg-gradient-to-br from-orange-50 to-pink-50 opacity-50" />
-                {/* Subtle background decoration */}
-                <div className="absolute -bottom-10 -right-10 text-orange-200/30 rotate-12 group-hover:scale-110 transition-transform duration-700">
-                  <Package className="w-56 h-56" strokeWidth={1} />
-                </div>
-                
-                <div className="w-full h-full flex justify-center items-center relative z-10">
-                  {((bidOverviewRes ? bidOverviewRes?.product?.image : productResponse?.mainProduct?.image)) ? (
-                    <img
-                      src={bidOverviewRes ? bidOverviewRes?.product?.image : productResponse?.mainProduct?.image}
-                      alt="Product"
-                      className="object-contain max-h-48 drop-shadow-sm rounded"
-                    />
-                  ) : (
-                    <div className="flex flex-col items-center justify-center text-center">
-                      <div className="w-20 h-20 bg-white shadow-sm border border-slate-100 rounded-full flex items-center justify-center mb-4">
-                        <Package className="w-10 h-10 text-orange-400" />
-                      </div>
-                      <span className="text-slate-700 font-semibold text-lg">No Image Provided</span>
-                      <span className="text-slate-500 text-sm mt-1 max-w-[200px]">See the specifications below for material details.</span>
-                    </div>
-                  )}
-                </div>
-                {soldProduct && (
-                  <img
-                    src="sold.png"
-                    alt="Sold"
-                    className="absolute top-[-34px] right-[-20px] w-28 z-20"
-                  />
-                )}
-              </div>
-
               {/* Product Info */}
-              <div className="lg:col-span-8 bg-white border border-slate-100 shadow-sm rounded-2xl p-6 md:p-8 space-y-6 relative overflow-hidden">
+              <div className="lg:col-span-12 bg-white border border-slate-100 shadow-sm rounded-2xl p-6 md:p-8 space-y-6 relative overflow-hidden">
                 <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-orange-400 via-pink-500 to-indigo-500 opacity-80" />
                 <div>
                   <h2 className="text-sm font-bold tracking-wide uppercase text-slate-400 mb-2 flex justify-between items-center">
