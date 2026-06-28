@@ -39,7 +39,13 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import requirementService from '@/services/requirement.service';
 import { Skeleton } from '@/components/ui/skeleton';
-
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 function otherBrandValue(obj) {
   if (obj?.brand === 'others' && obj.hasOwnProperty('brandName')) {
     return obj.brandName;
@@ -1361,29 +1367,50 @@ const ProductOverview = () => {
                 </div>
               </div>
               {/* Bottom Section: Quotation Form */}
-              <div className="w-full">
-                {isMergeQuote ? (
-                  <MergeBidForm
-                    productResponse={productResponse}
-                    userProfile={userProfile}
-                    navigate={navigate}
-                  />
-                ) : (
-                  <SellerForm
-                    productResponse={productResponse}
-                    bidOverviewRes={bidOverviewRes}
-                    soldProduct={soldProduct}
-                    createBidLoading={createBidLoading}
-                    updateUserBidDetsLoading={updateUserBidDetsLoading}
-                    userProfile={userProfile}
-                    isMultiple={productResponse?.mainProduct?.isMultiple}
-                    register={register}
-                    handleSubmit={handleSubmit}
-                    onSubmit={onSubmit}
-                    watch={watch}
-                  />
-                )}
-              </div>
+              {/* Bottom Sticky Action Bar + Drawer for Quotation Form */}
+              <div className="pb-24"></div> {/* padding to ensure content isn't hidden by sticky bar */}
+              <Sheet>
+                <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4 shadow-[0_-4px_20px_rgb(0,0,0,0.05)] flex justify-between items-center z-50 md:px-10 lg:px-20">
+                  <div className="hidden sm:block">
+                    <h3 className="font-bold text-slate-800 text-lg">Ready to place a quote?</h3>
+                    <p className="text-sm text-slate-500">Provide your best price and win this requirement.</p>
+                  </div>
+                  <SheetTrigger asChild>
+                    <Button className="w-full sm:w-auto bg-orange-600 hover:bg-orange-700 text-white font-bold px-10 py-6 text-lg rounded-full shadow-lg transition-transform hover:scale-105">
+                      Place Quote Now
+                    </Button>
+                  </SheetTrigger>
+                </div>
+                
+                <SheetContent side="right" className="w-full sm:max-w-xl md:max-w-2xl overflow-y-auto bg-slate-50 p-0 border-l-0 sm:border-l">
+                  <SheetHeader className="p-6 bg-white border-b border-slate-100 sticky top-0 z-10 shadow-sm">
+                    <SheetTitle className="text-2xl font-extrabold text-slate-800">Submit Quotation</SheetTitle>
+                  </SheetHeader>
+                  <div className="p-6 pb-20">
+                    {isMergeQuote ? (
+                      <MergeBidForm
+                        productResponse={productResponse}
+                        userProfile={userProfile}
+                        navigate={navigate}
+                      />
+                    ) : (
+                      <SellerForm
+                        productResponse={productResponse}
+                        bidOverviewRes={bidOverviewRes}
+                        soldProduct={soldProduct}
+                        createBidLoading={createBidLoading}
+                        updateUserBidDetsLoading={updateUserBidDetsLoading}
+                        userProfile={userProfile}
+                        isMultiple={productResponse?.mainProduct?.isMultiple}
+                        register={register}
+                        handleSubmit={handleSubmit}
+                        onSubmit={onSubmit}
+                        watch={watch}
+                      />
+                    )}
+                  </div>
+                </SheetContent>
+              </Sheet>
             </div>
           </div>
         </div>
