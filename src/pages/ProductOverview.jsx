@@ -1395,16 +1395,16 @@ const ProductOverview = () => {
                       />
                     ) : (
                       <SellerForm
-                        productResponse={productResponse}
-                        bidOverviewRes={bidOverviewRes}
-                        soldProduct={soldProduct}
-                        createBidLoading={createBidLoading}
-                        updateUserBidDetsLoading={updateUserBidDetsLoading}
-                        userProfile={userProfile}
-                        isMultiple={productResponse?.mainProduct?.isMultiple}
-                        register={register}
                         handleSubmit={handleSubmit}
                         onSubmit={onSubmit}
+                        register={register}
+                        control={control}
+                        userProfile={userProfile}
+                        bidOverviewRes={bidOverviewRes}
+                        productResponse={productResponse}
+                        createBidLoading={createBidLoading}
+                        updateUserBidDetsLoading={updateUserBidDetsLoading}
+                        soldProduct={soldProduct}
                         watch={watch}
                       />
                     )}
