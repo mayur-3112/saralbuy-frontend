@@ -1114,24 +1114,30 @@ const ProductOverview = () => {
                         <h3 className="font-bold text-gray-800 text-lg">Requested Items</h3>
                         <span className="text-sm font-medium text-gray-500">{(bidOverviewRes?.product?.items || productResponse?.mainProduct?.items || []).length} items</span>
                       </div>
-                      <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50/50">
-                        {(bidOverviewRes?.product?.items || productResponse?.mainProduct?.items || []).map((item, idx) => (
-                          <div key={idx} className="bg-white border border-gray-200 rounded-md p-4 flex flex-col justify-between hover:border-orange-300 hover:shadow-sm transition-all">
-                            <div className="mb-3">
-                              <h4 className="font-bold text-gray-900 text-base mb-1">{item.subCategoryName || "N/A"}</h4>
-                              <div className="text-sm text-gray-500 space-y-1">
-                                <p><span className="font-medium text-gray-400">Brand:</span> {item.brand || "N/A"}</p>
-                                <p><span className="font-medium text-gray-400">Model/Type:</span> {item.typeOfProduct || item.model || "N/A"}</p>
-                              </div>
-                            </div>
-                            <div className="pt-3 border-t border-gray-100 flex justify-between items-center">
-                              <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">Required Qty</span>
-                              <div className="font-black text-orange-600 text-lg">
-                                {item.quantity} <span className="text-sm font-bold text-gray-500 ml-0.5">{item.quantityUnit}</span>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse">
+                          <thead>
+                            <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider border-b border-gray-200">
+                              <th className="px-5 py-3 font-semibold">Item Name</th>
+                              <th className="px-5 py-3 font-semibold">Brand</th>
+                              <th className="px-5 py-3 font-semibold">Model/Type</th>
+                              <th className="px-5 py-3 font-semibold text-right">Required Qty</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-gray-100 bg-white">
+                            {(bidOverviewRes?.product?.items || productResponse?.mainProduct?.items || []).map((item, idx) => (
+                              <tr key={idx} className="hover:bg-slate-50 transition-colors">
+                                <td className="px-5 py-4 text-sm font-bold text-gray-900">{item.subCategoryName || "N/A"}</td>
+                                <td className="px-5 py-4 text-sm text-gray-600">{item.brand || "N/A"}</td>
+                                <td className="px-5 py-4 text-sm text-gray-600">{item.typeOfProduct || item.model || "N/A"}</td>
+                                <td className="px-5 py-4 text-right">
+                                  <span className="font-black text-orange-600 text-base">{item.quantity}</span>
+                                  <span className="text-xs font-bold text-gray-500 ml-1">{item.quantityUnit}</span>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
                       </div>
                     </div>
                   )}
@@ -1139,7 +1145,7 @@ const ProductOverview = () => {
                   {/* General Specs */}
                   <div className="text-[15px] space-y-1 text-slate-600 font-medium">
                     <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 capitalize">
-                      <span className="font-semibold">Product Condition:</span>
+                      <span className="font-semibold">Category:</span>
                       {(bidOverviewRes ? bidOverviewRes?.product?.subCategory?.name : productResponse?.mainProduct?.categoryId?.categoryName) || "N/A"}
                     </p>
                     <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 capitalize">
