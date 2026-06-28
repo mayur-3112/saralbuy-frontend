@@ -304,8 +304,8 @@ const PostRequirementForm = () => {
             <div className="border-b border-slate-200 pb-4 mb-4 flex items-start gap-3">
               <span className="shrink-0 w-7 h-7 rounded-full bg-orange-100 text-orange-600 text-xs font-bold flex items-center justify-center mt-0.5">2</span>
               <div>
-                <h3 className="text-lg font-black text-slate-900">List of Materials / Services</h3>
-                <p className="text-[13px] text-slate-400 mt-0.5">Add the specific items, materials, or services you need, including quantities and specifications.</p>
+                <h3 className="text-lg font-black text-slate-900">List of Materials</h3>
+                <p className="text-[13px] text-slate-400 mt-0.5">Add the specific items or materials you need, including quantities and specifications.</p>
               </div>
             </div>
           
@@ -503,7 +503,7 @@ const PostRequirementForm = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-extrabold text-slate-800 mb-2">Bid Expiry Deadline</label>
+              <label className="block text-sm font-extrabold text-slate-800 mb-2">Bid Valid Until</label>
               <Controller
                 control={control}
                 name="expiryDate"

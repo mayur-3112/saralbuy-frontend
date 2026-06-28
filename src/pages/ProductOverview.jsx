@@ -1339,7 +1339,7 @@ const ProductOverview = () => {
                     if (expiryDateObj && !isNaN(expiryDateObj.getTime())) {
                       return (
                         <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 text-red-600">
-                          <span className="font-semibold">Bid Expiry Deadline:</span>
+                          <span className="font-semibold">Bid Valid Until:</span>
                           {dateFormatter(expiryDateObj)}
                         </p>
                       );

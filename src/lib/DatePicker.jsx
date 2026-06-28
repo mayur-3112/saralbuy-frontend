@@ -15,9 +15,9 @@ export function DatePicker({ date, setDate, title, className, disabledBeforeDate
         <Button
           variant="outline"
           data-empty={!date}
-          className={`data-[empty=true]:text-muted-foreground relative flex-1 justify-start text-left font-normal ${className}`}
+          className={`data-[empty=true]:text-muted-foreground w-full justify-start text-left font-normal ${className || ''}`}
         >
-          <CalendarDays className="absolute right-2 top-2 h-4 w-4 " />
+          <CalendarDays className="mr-2 h-4 w-4" />
           {date ? format(date, 'dd-MM-yyyy') : <span>{title ? title : 'Select a date'}</span>}
         </Button>
       </PopoverTrigger>

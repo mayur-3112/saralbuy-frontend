@@ -49,16 +49,7 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
   const country = product?.country || user?.country || 'India';
   
   const rawAddress = prod?.paymentAndDelivery?.organizationAddress || user?.address || product?.location || null;
-  const maskAddress = (addr) => {
-    if (!addr) return null;
-    const parts = addr.split(',');
-    if (parts.length > 1) {
-      return `******, ${parts[parts.length - 1].trim()}`;
-    }
-    const charsToMask = Math.min(8, Math.ceil(addr.length / 2));
-    return '*'.repeat(charsToMask) + addr.slice(charsToMask);
-  };
-  const address = maskAddress(rawAddress);
+  const address = rawAddress;
 
   const productTitle = prod?.title || product?.title || 'Requirements';
   const categoryName = prod?.categoryId?.categoryName || product?.categoryId?.categoryName;
