@@ -1243,41 +1243,45 @@ const ProductOverview = () => {
                 )}
 
                 {/* 4. Contact Details (Secure) */}
-                <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 space-y-6 hover:shadow-md transition-shadow">
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 hover:shadow-md transition-shadow">
+                  <div className="border-b border-slate-100 pb-4 mb-6">
                     <h3 className="font-extrabold text-slate-800 text-2xl tracking-tight">
-                      Contact Details
+                      Buyer Contact
                     </h3>
-                    <div className="flex items-center gap-1 text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md border border-emerald-100">
-                      <ShieldCheck className="w-3.5 h-3.5" />
-                      GST Verified Buyer
-                    </div>
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-                    {[
-                      { label: "Contact Person", icon: "user" },
-                      { label: "Contact Mobile", icon: "phone" },
-                      { label: "Contact Email", icon: "mail" },
-                      { label: "Contact WhatsApp", icon: "message" }
-                    ].map((detail, idx) => (
-                      <div key={idx} className="border border-slate-200 rounded-lg p-5 flex flex-col justify-between h-[100px] bg-slate-50/50 hover:bg-white hover:shadow-sm transition-all group">
-                        <span className="text-sm font-semibold text-slate-500">{detail.label}</span>
-                        <div className="flex justify-between items-center mt-2">
-                          <button 
-                            onClick={() => {
-                              toast.info("Submit a quote first to unlock contact details.");
-                            }}
-                            className="text-indigo-600 font-bold text-sm flex items-center gap-1 hover:text-indigo-700 hover:underline"
-                          >
-                            View
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
-                              <path fillRule="evenodd" d="M3 10a.75.75 0 0 1 .75-.75h10.638L10.23 5.29a.75.75 0 1 1 1.04-1.08l5.5 5.25a.75.75 0 0 1 0 1.08l-5.5 5.25a.75.75 0 1 1-1.04-1.08l4.158-3.96H3.75A.75.75 0 0 1 3 10Z" clipRule="evenodd" />
-                            </svg>
-                          </button>
-                        </div>
+                  <div className="flex flex-col items-center text-center py-6 space-y-4">
+                    <div className="w-14 h-14 rounded-full bg-indigo-50 flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-7 h-7 text-indigo-500">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-slate-800 text-lg">Contact details are protected</h4>
+                      <p className="text-sm text-slate-500 mt-1 max-w-sm mx-auto leading-relaxed">
+                        Buyer's name, phone, email and address will be shared with you once the buyer reviews and accepts your quote.
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-6 text-xs text-slate-400 pt-2">
+                      <div className="flex flex-col items-center gap-1">
+                        <div className="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center text-orange-500 font-bold text-sm">1</div>
+                        <span>Place Quote</span>
                       </div>
-                    ))}
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 text-slate-300">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                      </svg>
+                      <div className="flex flex-col items-center gap-1">
+                        <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 font-bold text-sm">2</div>
+                        <span>Buyer Reviews</span>
+                      </div>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 text-slate-300">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                      </svg>
+                      <div className="flex flex-col items-center gap-1">
+                        <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500 font-bold text-sm">3</div>
+                        <span>Details Shared</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
