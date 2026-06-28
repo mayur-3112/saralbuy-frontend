@@ -890,8 +890,14 @@ const ProductOverview = () => {
     let product = bidOverviewRes ? bidOverviewRes?.product : productResponse?.mainProduct;
     if (!product) return;
     const createdAt = new Date(product.createdAt).getTime();
-    const durationDays = Number(product.bidActiveDuration);
-    const expiryTime = createdAt + durationDays * 24 * 60 * 60 * 1000;
+    const expiryDateStr = product?.bidExpiryDate || product?.timeline || product?.bidActiveDuration;
+    let expiryTime = createdAt + 24 * 60 * 60 * 1000; // default 1 day
+    if (expiryDateStr && isNaN(Number(expiryDateStr))) {
+      expiryTime = new Date(expiryDateStr).getTime();
+    } else if (expiryDateStr && !isNaN(Number(expiryDateStr))) {
+      const durationDays = Number(expiryDateStr);
+      expiryTime = createdAt + durationDays * 24 * 60 * 60 * 1000;
+    }
 
     const updateTimer = () => {
       const now = Date.now();
