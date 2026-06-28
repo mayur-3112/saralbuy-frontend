@@ -1194,6 +1194,86 @@ const ProductOverview = () => {
                     Requirement Specifications
                   </h3>
                   
+                  {/* General Specifications Grid */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-y-6 gap-x-4">
+                    <div>
+                      <p className="text-sm font-semibold text-slate-500 mb-1">Category</p>
+                      <p className="text-[15px] font-bold text-slate-800">
+                        {bidOverviewRes ? bidOverviewRes?.product?.categoryId?.categoryName : productResponse?.mainProduct?.categoryId?.categoryName || "N/A"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-slate-500 mb-1">Sub-Category</p>
+                      <p className="text-[15px] font-bold text-slate-800">
+                        {bidOverviewRes ? bidOverviewRes?.product?.subCategoryId?.name : productResponse?.mainProduct?.subCategoryId?.name || "N/A"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-slate-500 mb-1">Estimated Budget</p>
+                      <p className="text-[15px] font-bold text-orange-600">
+                        ₹{bidOverviewRes ? bidOverviewRes?.product?.minimumBudget : productResponse?.mainProduct?.minimumBudget || 0}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-slate-500 mb-1">GST Required</p>
+                      <p className="text-[15px] font-bold text-slate-800 capitalize">
+                        {bidOverviewRes ? bidOverviewRes?.product?.gst_requirement : productResponse?.mainProduct?.gst_requirement || "N/A"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-slate-500 mb-1">Product Type</p>
+                      <p className="text-[15px] font-bold text-slate-800 capitalize">
+                        {(bidOverviewRes ? bidOverviewRes?.product?.productType : productResponse?.mainProduct?.productType)?.replace('_', ' ') || "N/A"}
+                      </p>
+                    </div>
+                    
+                    {/* Dynamic Fields */}
+                    {(() => {
+                      const prod = bidOverviewRes ? bidOverviewRes?.product : productResponse?.mainProduct;
+                      if (!prod) return null;
+                      return (
+                        <>
+                          {prod.brand && (
+                            <div>
+                              <p className="text-sm font-semibold text-slate-500 mb-1">Brand</p>
+                              <p className="text-[15px] font-bold text-slate-800">{prod.brand === 'others' ? prod.brandName : prod.brand}</p>
+                            </div>
+                          )}
+                          {!prod.isMultiple && prod.quantity && (
+                            <div>
+                              <p className="text-sm font-semibold text-slate-500 mb-1">Quantity</p>
+                              <p className="text-[15px] font-bold text-slate-800">{prod.quantity} {prod.quantityUnit}</p>
+                            </div>
+                          )}
+                          {prod.fuelType && (
+                            <div>
+                              <p className="text-sm font-semibold text-slate-500 mb-1">Fuel Type</p>
+                              <p className="text-[15px] font-bold text-slate-800 capitalize">{prod.fuelType}</p>
+                            </div>
+                          )}
+                          {prod.transmission && (
+                            <div>
+                              <p className="text-sm font-semibold text-slate-500 mb-1">Transmission</p>
+                              <p className="text-[15px] font-bold text-slate-800 capitalize">{prod.transmission}</p>
+                            </div>
+                          )}
+                          {prod.conditionOfProduct && (
+                            <div>
+                              <p className="text-sm font-semibold text-slate-500 mb-1">Condition</p>
+                              <p className="text-[15px] font-bold text-slate-800 capitalize">{prod.conditionOfProduct.replace('_', ' ')}</p>
+                            </div>
+                          )}
+                          {prod.typeOfProduct && !prod.isMultiple && (
+                            <div>
+                              <p className="text-sm font-semibold text-slate-500 mb-1">Model / Type</p>
+                              <p className="text-[15px] font-bold text-slate-800">{prod.typeOfProduct || prod.model}</p>
+                            </div>
+                          )}
+                        </>
+                      );
+                    })()}
+                  </div>
+                  
                   {/* Requested Items (Moved Here) */}
                   {(bidOverviewRes?.product?.isMultiple || productResponse?.mainProduct?.isMultiple) && (
                     <div className="mt-4 border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm">
