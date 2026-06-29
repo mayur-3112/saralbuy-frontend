@@ -61,6 +61,8 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
       const name = item.typeOfProduct || item.subCategoryName || item.brand || item.productType;
       if (name && !items.includes(name)) items.push(name);
     });
+  } else if (prod?.isUpload || prod?.document) {
+    items.push("Refer to Attached Document");
   } else if (prod?.isMergeQuote && prod?.products?.length > 0) {
     items.push(...prod.products.map(p => p.title || p.categoryName));
   } else if (categoryName) {
@@ -102,7 +104,7 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
             {/* Title Row */}
             <div className="flex items-start justify-between z-10 relative">
               <h2 className="text-xl font-bold text-slate-900 capitalize tracking-wide group-hover:text-orange-800 transition-colors duration-300 line-clamp-2 pr-4">
-                {descriptionText}
+                {productTitle}
               </h2>
               {showOwnerActions && (
                 <div className="relative self-start shrink-0">
@@ -189,6 +191,14 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
                 <p className="text-[12px] text-gray-600 font-medium max-w-lg">
                   {address}
                 </p>
+              </div>
+            )}
+
+            {/* Additional Info / Description / Other Terms */}
+            {descriptionText && descriptionText !== productTitle && (
+              <div className="mt-2 text-xs text-slate-500 bg-slate-50 border border-slate-100 rounded p-2.5 max-w-lg">
+                <span className="font-extrabold uppercase text-[9px] text-slate-400 tracking-wider block mb-1">Additional Terms / Instructions</span>
+                <p className="whitespace-pre-wrap leading-relaxed">{descriptionText}</p>
               </div>
             )}
           </div>

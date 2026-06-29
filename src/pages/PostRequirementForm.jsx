@@ -168,6 +168,7 @@ const PostRequirementForm = () => {
         formData.append('document', selectedFiles[0]); // Backend expects only 1 document in req.files.document[0]
         formData.append('commonDetails', JSON.stringify(commonDetails));
         formData.append('categories', JSON.stringify([data.categoryId]));
+        formData.append('categoryGroups', JSON.stringify(categoryGroups));
         res = await instance.post('/product/upload-multiple-requirement', formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
