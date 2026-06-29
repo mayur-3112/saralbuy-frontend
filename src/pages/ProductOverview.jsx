@@ -1054,6 +1054,7 @@ const ProductOverview = () => {
   }, [productResponse, bidOverviewRes]);
 
   const mainProductData = bidOverviewRes ? bidOverviewRes?.product : productResponse?.mainProduct;
+  const hasItems = (mainProductData?.items || []).length > 0;
   const buyerUser = mainProductData?.userId || mainProductData?.buyerId || mainProductData?.buyer || {};
   const orgName = mainProductData?.paymentAndDelivery?.organizationName;
   const bizName = buyerUser?.businessName || buyerUser?.companyName;
@@ -1145,19 +1146,16 @@ const ProductOverview = () => {
                     ) : (productViewLoading || bidOverLoading) && !timeLeft ? (
                       <Skeleton className="h-8 w-24 rounded-full float-end" />
                     ) : timeLeft !== 'Expired' ? (
-                      <div className="float-end flex items-center gap-2">
-                        <span className="text-[11px] uppercase font-bold text-gray-400 tracking-wider">Valid upto</span>
-                        <Button
-                          variant="ghost"
-                          className="border rounded-full hover:bg-orange-700 hover:text-white text-sm bg-orange-700 text-white"
-                        >
-                          {timeLeft}
-                        </Button>
-                      </div>
+                      <Button
+                        variant="ghost"
+                        className="float-end border rounded-full hover:bg-orange-700 hover:text-white text-sm bg-orange-700 text-white pointer-events-none"
+                      >
+                        Valid for: {timeLeft}
+                      </Button>
                     ) : (
                       <Button
                         variant="ghost"
-                        className="float-end border rounded-full hover:bg-orange-700 hover:text-white text-sm bg-orange-700 text-white"
+                        className="float-end border rounded-full hover:bg-orange-700 hover:text-white text-sm bg-orange-700 text-white pointer-events-none"
                       >
                         Expired
                       </Button>
@@ -1393,25 +1391,29 @@ const ProductOverview = () => {
                       <span className="font-semibold">Category:</span>
                       {mainProductData?.categoryId?.categoryName || "N/A"}
                     </p>
-                    <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 capitalize">
-                      <span className="font-semibold">Sub Category:</span>
-                      {subCategoryName || "N/A"}
-                    </p>
-                    <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 capitalize">
-                      <span className="font-semibold">Brand:</span>
-                      {(bidOverviewRes ? otherBrandValue(bidOverviewRes?.product) : otherBrandValue(productResponse?.mainProduct)) || "N/A"}
-                    </p>
-                    {(bidOverviewRes?.product?.model || productResponse?.mainProduct?.model) && (
-                      <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 capitalize">
-                        <span className="font-semibold">Model:</span>
-                        {(bidOverviewRes ? bidOverviewRes?.product?.model : productResponse?.mainProduct?.model) || "N/A"}
-                      </p>
-                    )}
-                    {(bidOverviewRes?.product?.productType || productResponse?.mainProduct?.productType) && (
-                      <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 capitalize">
-                        <span className="font-semibold">Product Type:</span>
-                        {(bidOverviewRes ? bidOverviewRes?.product?.productType : productResponse?.mainProduct?.productType)?.replace("_", " ") || "N/A"}
-                      </p>
+                    {!hasItems && (
+                      <>
+                        <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 capitalize">
+                          <span className="font-semibold">Sub Category:</span>
+                          {subCategoryName || "N/A"}
+                        </p>
+                        <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 capitalize">
+                          <span className="font-semibold">Brand:</span>
+                          {(bidOverviewRes ? otherBrandValue(bidOverviewRes?.product) : otherBrandValue(productResponse?.mainProduct)) || "N/A"}
+                        </p>
+                        {(bidOverviewRes?.product?.model || productResponse?.mainProduct?.model) && (
+                          <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 capitalize">
+                            <span className="font-semibold">Model:</span>
+                            {(bidOverviewRes ? bidOverviewRes?.product?.model : productResponse?.mainProduct?.model) || "N/A"}
+                          </p>
+                        )}
+                        {(bidOverviewRes?.product?.productType || productResponse?.mainProduct?.productType) && (
+                          <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 capitalize">
+                            <span className="font-semibold">Product Type:</span>
+                            {(bidOverviewRes ? bidOverviewRes?.product?.productType : productResponse?.mainProduct?.productType)?.replace("_", " ") || "N/A"}
+                          </p>
+                        )}
+                      </>
                     )}
                     {(bidOverviewRes?.product?.minimumBudget || productResponse?.mainProduct?.minimumBudget) && (
                       <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100">
