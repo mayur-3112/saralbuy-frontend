@@ -325,7 +325,24 @@ const SellerForm = ({
         {/* Item-by-Item Pricing & Totaler */}
         {(() => {
           const isMulti = bidOverviewRes ? bidOverviewRes?.product?.isMultiple : productResponse?.mainProduct?.isMultiple;
-          const items = bidOverviewRes ? bidOverviewRes?.product?.items : productResponse?.mainProduct?.items || [];
+          let items = bidOverviewRes ? bidOverviewRes?.product?.items : productResponse?.mainProduct?.items;
+          
+          if (!items || items.length === 0) {
+            const rootProd = bidOverviewRes ? bidOverviewRes?.product : productResponse?.mainProduct;
+            if (rootProd) {
+              items = [{
+                itemName: rootProd.title || rootProd.productName,
+                itemDescription: rootProd.description,
+                quantity: rootProd.quantity,
+                quantityUnit: rootProd.quantityUnit,
+                brand: rootProd.brand || 'Any',
+                subCategoryId: rootProd.subCategoryId,
+                typeOfProduct: rootProd.typeOfProduct || rootProd.model
+              }];
+            } else {
+              items = [];
+            }
+          }
           
           if (items.length > 0) {
             return (
@@ -405,47 +422,7 @@ const SellerForm = ({
               </div>
             );
           }
-          
-          // Legacy Single item without items array
-          return (
-            <div className="w-full sm:col-span-2 bg-white rounded-md border border-orange-100 overflow-hidden mb-2">
-              <div className="bg-orange-50/50 px-4 py-3 border-b border-orange-100 flex justify-between items-center">
-                <div>
-                  <h4 className="font-semibold text-sm text-slate-800 flex items-center gap-2">
-                    <Package className="w-4 h-4 text-orange-600" />
-                    Line Item Pricing
-                  </h4>
-                  <p className="text-xs text-slate-500 mt-0.5">{productResponse?.mainProduct?.title}</p>
-                </div>
-                <a 
-                  href="/supplier-tools" 
-                  target="_blank"
-                  className="text-xs font-semibold text-orange-600 hover:text-orange-700 bg-orange-100 hover:bg-orange-200 px-3 py-1.5 rounded-full transition-colors flex items-center gap-1.5"
-                >
-                  <Calculator className="w-3.5 h-3.5" />
-                  Margin Calculator
-                </a>
-              </div>
-              <div className="p-4 grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div className="col-span-2 sm:col-span-1">
-                  <Label className="mb-1.5 text-xs text-slate-500">Unit Price (₹)</Label>
-                  <Input type="number" step="0.01" min="0" placeholder="0.00" className="h-9" {...register('unitPrice')} />
-                </div>
-                <div className="col-span-2 sm:col-span-1">
-                  <Label className="mb-1.5 text-xs text-slate-500">Discount (%)</Label>
-                  <Input type="number" step="0.1" min="0" max="100" placeholder="0%" className="h-9" {...register('discount')} />
-                </div>
-                <div className="col-span-2 sm:col-span-1">
-                  <Label className="mb-1.5 text-xs text-slate-500">Qty ({productResponse?.mainProduct?.quantityUnit})</Label>
-                  <Input type="text" disabled value={productResponse?.mainProduct?.quantity || 1} className="h-9 bg-slate-50" />
-                </div>
-                <div className="col-span-2 sm:col-span-1">
-                  <Label className="mb-1.5 text-xs text-slate-500">Freight Cost (₹)</Label>
-                  <Input type="number" step="0.01" min="0" placeholder="0.00" className="h-9" {...register('freightCost')} />
-                </div>
-              </div>
-            </div>
-          );
+          return null;
         })()}
 
         {/* Price Basis */}
