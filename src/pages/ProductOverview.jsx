@@ -376,7 +376,8 @@ const SellerForm = ({
 
                 <div className="divide-y divide-slate-100">
                   {items.map((item, idx) => {
-                    const resolvedItemName = item.itemName || item.subCategoryName || localMainProduct?.categoryId?.subCategories?.find(s => s._id === item.subCategoryId || s._id === item.subCategoryId?.toString())?.name || 'Item ' + (idx + 1);
+                    const catObj = localMainProduct?.categoryId || localMainProduct?.category;
+                    const resolvedItemName = item.itemName || item.subCategoryName || catObj?.subCategories?.find(s => s._id === item.subCategoryId || s._id === item.subCategoryId?.toString())?.name || 'Item ' + (idx + 1);
                     const isSingle = !isMulti || items.length <= 1;
                     const priceRegisterName = isSingle ? 'unitPrice' : `items.${idx}.unitPrice`;
 
@@ -1361,7 +1362,8 @@ const ProductOverview = () => {
                           </thead>
                           <tbody className="divide-y divide-gray-100 bg-white">
                             {rawItems.map((item, idx) => {
-                              const resolvedName = item.itemName || item.subCategoryName || mp?.categoryId?.subCategories?.find(s => s._id === item.subCategoryId || s._id === item.subCategoryId?.toString())?.name || 'Item ' + (idx + 1);
+                              const catObj = mp?.categoryId || mp?.category;
+                              const resolvedName = item.itemName || item.subCategoryName || catObj?.subCategories?.find(s => s._id === item.subCategoryId || s._id === item.subCategoryId?.toString())?.name || 'Item ' + (idx + 1);
                               return (
                               <tr key={idx} className="hover:bg-slate-50 transition-colors">
                                 <td className="px-5 py-4 text-sm font-bold text-gray-900">{resolvedName}</td>
