@@ -1475,7 +1475,9 @@ const ProductOverview = () => {
                     <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100">
                       <span className="font-semibold">Delivery Location:</span>
                       <span className="capitalize">{
-                        (bidOverviewRes ? bidOverviewRes?.buyer?.address : productResponse?.mainProduct?.userId?.address)?.split(",").slice(-2).join(",") || "N/A"
+                        (bidOverviewRes ? bidOverviewRes?.product?.paymentAndDelivery?.organizationAddress : productResponse?.mainProduct?.paymentAndDelivery?.organizationAddress) ||
+                        (bidOverviewRes ? bidOverviewRes?.buyer?.address : productResponse?.mainProduct?.userId?.address) ||
+                        "N/A"
                       }</span>
                     </p>
                     {(() => {
