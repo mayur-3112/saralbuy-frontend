@@ -1133,12 +1133,15 @@ const ProductOverview = () => {
                     ) : (productViewLoading || bidOverLoading) && !timeLeft ? (
                       <Skeleton className="h-8 w-24 rounded-full float-end" />
                     ) : timeLeft !== 'Expired' ? (
-                      <Button
-                        variant="ghost"
-                        className="float-end border rounded-full hover:bg-orange-700 hover:text-white text-sm bg-orange-700 text-white"
-                      >
-                        {timeLeft}
-                      </Button>
+                      <div className="float-end flex items-center gap-2">
+                        <span className="text-[11px] uppercase font-bold text-gray-400 tracking-wider">Valid upto</span>
+                        <Button
+                          variant="ghost"
+                          className="border rounded-full hover:bg-orange-700 hover:text-white text-sm bg-orange-700 text-white"
+                        >
+                          {timeLeft}
+                        </Button>
+                      </div>
                     ) : (
                       <Button
                         variant="ghost"
