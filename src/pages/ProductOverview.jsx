@@ -347,35 +347,47 @@ const SellerForm = ({
                     Margin Calculator
                   </a>
                 </div>
-                <div className="divide-y divide-orange-50">
+                {/* Header Row for Desktop */}
+                <div className="hidden md:grid grid-cols-12 gap-3 px-4 py-2 bg-slate-50 text-xs font-extrabold text-slate-500 uppercase tracking-wider border-b border-slate-100">
+                  <div className="col-span-3">Item Name</div>
+                  <div className="col-span-3">Description / Specs</div>
+                  <div className="col-span-2">Qty & Units</div>
+                  <div className="col-span-2">Brand</div>
+                  <div className="col-span-2">Unit Price (₹)</div>
+                </div>
+
+                <div className="divide-y divide-slate-100">
                   {items.map((item, idx) => {
                     const resolvedItemName = item.itemName || item.subCategoryName || mainProductData?.categoryId?.subCategories?.find(s => s._id === item.subCategoryId || s._id === item.subCategoryId?.toString())?.name || 'Item ' + (idx + 1);
                     return (
-                    <div key={idx} className="p-6">
-                      <div className="flex items-start gap-3 mb-5">
-                        <span className="w-7 h-7 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-sm font-bold mt-0.5">{idx + 1}</span>
-                        <div className="flex-1">
-                          <span className="text-base font-bold text-slate-800">{resolvedItemName}</span>
-                          <div className="text-sm text-slate-500 mt-1 flex flex-wrap gap-4">
-                            {item.brand && <span><span className="font-medium text-slate-400">Brand:</span> {item.brand}</span>}
-                            {(item.typeOfProduct || item.model) && <span><span className="font-medium text-slate-400">Type:</span> {item.typeOfProduct || item.model}</span>}
-                          </div>
+                      <div key={idx} className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-4 items-center bg-white p-4 hover:bg-orange-50/20 transition-colors">
+                        <div className="md:col-span-3">
+                          <label className="block md:hidden text-xs font-extrabold text-slate-500 mb-1">Item Name</label>
+                          <div className="text-sm font-bold text-slate-800 bg-slate-50/80 md:bg-transparent border border-slate-100 md:border-transparent rounded-md px-3 py-2 md:p-0 min-h-[36px] flex items-center">{resolvedItemName}</div>
                         </div>
-                        <span className="text-sm font-semibold text-slate-500 whitespace-nowrap bg-slate-100 px-3 py-1 rounded-full">{item.quantity} {item.quantityUnit}</span>
+
+                        <div className="md:col-span-3">
+                          <label className="block md:hidden text-xs font-extrabold text-slate-500 mb-1">Description / Specs</label>
+                          <div className="text-sm text-slate-600 bg-slate-50/80 md:bg-transparent border border-slate-100 md:border-transparent rounded-md px-3 py-2 md:p-0 min-h-[36px] flex items-center">{item.itemDescription || item.typeOfProduct || item.model || 'N/A'}</div>
+                        </div>
+                        
+                        <div className="md:col-span-2">
+                          <label className="block md:hidden text-xs font-extrabold text-slate-500 mb-1">Qty & Units</label>
+                          <div className="text-sm font-semibold text-slate-700 bg-slate-50/80 md:bg-transparent border border-slate-100 md:border-transparent rounded-md px-3 py-2 md:p-0 min-h-[36px] flex items-center">{item.quantity || 1} <span className="uppercase text-slate-500 text-xs ml-1">{item.quantityUnit || 'pcs'}</span></div>
+                        </div>
+
+                        <div className="md:col-span-2">
+                          <label className="block md:hidden text-xs font-extrabold text-slate-500 mb-1">Brand</label>
+                          <div className="text-sm text-slate-600 bg-slate-50/80 md:bg-transparent border border-slate-100 md:border-transparent rounded-md px-3 py-2 md:p-0 min-h-[36px] flex items-center">{item.brand || 'Any'}</div>
+                        </div>
+
+                        <div className="md:col-span-2">
+                          <label className="block md:hidden text-xs font-extrabold text-slate-500 mb-1">Unit Price (₹)</label>
+                          <Input type="number" step="0.01" min="0" placeholder="0.00" className="h-9 border-slate-200 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-all font-medium bg-white" {...register(`items.${idx}.unitPrice`, { required: true })} />
+                        </div>
                       </div>
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <Label className="mb-1.5 text-xs text-slate-500">Unit Price (₹)</Label>
-                          <Input type="number" step="0.01" min="0" placeholder="0.00" className="h-9" {...register(`items.${idx}.unitPrice`)} />
-                        </div>
-                        <div>
-                          <Label className="mb-1.5 text-xs text-slate-500">Qty ({item.quantityUnit})</Label>
-                          <Input type="text" disabled value={item.quantity || 1} className="h-9 bg-slate-50" />
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
                 </div>
                 <div className="p-4 grid grid-cols-2 gap-4 border-t border-slate-100 bg-slate-50">
                   <div>
