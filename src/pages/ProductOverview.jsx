@@ -1318,6 +1318,16 @@ const ProductOverview = () => {
                       </p>
                     )}
                   </div>
+                  
+                  {/* Other Terms */}
+                  {(bidOverviewRes?.product?.otherTerms || productResponse?.mainProduct?.otherTerms) && (
+                    <div className="pt-4 mt-4 border-t border-slate-100">
+                      <h4 className="font-semibold text-slate-800 mb-2">Other Terms & Conditions</h4>
+                      <div className="p-4 bg-slate-50 border border-slate-100 rounded-lg text-sm text-slate-600 leading-relaxed whitespace-pre-wrap">
+                        {bidOverviewRes ? bidOverviewRes?.product?.otherTerms : productResponse?.mainProduct?.otherTerms}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* 2. Delivery Information */}
