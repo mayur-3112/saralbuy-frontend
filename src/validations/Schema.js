@@ -64,11 +64,7 @@ export const ProfileSchema = z.object({
 });
 
 export const productOverviewBidSchema = z.object({
-  unitPrice: z.coerce
-    .number({
-      error: 'Unit Price is required',
-    })
-    .positive('Unit Price must be positive'),
+  unitPrice: z.any(),
   discount: z.coerce.number().min(0).max(100).optional(),
   freightCost: z.coerce.number().min(0).optional(),
   

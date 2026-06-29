@@ -836,6 +836,17 @@ const ProductOverview = () => {
       toast.info('Please complete your profile first');
       return;
     }
+    const isMulti = productResponse?.mainProduct?.isMultiple || bidOverviewRes?.product?.isMultiple;
+    if (!isMulti && (!data.unitPrice || Number(data.unitPrice) <= 0)) {
+      return toast.error('Unit Price is required and must be positive');
+    }
+    if (isMulti && data.items) {
+      for (let i = 0; i < data.items.length; i++) {
+        if (!data.items[i].unitPrice || Number(data.items[i].unitPrice) <= 0) {
+          return toast.error(`Unit Price is required for Item ${i + 1}`);
+        }
+      }
+    }
     const currentFormData = getValues();
     if (!user?._id) {
       localStorage.setItem('preLoginBidForm', JSON.stringify(currentFormData));
