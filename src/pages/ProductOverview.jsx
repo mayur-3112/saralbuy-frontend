@@ -353,7 +353,7 @@ const SellerForm = ({
                       <div className="flex items-start gap-3 mb-5">
                         <span className="w-7 h-7 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-sm font-bold mt-0.5">{idx + 1}</span>
                         <div className="flex-1">
-                          <span className="text-base font-bold text-slate-800">{item.itemName || item.subCategoryName || item.typeOfProduct || 'Item ' + (idx + 1)}</span>
+                          <span className="text-base font-bold text-slate-800">{item.itemName || item.subCategoryName || 'Item ' + (idx + 1)}</span>
                           <div className="text-sm text-slate-500 mt-1 flex flex-wrap gap-4">
                             {item.brand && <span><span className="font-medium text-slate-400">Brand:</span> {item.brand}</span>}
                             {(item.typeOfProduct || item.model) && <span><span className="font-medium text-slate-400">Type:</span> {item.typeOfProduct || item.model}</span>}
@@ -1274,7 +1274,7 @@ const ProductOverview = () => {
                           <tbody className="divide-y divide-gray-100 bg-white">
                             {(bidOverviewRes?.product?.items || productResponse?.mainProduct?.items || []).map((item, idx) => (
                               <tr key={idx} className="hover:bg-slate-50 transition-colors">
-                                <td className="px-5 py-4 text-sm font-bold text-gray-900">{item.itemName || item.subCategoryName || item.typeOfProduct || "N/A"}</td>
+                                <td className="px-5 py-4 text-sm font-bold text-gray-900">{item.itemName || item.subCategoryName || "Item " + (idx + 1)}</td>
                                 <td className="px-5 py-4 text-sm text-gray-600">{item.brand || "N/A"}</td>
                                 <td className="px-5 py-4 text-sm text-gray-600">{item.typeOfProduct || item.model || "N/A"}</td>
                                 <td className="px-5 py-4 text-right">
