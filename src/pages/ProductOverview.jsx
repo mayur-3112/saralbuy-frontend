@@ -1073,6 +1073,15 @@ const ProductOverview = () => {
   const pId = mainProductData?._id;
   const rfqCode = mainProductData?.rfqId || (pId ? `RFQ-${pId.toString().slice(-6).toUpperCase()}` : null);
 
+  const subCatId = mainProductData?.subCategoryId;
+  let subCategoryName = subCatId?.name;
+  if (!subCategoryName && mainProductData?.categoryId?.subCategories && subCatId) {
+    const matchedSub = mainProductData.categoryId.subCategories.find(
+      s => s._id === subCatId || s._id === subCatId.toString()
+    );
+    if (matchedSub) subCategoryName = matchedSub.name;
+  }
+
   return (
     <>
       {bidOverLoading || productViewLoading ? (
@@ -1171,7 +1180,7 @@ const ProductOverview = () => {
                   <div className="flex flex-col">
                     <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Sub Category</span>
                     <span className="text-[13px] font-semibold text-slate-700 line-clamp-1 capitalize">
-                      {mainProductData?.subCategoryId?.name || "N/A"}
+                      {subCategoryName || "N/A"}
                     </span>
                   </div>
                   {rfqCode && (
