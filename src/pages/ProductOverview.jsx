@@ -1077,13 +1077,16 @@ const ProductOverview = () => {
   const pId = mainProductData?._id;
   const rfqCode = mainProductData?.rfqId || (pId ? `RFQ-${pId.toString().slice(-6).toUpperCase()}` : null);
 
-  const subCatId = mainProductData?.subCategoryId;
-  let subCategoryName = subCatId?.name;
-  if (!subCategoryName && mainProductData?.categoryId?.subCategories && subCatId) {
-    const matchedSub = mainProductData.categoryId.subCategories.find(
-      s => s._id === subCatId || s._id === subCatId.toString()
-    );
-    if (matchedSub) subCategoryName = matchedSub.name;
+  const subCatId = mainProductData?.subCategoryId || mainProductData?.subCategory || mainProductData?.items?.[0]?.subCategoryId;
+  let subCategoryName = typeof subCatId === 'object' ? subCatId?.name : (mainProductData?.items?.[0]?.subCategoryName || undefined);
+  if (!subCategoryName && subCatId) {
+    const catObj = mainProductData?.categoryId || mainProductData?.category;
+    if (catObj?.subCategories) {
+      const matchedSub = catObj.subCategories.find(
+        s => s._id === subCatId || s._id === subCatId.toString()
+      );
+      if (matchedSub) subCategoryName = matchedSub.name;
+    }
   }
 
   return (
