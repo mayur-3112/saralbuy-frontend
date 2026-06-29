@@ -807,8 +807,35 @@ const ProductOverview = () => {
       return;
     }
 
+    const isMulti = productResponse?.mainProduct?.isMultiple || bidOverviewRes?.product?.isMultiple;
+    const items = productResponse?.mainProduct?.items || [];
+    const tRate = parseFloat(getValues('taxes')) || 0;
+    
+    let subtotal = 0;
+    let totalFreight = 0;
+    
+    if (isMulti && items.length > 1) {
+      const globalDisc = parseFloat(getValues('discount')) || 0;
+      totalFreight = parseFloat(getValues('freightCost')) || 0;
+      items.forEach((item, idx) => {
+        const uPrice = parseFloat(getValues(`items.${idx}.unitPrice`)) || 0;
+        const qty = item.quantity || 1;
+        subtotal += (uPrice * (1 - globalDisc/100)) * qty;
+      });
+    } else {
+      const uPrice = parseFloat(getValues('unitPrice')) || 0;
+      const disc = parseFloat(getValues('discount')) || 0;
+      totalFreight = parseFloat(getValues('freightCost')) || 0;
+      const qty = productResponse?.mainProduct?.quantity || 1;
+      subtotal = (uPrice * (1 - disc/100)) * qty;
+    }
+    
+    const taxAmount = (subtotal + totalFreight) * (tRate/100);
+    const budgetQuotation = subtotal + totalFreight + taxAmount;
+
     let obj = {
       ...getValues(),
+      budgetQuotation,
       status: 'active',
       businessType,
       ...(businessType === 'business' && { businessDets }),
