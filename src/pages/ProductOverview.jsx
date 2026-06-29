@@ -1073,6 +1073,7 @@ const ProductOverview = () => {
 
   const mainProductData = bidOverviewRes ? bidOverviewRes?.product : productResponse?.mainProduct;
   const hasItems = (mainProductData?.items || []).length > 0;
+  const isGstRequired = !!mainProductData?.paymentAndDelivery?.gstNumber;
   const buyerUser = mainProductData?.userId || mainProductData?.buyerId || mainProductData?.buyer || {};
   const orgName = mainProductData?.paymentAndDelivery?.organizationName;
   const bizName = buyerUser?.businessName || buyerUser?.companyName;
