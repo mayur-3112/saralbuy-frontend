@@ -324,19 +324,19 @@ const SellerForm = ({
 
         {/* Item-by-Item Pricing & Totaler */}
         {(() => {
-          const isMulti = productResponse?.mainProduct?.isMultiple;
-          const items = productResponse?.mainProduct?.items || [];
+          const isMulti = bidOverviewRes ? bidOverviewRes?.product?.isMultiple : productResponse?.mainProduct?.isMultiple;
+          const items = bidOverviewRes ? bidOverviewRes?.product?.items : productResponse?.mainProduct?.items || [];
           
-          if (isMulti && items.length > 1) {
+          if (items.length > 0) {
             return (
               <div className="w-full sm:col-span-2 bg-white rounded-md border border-orange-100 overflow-hidden mb-2">
                 <div className="bg-orange-50/50 px-4 py-3 border-b border-orange-100 flex justify-between items-center">
                   <div>
                     <h4 className="font-semibold text-sm text-slate-800 flex items-center gap-2">
                       <Package className="w-4 h-4 text-orange-600" />
-                      Line Item Pricing
+                      List of Materials
                     </h4>
-                    <p className="text-xs text-slate-500 mt-0.5">{items.length} items — price each item separately</p>
+                    <p className="text-xs text-slate-500 mt-0.5">{items.length} item(s) — price each item</p>
                   </div>
                   <a 
                     href="/supplier-tools" 
@@ -359,6 +359,9 @@ const SellerForm = ({
                 <div className="divide-y divide-slate-100">
                   {items.map((item, idx) => {
                     const resolvedItemName = item.itemName || item.subCategoryName || mainProductData?.categoryId?.subCategories?.find(s => s._id === item.subCategoryId || s._id === item.subCategoryId?.toString())?.name || 'Item ' + (idx + 1);
+                    const isSingle = !isMulti || items.length <= 1;
+                    const priceRegisterName = isSingle ? 'unitPrice' : `items.${idx}.unitPrice`;
+
                     return (
                       <div key={idx} className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-4 items-center bg-white p-4 hover:bg-orange-50/20 transition-colors">
                         <div className="md:col-span-3">
@@ -383,7 +386,7 @@ const SellerForm = ({
 
                         <div className="md:col-span-2">
                           <label className="block md:hidden text-xs font-extrabold text-slate-500 mb-1">Unit Price (₹)</label>
-                          <Input type="number" step="0.01" min="0" placeholder="0.00" className="h-9 border-slate-200 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-all font-medium bg-white" {...register(`items.${idx}.unitPrice`, { required: true })} />
+                          <Input type="number" step="0.01" min="0" placeholder="0.00" className="h-9 border-slate-200 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-all font-medium bg-white" {...register(priceRegisterName, { required: true })} />
                         </div>
                       </div>
                     );
@@ -403,7 +406,7 @@ const SellerForm = ({
             );
           }
           
-          // Single item — original layout
+          // Legacy Single item without items array
           return (
             <div className="w-full sm:col-span-2 bg-white rounded-md border border-orange-100 overflow-hidden mb-2">
               <div className="bg-orange-50/50 px-4 py-3 border-b border-orange-100 flex justify-between items-center">
