@@ -353,7 +353,7 @@ const SellerForm = ({
                       <div className="flex items-start gap-3 mb-5">
                         <span className="w-7 h-7 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-sm font-bold mt-0.5">{idx + 1}</span>
                         <div className="flex-1">
-                          <span className="text-base font-bold text-slate-800">{item.subCategoryName || item.typeOfProduct || 'Item ' + (idx + 1)}</span>
+                          <span className="text-base font-bold text-slate-800">{item.itemName || item.subCategoryName || item.typeOfProduct || 'Item ' + (idx + 1)}</span>
                           <div className="text-sm text-slate-500 mt-1 flex flex-wrap gap-4">
                             {item.brand && <span><span className="font-medium text-slate-400">Brand:</span> {item.brand}</span>}
                             {(item.typeOfProduct || item.model) && <span><span className="font-medium text-slate-400">Type:</span> {item.typeOfProduct || item.model}</span>}
@@ -361,26 +361,28 @@ const SellerForm = ({
                         </div>
                         <span className="text-sm font-semibold text-slate-500 whitespace-nowrap bg-slate-100 px-3 py-1 rounded-full">{item.quantity} {item.quantityUnit}</span>
                       </div>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                      <div className="grid grid-cols-2 gap-3">
                         <div>
                           <Label className="mb-1.5 text-xs text-slate-500">Unit Price (₹)</Label>
                           <Input type="number" step="0.01" min="0" placeholder="0.00" className="h-9" {...register(`items.${idx}.unitPrice`)} />
                         </div>
                         <div>
-                          <Label className="mb-1.5 text-xs text-slate-500">Discount (%)</Label>
-                          <Input type="number" step="0.1" min="0" max="100" placeholder="0%" className="h-9" {...register(`items.${idx}.discount`)} />
-                        </div>
-                        <div>
                           <Label className="mb-1.5 text-xs text-slate-500">Qty ({item.quantityUnit})</Label>
                           <Input type="text" disabled value={item.quantity || 1} className="h-9 bg-slate-50" />
-                        </div>
-                        <div>
-                          <Label className="mb-1.5 text-xs text-slate-500">Freight Cost (₹)</Label>
-                          <Input type="number" step="0.01" min="0" placeholder="0.00" className="h-9" {...register(`items.${idx}.freightCost`)} />
                         </div>
                       </div>
                     </div>
                   ))}
+                </div>
+                <div className="p-4 grid grid-cols-2 gap-4 border-t border-slate-100 bg-slate-50">
+                  <div>
+                    <Label className="mb-1.5 text-xs text-slate-500">Global Discount (%)</Label>
+                    <Input type="number" step="0.1" min="0" max="100" placeholder="0%" className="h-9 bg-white" {...register('discount')} />
+                  </div>
+                  <div>
+                    <Label className="mb-1.5 text-xs text-slate-500">Total Freight Cost (₹)</Label>
+                    <Input type="number" step="0.01" min="0" placeholder="0.00" className="h-9 bg-white" {...register('freightCost')} />
+                  </div>
                 </div>
               </div>
             );
@@ -592,13 +594,12 @@ const SellerForm = ({
         let totalFreight = 0;
         
         if (isMulti && items.length > 1) {
+          const globalDisc = parseFloat(watch('discount')) || 0;
+          totalFreight = parseFloat(watch('freightCost')) || 0;
           items.forEach((item, idx) => {
             const uPrice = parseFloat(watch(`items.${idx}.unitPrice`)) || 0;
-            const disc = parseFloat(watch(`items.${idx}.discount`)) || 0;
-            const fCost = parseFloat(watch(`items.${idx}.freightCost`)) || 0;
             const qty = item.quantity || 1;
-            subtotal += (uPrice * (1 - disc/100)) * qty;
-            totalFreight += fCost;
+            subtotal += (uPrice * (1 - globalDisc/100)) * qty;
           });
         } else {
           const uPrice = parseFloat(watch('unitPrice')) || 0;
@@ -997,7 +998,7 @@ const ProductOverview = () => {
       const hours = Math.floor(diff / (1000 * 60 * 60));
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-      setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
+      setTimeLeft(`${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`);
     };
 
     if (!soldProduct) {
@@ -1058,7 +1059,7 @@ const ProductOverview = () => {
                 <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-orange-400 via-pink-500 to-indigo-500 opacity-80" />
                 <div>
                   <h2 className="text-sm font-bold tracking-wide uppercase text-slate-400 mb-2 flex justify-between items-center">
-                    Date :{' '}
+                    Posted Date :{' '}
                     {dateFormatter(
                       bidOverviewRes
                         ? bidOverviewRes?.product?.createdAt
@@ -1092,6 +1093,16 @@ const ProductOverview = () => {
                     ? bidOverviewRes?.product?.title
                     : productResponse?.mainProduct?.title}
                 </h2>
+                
+                <div className="flex flex-wrap gap-2 text-sm text-slate-500 font-semibold mt-2 mb-2">
+                  <span className="bg-slate-100 px-3 py-1 rounded-full border border-slate-200 capitalize">
+                    {bidOverviewRes ? bidOverviewRes?.product?.categoryId?.categoryName : productResponse?.mainProduct?.categoryId?.categoryName || "N/A"}
+                  </span>
+                  <span className="bg-slate-100 px-3 py-1 rounded-full border border-slate-200 capitalize">
+                    {bidOverviewRes ? bidOverviewRes?.product?.subCategoryId?.name : productResponse?.mainProduct?.subCategoryId?.name || "N/A"}
+                  </span>
+                </div>
+
                 <p className="text-[15px] text-slate-600 leading-relaxed font-medium">
                   {productResponse?.mainProduct?.description || bidOverviewRes?.product?.description}
                 </p>
@@ -1184,7 +1195,7 @@ const ProductOverview = () => {
                 </sup>
               )}
             </div>
-            <div className="max-w-5xl mx-auto flex flex-col gap-10 mt-8">
+            <div className="w-full flex flex-col gap-10 mt-8">
               {/* Top Section: Requirement Specifications */}
               <div className="w-full space-y-6">
                 
@@ -1196,37 +1207,6 @@ const ProductOverview = () => {
                   
                   {/* General Specifications Grid */}
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-y-6 gap-x-4">
-                    <div>
-                      <p className="text-sm font-semibold text-slate-500 mb-1">Category</p>
-                      <p className="text-[15px] font-bold text-slate-800">
-                        {bidOverviewRes ? bidOverviewRes?.product?.categoryId?.categoryName : productResponse?.mainProduct?.categoryId?.categoryName || "N/A"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-slate-500 mb-1">Sub-Category</p>
-                      <p className="text-[15px] font-bold text-slate-800">
-                        {bidOverviewRes ? bidOverviewRes?.product?.subCategoryId?.name : productResponse?.mainProduct?.subCategoryId?.name || "N/A"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-slate-500 mb-1">Estimated Budget</p>
-                      <p className="text-[15px] font-bold text-orange-600">
-                        ₹{bidOverviewRes ? bidOverviewRes?.product?.minimumBudget : productResponse?.mainProduct?.minimumBudget || 0}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-slate-500 mb-1">GST Required</p>
-                      <p className="text-[15px] font-bold text-slate-800 capitalize">
-                        {bidOverviewRes ? bidOverviewRes?.product?.gst_requirement : productResponse?.mainProduct?.gst_requirement || "N/A"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-slate-500 mb-1">Product Type</p>
-                      <p className="text-[15px] font-bold text-slate-800 capitalize">
-                        {(bidOverviewRes ? bidOverviewRes?.product?.productType : productResponse?.mainProduct?.productType)?.replace('_', ' ') || "N/A"}
-                      </p>
-                    </div>
-                    
                     {/* Dynamic Fields */}
                     {(() => {
                       const prod = bidOverviewRes ? bidOverviewRes?.product : productResponse?.mainProduct;
@@ -1294,7 +1274,7 @@ const ProductOverview = () => {
                           <tbody className="divide-y divide-gray-100 bg-white">
                             {(bidOverviewRes?.product?.items || productResponse?.mainProduct?.items || []).map((item, idx) => (
                               <tr key={idx} className="hover:bg-slate-50 transition-colors">
-                                <td className="px-5 py-4 text-sm font-bold text-gray-900">{item.subCategoryName || "N/A"}</td>
+                                <td className="px-5 py-4 text-sm font-bold text-gray-900">{item.itemName || item.subCategoryName || item.typeOfProduct || "N/A"}</td>
                                 <td className="px-5 py-4 text-sm text-gray-600">{item.brand || "N/A"}</td>
                                 <td className="px-5 py-4 text-sm text-gray-600">{item.typeOfProduct || item.model || "N/A"}</td>
                                 <td className="px-5 py-4 text-right">
