@@ -818,7 +818,8 @@ const ProductOverview = () => {
       const globalDisc = parseFloat(getValues('discount')) || 0;
       totalFreight = parseFloat(getValues('freightCost')) || 0;
       items.forEach((item, idx) => {
-        const uPrice = parseFloat(getValues(`items.${idx}.unitPrice`)) || 0;
+        const formValues = getValues();
+        const uPrice = parseFloat(formValues.items?.[idx]?.unitPrice) || 0;
         const qty = item.quantity || 1;
         subtotal += (uPrice * (1 - globalDisc/100)) * qty;
       });
@@ -1049,6 +1050,29 @@ const ProductOverview = () => {
     };
   }, [productResponse, bidOverviewRes]);
 
+  const mainProductData = bidOverviewRes ? bidOverviewRes?.product : productResponse?.mainProduct;
+  const buyerUser = mainProductData?.userId || mainProductData?.buyerId || mainProductData?.buyer || {};
+  const orgName = mainProductData?.paymentAndDelivery?.organizationName;
+  const bizName = buyerUser?.businessName || buyerUser?.companyName;
+  const fullName = buyerUser?.firstName ? `${buyerUser.firstName} ${buyerUser.lastName || ''}`.trim() : null;
+  const rawBuyerName = orgName || bizName || fullName || null;
+  
+  const maskName = (name) => {
+    if (!name) return 'Buyer Name Hidden';
+    const parts = name.trim().split(/\s+/);
+    if (parts.length === 1) {
+      if (name.length <= 1) return name;
+      return name[0] + '*'.repeat(name.length - 1);
+    }
+    const first = parts[0];
+    const last = parts[parts.length - 1];
+    return first[0] + '*'.repeat(first.length - 1) + ' ' + last[0] + '*'.repeat(last.length - 1);
+  };
+  const buyerName = maskName(rawBuyerName);
+  
+  const pId = mainProductData?._id;
+  const rfqCode = mainProductData?.rfqId || (pId ? `RFQ-${pId.toString().slice(-6).toUpperCase()}` : null);
+
   return (
     <>
       {bidOverLoading || productViewLoading ? (
@@ -1127,18 +1151,32 @@ const ProductOverview = () => {
                 </div>
 
                 <h2 className="text-2xl md:text-3xl font-extrabold capitalize text-slate-800 tracking-tight leading-tight">
-                  {bidOverviewRes
-                    ? bidOverviewRes?.product?.title
-                    : productResponse?.mainProduct?.title}
+                  {mainProductData?.title}
                 </h2>
                 
-                <div className="flex flex-wrap gap-2 text-sm text-slate-500 font-semibold mt-2 mb-2">
-                  <span className="bg-slate-100 px-3 py-1 rounded-full border border-slate-200 capitalize">
-                    {bidOverviewRes ? bidOverviewRes?.product?.categoryId?.categoryName : productResponse?.mainProduct?.categoryId?.categoryName || "N/A"}
-                  </span>
-                  <span className="bg-slate-100 px-3 py-1 rounded-full border border-slate-200 capitalize">
-                    {bidOverviewRes ? bidOverviewRes?.product?.subCategoryId?.name : productResponse?.mainProduct?.subCategoryId?.name || "N/A"}
-                  </span>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-y-4 gap-x-4 mt-4 mb-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                  <div className="flex flex-col">
+                    <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Buyer</span>
+                    <span className="text-[13px] font-semibold text-slate-700 line-clamp-1">{buyerName}</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Category</span>
+                    <span className="text-[13px] font-semibold text-orange-600 line-clamp-1 capitalize">
+                      {mainProductData?.categoryId?.categoryName || "N/A"}
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Sub Category</span>
+                    <span className="text-[13px] font-semibold text-slate-700 line-clamp-1 capitalize">
+                      {mainProductData?.subCategoryId?.name || "N/A"}
+                    </span>
+                  </div>
+                  {rfqCode && (
+                    <div className="flex flex-col">
+                      <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">RFQ ID</span>
+                      <span className="text-[13px] font-semibold text-slate-700 line-clamp-1">{rfqCode}</span>
+                    </div>
+                  )}
                 </div>
 
                 <p className="text-[15px] text-slate-600 leading-relaxed font-medium">
