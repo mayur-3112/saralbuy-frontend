@@ -787,21 +787,39 @@ const ProductOverview = () => {
   }, [bidOverviewRes]);
 
   async function handleCreteBid() {
+    const isGstRequired = !!mainProductData?.paymentAndDelivery?.gstNumber;
     const gstRegex = /^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}$/; // 22AAAAA0000A1Z5
-    if (
-      businessType === 'business' &&
-      businessDets.gst_num &&
-      !gstRegex.test(businessDets.gst_num)
-    ) {
-      toast.error('Invalid GST Number format');
-      return;
+
+    if (isGstRequired) {
+      if (businessType !== 'business') {
+        toast.error('This RFQ requires GST. You must quote as a Business.');
+        return;
+      }
+      if (!businessDets.company_name?.trim()) {
+        toast.error('Company Name is required');
+        return;
+      }
+      if (!businessDets.gst_num?.trim()) {
+        toast.error('GSTIN is required');
+        return;
+      }
+      if (!gstRegex.test(businessDets.gst_num.trim())) {
+        toast.error('Invalid GSTIN Number format');
+        return;
+      }
+    } else if (businessType === 'business') {
+      if (!businessDets.company_name?.trim()) {
+        toast.error('Company Name is required');
+        return;
+      }
+      if (businessDets.gst_num && !gstRegex.test(businessDets.gst_num.trim())) {
+        toast.error('Invalid GSTIN Number format');
+        return;
+      }
     }
+
     if (!productResponse) return;
     if (productResponse?.mainProduct?.userId?._id === userProfile?.user?._id) return;
-    if (businessType === 'business' && !businessDets.company_name.trim()) {
-      toast.error('company name is required');
-      return;
-    }
     const buyerId = productResponse?.mainProduct.userId?._id;
     const productId = productResponse?.mainProduct._id;
 
@@ -1107,6 +1125,7 @@ const ProductOverview = () => {
             value={businessType}
             handleCreteBid={handleCreteBid}
             createBidLoading={createBidLoading}
+            isGstRequired={isGstRequired}
           />
           <Breadcrumb className="hidden sm:block">
             <BreadcrumbList>
@@ -1390,12 +1409,12 @@ const ProductOverview = () => {
                   })()}
 
                   <div className="text-[15px] space-y-1 text-slate-600 font-medium">
-                    <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 capitalize">
-                      <span className="font-semibold">Category:</span>
-                      {mainProductData?.categoryId?.categoryName || "N/A"}
-                    </p>
                     {!hasItems && (
                       <>
+                        <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 capitalize">
+                          <span className="font-semibold">Category:</span>
+                          {mainProductData?.categoryId?.categoryName || "N/A"}
+                        </p>
                         <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 capitalize">
                           <span className="font-semibold">Sub Category:</span>
                           {subCategoryName || "N/A"}
@@ -1427,11 +1446,11 @@ const ProductOverview = () => {
                   </div>
                   
                   {/* Other Terms */}
-                  {(bidOverviewRes?.product?.otherTerms || productResponse?.mainProduct?.otherTerms) && (
+                  {(bidOverviewRes?.product?.description || productResponse?.mainProduct?.description) && (
                     <div className="pt-4 mt-4 border-t border-slate-100">
                       <h4 className="font-semibold text-slate-800 mb-2">Other Terms & Conditions</h4>
                       <div className="p-4 bg-slate-50 border border-slate-100 rounded-lg text-sm text-slate-600 leading-relaxed whitespace-pre-wrap">
-                        {bidOverviewRes ? bidOverviewRes?.product?.otherTerms : productResponse?.mainProduct?.otherTerms}
+                        {bidOverviewRes ? bidOverviewRes?.product?.description : productResponse?.mainProduct?.description}
                       </div>
                     </div>
                   )}
@@ -1477,6 +1496,25 @@ const ProductOverview = () => {
                       <span className="font-semibold">Payment Mode:</span>
                       {(bidOverviewRes ? bidOverviewRes?.product?.paymentAndDelivery?.paymentMode : productResponse?.mainProduct?.paymentAndDelivery?.paymentMode) || "N/A"}
                     </p>
+                    {(() => {
+                      const pm = bidOverviewRes ? bidOverviewRes?.product?.paymentAndDelivery : productResponse?.mainProduct?.paymentAndDelivery;
+                      return (
+                        <>
+                          {pm?.organizationName && (
+                            <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100">
+                              <span className="font-semibold">Organization Name:</span>
+                              <span className="font-medium text-slate-800">{pm.organizationName}</span>
+                            </p>
+                          )}
+                          {pm?.gstNumber && (
+                            <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 uppercase">
+                              <span className="font-semibold">GSTIN:</span>
+                              <span className="font-mono text-[13px] bg-slate-100 px-2 py-0.5 rounded border border-slate-200 text-slate-800 font-bold">{pm.gstNumber}</span>
+                            </p>
+                          )}
+                        </>
+                      );
+                    })()}
                   </div>
                 </div>
 
