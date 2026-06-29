@@ -1380,7 +1380,7 @@ const ProductOverview = () => {
                               This buyer has uploaded a document containing the detailed bill of materials, quantities, and specifications for this requirement.
                             </p>
                             <a 
-                              href={mp.document}
+                              href={mp.document.split(',')[0]}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs rounded-lg transition-colors cursor-pointer"
@@ -1464,6 +1464,47 @@ const ProductOverview = () => {
                       </div>
                     </div>
                   )}
+
+                  {/* Attachments Section */}
+                  {(() => {
+                    const mp = bidOverviewRes?.product || productResponse?.mainProduct;
+                    const docStr = mp?.document || '';
+                    const urls = docStr.split(',').map(url => url.trim()).filter(Boolean);
+                    if (urls.length === 0) return null;
+                    return (
+                      <div className="pt-4 mt-4 border-t border-slate-100 space-y-3">
+                        <h4 className="font-semibold text-slate-800 mb-2">Attached Reference Documents ({urls.length})</h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          {urls.map((url, idx) => {
+                            const name = url.split('/').pop() || `Document ${idx + 1}`;
+                            const isImg = /\.(jpg|jpeg|png|webp|gif)$/i.test(url);
+                            return (
+                              <div key={idx} className="border border-slate-200 bg-slate-50/50 rounded-lg p-4 flex items-center justify-between shadow-xs hover:border-orange-200 transition-colors">
+                                <div className="flex items-center gap-2.5 overflow-hidden">
+                                  <span className="text-2xl shrink-0">{isImg ? '🖼️' : '📄'}</span>
+                                  <div className="overflow-hidden">
+                                    <p className="text-sm font-semibold text-slate-700 truncate max-w-[180px]">{name}</p>
+                                    <p className="text-[10px] text-slate-400 capitalize">Reference File {idx + 1}</p>
+                                  </div>
+                                </div>
+                                <a 
+                                  href={url}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="flex items-center gap-1.5 bg-orange-600 hover:bg-orange-500 text-white px-3 py-1.5 rounded text-xs font-bold transition-colors shadow-sm shrink-0"
+                                >
+                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                  </svg>
+                                  Download
+                                </a>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
 
                 {/* 2. Delivery Information */}
@@ -1534,31 +1575,7 @@ const ProductOverview = () => {
                   </div>
                 </div>
 
-                {/* 3. Attachments */}
-                {(bidOverviewRes?.product?.isUpload || productResponse?.mainProduct?.isUpload || productResponse?.mainProduct?.document || bidOverviewRes?.product?.document) && (
-                  <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 space-y-6 hover:shadow-md transition-shadow">
-                    <h3 className="font-extrabold text-slate-800 text-2xl tracking-tight border-b border-slate-100 pb-4">
-                      Attachments
-                    </h3>
-                    <div className="border-2 border-slate-100 bg-slate-50 rounded-lg p-5 flex items-center justify-between">
-                      <div>
-                        <h4 className="font-bold text-gray-800 text-lg">Requirements Document</h4>
-                        <p className="text-sm text-gray-600 mt-1">Download to view full bill of materials and specs.</p>
-                      </div>
-                      <a 
-                        href={bidOverviewRes?.product?.document || productResponse?.mainProduct?.document}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-2.5 rounded-md font-semibold transition-colors shadow-sm"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                        </svg>
-                        Download Attachment
-                      </a>
-                    </div>
-                  </div>
-                )}
+
 
                 {/* 4. Contact Details (Secure) */}
                 <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 hover:shadow-md transition-shadow">

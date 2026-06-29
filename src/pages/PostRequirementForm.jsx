@@ -165,7 +165,9 @@ const PostRequirementForm = () => {
       if (selectedFiles.length > 0) {
         // Upload logic
         const formData = new FormData();
-        formData.append('document', selectedFiles[0]); // Backend expects only 1 document in req.files.document[0]
+        selectedFiles.forEach(file => {
+          formData.append('document', file);
+        });
         formData.append('commonDetails', JSON.stringify(commonDetails));
         formData.append('categories', JSON.stringify([data.categoryId]));
         formData.append('categoryGroups', JSON.stringify(categoryGroups));
