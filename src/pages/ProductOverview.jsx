@@ -348,12 +348,14 @@ const SellerForm = ({
                   </a>
                 </div>
                 <div className="divide-y divide-orange-50">
-                  {items.map((item, idx) => (
+                  {items.map((item, idx) => {
+                    const resolvedItemName = item.itemName || item.subCategoryName || mainProductData?.categoryId?.subCategories?.find(s => s._id === item.subCategoryId || s._id === item.subCategoryId?.toString())?.name || 'Item ' + (idx + 1);
+                    return (
                     <div key={idx} className="p-6">
                       <div className="flex items-start gap-3 mb-5">
                         <span className="w-7 h-7 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-sm font-bold mt-0.5">{idx + 1}</span>
                         <div className="flex-1">
-                          <span className="text-base font-bold text-slate-800">{item.itemName || item.subCategoryName || 'Item ' + (idx + 1)}</span>
+                          <span className="text-base font-bold text-slate-800">{resolvedItemName}</span>
                           <div className="text-sm text-slate-500 mt-1 flex flex-wrap gap-4">
                             {item.brand && <span><span className="font-medium text-slate-400">Brand:</span> {item.brand}</span>}
                             {(item.typeOfProduct || item.model) && <span><span className="font-medium text-slate-400">Type:</span> {item.typeOfProduct || item.model}</span>}
@@ -372,7 +374,8 @@ const SellerForm = ({
                         </div>
                       </div>
                     </div>
-                  ))}
+                  );
+                })}
                 </div>
                 <div className="p-4 grid grid-cols-2 gap-4 border-t border-slate-100 bg-slate-50">
                   <div>
@@ -1377,11 +1380,14 @@ const ProductOverview = () => {
                     </div>
                   )}
 
-                  {/* General Specs */}
                   <div className="text-[15px] space-y-1 text-slate-600 font-medium">
                     <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 capitalize">
                       <span className="font-semibold">Category:</span>
-                      {(bidOverviewRes ? bidOverviewRes?.product?.subCategory?.name : productResponse?.mainProduct?.categoryId?.categoryName) || "N/A"}
+                      {mainProductData?.categoryId?.categoryName || "N/A"}
+                    </p>
+                    <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 capitalize">
+                      <span className="font-semibold">Sub Category:</span>
+                      {subCategoryName || "N/A"}
                     </p>
                     <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 capitalize">
                       <span className="font-semibold">Brand:</span>
