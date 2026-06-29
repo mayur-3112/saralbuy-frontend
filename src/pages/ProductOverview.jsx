@@ -1504,13 +1504,17 @@ const ProductOverview = () => {
                           {pm?.organizationName && (
                             <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100">
                               <span className="font-semibold">Organization Name:</span>
-                              <span className="font-medium text-slate-800">{pm.organizationName}</span>
+                              <span className="font-medium text-slate-800">{maskName(pm.organizationName)}</span>
                             </p>
                           )}
                           {pm?.gstNumber && (
                             <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 uppercase">
                               <span className="font-semibold">GSTIN:</span>
-                              <span className="font-mono text-[13px] bg-slate-100 px-2 py-0.5 rounded border border-slate-200 text-slate-800 font-bold">{pm.gstNumber}</span>
+                              <span className="font-mono text-[13px] bg-slate-100 px-2 py-0.5 rounded border border-slate-200 text-slate-800 font-bold">
+                                {pm.gstNumber.trim().length > 5 
+                                  ? pm.gstNumber.trim().slice(0, 2) + '*'.repeat(pm.gstNumber.trim().length - 5) + pm.gstNumber.trim().slice(-3) 
+                                  : '*************'}
+                              </span>
                             </p>
                           )}
                         </>
