@@ -1370,7 +1370,28 @@ const ProductOverview = () => {
                   {(() => {
                     const mp = bidOverviewRes?.product || productResponse?.mainProduct;
                     const rawItems = mp?.items || [];
-                    if (rawItems.length === 0) return null;
+                    if (rawItems.length === 0) {
+                      if (mp?.isUpload || mp?.document) {
+                        return (
+                          <div className="mt-4 border border-orange-200 rounded-lg overflow-hidden bg-orange-50/30 p-5 shadow-xs flex flex-col items-center text-center space-y-3">
+                            <span className="text-3xl">📄</span>
+                            <h4 className="font-extrabold text-slate-800 text-base">Reference Document Uploaded</h4>
+                            <p className="text-xs text-slate-500 max-w-md leading-relaxed">
+                              This buyer has uploaded a document containing the detailed bill of materials, quantities, and specifications for this requirement.
+                            </p>
+                            <a 
+                              href={mp.document}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs rounded-lg transition-colors cursor-pointer"
+                            >
+                              Download/View Specifications Document
+                            </a>
+                          </div>
+                        );
+                      }
+                      return null;
+                    }
                     return (
                     <div className="mt-4 border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm">
                       <div className="bg-gray-50 px-5 py-4 border-b border-gray-200 flex items-center justify-between">
@@ -1412,18 +1433,6 @@ const ProductOverview = () => {
                   <div className="text-[15px] space-y-1 text-slate-600 font-medium">
                     {!hasItems && (
                       <>
-                        <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 capitalize">
-                          <span className="font-semibold">Category:</span>
-                          {mainProductData?.categoryId?.categoryName || "N/A"}
-                        </p>
-                        <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 capitalize">
-                          <span className="font-semibold">Sub Category:</span>
-                          {subCategoryName || "N/A"}
-                        </p>
-                        <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 capitalize">
-                          <span className="font-semibold">Brand:</span>
-                          {(bidOverviewRes ? otherBrandValue(bidOverviewRes?.product) : otherBrandValue(productResponse?.mainProduct)) || "N/A"}
-                        </p>
                         {(bidOverviewRes?.product?.model || productResponse?.mainProduct?.model) && (
                           <p className="flex flex-col sm:flex-row sm:items-center items-start justify-between py-3 border-b border-slate-100 capitalize">
                             <span className="font-semibold">Model:</span>
