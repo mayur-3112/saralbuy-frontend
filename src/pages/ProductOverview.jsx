@@ -324,20 +324,21 @@ const SellerForm = ({
 
         {/* Item-by-Item Pricing & Totaler */}
         {(() => {
-          const isMulti = bidOverviewRes ? bidOverviewRes?.product?.isMultiple : productResponse?.mainProduct?.isMultiple;
-          let items = bidOverviewRes ? bidOverviewRes?.product?.items : productResponse?.mainProduct?.items;
+          const localMainProduct = bidOverviewRes ? bidOverviewRes?.product : productResponse?.mainProduct;
+          const isMulti = localMainProduct?.isMultiple;
+          let items = localMainProduct?.items;
           
           if (!items || items.length === 0) {
-            const rootProd = bidOverviewRes ? bidOverviewRes?.product : productResponse?.mainProduct;
-            if (rootProd) {
+            if (localMainProduct) {
               items = [{
-                itemName: rootProd.title || rootProd.productName,
-                itemDescription: rootProd.description,
-                quantity: rootProd.quantity,
-                quantityUnit: rootProd.quantityUnit,
-                brand: rootProd.brand || 'Any',
-                subCategoryId: rootProd.subCategoryId,
-                typeOfProduct: rootProd.typeOfProduct || rootProd.model
+                itemName: localMainProduct.title || localMainProduct.productName,
+                itemDescription: localMainProduct.description,
+                quantity: localMainProduct.quantity,
+                quantityUnit: localMainProduct.quantityUnit,
+                brand: localMainProduct.brand || 'Any',
+                subCategoryId: localMainProduct.subCategoryId,
+                subCategoryName: localMainProduct.subCategoryName,
+                typeOfProduct: localMainProduct.typeOfProduct || localMainProduct.model
               }];
             } else {
               items = [];
@@ -375,7 +376,7 @@ const SellerForm = ({
 
                 <div className="divide-y divide-slate-100">
                   {items.map((item, idx) => {
-                    const resolvedItemName = item.itemName || item.subCategoryName || mainProductData?.categoryId?.subCategories?.find(s => s._id === item.subCategoryId || s._id === item.subCategoryId?.toString())?.name || 'Item ' + (idx + 1);
+                    const resolvedItemName = item.itemName || item.subCategoryName || localMainProduct?.categoryId?.subCategories?.find(s => s._id === item.subCategoryId || s._id === item.subCategoryId?.toString())?.name || 'Item ' + (idx + 1);
                     const isSingle = !isMulti || items.length <= 1;
                     const priceRegisterName = isSingle ? 'unitPrice' : `items.${idx}.unitPrice`;
 
