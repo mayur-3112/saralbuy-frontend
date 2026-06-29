@@ -369,7 +369,8 @@ const SellerForm = ({
                 <div className="hidden md:grid grid-cols-12 gap-3 px-4 py-2 bg-slate-50 text-xs font-extrabold text-slate-500 uppercase tracking-wider border-b border-slate-100">
                   <div className="col-span-3">Item Name</div>
                   <div className="col-span-3">Description / Specs</div>
-                  <div className="col-span-2">Qty & Units</div>
+                  <div className="col-span-1">Quantity</div>
+                  <div className="col-span-1">Units</div>
                   <div className="col-span-2">Brand</div>
                   <div className="col-span-2">Unit Price (₹)</div>
                 </div>
@@ -393,9 +394,14 @@ const SellerForm = ({
                           <div className="text-sm text-slate-600 bg-slate-50/80 md:bg-transparent border border-slate-100 md:border-transparent rounded-md px-3 py-2 md:p-0 min-h-[36px] flex items-center">{item.itemDescription || item.typeOfProduct || item.model || 'N/A'}</div>
                         </div>
                         
-                        <div className="md:col-span-2">
-                          <label className="block md:hidden text-xs font-extrabold text-slate-500 mb-1">Qty & Units</label>
-                          <div className="text-sm font-semibold text-slate-700 bg-slate-50/80 md:bg-transparent border border-slate-100 md:border-transparent rounded-md px-3 py-2 md:p-0 min-h-[36px] flex items-center">{item.quantity || 1} <span className="uppercase text-slate-500 text-xs ml-1">{item.quantityUnit || 'pcs'}</span></div>
+                        <div className="md:col-span-1">
+                          <label className="block md:hidden text-xs font-extrabold text-slate-500 mb-1">Quantity</label>
+                          <div className="text-sm font-semibold text-slate-700 bg-slate-50/80 md:bg-transparent border border-slate-100 md:border-transparent rounded-md px-3 py-2 md:p-0 min-h-[36px] flex items-center">{item.quantity || 1}</div>
+                        </div>
+
+                        <div className="md:col-span-1">
+                          <label className="block md:hidden text-xs font-extrabold text-slate-500 mb-1">Units</label>
+                          <div className="text-sm font-semibold text-slate-700 bg-slate-50/80 md:bg-transparent border border-slate-100 md:border-transparent rounded-md px-3 py-2 md:p-0 min-h-[36px] flex items-center uppercase">{item.quantityUnit || 'pcs'}</div>
                         </div>
 
                         <div className="md:col-span-2">
@@ -1352,11 +1358,12 @@ const ProductOverview = () => {
                       </div>
                       <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
-                          <thead>
+                           <thead>
                             <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider border-b border-gray-200">
                               <th className="px-5 py-3 font-semibold">Item Name</th>
                               <th className="px-5 py-3 font-semibold">Description / Specs</th>
-                              <th className="px-5 py-3 font-semibold">Qty & Units</th>
+                              <th className="px-5 py-3 font-semibold">Quantity</th>
+                              <th className="px-5 py-3 font-semibold">Units</th>
                               <th className="px-5 py-3 font-semibold">Brand</th>
                             </tr>
                           </thead>
@@ -1367,11 +1374,9 @@ const ProductOverview = () => {
                               return (
                               <tr key={idx} className="hover:bg-slate-50 transition-colors">
                                 <td className="px-5 py-4 text-sm font-bold text-gray-900">{resolvedName}</td>
-                                <td className="px-5 py-4 text-sm text-gray-600">{item.typeOfProduct || item.model || "N/A"}</td>
-                                <td className="px-5 py-4">
-                                  <span className="font-black text-orange-600 text-base">{item.quantity}</span>
-                                  <span className="text-xs font-bold text-gray-500 ml-1 uppercase">{item.quantityUnit}</span>
-                                </td>
+                                <td className="px-5 py-4 text-sm text-gray-600">{item.itemDescription || item.typeOfProduct || item.model || "N/A"}</td>
+                                <td className="px-5 py-4 text-sm font-black text-orange-600">{item.quantity}</td>
+                                <td className="px-5 py-4 text-sm font-bold text-gray-500 uppercase">{item.quantityUnit}</td>
                                 <td className="px-5 py-4 text-sm text-gray-600">{item.brand || "Any"}</td>
                               </tr>
                               );
