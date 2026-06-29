@@ -831,11 +831,11 @@ const ProductOverview = () => {
     }
     
     const taxAmount = (subtotal + totalFreight) * (tRate/100);
-    const budgetQuotation = subtotal + totalFreight + taxAmount;
+    const budgetQuation = subtotal + totalFreight + taxAmount;
 
     let obj = {
       ...getValues(),
-      budgetQuotation,
+      budgetQuation,
       status: 'active',
       businessType,
       ...(businessType === 'business' && { businessDets }),
