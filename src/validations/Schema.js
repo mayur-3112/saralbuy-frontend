@@ -64,7 +64,12 @@ export const ProfileSchema = z.object({
 });
 
 export const productOverviewBidSchema = z.object({
-  unitPrice: z.any(),
+  // Single-product mode uses this field; multi-product mode uses items[].unitPrice
+  // (validated manually at submit). Allow empty for multi mode, but reject
+  // non-numeric / non-positive values instead of accepting anything (was z.any()).
+  unitPrice: z
+    .union([z.literal(''), z.coerce.number().positive('Unit price must be greater than 0')])
+    .optional(),
   discount: z.coerce.number().min(0).max(100).optional(),
   freightCost: z.coerce.number().min(0).optional(),
   
