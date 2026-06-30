@@ -23,8 +23,8 @@ const BidListing = () => {
   const [open, setOpen] = useState(false);
   const [currentBidId, setCurrentBidId] = useState('');
   const message = {
-    title: 'Warning',
-    message: 'This action cannot be undone. This Quote will permanently delete your account.',
+    title: 'Delete Quote',
+    message: 'This action cannot be undone. This quote will be permanently deleted.',
   };
   const navigate = useNavigate();
   const {
@@ -101,7 +101,7 @@ const BidListing = () => {
       accessorKey: 'delivery',
       header: 'Delivery',
       cell: ({ row }) => {
-        return <span className="whitespace-nowrap text-sm">{row.getValue('date')}</span>;
+        return <span className="whitespace-nowrap text-sm">{row.getValue('delivery')}</span>;
       },
     },
 

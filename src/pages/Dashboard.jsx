@@ -152,9 +152,9 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Deals Closed (Sales Tracker) */}
-          <div 
-            onClick={() => setActiveTab('quotes')}
+          {/* Closed Deals */}
+          <div
+            onClick={() => navigate('/account/deal')}
             className="group bg-white border border-slate-200 hover:border-emerald-300 rounded-xl p-4 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-3 cursor-pointer relative overflow-hidden hidden lg:flex"
             style={{ background: 'linear-gradient(135deg, #ffffff 80%, #ecfdf5 100%)' }}
           >
@@ -162,14 +162,14 @@ const Dashboard = () => {
               <PieChart className="w-4 h-4" />
             </div>
             <div className="min-w-0">
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider truncate">Win Rate</p>
-              <p className="text-xl font-black text-slate-900 mt-0.5">32%</p>
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider truncate">Closed Deals</p>
+              <p className="text-sm font-black text-emerald-600 mt-0.5">View →</p>
             </div>
           </div>
 
-          {/* Est Margin (Profit Tracker) */}
-          <div 
-            onClick={() => window.open('/supplier-tools', '_blank')}
+          {/* Supplier Tools */}
+          <div
+            onClick={() => navigate('/supplier-tools')}
             className="group bg-white border border-slate-200 hover:border-amber-300 rounded-xl p-4 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-3 cursor-pointer relative overflow-hidden hidden lg:flex"
             style={{ background: 'linear-gradient(135deg, #ffffff 80%, #fffbeb 100%)' }}
           >
@@ -177,8 +177,8 @@ const Dashboard = () => {
               <BarChart4 className="w-4 h-4" />
             </div>
             <div className="min-w-0">
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider truncate">Est. Profit</p>
-              <p className="text-xl font-black text-slate-900 mt-0.5">₹42k</p>
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider truncate">Supplier Tools</p>
+              <p className="text-sm font-black text-amber-600 mt-0.5">Open →</p>
             </div>
           </div>
         </div>

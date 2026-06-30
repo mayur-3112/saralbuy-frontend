@@ -572,7 +572,7 @@ const HomeNavbar = () => {
     };
   }, [user?._id]);
   return (
-    <section className="sticky top-0 z-50 w-full bg-white/70 backdrop-blur-xl border-b border-white/50 shadow-sm transition-all duration-300">
+    <section className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-2xl border-b border-slate-200/50 shadow-sm transition-all duration-300">
       <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-3">
         <div>
           {/* ── Desktop Nav ─────────────────────────────────────────────── */}
@@ -594,33 +594,31 @@ const HomeNavbar = () => {
                 />
               </Link>
 
-              <div className="flex items-center relative group">
+              </div>
+
+            {/* Unified Search & Location Pill */}
+            <div className="flex-1 max-w-3xl flex items-center bg-white rounded-full border border-slate-200 shadow-sm hover:shadow-md focus-within:shadow-md focus-within:border-orange-300 transition-all duration-300 overflow-visible mx-4">
+              {/* Location */}
+              <div className="flex items-center relative group shrink-0 w-36 lg:w-48 border-r border-slate-200 hover:bg-slate-50 rounded-l-full transition-colors">
                 <MapPin 
                   onClick={getGeoLocation}
-                  className="w-4 h-4 text-orange-500 absolute left-3 top-1/2 -translate-y-1/2 cursor-pointer hover:scale-110 transition-transform"
+                  className="w-4 h-4 text-orange-500 absolute left-4 top-1/2 -translate-y-1/2 cursor-pointer hover:scale-110 transition-transform z-10"
                   title="Detect my location"
                 />
                 <Input
                   placeholder="Location..."
-                  className="border-b-[1.5px] bg-transparent pl-8 pr-2 text-sm border-x-0 border-t-0 shadow-none rounded-none border-b-black focus-visible:ring-0 focus:outline-0 focus:shadow-none"
+                  className="bg-transparent pl-10 pr-2 text-sm border-0 shadow-none focus-visible:ring-0 h-[42px] w-full truncate cursor-pointer rounded-l-full"
                   value={currentLocation}
                   onChange={handleLocationChange}
                   onKeyDown={handleLocationKeyDown}
                 />
-                {/* <NavigationMenu>
-                  <NavigationMenuList>
-                    {menu.map((item) => renderMenuItem(item))}
-                  </NavigationMenuList>
-                </NavigationMenu> */}
               </div>
-            </div>
 
-            {/* Search */}
-            <div className="relative flex-1 min-w-[150px] max-w-xl flex items-center bg-white rounded-sm border border-gray-300 focus-within:ring-1 focus-within:ring-gray-900 focus-within:border-gray-900 overflow-hidden mx-2">
+              {/* Category Dropdown */}
               <select
                 value={selectedSearchCategory}
                 onChange={e => setSelectedSearchCategory(e.target.value)}
-                className="bg-gray-50 border-r border-gray-300 text-gray-700 text-xs px-3 py-2 focus:outline-none cursor-pointer h-[38px] max-w-[150px] truncate shrink-0"
+                className="bg-transparent border-r border-slate-200 text-slate-600 text-sm px-3 hover:bg-slate-50 focus:outline-none cursor-pointer h-[42px] max-w-[140px] truncate shrink-0 transition-colors"
               >
                 <option value="all">All Categories</option>
                 {filteredCategories?.map(cat => (
@@ -629,60 +627,65 @@ const HomeNavbar = () => {
                   </option>
                 ))}
               </select>
-              <Input
-                type="text"
-                onInput={handleInputValue}
-                value={text}
-                onKeyPress={handleKeyPress}
-                placeholder="Looking For..."
-                className="pl-3 py-2 shadow-none rounded-none w-full border-none focus-visible:ring-0 h-[38px]"
-              />
-              <SearchIcon className="absolute right-2.5 top-2.5 h-4 w-4 pointer-events-none opacity-50" />
 
-              {/* Search Dropdown */}
-              {showDropdown && (
-                <div
-                  ref={productsRef}
-                  className="absolute right-0  w-full top-full mt-2 z-[99] max-h-[300px]  overflow-y-auto bg-white rounded-lg shadow-lg p-2 space-y-2"
-                >
-                  {isSearchLoading ? (
-                    Array.from({ length: 3 }).map((_, i) => (
-                      <Skeleton key={i} className="h-20 rounded-md w-full" />
-                    ))
-                  ) : products?.length > 0 ? (
-                    products.map(p => (
-                      <Card
-                        key={p._id}
-                        className="p-2 rounded-xl shadow-md bg-white cursor-pointer hover:bg-gray-50"
-                        onClick={() => {
-                          setShowDropdown(false);
-                          setProducts([]);
-                          setSearchText('');
-                          flush();
-                          navigate(
-                            `/product-listing?_id=${encodeURIComponent(p._id)}&title=${encodeURIComponent(p.title)}`
-                          );
-                        }}
-                      >
-                        <div className="flex gap-4">
-                          <img
-                            className="w-14 h-14 object-contain rounded-lg mix-blend-darken"
-                            src={p.image || '/no-image.webp'}
-                            alt={p.title}
-                          />
-
-                          <div className="flex-1">
-                            <p className="text-md font-semibold text-orange-600 ">{p.title}</p>
-                            <p className="text-sm text-gray-600 line-clamp-2">{p.description}</p>
-                          </div>
-                        </div>
-                      </Card>
-                    ))
-                  ) : (
-                    <p className="text-sm text-gray-500 p-2 text-center">No results found.</p>
-                  )}
+              {/* Search */}
+              <div className="relative flex-1 flex items-center h-[42px] group">
+                <Input
+                  type="text"
+                  onInput={handleInputValue}
+                  value={text}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Looking For..."
+                  className="pl-3 pr-10 shadow-none border-0 focus-visible:ring-0 h-full w-full bg-transparent rounded-r-full"
+                />
+                <div className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 bg-orange-500 hover:bg-orange-600 rounded-full flex items-center justify-center cursor-pointer transition-colors shadow-sm shadow-orange-500/30">
+                  <SearchIcon className="h-4 w-4 text-white" />
                 </div>
-              )}
+
+                {/* Search Dropdown */}
+                {showDropdown && (
+                  <div
+                    ref={productsRef}
+                    className="absolute left-0 right-0 top-full mt-3 z-[99] max-h-[350px] overflow-y-auto bg-white rounded-xl shadow-xl border border-slate-100 p-2 space-y-2"
+                  >
+                    {isSearchLoading ? (
+                      Array.from({ length: 3 }).map((_, i) => (
+                        <Skeleton key={i} className="h-20 rounded-xl w-full" />
+                      ))
+                    ) : products?.length > 0 ? (
+                      products.map(p => (
+                        <Card
+                          key={p._id}
+                          className="p-3 rounded-xl border border-slate-100 shadow-sm bg-white cursor-pointer hover:bg-orange-50 hover:border-orange-200 transition-all"
+                          onClick={() => {
+                            setShowDropdown(false);
+                            setProducts([]);
+                            setSearchText('');
+                            flush();
+                            navigate(
+                              `/product-listing?_id=${encodeURIComponent(p._id)}&title=${encodeURIComponent(p.title)}`
+                            );
+                          }}
+                        >
+                          <div className="flex gap-4 items-center">
+                            <img
+                              className="w-12 h-12 object-contain rounded-lg mix-blend-darken bg-slate-50 p-1"
+                              src={p.image || '/no-image.webp'}
+                              alt={p.title}
+                            />
+                            <div className="flex-1">
+                              <p className="text-sm font-bold text-slate-800 line-clamp-1">{p.title}</p>
+                              <p className="text-xs text-slate-500 line-clamp-1 mt-0.5">{p.description}</p>
+                            </div>
+                          </div>
+                        </Card>
+                      ))
+                    ) : (
+                      <p className="text-sm text-slate-500 p-4 text-center">No results found.</p>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Right Side Actions */}
@@ -693,11 +696,11 @@ const HomeNavbar = () => {
               {user && (
                 <Popover open={showMessageDropdown} onOpenChange={setShowMessageDropdown}>
                   <PopoverTrigger asChild>
-                    <div className="cursor-pointer relative bg-transparent border-0 shadow-none">
-                      <MessageSquareText className="w-5 h-5 text-gray-600" />
+                    <div className="cursor-pointer relative p-2 rounded-full bg-slate-50 hover:bg-slate-100 transition-colors">
+                      <MessageSquareText className="w-5 h-5 text-slate-700" />
                       {unreadChatsCount > 0 && (
                         <Badge
-                          className="h-5 min-w-5 text-xs rounded-full px-1.5 py-0.5 flex items-center justify-center absolute -top-2 -right-2 shadow-md bg-red-100 text-red-500"
+                          className="h-[18px] min-w-[18px] text-[10px] font-bold rounded-full px-1 py-0 flex items-center justify-center absolute -top-1 -right-1 shadow-sm bg-gradient-to-r from-red-500 to-rose-500 text-white border border-white"
                           variant="destructive"
                         >
                           {unreadChatsCount}
@@ -823,11 +826,11 @@ const HomeNavbar = () => {
                 }}
               >
                 <PopoverTrigger asChild>
-                  <div className="cursor-pointer relative bg-transparent border-0 shadow-none">
-                    <Bell className="w-5 h-5 text-gray-600" />
+                  <div className="cursor-pointer relative p-2 rounded-full bg-slate-50 hover:bg-slate-100 transition-colors">
+                    <Bell className="w-5 h-5 text-slate-700" />
                     {unseenCount > 0 && (
                       <Badge
-                        className="h-5 min-w-5 text-xs rounded-full px-1.5 py-0.5 flex items-center justify-center absolute -top-2 -right-2 shadow-md bg-red-100 text-red-500"
+                        className="h-[18px] min-w-[18px] text-[10px] font-bold rounded-full px-1 py-0 flex items-center justify-center absolute -top-1 -right-1 shadow-sm bg-gradient-to-r from-red-500 to-rose-500 text-white border border-white"
                         variant="destructive"
                       >
                         {unseenCount}
@@ -906,7 +909,7 @@ const HomeNavbar = () => {
               }}
               variant="default"
               size="sm"
-              className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 hover:shadow-xl hover:shadow-orange-500/30 hover:-translate-y-0.5 active:scale-95 active:translate-y-0 text-white font-bold px-6 py-2.5 rounded-xl transition-all duration-300 cursor-pointer text-sm border-0 group"
+              className="bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 hover:shadow-lg hover:shadow-orange-500/40 hover:-translate-y-0.5 active:scale-95 text-white font-bold px-6 py-2 rounded-full transition-all duration-300 cursor-pointer text-sm border-0 group ring-2 ring-white/50 ring-offset-1 ring-offset-orange-50"
             >
               Post Requirements
               <span className="ml-1 opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-1 group-hover:translate-x-1 transition-all duration-300">→</span>

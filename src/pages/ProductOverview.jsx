@@ -367,9 +367,9 @@ const SellerForm = ({
                 </div>
                 {/* Header Row for Desktop */}
                 <div className="hidden md:grid grid-cols-12 gap-3 px-4 py-2 bg-slate-50 text-xs font-extrabold text-slate-500 uppercase tracking-wider border-b border-slate-100">
-                  <div className="col-span-3">Item Name</div>
+                  <div className="col-span-2">Item Name</div>
                   <div className="col-span-3">Description / Specs</div>
-                  <div className="col-span-1">Quantity</div>
+                  <div className="col-span-2">Quantity</div>
                   <div className="col-span-1">Units</div>
                   <div className="col-span-2">Brand</div>
                   <div className="col-span-2">Unit Price (₹)</div>
@@ -384,7 +384,7 @@ const SellerForm = ({
 
                     return (
                       <div key={idx} className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-4 items-center bg-white p-4 hover:bg-orange-50/20 transition-colors">
-                        <div className="md:col-span-3">
+                        <div className="md:col-span-2">
                           <label className="block md:hidden text-xs font-extrabold text-slate-500 mb-1">Item Name</label>
                           <div className="text-sm font-bold text-slate-800 bg-slate-50/80 md:bg-transparent border border-slate-100 md:border-transparent rounded-md px-3 py-2 md:p-0 min-h-[36px] flex items-center">{resolvedItemName}</div>
                         </div>
@@ -394,7 +394,7 @@ const SellerForm = ({
                           <div className="text-sm text-slate-600 bg-slate-50/80 md:bg-transparent border border-slate-100 md:border-transparent rounded-md px-3 py-2 md:p-0 min-h-[36px] flex items-center">{item.itemDescription || item.typeOfProduct || item.model || 'N/A'}</div>
                         </div>
                         
-                        <div className="md:col-span-1">
+                        <div className="md:col-span-2">
                           <label className="block md:hidden text-xs font-extrabold text-slate-500 mb-1">Quantity</label>
                           <div className="text-sm font-semibold text-slate-700 bg-slate-50/80 md:bg-transparent border border-slate-100 md:border-transparent rounded-md px-3 py-2 md:p-0 min-h-[36px] flex items-center">{item.quantity || 1}</div>
                         </div>
@@ -1197,7 +1197,7 @@ const ProductOverview = () => {
                   </div>
                   <div className="flex flex-col">
                     <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Category</span>
-                    <span className="text-[13px] font-semibold text-orange-600 line-clamp-1 capitalize">
+                    <span className="text-[13px] font-semibold text-slate-800 line-clamp-1 capitalize">
                       {mainProductData?.categoryId?.categoryName || "N/A"}
                     </span>
                   </div>
@@ -1454,17 +1454,6 @@ const ProductOverview = () => {
                       </p>
                     )}
                   </div>
-                  
-                  {/* Other Terms */}
-                  {(bidOverviewRes?.product?.description || productResponse?.mainProduct?.description) && (
-                    <div className="pt-4 mt-4 border-t border-slate-100">
-                      <h4 className="font-semibold text-slate-800 mb-2">Other Terms & Conditions</h4>
-                      <div className="p-4 bg-slate-50 border border-slate-100 rounded-lg text-sm text-slate-600 leading-relaxed whitespace-pre-wrap">
-                        {bidOverviewRes ? bidOverviewRes?.product?.description : productResponse?.mainProduct?.description}
-                      </div>
-                    </div>
-                  )}
-
                   {/* Attachments Section */}
                   {(() => {
                     const mp = bidOverviewRes?.product || productResponse?.mainProduct;

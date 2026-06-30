@@ -142,7 +142,7 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
               {categoryName && (
                 <div className="flex flex-col">
                   <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Category</span>
-                  <span className="text-[13px] font-semibold text-orange-600 line-clamp-1">{categoryName}</span>
+                  <span className="text-[13px] font-semibold text-slate-800 line-clamp-1">{categoryName}</span>
                 </div>
               )}
               {rfqCode && (
@@ -195,12 +195,7 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
             )}
 
             {/* Additional Info / Description / Other Terms */}
-            {descriptionText && descriptionText !== productTitle && (
-              <div className="mt-2 text-xs text-slate-500 bg-slate-50 border border-slate-100 rounded p-2.5 max-w-lg">
-                <span className="font-extrabold uppercase text-[9px] text-slate-400 tracking-wider block mb-1">Additional Terms / Instructions</span>
-                <p className="whitespace-pre-wrap leading-relaxed">{descriptionText}</p>
-              </div>
-            )}
+
           </div>
         </div>
 
