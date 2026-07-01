@@ -19,6 +19,7 @@ import { toast } from 'sonner';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ProfileSchema } from '@/validations/Schema';
 import Authentication from '@/components/custom/auth/Authenticate';
+import BusinessVerification from '@/components/custom/profile/BusinessVerification';
 
 export function AccountSettings() {
   const [fileDoc, _] = useState(null);
@@ -352,6 +353,11 @@ export function AccountSettings() {
           </div>
         </form>
       </Card>
+
+      {/* Business verification (Aadhaar replacement — GSTIN/PAN) */}
+      <div className="mt-6">
+        <BusinessVerification />
+      </div>
     </div>
   );
 }

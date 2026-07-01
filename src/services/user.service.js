@@ -17,6 +17,18 @@ class UserService {
   async logout() {
     return instance.get('/user/logout').then(res => res.data?.data || res.data);
   }
+  async submitVerification(formData) {
+    return instance
+      .post('/user/submit-verification', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      .then(res => res.data?.data || res.data);
+  }
+  async getVerificationStatus() {
+    return instance
+      .get('/user/verification-status')
+      .then(res => res.data?.data || res.data);
+  }
 }
 
 export default new UserService();

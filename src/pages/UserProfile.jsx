@@ -17,6 +17,7 @@ import userService from '@/services/user.service';
 import { useEffect } from 'react';
 import { mergeName } from '@/utils/mergerName';
 import Loader from '@/components/custom/Loader';
+import VerifiedBadge from '@/components/custom/VerifiedBadge';
 
 const ProfileField = ({ label, value }) => (
   <div className="space-y-1">
@@ -81,7 +82,10 @@ const UserProfile = () => {
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="text-base font-semibold text-foreground">{mergeName(data)}</p>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="text-base font-semibold text-foreground">{mergeName(data)}</p>
+                    <VerifiedBadge status={data?.verificationStatus} size="md" />
+                  </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground mt-0.5">
                     {data?.currentLocation && (
                       <>
