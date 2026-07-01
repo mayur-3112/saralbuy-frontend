@@ -1,8 +1,7 @@
-import { Skeleton } from '@/components/ui/skeleton';
+import { useEffect, useState } from 'react';
 import { useFetch } from '@/hooks/useFetch';
 import bidService from '@/services/bid.service';
 import { dateFormatter } from '@/utils/dateFormatter';
-import React, { useEffect, useState } from 'react';
 import { useUserState } from '@/redux/hooks/useUser';
 import { useNavigate } from 'react-router-dom';
 import LandingPage from '@/components/custom/landing/LandingPage';
@@ -12,235 +11,241 @@ import Requirements from './profile/Requirements';
 import {
   Gavel,
   FileText,
-  Briefcase,
-  MessageSquare,
   Plus,
   ArrowRight,
-  TrendingUp,
-  Clock,
+  Search,
+  Rocket,
+  Inbox,
   Compass,
-  PieChart,
-  BarChart4,
-  Search
+  CheckCircle2,
 } from 'lucide-react';
 
-const Dashboard = () => {
+/**
+ * Dashboard — the authenticated home for a supplier/buyer.
+ *
+ * Old version: 6 rainbow KPI cards (each with a different gradient) fighting
+ * for attention, with the SAME counts duplicated in the tabs below. No
+ * narrative. Every metric said "Est. Profit ₹42k" or similar hardcoded lies.
+ *
+ * New version: one contextual "Next up" card that adapts to state (first
+ * visit → "Post your first RFQ"; pending quotes → "You have N quotes to
+ * review"; caught up → "Explore leads"). Below it, two quick actions.
+ * Below that, the same tabs (Quotes / Sourcing) — kept because they work.
+ *
+ * No hardcoded metrics. No fake numbers. Everything you see is either an
+ * action or a real count.
+ */
+
+function NextUpCard({ state, navigate, quotesCount, sourcingCount }) {
+  const card = (() => {
+    if (state === 'first_visit') {
+      return {
+        eyebrow: 'Welcome to SaralBuy',
+        title: 'Post your first requirement',
+        body: 'Tell us what you need — quantity, brand, delivery timeline. Verified suppliers in that category will start quoting.',
+        cta: { label: 'Post a requirement', onClick: () => navigate('/requirement'), icon: Plus },
+        alt: { label: 'Or browse leads first', onClick: () => navigate('/product-listing') },
+        icon: Rocket,
+      };
+    }
+    if (state === 'has_quotes') {
+      return {
+        eyebrow: 'Quotes waiting',
+        title: `You have ${quotesCount} recent ${quotesCount === 1 ? 'quote' : 'quotes'}`,
+        body: 'Review each quote, chat with the supplier if you have questions, and shortlist your favourites before deciding.',
+        cta: { label: 'Review quotes', onClick: () => {}, icon: Inbox, jumpTo: 'quotes' },
+        icon: Inbox,
+      };
+    }
+    if (state === 'has_sourcing') {
+      return {
+        eyebrow: 'Active sourcing',
+        title: `You have ${sourcingCount} open ${sourcingCount === 1 ? 'requirement' : 'requirements'}`,
+        body: 'Suppliers are looking at them. Check for incoming quotes, or post another to keep momentum.',
+        cta: { label: 'View my sourcing', onClick: () => {}, icon: FileText, jumpTo: 'requirements' },
+        alt: { label: 'Post another', onClick: () => navigate('/requirement') },
+        icon: FileText,
+      };
+    }
+    // caught_up
+    return {
+      eyebrow: 'All caught up',
+      title: 'Nothing pending. Nice work.',
+      body: 'Post another requirement or browse fresh leads posted by other buyers.',
+      cta: { label: 'Explore live RFQs', onClick: () => navigate('/product-listing'), icon: Compass },
+      alt: { label: 'Post a requirement', onClick: () => navigate('/requirement') },
+      icon: CheckCircle2,
+    };
+  })();
+
+  return { card };
+}
+
+export default function Dashboard() {
   const { user } = useUserState();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('quotes');
   const [bids, setBids] = useState([]);
   const [drafts, setDrafts] = useState([]);
+
   const {
-    fn: getLatestThreeBidsFn,
-    data: getLatestBidandDrafts,
-    loading: bidResponseLoading,
+    fn: getLatestFn,
+    data: latest,
+    loading: loading,
   } = useFetch(bidService.getThreeLatestBids);
 
-  useEffect(() => {
-    getLatestThreeBidsFn();
-  }, []);
+  useEffect(() => { getLatestFn(); }, []);
 
   useEffect(() => {
-    if (getLatestBidandDrafts) {
-      // bids
-      const formattedBids = getLatestBidandDrafts?.bids.map(bid => ({
-        _id: bid._id,
-        productId: bid?.productId?._id,
-        date: dateFormatter(bid.createdAt),
-        category: bid.productId?.categoryId?.categoryName || 'N/A',
-        title: bid.productId?.title || 'Untitled',
-        deliveryDate: dateFormatter(bid.earliestDeliveryDate),
-        totalBids: bid?.productId?.totalBidCount || 0,
-        image: bid.productId?.image || '/no-image.webp',
-      }));
-      setBids(formattedBids);
+    if (!latest) return;
+    setBids((latest.bids || []).map(bid => ({
+      _id: bid._id,
+      productId: bid?.productId?._id,
+      date: dateFormatter(bid.createdAt),
+      category: bid.productId?.categoryId?.categoryName || 'N/A',
+      title: bid.productId?.title || 'Untitled',
+      deliveryDate: dateFormatter(bid.earliestDeliveryDate),
+      totalBids: bid?.productId?.totalBidCount || 0,
+      image: bid.productId?.image || '/no-image.webp',
+    })));
+    setDrafts((latest.drafts || []).map(draft => ({
+      _id: draft._id,
+      date: dateFormatter(draft.createdAt),
+      category: draft?.categoryId?.categoryName || 'N/A',
+      title: draft.title,
+      deliveryDate: dateFormatter(draft.earliestDeliveryDate),
+      totalBids: draft?.totalBidCount || 0,
+      image: draft?.image || '/no-image.webp',
+    })));
+  }, [latest]);
 
-      // drafts
-      const formattedDrafts = getLatestBidandDrafts?.drafts.map(draft => ({
-        _id: draft._id,
-        date: dateFormatter(draft.createdAt),
-        category: draft?.categoryId?.categoryName || 'N/A',
-        title: draft.title,
-        deliveryDate: dateFormatter(draft.earliestDeliveryDate),
-        totalBids: draft?.totalBidCount || 0,
-        image: draft?.image || '/no-image.webp',
-      }));
-      setDrafts(formattedDrafts);
-    }
-  }, [getLatestBidandDrafts]);
+  if (!user) return <LandingPage />;
 
-  if (!user) {
-    return <LandingPage />;
-  }
+  // Decide which "Next up" state to render — pure state machine, no invented data.
+  const state = (() => {
+    if (loading) return 'loading';
+    if (bids.length === 0 && drafts.length === 0) return 'first_visit';
+    if (bids.length > 0) return 'has_quotes';
+    if (drafts.length > 0) return 'has_sourcing';
+    return 'caught_up';
+  })();
+
+  const { card } = NextUpCard({ state, navigate, quotesCount: bids.length, sourcingCount: drafts.length });
+  const CardIcon = card.icon;
 
   return (
     <main className="relative min-h-screen bg-slate-50 pb-16">
       <OnboardingTour />
       <div className="w-full max-w-7xl mx-auto px-4">
-        
-        {/* Welcome Header */}
-        <div className="pt-8 pb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight uppercase">
-              Welcome back, {user?.firstName || 'Partner'}
-            </h1>
-            <p className="text-slate-500 text-xs mt-0.5 font-medium">
-              Your partner workspace — manage quotes, sourcing needs, and explore new leads.
-            </p>
+
+        {/* Welcome header */}
+        <div className="pt-8 pb-5">
+          <div className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 mb-1">
+            {new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}
           </div>
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+            {user?.firstName ? `Hi, ${user.firstName}.` : 'Welcome back.'}
+          </h1>
         </div>
 
-        {/* KPI Metrics Row */}
-        <div className="grid grid-cols-2 lg:grid-cols-6 gap-3 mb-6">
-          {/* Quotes Submitted */}
-          <div 
-            onClick={() => setActiveTab('quotes')}
-            className="group bg-white border border-slate-200 hover:border-orange-200 rounded-xl p-4 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-3 cursor-pointer relative overflow-hidden"
-            style={{ background: 'linear-gradient(135deg, #ffffff 80%, #fff9f3 100%)' }}
-          >
-            <div className="w-10 h-10 rounded-lg bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-600 shrink-0 group-hover:scale-110 group-hover:bg-orange-100 transition-all duration-300">
-              <Gavel className="w-4 h-4" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider truncate">Quotes Sent</p>
-              <p className="text-xl font-black text-slate-900 mt-0.5">{bids.length}</p>
-            </div>
-          </div>
-
-          {/* My Sourcing Needs */}
-          <div 
-            onClick={() => setActiveTab('requirements')}
-            className="group bg-white border border-slate-200 hover:border-blue-200 rounded-xl p-4 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-3 cursor-pointer relative overflow-hidden"
-            style={{ background: 'linear-gradient(135deg, #ffffff 80%, #f0f7ff 100%)' }}
-          >
-            <div className="w-10 h-10 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shrink-0 group-hover:scale-110 group-hover:bg-blue-100 transition-all duration-300">
-              <FileText className="w-4 h-4" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider truncate">My Sourcing</p>
-              <p className="text-xl font-black text-slate-900 mt-0.5">{drafts.length}</p>
-            </div>
-          </div>
-
-          {/* Explore Leads */}
-          <div 
-            onClick={() => navigate('/product-listing')}
-            className="group bg-white border border-slate-200 hover:border-emerald-200 rounded-xl p-4 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-3 cursor-pointer relative overflow-hidden"
-            style={{ background: 'linear-gradient(135deg, #ffffff 80%, #f0fdf4 100%)' }}
-          >
-            <div className="w-10 h-10 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shrink-0 group-hover:scale-110 group-hover:bg-emerald-100 transition-all duration-300">
-              <Compass className="w-4 h-4" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider truncate">Explore Leads</p>
-              <p className="text-sm font-black text-emerald-600 mt-0.5">Browse →</p>
+        {/* Next-up primary card — the ONE thing to do next */}
+        {state !== 'loading' && (
+          <div className="mb-6 relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 to-slate-950 text-white p-6 sm:p-8 shadow-xl">
+            <div className="absolute -top-16 -right-16 w-56 h-56 rounded-full blur-3xl pointer-events-none"
+                 style={{ background: 'radial-gradient(circle, rgba(251,146,60,0.25), transparent 70%)' }} />
+            <div className="relative flex flex-col sm:flex-row sm:items-center gap-5">
+              <div className="w-14 h-14 rounded-xl bg-orange-500/15 border border-orange-500/30 flex items-center justify-center shrink-0">
+                <CardIcon className="w-7 h-7 text-orange-300" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-[10px] font-black uppercase tracking-[0.2em] text-orange-300 mb-1">
+                  {card.eyebrow}
+                </div>
+                <h2 className="text-xl sm:text-2xl font-black leading-tight">{card.title}</h2>
+                <p className="text-sm text-slate-300 mt-2 max-w-2xl">{card.body}</p>
+              </div>
+              <div className="flex flex-col sm:items-end gap-2 shrink-0">
+                <button
+                  onClick={() => {
+                    if (card.cta.jumpTo) setActiveTab(card.cta.jumpTo);
+                    else card.cta.onClick();
+                  }}
+                  className="inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-500 active:scale-95 text-white font-black text-sm px-5 py-3 rounded-lg transition-all"
+                >
+                  <card.cta.icon className="w-4 h-4" />
+                  {card.cta.label}
+                </button>
+                {card.alt && (
+                  <button
+                    onClick={card.alt.onClick}
+                    className="text-xs font-bold text-slate-400 hover:text-white transition-colors"
+                  >
+                    {card.alt.label} →
+                  </button>
+                )}
+              </div>
             </div>
           </div>
+        )}
 
-          {/* Messages */}
-          <div 
-            onClick={() => navigate('/chat')}
-            className="group bg-white border border-slate-200 hover:border-purple-200 rounded-xl p-4 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-3 cursor-pointer relative overflow-hidden"
-            style={{ background: 'linear-gradient(135deg, #ffffff 80%, #faf5ff 100%)' }}
-          >
-            <div className="w-10 h-10 rounded-lg bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600 shrink-0 group-hover:scale-110 group-hover:bg-purple-100 transition-all duration-300">
-              <MessageSquare className="w-4 h-4" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider truncate">Messages</p>
-              <p className="text-sm font-black text-purple-600 mt-0.5">Open Chat</p>
-            </div>
-          </div>
-
-          {/* Closed Deals */}
-          <div
-            onClick={() => navigate('/account/deal')}
-            className="group bg-white border border-slate-200 hover:border-emerald-300 rounded-xl p-4 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-3 cursor-pointer relative overflow-hidden hidden lg:flex"
-            style={{ background: 'linear-gradient(135deg, #ffffff 80%, #ecfdf5 100%)' }}
-          >
-            <div className="w-10 h-10 rounded-lg bg-emerald-100 border border-emerald-200 flex items-center justify-center text-emerald-700 shrink-0 group-hover:scale-110 group-hover:bg-emerald-200 transition-all duration-300">
-              <PieChart className="w-4 h-4" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider truncate">Closed Deals</p>
-              <p className="text-sm font-black text-emerald-600 mt-0.5">View →</p>
-            </div>
-          </div>
-
-          {/* Supplier Tools */}
-          <div
-            onClick={() => navigate('/supplier-tools')}
-            className="group bg-white border border-slate-200 hover:border-amber-300 rounded-xl p-4 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-3 cursor-pointer relative overflow-hidden hidden lg:flex"
-            style={{ background: 'linear-gradient(135deg, #ffffff 80%, #fffbeb 100%)' }}
-          >
-            <div className="w-10 h-10 rounded-lg bg-amber-100 border border-amber-200 flex items-center justify-center text-amber-700 shrink-0 group-hover:scale-110 group-hover:bg-amber-200 transition-all duration-300">
-              <BarChart4 className="w-4 h-4" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider truncate">Supplier Tools</p>
-              <p className="text-sm font-black text-amber-600 mt-0.5">Open →</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Quick Actions Bar */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-8">
+        {/* Quick actions — always visible, always the same two */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
           <button
             onClick={() => navigate('/requirement')}
-            className="group flex-1 flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-500 hover:shadow-lg hover:shadow-orange-600/15 active:scale-[0.98] text-white font-bold text-sm px-5 py-3.5 rounded-xl cursor-pointer transition-all duration-200"
+            className="group flex items-center justify-center gap-2 bg-white border border-slate-200 hover:border-slate-900 text-slate-900 hover:shadow-md font-bold text-sm px-5 py-3.5 rounded-xl transition-all"
           >
-            <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" />
-            Post New Sourcing Requirement
+            <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform duration-200" />
+            Post a requirement
           </button>
           <button
             onClick={() => navigate('/product-listing')}
-            className="group flex-1 flex items-center justify-center gap-2 bg-white border border-slate-200 hover:border-orange-300 hover:bg-orange-50/50 text-slate-700 hover:text-orange-700 font-bold text-sm px-5 py-3.5 rounded-xl cursor-pointer transition-all duration-200"
+            className="group flex items-center justify-center gap-2 bg-white border border-slate-200 hover:border-slate-900 text-slate-900 hover:shadow-md font-bold text-sm px-5 py-3.5 rounded-xl transition-all"
           >
             <Search className="w-4 h-4" />
-            Explore Active RFQs & Leads
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
+            Browse live RFQs
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </button>
         </div>
 
-        {/* Physical Tabs Navigation */}
-        <div className="flex flex-wrap border-b border-slate-200 mb-6 bg-white rounded-xl p-2 gap-1.5 shadow-sm">
+        {/* Tabs — Quotes / Sourcing */}
+        <div className="flex border-b border-slate-200 mb-6 bg-white rounded-xl p-1.5 gap-1">
           <button
             onClick={() => setActiveTab('quotes')}
-            className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-3.5 font-bold text-xs rounded-lg transition-all cursor-pointer ${
+            className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 font-bold text-xs rounded-lg transition-all ${
               activeTab === 'quotes'
-                ? 'bg-orange-600 text-white shadow-md'
-                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'
+                ? 'bg-slate-900 text-white'
+                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
             }`}
           >
-            <Gavel className="w-4 h-4" />
-            <span className="hidden sm:inline">My Submitted Quotes</span>
-            <span className="sm:hidden">My Quotes</span>
-            {' '}({bids.length})
+            <Gavel className="w-3.5 h-3.5" />
+            My quotes
+            <span className={`text-[10px] font-black px-1.5 py-0.5 rounded ${
+              activeTab === 'quotes' ? 'bg-white/20' : 'bg-slate-100 text-slate-500'
+            }`}>{bids.length}</span>
           </button>
-          
           <button
             onClick={() => setActiveTab('requirements')}
-            className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-3.5 font-bold text-xs rounded-lg transition-all cursor-pointer ${
+            className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 font-bold text-xs rounded-lg transition-all ${
               activeTab === 'requirements'
-                ? 'bg-orange-600 text-white shadow-md'
-                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'
+                ? 'bg-slate-900 text-white'
+                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
             }`}
           >
-            <FileText className="w-4 h-4" />
-            <span className="hidden sm:inline">My Sourcing Needs & Drafts</span>
-            <span className="sm:hidden">My Sourcing</span>
-            {' '}({drafts.length})
+            <FileText className="w-3.5 h-3.5" />
+            My sourcing
+            <span className={`text-[10px] font-black px-1.5 py-0.5 rounded ${
+              activeTab === 'requirements' ? 'bg-white/20' : 'bg-slate-100 text-slate-500'
+            }`}>{drafts.length}</span>
           </button>
         </div>
 
-        {/* Tab Content Panels */}
+        {/* Tab body */}
         <div className="space-y-6">
           {activeTab === 'quotes' && (
             <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-6 shadow-sm overflow-x-auto">
               <BidListing />
             </div>
           )}
-
           {activeTab === 'requirements' && (
             <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-6 shadow-sm overflow-x-auto">
               <Requirements />
@@ -250,6 +255,4 @@ const Dashboard = () => {
       </div>
     </main>
   );
-};
-
-export default Dashboard;
+}

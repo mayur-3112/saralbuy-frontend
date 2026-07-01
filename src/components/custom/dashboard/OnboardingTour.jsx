@@ -1,189 +1,168 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { HelpCircle, ChevronRight, ChevronLeft, X } from 'lucide-react';
+import { ChevronRight, ChevronLeft, X, HandMetal } from 'lucide-react';
+
+/**
+ * OnboardingTour — a compact spotlight walkthrough for a user's first Dashboard visit.
+ *
+ * Old version had six steps of corporate speak ("Karnataka's premier B2B
+ * bulk procurement console", "real B2B trading volume", "regional
+ * coordinates") and claimed the green pulse "indicates the platform is
+ * actively facilitating deals" — nothing of the sort.
+ *
+ * Rewritten with four steps, each in plain English that tells the user
+ * WHAT to do, not what things ARE. No "premier," no claims about live
+ * trading volume, no jargon.
+ */
+
+const STEPS = [
+  {
+    title: "You're in.",
+    description:
+      "This is your workspace. Post a requirement to get quotes, or browse other people's RFQs to quote on. Skip this tour anytime.",
+    selector: null,
+  },
+  {
+    title: 'Search across categories',
+    description:
+      "The nav bar's category dropdown filters the whole site to one type of material — Cement, Steel, Tiles, etc. Useful when you know what you're sourcing.",
+    selector: 'nav select',
+  },
+  {
+    title: 'Your quotes and requirements live here',
+    description:
+      'The tabs below switch between the quotes you\'ve sent and the requirements you\'ve posted. New activity shows up here first.',
+    selector: '[data-tour="sourcing-workspace"]',
+  },
+  {
+    title: 'Chat sits in the corner',
+    description:
+      "When a supplier quotes on your RFQ (or vice versa), the chat bubble in the bottom-right lets you negotiate — files, dates, prices. Phone numbers stay hidden until a deal closes.",
+    selector: '.floating-discussions-chatbox',
+  },
+];
+
+const STORAGE_KEY = 'SaralBuy_onboarded_v2'; // v2 → users who saw the old tour get the new one once
 
 export default function OnboardingTour() {
   const [isOpen, setIsOpen] = useState(false);
-  const [currentStep, setCurrentStep] = useState(0);
-
-  const steps = [
-    {
-      title: 'Welcome to SaralBuy V2!',
-      description: 'Welcome to Karnataka\'s premier B2B bulk procurement console. Let us show you around your workspace to help you source and bid efficiently.',
-      selector: null,
-    },
-    {
-      title: 'Search by B2B Category',
-      description: 'Prefix your product searches with dedicated B2B categories (like Building Materials or Switchgear) to instantly get filtered suggestions.',
-      selector: 'nav select',
-    },
-    {
-      title: 'Regional Location Filter',
-      description: 'Enter your city or click the location pin icon to detect your regional coordinates. All sourcing queries will match suppliers in your city.',
-      selector: 'nav input[placeholder="Location..."]',
-    },
-    {
-      title: 'Live Exchange Feed',
-      description: 'Keep track of real B2B trading volume and live transaction updates. The green pulse indicates the platform is actively facilitating deals.',
-      selector: '.live-stats-ticker-container',
-    },
-    {
-      title: 'B2B Procurement Workspace',
-      description: 'Manage your active quotations, posted requirements, draft sourcing RFQs, and close deals securely here in your workspace board.',
-      selector: '[data-tour="sourcing-workspace"]',
-    },
-    {
-      title: 'Floating Discussions Chatbox',
-      description: 'Discuss requirements and negotiate bidding budgets directly with buyers or sellers in real-time using this floating discussion widget.',
-      selector: '.floating-discussions-chatbox',
-    },
-  ];
+  const [step, setStep] = useState(0);
 
   useEffect(() => {
-    const isCompleted = localStorage.getItem('SaralBuy_onboarded');
-    if (!isCompleted) {
-      setIsOpen(true);
-    }
-
-    const handleRetake = () => {
-      localStorage.removeItem('SaralBuy_onboarded');
-      setCurrentStep(0);
-      setIsOpen(true);
-    };
-
-    window.addEventListener('trigger-onboarding-tour', handleRetake);
-    return () => window.removeEventListener('trigger-onboarding-tour', handleRetake);
+    if (!localStorage.getItem(STORAGE_KEY)) setIsOpen(true);
+    const retake = () => { localStorage.removeItem(STORAGE_KEY); setStep(0); setIsOpen(true); };
+    window.addEventListener('trigger-onboarding-tour', retake);
+    return () => window.removeEventListener('trigger-onboarding-tour', retake);
   }, []);
 
-  const handleNext = () => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(prev => prev + 1);
-      // Highlight the targeted selector
-      const nextSelector = steps[currentStep + 1]?.selector;
-      highlightElement(nextSelector);
-    } else {
-      handleComplete();
-    }
-  };
-
-  const handleBack = () => {
-    if (currentStep > 0) {
-      setCurrentStep(prev => prev - 1);
-      const prevSelector = steps[currentStep - 1]?.selector;
-      highlightElement(prevSelector);
-    }
-  };
-
-  const handleComplete = () => {
-    localStorage.setItem('SaralBuy_onboarded', 'true');
-    setIsOpen(false);
-    clearHighlight();
-  };
-
-  const highlightElement = (selector) => {
-    clearHighlight();
+  const highlight = (selector) => {
+    document.querySelectorAll('.tour-spotlight').forEach(el => el.classList.remove('tour-spotlight'));
     if (!selector) return;
-    const element = document.querySelector(selector);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      element.classList.add('tour-spotlight-highlight');
-    }
+    const el = document.querySelector(selector);
+    if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.classList.add('tour-spotlight'); }
   };
 
-  const clearHighlight = () => {
-    document.querySelectorAll('.tour-spotlight-highlight').forEach(el => {
-      el.classList.remove('tour-spotlight-highlight');
-    });
+  const next = () => {
+    if (step < STEPS.length - 1) { setStep(s => s + 1); highlight(STEPS[step + 1].selector); }
+    else complete();
+  };
+  const back = () => { if (step > 0) { setStep(s => s - 1); highlight(STEPS[step - 1].selector); } };
+  const complete = () => {
+    localStorage.setItem(STORAGE_KEY, 'true');
+    setIsOpen(false);
+    document.querySelectorAll('.tour-spotlight').forEach(el => el.classList.remove('tour-spotlight'));
   };
 
-  // Add styles dynamically
+  // Inject spotlight CSS once
   useEffect(() => {
-    const styleId = 'tour-spotlight-styles';
-    if (!document.getElementById(styleId)) {
-      const style = document.createElement('style');
-      style.id = styleId;
-      style.innerHTML = `
-        .tour-spotlight-highlight {
-          position: relative !important;
-          z-index: 10000 !important;
-          box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.65) !important;
-          outline: 3px solid #ea580c !important;
-          border-radius: 8px !important;
-          transition: all 0.3s ease !important;
-        }
-      `;
-      document.head.appendChild(style);
-    }
-    return () => {
-      const style = document.getElementById(styleId);
-      if (style) style.remove();
-    };
+    const id = 'tour-spotlight-css';
+    if (document.getElementById(id)) return;
+    const s = document.createElement('style');
+    s.id = id;
+    s.innerHTML = `
+      .tour-spotlight {
+        position: relative !important;
+        z-index: 10000 !important;
+        box-shadow: 0 0 0 9999px rgba(15,23,42,0.7) !important;
+        outline: 2px solid #f97316 !important;
+        outline-offset: 4px !important;
+        border-radius: 10px !important;
+        transition: box-shadow 0.25s ease !important;
+      }
+    `;
+    document.head.appendChild(s);
+    return () => s.remove();
   }, []);
 
   if (!isOpen) return null;
 
+  const current = STEPS[step];
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center pointer-events-none select-none">
-      {/* Background Dimmer when selector is null */}
-      {!steps[currentStep].selector && (
-        <div className="absolute inset-0 bg-slate-900/65 pointer-events-auto" />
-      )}
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center pointer-events-none">
+      {/* Dim background for the intro step (no spotlight yet) */}
+      {!current.selector && <div className="absolute inset-0 bg-slate-950/70 pointer-events-auto" />}
 
-      {/* Floating Tour Card */}
-      <div className="relative pointer-events-auto bg-white border border-slate-200 rounded-2xl p-6 shadow-xl max-w-sm m-4 space-y-4 animate-fade-in z-[10001]">
-        <button 
-          onClick={handleComplete}
-          className="absolute top-3 right-3 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+      <div className="relative pointer-events-auto bg-white rounded-2xl shadow-2xl ring-1 ring-slate-900/10 max-w-md m-4 animate-fade-in overflow-hidden">
+        <button
+          onClick={complete}
+          aria-label="Close tour"
+          className="absolute top-3 right-3 z-10 w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600"
         >
-          <X className="w-4 h-4" />
+          <X className="w-3.5 h-3.5" />
         </button>
 
-        <div className="flex items-center gap-2">
-          <div className="p-2 bg-orange-50 text-orange-600 rounded-lg">
-            <HelpCircle className="w-5 h-5" />
+        <div className="p-6">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-8 h-8 rounded-lg bg-orange-50 border border-orange-100 flex items-center justify-center">
+              <HandMetal className="w-4 h-4 text-orange-600" />
+            </div>
+            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+              Step {step + 1} of {STEPS.length}
+            </span>
           </div>
-          <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest">
-            Step {currentStep} of {steps.length - 1}
-          </span>
+
+          <h4 className="text-xl font-black text-slate-900 leading-tight mb-2">{current.title}</h4>
+          <p className="text-sm text-slate-600 leading-relaxed">{current.description}</p>
         </div>
 
-        <div className="space-y-1.5">
-          <h4 className="text-base font-black text-slate-900 leading-tight">
-            {steps[currentStep].title}
-          </h4>
-          <p className="text-xs text-slate-600 leading-relaxed">
-            {steps[currentStep].description}
-          </p>
-        </div>
-
-        <div className="flex items-center justify-between pt-2">
-          {currentStep > 0 ? (
+        <div className="flex items-center justify-between px-6 py-4 bg-slate-50 border-t border-slate-100">
+          {step > 0 ? (
             <Button
-              onClick={handleBack}
+              onClick={back}
               variant="outline"
               size="sm"
-              className="text-xs font-bold border-slate-300 flex items-center gap-1 cursor-pointer"
+              className="text-xs font-bold border-slate-300"
             >
-              <ChevronLeft className="w-4.5 h-4.5" />
-              Back
+              <ChevronLeft className="w-4 h-4 mr-1" /> Back
             </Button>
           ) : (
-            <button 
-              onClick={handleComplete}
-              className="text-xs text-slate-400 hover:text-slate-600 font-bold underline cursor-pointer"
+            <button
+              onClick={complete}
+              className="text-xs text-slate-500 hover:text-slate-800 font-bold underline underline-offset-4"
             >
-              Skip Tour
+              Skip
             </button>
           )}
-
           <Button
-            onClick={handleNext}
+            onClick={next}
             size="sm"
-            className="bg-orange-600 cursor-pointer hover:bg-orange-700 text-white text-xs font-bold flex items-center gap-1"
+            className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold"
           >
-            {currentStep === steps.length - 1 ? 'Finish' : 'Next'}
-            <ChevronRight className="w-4.5 h-4.5" />
+            {step === STEPS.length - 1 ? 'Got it' : 'Next'}
+            <ChevronRight className="w-4 h-4 ml-1" />
           </Button>
+        </div>
+
+        {/* Step progress dots */}
+        <div className="flex items-center justify-center gap-1.5 pb-4">
+          {STEPS.map((_, i) => (
+            <span
+              key={i}
+              className={`h-1 rounded-full transition-all ${
+                i === step ? 'w-6 bg-orange-500' : 'w-1 bg-slate-300'
+              }`}
+            />
+          ))}
         </div>
       </div>
     </div>
