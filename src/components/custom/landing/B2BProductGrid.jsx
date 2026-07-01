@@ -1,118 +1,105 @@
-import React from 'react';
-import { Gavel } from 'lucide-react';
-import { useUserState } from '../../../redux/hooks/useUser';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ArrowUpRight } from 'lucide-react';
+import { useUserState } from '../../../redux/hooks/useUser';
+import { useFetch } from '@/hooks/useFetch';
+import categoryService from '@/services/category.service';
+import productService from '@/services/product.service';
 
-const CATEGORIES = [
-  {
-    title: 'Building & Structural',
-    image: '/image/Category/building_materials.png',
-    desc: 'Cement, TMT Steel, Bricks, AAC Blocks, Concrete',
-  },
-  {
-    title: 'Electrical & Lighting',
-    image: '/image/Category/electrical_lights.png',
-    desc: 'Wires, LED Lights, Switches, Conduit Pipes',
-  },
-  {
-    title: 'Plumbing & Sanitaryware',
-    image: '/image/Category/plumbing_sanitary.png',
-    desc: 'PVC Pipes, CPVC Fittings, Taps, Valves',
-  },
-  {
-    title: 'Flooring, Tiles & Granite',
-    image: '/image/Category/tiles_flooring.png',
-    desc: 'Vitrified Tiles, Sira Grey Granite, Marble Slabs',
-  },
-  {
-    title: 'Interior & Paints',
-    image: '/image/Category/paints_waterproofing.png',
-    desc: 'Exterior Emulsion, Wall Putty, Hardware, Laminates',
-  },
-  {
-    title: 'Plywood & Hardware',
-    image: '/image/Category/plywood_hardware.png',
-    desc: 'MDF Boards, Plywood, Cabinet Hinges, Screws',
-  },
-  {
-    title: 'Safety Gear & Uniforms',
-    image: '/image/Category/safetyEquipment.png',
-    desc: 'Safety Shoes, Helmets, Boiler Suits, Gloves',
-  },
-  {
-    title: 'Industrial Tools & Pumps',
-    image: '/image/Category/industrial_tools.png',
-    desc: 'Impact Drills, Water Pumps, Generators, Hand Tools',
-  }
-];
-
+/**
+ * Category browse grid — every seeded category (real 10 from Atlas), with
+ * live RFQ counts joined in from getTrendingCategory. Categories with 0
+ * live RFQs show "Be the first" instead of a fake number.
+ *
+ * The old version was 8 hardcoded categories with photo cards, gradients,
+ * and an emoji header — decorative, and the categories didn't match the
+ * real DB. Now it's a functional browse aid that tells the truth.
+ */
 export default function B2BProductGrid({ onOpenAuth }) {
   const { user } = useUserState();
   const navigate = useNavigate();
+  const [categories, setCategories] = useState([]);
+  const [counts, setCounts] = useState({});
+
+  const { fn: fetchAll, data: allData } = useFetch(categoryService.getCategories);
+  const { fn: fetchTrending, data: trendingData } = useFetch(productService.getTrendingCategory);
+
+  useEffect(() => { fetchAll(); fetchTrending(); }, []);
+
+  useEffect(() => {
+    if (allData) setCategories(Array.isArray(allData) ? allData : (allData?.categories || []));
+  }, [allData]);
+
+  useEffect(() => {
+    if (!Array.isArray(trendingData)) return;
+    const map = {};
+    for (const t of trendingData) {
+      const id = t.category?._id;
+      if (id) map[id] = t.productCount || 0;
+    }
+    setCounts(map);
+  }, [trendingData]);
 
   const handleCategoryClick = (cat) => {
-    localStorage.setItem('pending_rfq_product', cat.title);
+    // Store intent so the auth-then-post flow lands them on the right form
+    localStorage.setItem('pending_rfq_product', cat.categoryName || '');
     localStorage.setItem('pending_rfq_qty', 'Bulk');
-    if (user) {
-      navigate('/requirement');
-    } else {
-      onOpenAuth('buyer');
-    }
+    if (user) navigate('/requirement');
+    else if (onOpenAuth) onOpenAuth('buyer');
   };
 
+  if (categories.length === 0) return null;
+
   return (
-    <div className="space-y-6">
-      <div className="border-b border-slate-200 pb-3">
-        <h3 className="text-lg font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
-          🏗️ Explore Sourcing Categories
-        </h3>
-        <p className="text-xs text-slate-500 mt-0.5">Select a category to post bulk requirements or get customized quotes.</p>
+    <section>
+      <div className="mb-6">
+        <div className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2">
+          What are you sourcing?
+        </div>
+        <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-tight">
+          Browse by category
+        </h2>
+        <p className="text-sm text-slate-500 mt-1 max-w-xl">
+          Pick a category and post a requirement — verified suppliers in that space will quote.
+        </p>
       </div>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {CATEGORIES.map((cat, idx) => (
-          <div
-            key={idx}
-            onClick={() => handleCategoryClick(cat)}
-            className="group bg-white border border-slate-200 hover:border-orange-300 rounded-xl overflow-hidden shadow-xs hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col justify-between"
-            style={{ background: 'linear-gradient(135deg, #ffffff 80%, #fff7ed 100%)' }}
-          >
-            <div>
-              {/* Category Image */}
-              <div className="aspect-video w-full overflow-hidden bg-slate-100 relative">
-                <img
-                  src={cat.image}
-                  alt={cat.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  onError={(e) => {
-                    e.target.src = '/image/Category/industrialImage.png';
-                  }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/20 to-transparent"></div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+        {categories.map((cat) => {
+          const count = counts[cat._id] || 0;
+          const hasActivity = count > 0;
+          return (
+            <button
+              key={cat._id}
+              type="button"
+              onClick={() => handleCategoryClick(cat)}
+              className="group text-left bg-white border border-slate-200 hover:border-slate-900 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 rounded-xl p-4 relative"
+            >
+              <ArrowUpRight className="absolute top-3 right-3 w-4 h-4 text-slate-300 group-hover:text-slate-900 transition-colors" />
+              <h3 className="font-black text-sm text-slate-900 leading-snug pr-6">
+                {cat.categoryName}
+              </h3>
+              <div className="mt-3 pt-3 border-t border-slate-100 flex items-center gap-2">
+                {hasActivity ? (
+                  <>
+                    <span className="inline-flex items-center gap-1.5 text-[11px] font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                      {count} live
+                    </span>
+                    <span className="text-[10px] text-slate-500 font-medium">
+                      {count === 1 ? 'RFQ' : 'RFQs'}
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wide">
+                    Be the first
+                  </span>
+                )}
               </div>
-
-              {/* Title & Desc */}
-              <div className="p-4 space-y-1.5">
-                <h4 className="font-extrabold text-sm text-slate-900 group-hover:text-orange-600 transition-colors duration-200">
-                  {cat.title}
-                </h4>
-                <p className="text-xs text-slate-500 leading-normal line-clamp-2">
-                  {cat.desc}
-                </p>
-              </div>
-            </div>
-
-            {/* View Button */}
-            <div className="px-4 pb-4">
-              <button
-                className="w-full py-2 bg-orange-600 hover:bg-orange-500 active:scale-[0.98] text-white text-xs font-bold rounded-lg border border-orange-600 cursor-pointer flex items-center justify-center gap-1.5 transition-all duration-200 shadow-sm"
-              >
-                Post Requirement
-              </button>
-            </div>
-          </div>
-        ))}
+            </button>
+          );
+        })}
       </div>
-    </div>
+    </section>
   );
 }

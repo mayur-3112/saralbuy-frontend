@@ -150,13 +150,14 @@ export default function Hero({ onOpenAuth }) {
             </button>
           </div>
 
-          {/* Inline trust anchors — non-numeric so they're always honest.
-              Numeric proof lives in ProofStrip below, where zeros gracefully
-              hide themselves. These three are truths about how we work. */}
+          {/* Process truths — three sentences about HOW SaralBuy works, not
+              stats. These are always true regardless of user count or
+              deal volume; the actual metrics live in ProofStrip below and
+              self-hide when they'd be zero. */}
           <div className="grid grid-cols-3 gap-4 pt-6 border-t border-white/10">
-            <TrustAnchor icon={Zap} value="One post" label="Multiple quotes" />
-            <TrustAnchor icon={Users} value="Anonymous" label="Until you choose" />
-            <TrustAnchor icon={ShieldCheck} value="GSTIN" label="Verified suppliers" />
+            <TrustAnchor icon={Zap} value="One post" label="Reaches every supplier in your category" />
+            <TrustAnchor icon={Users} value="Anonymous" label="Your details stay hidden until you choose" />
+            <TrustAnchor icon={ShieldCheck} value="Reviewed" label="Every supplier vetted by our team" />
           </div>
         </div>
 
@@ -206,13 +207,13 @@ export default function Hero({ onOpenAuth }) {
 
 function TrustAnchor({ icon: Icon, value, label }) {
   return (
-    <div className="flex items-center gap-3">
-      <div className="w-9 h-9 rounded-lg bg-orange-500/15 border border-orange-500/30 flex items-center justify-center shrink-0">
+    <div className="flex items-start gap-3">
+      <div className="w-9 h-9 rounded-lg bg-orange-500/15 border border-orange-500/30 flex items-center justify-center shrink-0 mt-0.5">
         <Icon className="w-4 h-4 text-orange-300" />
       </div>
-      <div>
-        <div className="text-lg sm:text-xl font-black text-white leading-none">{value}</div>
-        <div className="text-[10px] text-slate-400 uppercase tracking-wider font-bold mt-0.5">{label}</div>
+      <div className="min-w-0">
+        <div className="text-base sm:text-lg font-black text-white leading-tight">{value}</div>
+        <div className="text-[10px] sm:text-[11px] text-slate-400 font-medium mt-1 leading-snug">{label}</div>
       </div>
     </div>
   );
