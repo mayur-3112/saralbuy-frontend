@@ -24,7 +24,7 @@ export default function CompareSection() {
     {
       feature: 'Vendor Safety',
       traditional: 'Risk of advance payment scams / unverified vendors',
-      SaralBuy: 'Mandatory GSTIN and Aadhaar business vetting',
+      SaralBuy: 'Mandatory GSTIN and PAN business vetting',
       better: true,
     },
     {

@@ -10,8 +10,8 @@ export default function TrustSection({ onOpenAuth }) {
     },
     {
       icon: Award,
-      title: 'Identity Verification Checked',
-      desc: 'Mandatory Aadhaar/PAN identity checks protect the platform from fraud, fake buyers, and non-responsive suppliers.',
+      title: 'Business Verification Checked',
+      desc: 'Mandatory GSTIN and PAN business checks protect the platform from fraud, fake buyers, and non-responsive suppliers.',
     },
   ];
 

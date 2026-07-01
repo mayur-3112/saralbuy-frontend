@@ -73,7 +73,7 @@ export default function TermsAndPrivacy() {
               3. Verification of Identity & GST
             </h2>
             <p className="text-sm text-slate-600 leading-relaxed">
-              While SaralBuy uses Aadhaar checks and GSTIN verification tools to promote authenticity, users must perform their own due diligence before transferring funds or delivering materials. We do not warrant the creditworthiness, capacity, or performance of any user.
+              While SaralBuy uses GSTIN and PAN verification tools to promote authenticity, users must perform their own due diligence before transferring funds or delivering materials. We do not warrant the creditworthiness, capacity, or performance of any user.
             </p>
           </section>
         </TabsContent>
@@ -82,10 +82,10 @@ export default function TermsAndPrivacy() {
           <section className="space-y-3">
             <h2 className="text-xl font-black text-slate-800 flex items-center gap-2">
               <Lock className="w-5 h-5 text-orange-600" />
-              1. Security of Sensitive National IDs
+              1. Security of Business Documents
             </h2>
             <p className="text-sm text-slate-600 leading-relaxed">
-              We encrypt sensitive documents like Aadhaar numbers inside the database using AES-256-CBC encryption to protect user identity. Aadhaar photos and registration documents are stored inside secure encrypted S3 buckets.
+              Business verification documents such as GST and PAN registration papers are stored inside secure, access-controlled cloud storage. We do not collect Aadhaar or other sensitive national identity numbers.
             </p>
           </section>
 
