@@ -172,16 +172,26 @@ const Notification = () => {
       {loading && notifications.length === 0 && <NotificationSkeleton />}
 
       {error && notifications.length === 0 && (
-        <div className="w-full h-[300px]  flex flex-col items-center justify-center">
-          <img src="/empty-cart.webp" width="10%" />
-          <p className="text-gray-500 text-sm">No Notification's Found</p>
+        <div className="w-full py-16 flex flex-col items-center justify-center">
+          <div className="w-14 h-14 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center mb-4">
+            <Handshake className="w-6 h-6 text-slate-400" />
+          </div>
+          <p className="text-slate-800 font-bold text-base">All quiet in here</p>
+          <p className="text-slate-500 text-sm mt-1 text-center max-w-xs">
+            When a supplier quotes on your RFQ (or you get a new message), it'll show up here.
+          </p>
         </div>
       )}
 
       {!loading && !error && notifications.length === 0 && (
-        <div className="w-full h-[300px]  flex flex-col items-center justify-center">
-          <img src="/empty-cart.webp" width="10%" />
-          <p className="text-gray-500 text-sm">No Notification's Found</p>
+        <div className="w-full py-16 flex flex-col items-center justify-center">
+          <div className="w-14 h-14 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center mb-4">
+            <Handshake className="w-6 h-6 text-slate-400" />
+          </div>
+          <p className="text-slate-800 font-bold text-base">All quiet in here</p>
+          <p className="text-slate-500 text-sm mt-1 text-center max-w-xs">
+            When a supplier quotes on your RFQ (or you get a new message), it'll show up here.
+          </p>
         </div>
       )}
 
