@@ -1,54 +1,48 @@
-import React from 'react';
 import Hero from './Hero';
+import ProofStrip from './ProofStrip';
+import TrustedBrands from './TrustedBrands';
 import B2BProductGrid from './B2BProductGrid';
 import LiveSourcingBoard from './LiveSourcingBoard';
 import HowItWorks from './HowItWorks';
-import { Menu, ChevronRight } from 'lucide-react';
+import FirstVisitWelcome from './FirstVisitWelcome';
 
-const SIDEBAR_CATEGORIES = [
-  { name: 'Building & Structural Materials', sub: ['OPC 53 Cement', 'TMT Rebars', 'Bricks & AAC Blocks', 'Concrete'] },
-  { name: 'Electrical & Lighting', sub: ['Cables & Wires', 'LED Panel Lights', 'Switches', 'Conduit Fittings'] },
-  { name: 'Plumbing & Sanitaryware', sub: ['PVC Pipes', 'CPVC Fittings', 'Sanitary Taps', 'Valves'] },
-  { name: 'Flooring, Tiles & Granite', sub: ['Vitrified Tiles', 'Sira Grey Granite', 'Marble Slabs', 'Adhesives'] },
-  { name: 'Interior Finishing & Paints', sub: ['Exterior Emulsion', 'Wall Putty', 'Plywood', 'Hardware'] },
-  { name: 'Safety Gear & Uniforms', sub: ['Safety Shoes', 'Boiler Suits', 'Safety Helmets', 'Gloves'] },
-  { name: 'Industrial Tools & Pumps', sub: ['Impact Drills', 'Water Pumps', 'Generators', 'Hand Tools'] },
-];
-
+/**
+ * Landing page — the front door.
+ *
+ * Section order matters: everything above the fold or in the first scroll
+ * answers "is this real?" before we ask for anything. Proof first, then the
+ * live market, then category directory, then "how it works" as the closer.
+ *
+ *   1. Hero              — dark, industrial, pain-first headline
+ *   2. ProofStrip        — live numbers + activity ticker (the market pulse)
+ *   3. TrustedBrands     — supplier confidence strip (real brand names)
+ *   4. LiveSourcingBoard — actual live RFQs (moved up — proof of activity)
+ *   5. B2BProductGrid    — category directory (browse mode)
+ *   6. HowItWorks        — the closer for anyone still hesitating
+ *   7. FirstVisitWelcome — soft onboarding for new visitors (once per browser)
+ */
 export default function LandingPage() {
   const triggerAuth = (roleType) => {
     localStorage.setItem('auth_default_role', roleType);
     window.dispatchEvent(new Event('session-expired'));
   };
 
-  const handleCategoryClick = (catName) => {
-    localStorage.setItem('pending_rfq_product', catName);
-    localStorage.setItem('pending_rfq_qty', 'Bulk');
-    triggerAuth('buyer');
-  };
-
   return (
     <div className="bg-white min-h-screen text-slate-800 font-sans">
-      
-      {/* 1. Hero Section */}
       <Hero onOpenAuth={triggerAuth} />
+      <ProofStrip />
+      <TrustedBrands />
 
-      {/* 2. Main Directory Contents Area */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <main className="space-y-12">
-          
-          {/* Popular wholesale products directory */}
-          <B2BProductGrid onOpenAuth={triggerAuth} />
-          
-          {/* Active Requirements Exchange Board Table */}
+      <div className="max-w-7xl mx-auto px-4 py-12">
+        <main className="space-y-16">
           <LiveSourcingBoard onOpenAuth={triggerAuth} />
-
+          <B2BProductGrid onOpenAuth={triggerAuth} />
         </main>
       </div>
 
-      {/* 3. How It Works */}
       <HowItWorks onOpenAuth={triggerAuth} />
 
+      <FirstVisitWelcome onOpenAuth={triggerAuth} />
     </div>
   );
 }
