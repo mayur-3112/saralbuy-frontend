@@ -150,10 +150,12 @@ export default function Hero({ onOpenAuth }) {
             </button>
           </div>
 
-          {/* Inline trust anchors — the payoff numbers below CTAs */}
+          {/* Inline trust anchors — non-numeric so they're always honest.
+              Numeric proof lives in ProofStrip below, where zeros gracefully
+              hide themselves. These three are truths about how we work. */}
           <div className="grid grid-cols-3 gap-4 pt-6 border-t border-white/10">
-            <TrustAnchor icon={Zap} value="4 hrs" label="Avg. first quote" />
-            <TrustAnchor icon={Users} value="8+" label="Quotes per RFQ" />
+            <TrustAnchor icon={Zap} value="One post" label="Multiple quotes" />
+            <TrustAnchor icon={Users} value="Anonymous" label="Until you choose" />
             <TrustAnchor icon={ShieldCheck} value="GSTIN" label="Verified suppliers" />
           </div>
         </div>

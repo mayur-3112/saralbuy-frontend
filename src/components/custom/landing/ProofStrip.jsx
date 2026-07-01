@@ -6,13 +6,12 @@ import { TrendingUp, PackageCheck, Users, Clock } from 'lucide-react';
 /**
  * ProofStrip — the "this market is real" band, placed immediately below Hero.
  *
- * Two purposes:
- *   1. Big numbers that answer the unspoken visitor question, "is this
- *      abandoned or alive?" — live counts from the backend, not vanity
- *      hardcoded metrics.
- *   2. A rotating live activity line — same data source as the dashboard
- *      ticker, but styled to feel like a stock ticker on a trading floor.
- *      Movement = life.
+ * HONEST NUMBERS ONLY. A metric that comes back as 0 (or null for "not
+ * enough data yet") gets hidden — not shown as "0" and never padded to
+ * look bigger. A visible "1 verified supplier" beats "142"; a hidden tile
+ * beats both when we genuinely don't have the data. If the entire band
+ * would be empty (pre-launch DB), the whole component collapses so we
+ * don't ship a row of question marks.
  */
 
 function formatINR(n) {
@@ -26,6 +25,16 @@ function formatCount(n) {
   const num = Number(n) || 0;
   if (num >= 1_000) return `${(num / 1_000).toFixed(1)}k`;
   return String(num);
+}
+function formatDurationMs(ms) {
+  if (!ms || ms <= 0) return null;
+  const hrs = ms / (1000 * 60 * 60);
+  if (hrs < 1) {
+    const mins = Math.round(ms / (1000 * 60));
+    return `${mins} min`;
+  }
+  if (hrs < 48) return `${hrs.toFixed(1)} hrs`;
+  return `${Math.round(hrs / 24)} days`;
 }
 
 export default function ProofStrip() {
@@ -49,38 +58,55 @@ export default function ProofStrip() {
   const activities = stats?.activities || [];
   const current = activities[tickerIndex];
 
-  const metrics = [
-    {
+  // Each tile is included only if the underlying number is genuinely present.
+  // A 0 count → hide (no "0 verified suppliers" on the front page).
+  const rawMetrics = [
+    stats?.sourcedVolume > 0 && {
       icon: TrendingUp,
-      value: formatINR(stats?.sourcedVolume),
-      label: 'Sourced this quarter',
+      value: formatINR(stats.sourcedVolume),
+      label: 'Sourced through platform',
       accent: 'from-emerald-500/20 to-emerald-500/5 border-emerald-500/30 text-emerald-300',
     },
-    {
+    stats?.activeRequirements > 0 && {
       icon: PackageCheck,
-      value: formatCount(stats?.activeRequirements),
+      value: formatCount(stats.activeRequirements),
       label: 'Live requirements',
       accent: 'from-orange-500/20 to-orange-500/5 border-orange-500/30 text-orange-300',
     },
-    {
+    stats?.activeSuppliers > 0 && {
       icon: Users,
-      value: formatCount(stats?.activeSuppliers),
+      value: formatCount(stats.activeSuppliers),
       label: 'Verified suppliers',
       accent: 'from-blue-500/20 to-blue-500/5 border-blue-500/30 text-blue-300',
     },
-    {
+    formatDurationMs(stats?.avgFirstQuoteMs) && {
       icon: Clock,
-      value: '4 hrs',
+      value: formatDurationMs(stats.avgFirstQuoteMs),
       label: 'Avg. first quote',
       accent: 'from-amber-500/20 to-amber-500/5 border-amber-500/30 text-amber-300',
     },
   ];
+  const metrics = rawMetrics.filter(Boolean);
+
+  // Pre-launch state: nothing to prove yet, don't ship a hollow band.
+  // Skip if we have zero metrics AND zero activities.
+  if (metrics.length === 0 && activities.length === 0) return null;
+
+  // Adapt columns to how many tiles we actually have — a single tile at
+  // md:grid-cols-4 looks stubby, four at grid-cols-2 wraps awkwardly.
+  const gridCols = {
+    1: 'grid-cols-1 max-w-sm mx-auto',
+    2: 'grid-cols-1 sm:grid-cols-2 max-w-2xl mx-auto',
+    3: 'grid-cols-2 md:grid-cols-3',
+    4: 'grid-cols-2 md:grid-cols-4',
+  }[metrics.length] || 'grid-cols-2 md:grid-cols-4';
 
   return (
     <section className="bg-slate-950 border-b border-white/5">
       <div className="max-w-7xl mx-auto px-4 py-10 sm:py-14">
-        {/* The four proof numbers */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+        {/* Honest proof numbers — only tiles with real data render */}
+        {metrics.length > 0 && (
+        <div className={`grid ${gridCols} gap-3 sm:gap-4`}>
           {metrics.map((m) => (
             <div
               key={m.label}
@@ -96,6 +122,7 @@ export default function ProofStrip() {
             </div>
           ))}
         </div>
+        )}
 
         {/* Live activity ticker — the market pulse */}
         {activities.length > 0 && current && (
