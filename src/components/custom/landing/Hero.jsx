@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import { ArrowRight, Search, Zap, Users, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Zap, Users, ShieldCheck } from 'lucide-react';
 import { useUserState } from '../../../redux/hooks/useUser';
 import { useNavigate } from 'react-router-dom';
 
@@ -11,42 +10,14 @@ import { useNavigate } from 'react-router-dom';
  * filler ("leading," "seamless," "empowering"). Every sentence earns its space
  * or gets cut.
  *
- * Structure: pain-line + promise-line + search + universal CTAs + inline
- * trust anchors (numbers). No decorative fluff — every element is either a
- * conversion driver, a proof point, or an action.
+ * Structure: pain-line + promise-line + universal CTAs + inline trust anchors.
+ * A single focused full-width column — no carousel, no hero search (search lives
+ * once in the navbar). Every element is either a conversion driver, a proof
+ * point, or an action.
  */
 export default function Hero({ onOpenAuth }) {
-  const [searchQuery, setSearchQuery] = useState('');
   const { user } = useUserState();
   const navigate = useNavigate();
-  const [currentSlide, setCurrentSlide] = useState(0);
-
-  const HERO_IMAGES = [
-    { url: '/image/Category/building_materials.png', caption: 'Building Materials' },
-    { url: '/image/Category/electrical_lights.png', caption: 'Electrical & Lighting' },
-    { url: '/image/Category/plumbing_sanitary.png', caption: 'Plumbing & Sanitary' },
-    { url: '/image/Category/tiles_flooring.png', caption: 'Tiles & Flooring' },
-    { url: '/image/Category/paints_waterproofing.png', caption: 'Paints & Waterproofing' },
-    { url: '/image/Category/plywood_hardware.png', caption: 'Plywood & Hardware' },
-    { url: '/image/Category/safetyEquipment.png', caption: 'Safety Equipment' },
-    { url: '/image/Category/industrial_tools.png', caption: 'Industrial Tools' }
-  ];
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % HERO_IMAGES.length);
-    }, 4500);
-    return () => clearInterval(timer);
-  }, []);
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      localStorage.setItem('pending_rfq_product', searchQuery);
-      localStorage.setItem('pending_rfq_qty', 'Bulk');
-      onOpenAuth('buyer');
-    }
-  };
 
   const handlePostRequirement = () => {
     if (user) navigate('/requirement');
@@ -102,43 +73,8 @@ export default function Hero({ onOpenAuth }) {
           </span>
         </p>
 
-        {/* Futuristic Search Terminal with glowing ring */}
-        <form onSubmit={handleSearch} className="w-full max-w-3xl mt-10">
-          <div className="group flex items-center bg-slate-900/90 border border-blue-500/50 rounded-2xl overflow-hidden shadow-[0_0_30px_rgba(0,0,0,0.6)] focus-within:border-cyan-400 focus-within:ring-4 focus-within:ring-cyan-500/20 transition-all duration-300 backdrop-blur-md">
-            <Search className="w-6 h-6 text-blue-400 ml-6 shrink-0 group-focus-within:text-cyan-400 transition-colors" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="What construction materials do you need today?"
-              className="flex-1 px-4 py-6 text-base sm:text-lg focus:outline-none text-white placeholder-slate-400 bg-transparent font-medium"
-            />
-            <button
-              type="submit"
-              className="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 active:scale-95 text-white text-base sm:text-lg font-black px-8 py-6 cursor-pointer transition-all duration-300 shadow-lg shrink-0 border-l border-blue-500/30"
-            >
-              Get Quotes
-            </button>
-          </div>
-          
-          {/* Enhanced chips with interactive hover neon borders */}
-          <div className="flex flex-wrap items-center justify-center gap-2.5 mt-5">
-            <span className="text-sm text-slate-400 font-bold">Quick Search:</span>
-            {['OPC 53 Cement', 'TMT Steel', 'Vitrified Tiles', 'PVC Pipes', 'Wall Putty'].map((tag) => (
-              <button
-                key={tag}
-                type="button"
-                onClick={() => setSearchQuery(tag)}
-                className="px-4 py-2 bg-slate-900/80 hover:bg-blue-950/80 border border-slate-800 hover:border-cyan-400/60 text-slate-300 hover:text-cyan-300 text-xs sm:text-sm font-semibold rounded-full cursor-pointer transition-all duration-300 hover:shadow-[0_0_10px_rgba(6,182,212,0.2)]"
-              >
-                {tag}
-              </button>
-            ))}
-          </div>
-        </form>
-
         {/* Dual Actions with Neon and Premium borders */}
-        <div className="flex flex-col sm:flex-row gap-4 pt-10 justify-center w-full sm:w-auto">
+        <div className="flex flex-col sm:flex-row gap-4 pt-12 justify-center w-full sm:w-auto">
           <button
             onClick={handlePostRequirement}
             className="group relative inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-black text-base sm:text-lg px-10 py-5 rounded-2xl cursor-pointer shadow-[0_4px_20px_rgba(59,130,246,0.3)] hover:shadow-[0_6px_25px_rgba(6,182,212,0.5)] active:scale-98 transition-all duration-300 w-full sm:w-auto"
