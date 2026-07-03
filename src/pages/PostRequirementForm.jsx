@@ -250,7 +250,7 @@ const PostRequirementForm = () => {
                   name="categoryId"
                   control={control}
                   render={({ field: { onChange, value } }) => (
-                    <Select value={value} onValueChange={(val) => { onChange(val); setValue('subCategoryId', ''); }}>
+                    <Select value={value} onValueChange={(val) => { onChange(val); setValue('subCategoryId', ''); }} disabled={!!initialCat}>
                       <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 focus:ring-blue-500/20 font-medium">
                         <SelectValue placeholder="Select Category" />
                       </SelectTrigger>
@@ -281,7 +281,7 @@ const PostRequirementForm = () => {
                           onChange(val);
                         }
                       }} 
-                      disabled={!selectedCategoryId}
+                      disabled={!selectedCategoryId || !!initialSub}
                     >
                       <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 focus:ring-blue-500/20 font-medium">
                         <SelectValue placeholder="Select Subcategory" />
