@@ -367,56 +367,56 @@ const SellerForm = ({
                 </div>
                 {/* Header Row for Desktop */}
                 <div className="hidden md:grid grid-cols-12 gap-3 px-4 py-2 bg-slate-50 text-xs font-extrabold text-slate-500 uppercase tracking-wider border-b border-slate-100">
-                  <div className="col-span-2">Item Name</div>
+                  <div className="col-span-3">Item Name</div>
                   <div className="col-span-3">Description / Specs</div>
-                  <div className="col-span-2">Quantity</div>
-                  <div className="col-span-1">Units</div>
+                  <div className="col-span-1 text-center">Quantity</div>
+                  <div className="col-span-1 text-center">Units</div>
                   <div className="col-span-2">Brand</div>
-                  <div className="col-span-2">Unit Price (₹)</div>
+                  <div className="col-span-2 text-right">Unit Price (₹)</div>
                 </div>
-
-                <div className="divide-y divide-slate-100">
-                  {items.map((item, idx) => {
-                    const catObj = localMainProduct?.categoryId || localMainProduct?.category;
-                    const resolvedItemName = item.itemName || item.subCategoryName || catObj?.subCategories?.find(s => s._id === item.subCategoryId || s._id === item.subCategoryId?.toString())?.name || 'Item ' + (idx + 1);
-                    const isSingle = !isMulti || items.length <= 1;
-                    const priceRegisterName = isSingle ? 'unitPrice' : `items.${idx}.unitPrice`;
-
-                    return (
-                      <div key={idx} className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-4 items-center bg-white p-4 hover:bg-blue-50/20 transition-colors">
-                        <div className="md:col-span-2">
-                          <label className="block md:hidden text-xs font-extrabold text-slate-500 mb-1">Item Name</label>
-                          <div className="text-sm font-bold text-slate-800 bg-slate-50/80 md:bg-transparent border border-slate-100 md:border-transparent rounded-md px-3 py-2 md:p-0 min-h-[36px] flex items-center">{resolvedItemName}</div>
-                        </div>
-
-                        <div className="md:col-span-3">
-                          <label className="block md:hidden text-xs font-extrabold text-slate-500 mb-1">Description / Specs</label>
-                          <div className="text-sm text-slate-600 bg-slate-50/80 md:bg-transparent border border-slate-100 md:border-transparent rounded-md px-3 py-2 md:p-0 min-h-[36px] flex items-center">{item.itemDescription || item.typeOfProduct || item.model || 'N/A'}</div>
-                        </div>
-                        
-                        <div className="md:col-span-2">
-                          <label className="block md:hidden text-xs font-extrabold text-slate-500 mb-1">Quantity</label>
-                          <div className="text-sm font-semibold text-slate-700 bg-slate-50/80 md:bg-transparent border border-slate-100 md:border-transparent rounded-md px-3 py-2 md:p-0 min-h-[36px] flex items-center">{item.quantity || 1}</div>
-                        </div>
-
-                        <div className="md:col-span-1">
-                          <label className="block md:hidden text-xs font-extrabold text-slate-500 mb-1">Units</label>
-                          <div className="text-sm font-semibold text-slate-700 bg-slate-50/80 md:bg-transparent border border-slate-100 md:border-transparent rounded-md px-3 py-2 md:p-0 min-h-[36px] flex items-center uppercase">{item.quantityUnit || 'pcs'}</div>
-                        </div>
-
-                        <div className="md:col-span-2">
-                          <label className="block md:hidden text-xs font-extrabold text-slate-500 mb-1">Brand</label>
-                          <div className="text-sm text-slate-600 bg-slate-50/80 md:bg-transparent border border-slate-100 md:border-transparent rounded-md px-3 py-2 md:p-0 min-h-[36px] flex items-center">{item.brand || 'Any'}</div>
-                        </div>
-
-                        <div className="md:col-span-2">
-                          <label className="block md:hidden text-xs font-extrabold text-slate-500 mb-1">Unit Price (₹)</label>
-                          <Input type="number" step="0.01" min="0" placeholder="0.00" className="h-9 border-slate-200 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-all font-medium bg-white" {...register(priceRegisterName, { required: true })} />
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+ 
+                 <div className="divide-y divide-slate-100">
+                   {items.map((item, idx) => {
+                     const catObj = localMainProduct?.categoryId || localMainProduct?.category;
+                     const resolvedItemName = item.itemName || item.subCategoryName || catObj?.subCategories?.find(s => s._id === item.subCategoryId || s._id === item.subCategoryId?.toString())?.name || 'Item ' + (idx + 1);
+                     const isSingle = !isMulti || items.length <= 1;
+                     const priceRegisterName = isSingle ? 'unitPrice' : `items.${idx}.unitPrice`;
+ 
+                     return (
+                       <div key={idx} className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-4 items-center bg-white p-4 hover:bg-blue-50/20 transition-colors">
+                         <div className="md:col-span-3">
+                           <label className="block md:hidden text-xs font-extrabold text-slate-500 mb-1">Item Name</label>
+                           <div className="text-sm font-bold text-slate-800 bg-slate-50/80 md:bg-transparent border border-slate-100 md:border-transparent rounded-md px-3 py-2 md:p-0 min-h-[36px] flex items-center">{resolvedItemName}</div>
+                         </div>
+ 
+                         <div className="md:col-span-3">
+                           <label className="block md:hidden text-xs font-extrabold text-slate-500 mb-1">Description / Specs</label>
+                           <div className="text-sm text-slate-600 bg-slate-50/80 md:bg-transparent border border-slate-100 md:border-transparent rounded-md px-3 py-2 md:p-0 min-h-[36px] flex items-center">{item.itemDescription || item.typeOfProduct || item.model || 'N/A'}</div>
+                         </div>
+                         
+                         <div className="md:col-span-1 text-center">
+                           <label className="block md:hidden text-xs font-extrabold text-slate-500 mb-1">Quantity</label>
+                           <div className="text-sm font-semibold text-slate-700 bg-slate-50/80 md:bg-transparent border border-slate-100 md:border-transparent rounded-md px-3 py-2 md:p-0 min-h-[36px] flex md:justify-center items-center">{item.quantity || 1}</div>
+                         </div>
+ 
+                         <div className="md:col-span-1 text-center">
+                           <label className="block md:hidden text-xs font-extrabold text-slate-500 mb-1">Units</label>
+                           <div className="text-sm font-semibold text-slate-700 bg-slate-50/80 md:bg-transparent border border-slate-100 md:border-transparent rounded-md px-3 py-2 md:p-0 min-h-[36px] flex md:justify-center items-center uppercase">{item.quantityUnit || 'pcs'}</div>
+                         </div>
+ 
+                         <div className="md:col-span-2">
+                           <label className="block md:hidden text-xs font-extrabold text-slate-500 mb-1">Brand</label>
+                           <div className="text-sm text-slate-600 bg-slate-50/80 md:bg-transparent border border-slate-100 md:border-transparent rounded-md px-3 py-2 md:p-0 min-h-[36px] flex items-center">{item.brand || 'Any'}</div>
+                         </div>
+ 
+                         <div className="md:col-span-2">
+                           <label className="block md:hidden text-xs font-extrabold text-slate-500 mb-1">Unit Price (₹)</label>
+                           <Input type="number" step="0.01" min="0" placeholder="0.00" className="h-9 border-slate-200 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-all font-medium bg-white text-right" {...register(priceRegisterName, { required: true })} />
+                         </div>
+                       </div>
+                     );
+                   })}
+                 </div>
                 <div className="p-4 grid grid-cols-2 gap-4 border-t border-slate-100 bg-slate-50">
                   <div>
                     <Label className="mb-1.5 text-xs text-slate-500">Global Discount (%)</Label>
