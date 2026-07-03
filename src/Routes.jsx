@@ -27,8 +27,6 @@ import RequirementOverview from './pages/RequirementOverview';
 import PostRequirementForm from './pages/PostRequirementForm';
 import FAQ from './pages/FAQ';
 import HowItWorks from './pages/HowItWorks';
-import HowItWorksBuyers from './pages/HowItWorksBuyers';
-import HowItWorksSuppliers from './pages/HowItWorksSuppliers';
 import AboutUs from './pages/AboutUs';
 import ContactUs from './pages/ContactUs';
 import NoRouteFound from './pages/404';
@@ -109,8 +107,8 @@ export default function AppRoutes() {
           <Route path="/terms" element={<TermsAndPrivacy />} />
           <Route path="/privacy" element={<TermsAndPrivacy />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
-          <Route path="/how-it-works/buyers" element={<HowItWorksBuyers />} />
-          <Route path="/how-it-works/suppliers" element={<HowItWorksSuppliers />} />
+          <Route path="/how-it-works/buyers" element={<Navigate to="/how-it-works?role=buyer" replace />} />
+          <Route path="/how-it-works/suppliers" element={<Navigate to="/how-it-works?role=supplier" replace />} />
           <Route path="/supplier-tools" element={<SupplierTools />} />
           <Route path="/buyer-tools" element={<BuyerTools />} />
           <Route path="/faq" element={<FAQ />} />
