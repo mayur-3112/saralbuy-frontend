@@ -49,7 +49,7 @@ const RatingPopup = ({ open, setOpen, chatId, onSubmit, loading }) => {
             <div className="flex justify-center">
               <Button
                 type="submit"
-                className="bg-orange-500 text-white px-6 py-2 rounded font-semibold disabled:opacity-50"
+                className="bg-blue-500 text-white px-6 py-2 rounded font-semibold disabled:opacity-50"
                 disabled={loading || selectedRating === 0}
               >
                 {loading ? 'Submitting...' : 'Submit'}

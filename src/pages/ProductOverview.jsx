@@ -211,7 +211,7 @@ const MergeBidForm = ({ productResponse, userProfile, navigate }) => {
       className="w-full bg-gray-200/80 rounded-lg p-6 space-y-4 my-auto h-fit"
       onSubmit={handleSendMessage}
     >
-      <h3 className="font-semibold text-orange-600">Merge Quote</h3>
+      <h3 className="font-semibold text-blue-600">Merge Quote</h3>
       <div className="w-full col-span-2">
         <Label htmlFor="ab" className="mb-2 text-sm">
           Note for Buyer
@@ -230,7 +230,7 @@ const MergeBidForm = ({ productResponse, userProfile, navigate }) => {
           mergeFormState.message.trim().length < 2
         }
         variant={'ghost'}
-        className="w-32 float-end border text-xs bg-orange-700 transition-all ease-in-out duration-300 hover:bg-orange-600 text-white hover:text-white cursor-pointer"
+        className="w-32 float-end border text-xs bg-blue-700 transition-all ease-in-out duration-300 hover:bg-blue-600 text-white hover:text-white cursor-pointer"
       >
         Chat Now
       </Button>
@@ -256,7 +256,7 @@ const SellerForm = ({
       className="w-full bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-6 sm:p-8 space-y-6"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <h3 className="font-semibold text-orange-600 text-base sm:text-lg">
+      <h3 className="font-semibold text-blue-600 text-base sm:text-lg">
         Seller Quotation Details
       </h3>
 
@@ -347,11 +347,11 @@ const SellerForm = ({
           
           if (items.length > 0) {
             return (
-              <div className="w-full sm:col-span-2 bg-white rounded-md border border-orange-100 overflow-hidden mb-2">
-                <div className="bg-orange-50/50 px-4 py-3 border-b border-orange-100 flex justify-between items-center">
+              <div className="w-full sm:col-span-2 bg-white rounded-md border border-blue-100 overflow-hidden mb-2">
+                <div className="bg-blue-50/50 px-4 py-3 border-b border-blue-100 flex justify-between items-center">
                   <div>
                     <h4 className="font-semibold text-sm text-slate-800 flex items-center gap-2">
-                      <Package className="w-4 h-4 text-orange-600" />
+                      <Package className="w-4 h-4 text-blue-600" />
                       List of Materials
                     </h4>
                     <p className="text-xs text-slate-500 mt-0.5">{items.length} item(s) — price each item</p>
@@ -359,7 +359,7 @@ const SellerForm = ({
                   <a 
                     href="/supplier-tools" 
                     target="_blank"
-                    className="text-xs font-semibold text-orange-600 hover:text-orange-700 bg-orange-100 hover:bg-orange-200 px-3 py-1.5 rounded-full transition-colors flex items-center gap-1.5"
+                    className="text-xs font-semibold text-blue-600 hover:text-blue-700 bg-blue-100 hover:bg-blue-200 px-3 py-1.5 rounded-full transition-colors flex items-center gap-1.5"
                   >
                     <Calculator className="w-3.5 h-3.5" />
                     Margin Calculator
@@ -383,7 +383,7 @@ const SellerForm = ({
                     const priceRegisterName = isSingle ? 'unitPrice' : `items.${idx}.unitPrice`;
 
                     return (
-                      <div key={idx} className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-4 items-center bg-white p-4 hover:bg-orange-50/20 transition-colors">
+                      <div key={idx} className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-4 items-center bg-white p-4 hover:bg-blue-50/20 transition-colors">
                         <div className="md:col-span-2">
                           <label className="block md:hidden text-xs font-extrabold text-slate-500 mb-1">Item Name</label>
                           <div className="text-sm font-bold text-slate-800 bg-slate-50/80 md:bg-transparent border border-slate-100 md:border-transparent rounded-md px-3 py-2 md:p-0 min-h-[36px] flex items-center">{resolvedItemName}</div>
@@ -411,7 +411,7 @@ const SellerForm = ({
 
                         <div className="md:col-span-2">
                           <label className="block md:hidden text-xs font-extrabold text-slate-500 mb-1">Unit Price (₹)</label>
-                          <Input type="number" step="0.01" min="0" placeholder="0.00" className="h-9 border-slate-200 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-all font-medium bg-white" {...register(priceRegisterName, { required: true })} />
+                          <Input type="number" step="0.01" min="0" placeholder="0.00" className="h-9 border-slate-200 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-all font-medium bg-white" {...register(priceRegisterName, { required: true })} />
                         </div>
                       </div>
                     );
@@ -632,7 +632,7 @@ const SellerForm = ({
               </div>
               <div className="flex justify-between font-bold text-lg text-slate-800 border-t pt-2 mt-1">
                 <span>Grand Total:</span>
-                <span className="text-orange-600">₹ {grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                <span className="text-blue-600">₹ {grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
             </div>
           </div>
@@ -650,7 +650,7 @@ const SellerForm = ({
               soldProduct
             }
             variant={'ghost'}
-            className="w-full sm:w-32 h-11 border text-xs sm:text-sm bg-orange-700 transition-all ease-in-out duration-300 hover:bg-orange-600 text-white hover:text-white cursor-pointer"
+            className="w-full sm:w-32 h-11 border text-xs sm:text-sm bg-blue-700 transition-all ease-in-out duration-300 hover:bg-blue-600 text-white hover:text-white cursor-pointer"
           >
             Place Quote
           </Button>
@@ -659,7 +659,7 @@ const SellerForm = ({
             type="submit"
             disabled={updateUserBidDetsLoading}
             variant={'ghost'}
-            className="w-full sm:w-32 h-11 border shadow-orange-500 border-orange-500 bg-orange-600 transition-all ease-in-out duration-300 hover:bg-orange-500 text-white hover:text-white cursor-pointer"
+            className="w-full sm:w-32 h-11 border shadow-blue-500 border-blue-500 bg-blue-600 transition-all ease-in-out duration-300 hover:bg-blue-500 text-white hover:text-white cursor-pointer"
           >
             {updateUserBidDetsLoading ? <Spinner className="w-5 h-5 animate-spin" /> : 'Update Bid'}
           </Button>
@@ -1154,7 +1154,7 @@ const ProductOverview = () => {
             <div className="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
               {/* Product Info */}
               <div className="lg:col-span-12 bg-white border border-slate-100 shadow-sm rounded-2xl p-6 md:p-8 space-y-6 relative overflow-hidden">
-                <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-orange-400 via-pink-500 to-indigo-500 opacity-80" />
+                <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-400 via-pink-500 to-indigo-500 opacity-80" />
                 <div>
                   <h2 className="text-sm font-bold tracking-wide uppercase text-slate-400 mb-2 flex justify-between items-center">
                     Posted Date :{' '}
@@ -1171,14 +1171,14 @@ const ProductOverview = () => {
                     ) : timeLeft !== 'Expired' ? (
                       <Button
                         variant="ghost"
-                        className="float-end border rounded-full hover:bg-orange-700 hover:text-white text-sm bg-orange-700 text-white pointer-events-none"
+                        className="float-end border rounded-full hover:bg-blue-700 hover:text-white text-sm bg-blue-700 text-white pointer-events-none"
                       >
                         Valid for: {timeLeft}
                       </Button>
                     ) : (
                       <Button
                         variant="ghost"
-                        className="float-end border rounded-full hover:bg-orange-700 hover:text-white text-sm bg-orange-700 text-white pointer-events-none"
+                        className="float-end border rounded-full hover:bg-blue-700 hover:text-white text-sm bg-blue-700 text-white pointer-events-none"
                       >
                         Expired
                       </Button>
@@ -1220,14 +1220,14 @@ const ProductOverview = () => {
                 </p>
 
                 {bidStats && bidStats.totalBids > 0 && (
-                  <div className="bg-orange-50/80 border border-orange-200 rounded-lg p-4 mt-4 grid grid-cols-3 gap-2 text-center max-w-lg">
+                  <div className="bg-blue-50/80 border border-blue-200 rounded-lg p-4 mt-4 grid grid-cols-3 gap-2 text-center max-w-lg">
                     <div>
                       <span className="block text-xs text-gray-500 uppercase font-semibold">Lowest Quote</span>
                       <span className="text-lg font-bold text-green-600">₹{bidStats.lowestQuote}</span>
                     </div>
                     <div className="border-x border-gray-200">
                       <span className="block text-xs text-gray-500 uppercase font-semibold">Average Quote</span>
-                      <span className="text-lg font-bold text-orange-600">₹{bidStats.averageQuote}</span>
+                      <span className="text-lg font-bold text-blue-600">₹{bidStats.averageQuote}</span>
                     </div>
                     <div>
                       <span className="block text-xs text-gray-500 uppercase font-semibold">Highest Quote</span>
@@ -1373,7 +1373,7 @@ const ProductOverview = () => {
                     if (rawItems.length === 0) {
                       if (mp?.isUpload || mp?.document) {
                         return (
-                          <div className="mt-4 border border-orange-200 rounded-lg overflow-hidden bg-orange-50/30 p-5 shadow-xs flex flex-col items-center text-center space-y-3">
+                          <div className="mt-4 border border-blue-200 rounded-lg overflow-hidden bg-blue-50/30 p-5 shadow-xs flex flex-col items-center text-center space-y-3">
                             <span className="text-3xl">📄</span>
                             <h4 className="font-extrabold text-slate-800 text-base">Reference Document Uploaded</h4>
                             <p className="text-xs text-slate-500 max-w-md leading-relaxed">
@@ -1383,7 +1383,7 @@ const ProductOverview = () => {
                               href={mp.document.split(',')[0]}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs rounded-lg transition-colors cursor-pointer"
+                              className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-lg transition-colors cursor-pointer"
                             >
                               Download/View Specifications Document
                             </a>
@@ -1417,7 +1417,7 @@ const ProductOverview = () => {
                               <tr key={idx} className="hover:bg-slate-50 transition-colors">
                                 <td className="px-5 py-4 text-sm font-bold text-gray-900">{resolvedName}</td>
                                 <td className="px-5 py-4 text-sm text-gray-600">{item.itemDescription || item.typeOfProduct || item.model || "N/A"}</td>
-                                <td className="px-5 py-4 text-sm font-black text-orange-600">{item.quantity}</td>
+                                <td className="px-5 py-4 text-sm font-black text-blue-600">{item.quantity}</td>
                                 <td className="px-5 py-4 text-sm font-bold text-gray-500 uppercase">{item.quantityUnit}</td>
                                 <td className="px-5 py-4 text-sm text-gray-600">{item.brand || "Any"}</td>
                               </tr>
@@ -1468,7 +1468,7 @@ const ProductOverview = () => {
                             const name = url.split('/').pop() || `Document ${idx + 1}`;
                             const isImg = /\.(jpg|jpeg|png|webp|gif)$/i.test(url);
                             return (
-                              <div key={idx} className="border border-slate-200 bg-slate-50/50 rounded-lg p-4 flex items-center justify-between shadow-xs hover:border-orange-200 transition-colors">
+                              <div key={idx} className="border border-slate-200 bg-slate-50/50 rounded-lg p-4 flex items-center justify-between shadow-xs hover:border-blue-200 transition-colors">
                                 <div className="flex items-center gap-2.5 overflow-hidden">
                                   <span className="text-2xl shrink-0">{isImg ? '🖼️' : '📄'}</span>
                                   <div className="overflow-hidden">
@@ -1480,7 +1480,7 @@ const ProductOverview = () => {
                                   href={url}
                                   target="_blank"
                                   rel="noreferrer"
-                                  className="flex items-center gap-1.5 bg-orange-600 hover:bg-orange-500 text-white px-3 py-1.5 rounded text-xs font-bold transition-colors shadow-sm shrink-0"
+                                  className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded text-xs font-bold transition-colors shadow-sm shrink-0"
                                 >
                                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -1588,7 +1588,7 @@ const ProductOverview = () => {
                     </div>
                     <div className="flex items-center gap-6 text-xs text-slate-400 pt-2">
                       <div className="flex flex-col items-center gap-1">
-                        <div className="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center text-orange-500 font-bold text-sm">1</div>
+                        <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 font-bold text-sm">1</div>
                         <span>Place Quote</span>
                       </div>
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 text-slate-300">
@@ -1619,7 +1619,7 @@ const ProductOverview = () => {
                     <p className="text-sm text-slate-500">Provide your best price and win this requirement.</p>
                   </div>
                   <SheetTrigger asChild>
-                    <Button className="w-full sm:w-auto bg-orange-600 hover:bg-orange-700 text-white font-bold px-10 py-6 text-lg rounded-full shadow-lg transition-transform hover:scale-105">
+                    <Button className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold px-10 py-6 text-lg rounded-full shadow-lg transition-transform hover:scale-105">
                       Place Quote Now
                     </Button>
                   </SheetTrigger>

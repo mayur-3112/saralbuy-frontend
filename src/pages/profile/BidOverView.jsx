@@ -123,7 +123,7 @@ const BidOverview = () => {
     //                       handleChatNavigate(bidRes?.sellers[0]?.seller?._id, mergeName(bidRes?.sellers[0]?.seller), bidRes?.sellers[0]?.seller?.profileImage)
 
     //                     }}
-    //         className="text-sm cursor-pointer text-orange-600 underline"
+    //         className="text-sm cursor-pointer text-blue-600 underline"
     //         variant="link"
 
     //       >
@@ -242,7 +242,7 @@ const BidOverview = () => {
                   Quote Overview
                 </BreadcrumbPage>
                 <BreadcrumbSeparator />
-                <BreadcrumbPage className="capitalize font-regular text-orange-600 font-semibold">
+                <BreadcrumbPage className="capitalize font-regular text-blue-600 font-semibold">
                   {bidRes?.product?.title}
                 </BreadcrumbPage>
               </BreadcrumbItem>
@@ -352,7 +352,7 @@ const BidOverview = () => {
                   }}
                   variant="ghost"
                   size="lg"
-                  className="border w-full mt-5 shadow-orange-500 border-orange-600 text-orange-600 rounded-[5px]  hover:bg-orange-500 hover:text-white cursor-pointer transition-all duration-300 ease-in-out underline-0"
+                  className="border w-full mt-5 shadow-blue-500 border-blue-600 text-blue-600 rounded-[5px]  hover:bg-blue-500 hover:text-white cursor-pointer transition-all duration-300 ease-in-out underline-0"
                 >
                   Product Preview
                 </Button>
@@ -379,14 +379,14 @@ const BidOverview = () => {
                       ) : timeLeft !== 'Expired' ? (
                         <Button
                           variant="ghost"
-                          className="float-end border rounded-full hover:bg-orange-700 hover:text-white text-sm bg-orange-700 text-white"
+                          className="float-end border rounded-full hover:bg-blue-700 hover:text-white text-sm bg-blue-700 text-white"
                         >
                           {timeLeft}
                         </Button>
                       ) : (
                         <Button
                           variant="ghost"
-                          className="float-end border rounded-full hover:bg-orange-700 hover:text-white text-sm bg-orange-700 text-white"
+                          className="float-end border rounded-full hover:bg-blue-700 hover:text-white text-sm bg-blue-700 text-white"
                         >
                           Expired
                         </Button>
@@ -489,7 +489,7 @@ const BidOverview = () => {
                     </div>
                   </div>
                   <div className="mt-10 ">
-                    <p className="font-bold text-lg whitespace-nowrap   tracking-tight text-orange-700/90">
+                    <p className="font-bold text-lg whitespace-nowrap   tracking-tight text-blue-700/90">
                       Quote Placed
                     </p>
                     {/* table */}

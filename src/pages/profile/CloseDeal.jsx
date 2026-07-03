@@ -90,7 +90,7 @@ const DealSurveyModal = ({ isOpen, onClose, dealId }) => {
               <label className="block text-sm font-medium text-gray-700 mb-2">Final Deal Amount (₹) *</label>
               <input type="number" placeholder="e.g. 250000" value={form.finalAmount}
                 onChange={e => setForm(f => ({ ...f, finalAmount: e.target.value }))}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-orange-200 focus:border-orange-400 outline-none" />
+                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-200 focus:border-blue-400 outline-none" />
             </div>
           )}
 
@@ -114,7 +114,7 @@ const DealSurveyModal = ({ isOpen, onClose, dealId }) => {
             <div className="grid grid-cols-2 gap-2">
               {['excellent', 'good', 'average', 'poor'].map(exp => (
                 <button key={exp} type="button" onClick={() => setForm(f => ({ ...f, experience: exp }))}
-                  className={`px-3 py-2 rounded-lg border text-sm capitalize ${form.experience === exp ? 'bg-orange-50 border-orange-400 text-orange-700 font-medium' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
+                  className={`px-3 py-2 rounded-lg border text-sm capitalize ${form.experience === exp ? 'bg-blue-50 border-blue-400 text-blue-700 font-medium' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
                   {exp === 'excellent' ? '🌟 ' : exp === 'good' ? '👍 ' : exp === 'average' ? '😐 ' : '👎 '}{exp}
                 </button>
               ))}
@@ -141,7 +141,7 @@ const DealSurveyModal = ({ isOpen, onClose, dealId }) => {
             <label className="block text-sm font-medium text-gray-700 mb-2">Additional feedback (optional)</label>
             <textarea rows={3} placeholder="Share any thoughts about the deal..." value={form.feedback}
               onChange={e => setForm(f => ({ ...f, feedback: e.target.value }))}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-orange-200 focus:border-orange-400 outline-none resize-none" />
+              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-200 focus:border-blue-400 outline-none resize-none" />
           </div>
 
           {/* Issues */}
@@ -149,7 +149,7 @@ const DealSurveyModal = ({ isOpen, onClose, dealId }) => {
             <label className="block text-sm font-medium text-gray-700 mb-2">Any issues faced? (optional)</label>
             <textarea rows={2} placeholder="Describe any problems you encountered..." value={form.issuesFaced}
               onChange={e => setForm(f => ({ ...f, issuesFaced: e.target.value }))}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-orange-200 focus:border-orange-400 outline-none resize-none" />
+              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-200 focus:border-blue-400 outline-none resize-none" />
           </div>
 
           {/* Buttons */}
@@ -159,7 +159,7 @@ const DealSurveyModal = ({ isOpen, onClose, dealId }) => {
               Cancel
             </button>
             <button type="submit" disabled={submitting}
-              className="px-5 py-2.5 rounded-lg bg-orange-500 text-white text-sm font-medium hover:bg-orange-600 disabled:opacity-50">
+              className="px-5 py-2.5 rounded-lg bg-blue-500 text-white text-sm font-medium hover:bg-blue-600 disabled:opacity-50">
               {submitting ? 'Submitting...' : 'Submit Feedback'}
             </button>
           </div>
@@ -251,7 +251,7 @@ const CloseDeal = () => {
               View
             </Button>
             <Button
-              className="text-sm cursor-pointer text-orange-600"
+              className="text-sm cursor-pointer text-blue-600"
               variant={'link'}
               onClick={() => openSurvey(row.original?._id)}
             >
@@ -341,7 +341,7 @@ const CloseDeal = () => {
               View
             </Button>
             <Button
-              className="text-sm cursor-pointer text-orange-600"
+              className="text-sm cursor-pointer text-blue-600"
               variant={'link'}
               onClick={() => openSurvey(row.original?._id)}
             >

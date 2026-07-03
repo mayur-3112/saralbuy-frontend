@@ -92,18 +92,18 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
     <>
       <Authentication setOpen={setOpen} open={open} />
       <div 
-        className="group w-full rounded-xl border border-orange-200 p-5 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 ease-out flex flex-col md:flex-row justify-between mb-4 relative overflow-hidden bg-white"
+        className="group w-full rounded-xl border border-blue-200 p-5 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 ease-out flex flex-col md:flex-row justify-between mb-4 relative overflow-hidden bg-white"
         style={{background: 'linear-gradient(135deg, #ffffff 0%, #fff7ed 50%, #ffedd5 100%)'}}
       >
         {/* Left accent bar that slides in on hover */}
-        <div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-500 scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-top rounded-l-xl" />
+        <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-500 scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-top rounded-l-xl" />
         
         {/* Left Side */}
         <div className="flex-1 flex flex-col justify-between space-y-4">
           <div className="space-y-4">
             {/* Title Row */}
             <div className="flex items-start justify-between z-10 relative">
-              <h2 className="text-xl font-bold text-slate-900 capitalize tracking-wide group-hover:text-orange-800 transition-colors duration-300 line-clamp-2 pr-4">
+              <h2 className="text-xl font-bold text-slate-900 capitalize tracking-wide group-hover:text-blue-800 transition-colors duration-300 line-clamp-2 pr-4">
                 {productTitle}
               </h2>
               {showOwnerActions && (
@@ -111,7 +111,7 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
                   <button
                     type="button"
                     onClick={(e) => { e.stopPropagation(); setShowMenu(!showMenu); }}
-                    className="p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-orange-100 transition-colors cursor-pointer"
+                    className="p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-blue-100 transition-colors cursor-pointer"
                   >
                     <MoreVertical size={20} />
                   </button>
@@ -200,9 +200,9 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
         </div>
 
         {/* Right Side */}
-        <div className="mt-4 md:mt-0 flex flex-col justify-between items-start md:items-end md:w-56 shrink-0 z-10 relative border-t md:border-t-0 md:border-l border-orange-200/50 pt-4 md:pt-0 md:pl-5">
+        <div className="mt-4 md:mt-0 flex flex-col justify-between items-start md:items-end md:w-56 shrink-0 z-10 relative border-t md:border-t-0 md:border-l border-blue-200/50 pt-4 md:pt-0 md:pl-5">
           {/* Dates Box */}
-          <div className="w-full space-y-2.5 bg-white/40 p-3 rounded-lg border border-orange-100/50">
+          <div className="w-full space-y-2.5 bg-white/40 p-3 rounded-lg border border-blue-100/50">
             <div className="flex justify-between items-center gap-2">
               <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Posted</span>
               <span className="text-[12px] font-bold text-gray-700">
@@ -230,7 +230,7 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
           {/* Action Button */}
           <Button
             onClick={(e) => { e.stopPropagation(); handleAction(); }}
-            className="w-full bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-lg py-4 shadow-md mt-4 md:mt-6 hover:shadow-orange-300 hover:shadow-lg active:scale-95 transition-all duration-200"
+            className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg py-4 shadow-md mt-4 md:mt-6 hover:shadow-blue-300 hover:shadow-lg active:scale-95 transition-all duration-200"
           >
             {actionLabel}
           </Button>

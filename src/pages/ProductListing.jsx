@@ -168,7 +168,7 @@ function FilterPanel({
           >
             <h3 className="-my-3 flow-root">
               <DisclosureButton className="group flex w-full items-center justify-between py-2 text-sm text-gray-400 hover:text-gray-500">
-                <span className="font-regular text-[16px] text-orange-700">{section.name}</span>
+                <span className="font-regular text-[16px] text-blue-700">{section.name}</span>
                 <span className="ml-6 flex items-center">
                   <ChevronUp aria-hidden="true" className="size-5 group-data-open:hidden" />
                   <ChevronDown aria-hidden="true" className="size-5 group-not-data-open:hidden" />
@@ -189,7 +189,7 @@ function FilterPanel({
                         <div key={option.value} className="flex items-center gap-2">
                           <RadioGroupItem
                             value={option.value}
-                            className="border border-orange-700 focus-visible:border-orange-700 focus-visible:ring-orange-700"
+                            className="border border-blue-700 focus-visible:border-blue-700 focus-visible:ring-blue-700"
                             id={`filter-${section.id}-${optionIdx}`}
                           />
                           <Label
@@ -214,7 +214,7 @@ function FilterPanel({
           >
             <h3 className="-my-3 flow-root">
               <DisclosureButton className="group flex w-full items-center justify-between py-3 text-sm text-gray-400 hover:text-gray-500">
-                <span className="font-regular text-[16px] text-orange-700">{section.name}</span>
+                <span className="font-regular text-[16px] text-blue-700">{section.name}</span>
                 <span className="ml-6 flex items-center">
                   <ChevronUp aria-hidden="true" className="size-5 group-data-open:hidden" />
                   <ChevronDown aria-hidden="true" className="size-5 group-not-data-open:hidden" />
@@ -243,7 +243,7 @@ function FilterPanel({
                         className="h-1 w-full bg-gray-300 rounded relative"
                       >
                         <div
-                          className="absolute h-1 bg-orange-700 rounded"
+                          className="absolute h-1 bg-blue-700 rounded"
                           style={{
                             left: `${leftPercent}%`,
                             width: `${rightPercent - leftPercent}%`,
@@ -259,7 +259,7 @@ function FilterPanel({
                       <div
                         key={key}
                         {...restProps}
-                        className="w-4 h-4 border-orange-700 border-2 bg-white rounded-full flex items-center justify-center shadow"
+                        className="w-4 h-4 border-blue-700 border-2 bg-white rounded-full flex items-center justify-center shadow"
                       />
                     );
                   }}
@@ -280,7 +280,7 @@ function FilterPanel({
           onClick={handleRemoveFilter}
           variant="ghost"
           size="lg"
-          className="border w-full mt-5 border-orange-600 text-orange-600 rounded-[5px] hover:bg-orange-500 hover:text-white transition-all duration-300 ease-in-out cursor-pointer"
+          className="border w-full mt-5 border-blue-600 text-blue-600 rounded-[5px] hover:bg-blue-500 hover:text-white transition-all duration-300 ease-in-out cursor-pointer"
         >
           Remove Filter's
         </Button>
@@ -582,7 +582,7 @@ export default function ProductListing() {
 
           {/* ── Explore Header & Search Terminal ── */}
           <div className="pt-8 pb-2">
-            <div className="border-l-4 border-orange-600 pl-4 mb-6">
+            <div className="border-l-4 border-blue-600 pl-4 mb-6">
               <h1 className="text-2xl font-black text-slate-900 tracking-tight">
                 Explore Active RFQs & Sourcing Leads
               </h1>
@@ -595,7 +595,7 @@ export default function ProductListing() {
             <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-4 md:p-5 mb-6 shadow-sm">
               <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto] gap-3">
                 {/* Keyword Search */}
-                <div className="relative flex items-center bg-white border border-slate-300 rounded-lg focus-within:border-orange-500 focus-within:ring-4 focus-within:ring-orange-500/15 transition-all duration-300 overflow-hidden">
+                <div className="relative flex items-center bg-white border border-slate-300 rounded-lg focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/15 transition-all duration-300 overflow-hidden">
                   <Search className="absolute left-3.5 h-4 w-4 text-slate-400 pointer-events-none" />
                   <input
                     type="text"
@@ -607,7 +607,7 @@ export default function ProductListing() {
                 </div>
 
                 {/* Location Search */}
-                <div className="relative flex items-center bg-white border border-slate-300 rounded-lg focus-within:border-orange-500 focus-within:ring-4 focus-within:ring-orange-500/15 transition-all duration-300 overflow-hidden">
+                <div className="relative flex items-center bg-white border border-slate-300 rounded-lg focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/15 transition-all duration-300 overflow-hidden">
                   <MapPin className="absolute left-3.5 h-4 w-4 text-slate-400 pointer-events-none" />
                   <input
                     type="text"
@@ -632,9 +632,9 @@ export default function ProductListing() {
                 <div className="mt-3 flex items-center gap-2">
                   <span className="text-xs text-slate-500">Active filters:</span>
                   {localSearch && (
-                    <span className="px-2.5 py-1 bg-orange-100 text-orange-700 text-xs font-semibold rounded-full flex items-center gap-1">
+                    <span className="px-2.5 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full flex items-center gap-1">
                       "{localSearch}"
-                      <button onClick={() => setLocalSearch('')} className="ml-1 hover:text-orange-900 cursor-pointer">×</button>
+                      <button onClick={() => setLocalSearch('')} className="ml-1 hover:text-blue-900 cursor-pointer">×</button>
                     </span>
                   )}
                   {localLocation && (
@@ -645,7 +645,7 @@ export default function ProductListing() {
                   )}
                   <button 
                     onClick={() => { setLocalSearch(''); setLocalLocation(''); }}
-                    className="text-xs text-slate-400 hover:text-orange-600 underline cursor-pointer ml-1"
+                    className="text-xs text-slate-400 hover:text-blue-600 underline cursor-pointer ml-1"
                   >
                     Clear all
                   </button>
@@ -700,7 +700,7 @@ export default function ProductListing() {
                           setLocalLocation('');
                           handleRemoveFilter();
                         }}
-                        className="px-5 py-2.5 bg-orange-600 hover:bg-orange-500 text-white font-bold rounded-lg text-sm transition-colors cursor-pointer shadow-sm"
+                        className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg text-sm transition-colors cursor-pointer shadow-sm"
                       >
                         Reset All Filters
                       </button>

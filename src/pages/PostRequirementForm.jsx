@@ -200,7 +200,7 @@ const PostRequirementForm = () => {
   return (
     <div className="w-full max-w-5xl mx-auto px-4 min-h-screen py-10 bg-slate-50">
       <div className="flex gap-3 items-center mb-8 pb-4 border-b border-slate-200">
-        <MoveLeft className="w-6 h-6 cursor-pointer text-slate-600 hover:text-orange-600 transition-colors" onClick={() => navigate(-1)} />
+        <MoveLeft className="w-6 h-6 cursor-pointer text-slate-600 hover:text-blue-600 transition-colors" onClick={() => navigate(-1)} />
         <div>
           <h2 className="text-2xl font-black text-slate-900 tracking-tight">Post Your Requirement (RFQ)</h2>
           <p className="text-sm text-slate-500 mt-0.5">Fill in the details below to get quotes from verified suppliers.</p>
@@ -232,9 +232,9 @@ const PostRequirementForm = () => {
         
         {/* Step 1 — Basic Information */}
         <div className="p-6 md:p-8 bg-white border border-slate-200 rounded-2xl shadow-sm relative overflow-hidden">
-          <div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-400 rounded-l-2xl" />
+          <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-400 rounded-l-2xl" />
           <div className="mb-6 border-b border-slate-100 pb-4 flex items-start gap-3">
-            <span className="shrink-0 w-7 h-7 rounded-full bg-orange-100 text-orange-600 text-xs font-bold flex items-center justify-center mt-0.5">1</span>
+            <span className="shrink-0 w-7 h-7 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center mt-0.5">1</span>
             <div>
               <h3 className="text-lg font-black text-slate-900">Basic Information</h3>
               <p className="text-[13px] text-slate-400 mt-0.5">Provide the primary details of your requirement to help suppliers quickly understand what you need.</p>
@@ -243,7 +243,7 @@ const PostRequirementForm = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
               <label className="block text-sm font-extrabold text-slate-800 mb-2">Title of Requirement*</label>
-              <Input placeholder="e.g., Procurement of Seamless Pipes and Tubes" {...register('title')} className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium" />
+              <Input placeholder="e.g., Procurement of Seamless Pipes and Tubes" {...register('title')} className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium" />
             </div>
 
             <div>
@@ -253,7 +253,7 @@ const PostRequirementForm = () => {
                 control={control}
                 render={({ field: { onChange, value } }) => (
                   <Select value={value} onValueChange={(val) => { onChange(val); setValue('subCategoryId', ''); }}>
-                    <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
+                    <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-blue-300 focus:ring-blue-500/30 focus:border-blue-500 transition-all font-medium">
                       <SelectValue placeholder="Select Main Category" />
                     </SelectTrigger>
                     <SelectContent>
@@ -285,7 +285,7 @@ const PostRequirementForm = () => {
                     }} 
                     disabled={!selectedCategoryId}
                   >
-                    <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
+                    <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-blue-300 focus:ring-blue-500/30 focus:border-blue-500 transition-all font-medium">
                       <SelectValue placeholder="Select Subcategory" />
                     </SelectTrigger>
                     <SelectContent>
@@ -303,9 +303,9 @@ const PostRequirementForm = () => {
         {/* Step 2 — Items */}
         {mode === 'single' && (
           <div className="p-6 md:p-8 bg-white border border-slate-200 rounded-2xl shadow-sm relative overflow-hidden">
-            <div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-300 rounded-l-2xl" />
+            <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-300 rounded-l-2xl" />
             <div className="border-b border-slate-200 pb-4 mb-4 flex items-start gap-3">
-              <span className="shrink-0 w-7 h-7 rounded-full bg-orange-100 text-orange-600 text-xs font-bold flex items-center justify-center mt-0.5">2</span>
+              <span className="shrink-0 w-7 h-7 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center mt-0.5">2</span>
               <div>
                 <h3 className="text-lg font-black text-slate-900">List of Materials</h3>
                 <p className="text-[13px] text-slate-400 mt-0.5">Add the specific items or materials you need, including quantities and specifications.</p>
@@ -324,20 +324,20 @@ const PostRequirementForm = () => {
 
             <div className="space-y-4">
               {fields.map((item, index) => (
-                <div key={item.id} className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-white p-3 rounded-xl border border-slate-200 hover:border-orange-300 hover:shadow-md transition-all">
+                <div key={item.id} className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-white p-3 rounded-xl border border-slate-200 hover:border-blue-300 hover:shadow-md transition-all">
                   <div className="md:col-span-3">
                     <label className="block md:hidden text-xs font-bold text-slate-500 mb-1">Item Name</label>
-                    <Input placeholder="e.g., Pipe" {...register(`items.${index}.itemName`)} className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium" />
+                    <Input placeholder="e.g., Pipe" {...register(`items.${index}.itemName`)} className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium" />
                   </div>
 
                   <div className="md:col-span-3">
                     <label className="block md:hidden text-xs font-bold text-slate-500 mb-1">Description / Specs</label>
-                    <Input placeholder="e.g., DN65 ASTM A106" {...register(`items.${index}.itemDescription`)} className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium" />
+                    <Input placeholder="e.g., DN65 ASTM A106" {...register(`items.${index}.itemDescription`)} className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium" />
                   </div>
                   
                   <div className="md:col-span-2">
                     <label className="block md:hidden text-xs font-bold text-slate-500 mb-1">Qty</label>
-                    <Input type="number" placeholder="Qty" {...register(`items.${index}.quantity`)} className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium" min="1" />
+                    <Input type="number" placeholder="Qty" {...register(`items.${index}.quantity`)} className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium" min="1" />
                   </div>
                   
                   <div className="md:col-span-1">
@@ -347,7 +347,7 @@ const PostRequirementForm = () => {
                       control={control}
                       render={({ field: { onChange, value } }) => (
                         <Select value={value} onValueChange={onChange}>
-                          <SelectTrigger className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
+                          <SelectTrigger className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus:ring-blue-500/30 focus:border-blue-500 transition-all font-medium">
                             <SelectValue placeholder="Unit" />
                           </SelectTrigger>
                           <SelectContent>
@@ -373,7 +373,7 @@ const PostRequirementForm = () => {
                               type="text"
                               value={value === '__custom__' ? '' : value}
                               placeholder="Type brand name..."
-                              className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium flex-1"
+                              className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium flex-1"
                               autoFocus={value === '__custom__'}
                               onChange={(e) => onChange(e.target.value)}
                               onBlur={(e) => {
@@ -389,14 +389,14 @@ const PostRequirementForm = () => {
                           </div>
                         ) : (
                           <Select value={value} onValueChange={onChange}>
-                            <SelectTrigger className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
+                            <SelectTrigger className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus:ring-blue-500/30 focus:border-blue-500 transition-all font-medium">
                               <SelectValue placeholder="Brand" />
                             </SelectTrigger>
                             <SelectContent>
                               {availableBrands.map(b => (
                                 <SelectItem key={b} value={b}>{b}</SelectItem>
                               ))}
-                              <SelectItem value="__custom__" className="text-orange-600 font-semibold border-t border-slate-100 mt-1">
+                              <SelectItem value="__custom__" className="text-blue-600 font-semibold border-t border-slate-100 mt-1">
                                 ✏️ Other (type your own)
                               </SelectItem>
                             </SelectContent>
@@ -419,7 +419,7 @@ const PostRequirementForm = () => {
               type="button"
               variant="ghost"
               onClick={() => append({ itemName: '', itemDescription: '', quantity: '', quantityUnit: 'pcs', brand: 'Any' })}
-              className="mt-4 text-orange-600 hover:text-orange-700 hover:bg-orange-50 font-extrabold border border-dashed border-orange-200"
+              className="mt-4 text-blue-600 hover:text-blue-700 hover:bg-blue-50 font-extrabold border border-dashed border-blue-200"
             >
               <Plus className="w-4 h-4 mr-1" /> Add Another Item
             </Button>
@@ -428,9 +428,9 @@ const PostRequirementForm = () => {
 
         {/* Step 3 — Documents & Terms */}
         <div className="p-6 md:p-8 bg-white border border-slate-200 rounded-2xl shadow-sm relative overflow-hidden">
-          <div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-300 rounded-l-2xl" />
+          <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-300 rounded-l-2xl" />
           <div className="border-b border-slate-200 pb-4 mb-6 flex items-start gap-3">
-            <span className="shrink-0 w-7 h-7 rounded-full bg-orange-100 text-orange-600 text-xs font-bold flex items-center justify-center mt-0.5">3</span>
+            <span className="shrink-0 w-7 h-7 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center mt-0.5">3</span>
             <div>
               <h3 className="text-lg font-black text-slate-900">Other Details & Terms</h3>
               <p className="text-[13px] text-slate-400 mt-0.5">Upload relevant documents, reference images, or specifications, and mention any specific terms.</p>
@@ -477,16 +477,16 @@ const PostRequirementForm = () => {
             <Textarea
               placeholder="Any specific delivery terms, conditions, or quotation instructions..."
               {...register('otherTerms')}
-              className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium min-h-[100px]"
+              className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium min-h-[100px]"
             />
           </div>
         </div>
 
         {/* Step 4 — Delivery & Organization */}
         <div className="p-6 md:p-8 bg-white border border-slate-200 rounded-2xl shadow-sm relative overflow-hidden">
-          <div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-400 rounded-l-2xl" />
+          <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-400 rounded-l-2xl" />
           <div className="border-b border-slate-100 pb-5 mb-8 flex items-start gap-3">
-            <span className="shrink-0 w-7 h-7 rounded-full bg-orange-100 text-orange-600 text-xs font-bold flex items-center justify-center mt-0.5">4</span>
+            <span className="shrink-0 w-7 h-7 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center mt-0.5">4</span>
             <div>
               <h3 className="text-lg font-black text-slate-900">Delivery & Organization Details</h3>
               <p className="text-[13px] text-slate-400 mt-0.5">Specify your timeline, payment terms, and delivery location so suppliers can quote accurately.</p>
@@ -523,7 +523,7 @@ const PostRequirementForm = () => {
                 control={control}
                 render={({ field: { onChange, value } }) => (
                   <Select value={value} onValueChange={onChange}>
-                    <SelectTrigger className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
+                    <SelectTrigger className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus:ring-blue-500/30 focus:border-blue-500 transition-all font-medium">
                       <SelectValue placeholder="Select Payment Mode" />
                     </SelectTrigger>
                     <SelectContent>
@@ -544,7 +544,7 @@ const PostRequirementForm = () => {
                 control={control}
                 render={({ field: { onChange, value } }) => (
                   <Select value={value} onValueChange={onChange}>
-                    <SelectTrigger className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
+                    <SelectTrigger className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus:ring-blue-500/30 focus:border-blue-500 transition-all font-medium">
                       <SelectValue placeholder="Yes / No" />
                     </SelectTrigger>
                     <SelectContent>
@@ -557,14 +557,14 @@ const PostRequirementForm = () => {
             </div>
 
             {gstField === 'yes' && (
-              <div className="sm:col-span-2 md:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-6 p-4 bg-orange-50/50 border border-orange-100 rounded-md">
+              <div className="sm:col-span-2 md:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-6 p-4 bg-blue-50/50 border border-blue-100 rounded-md">
                 <div>
                   <label className="block text-sm font-extrabold text-slate-800 mb-2">GST Number*</label>
-                  <Input placeholder="Enter GSTIN" {...register('gstNumber')} className="bg-white border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium uppercase" maxLength={15} />
+                  <Input placeholder="Enter GSTIN" {...register('gstNumber')} className="bg-white border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium uppercase" maxLength={15} />
                 </div>
                 <div>
                   <label className="block text-sm font-extrabold text-slate-800 mb-2">Organization Name</label>
-                  <Input placeholder="Registered Company Name" {...register('organizationName')} className="bg-white border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium" />
+                  <Input placeholder="Registered Company Name" {...register('organizationName')} className="bg-white border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium" />
                 </div>
               </div>
             )}
@@ -572,7 +572,7 @@ const PostRequirementForm = () => {
             <div className="sm:col-span-2 md:col-span-3">
               <label className="block text-sm font-extrabold text-slate-800 mb-2">Locality, City, State*</label>
               <p className="text-xs text-slate-500 mb-2 font-medium">⚠️ For your privacy, please provide only the city, state, or general area. Do not enter your full street address.</p>
-              <Input placeholder="e.g. Rajajinagar, Bangalore, Karnataka" {...register('deliveryAddress')} className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium" />
+              <Input placeholder="e.g. Rajajinagar, Bangalore, Karnataka" {...register('deliveryAddress')} className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium" />
             </div>
           </div>
         </div>
@@ -582,7 +582,7 @@ const PostRequirementForm = () => {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full md:w-auto px-14 h-16 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 hover:shadow-xl hover:shadow-orange-500/40 hover:-translate-y-1 active:translate-y-0 text-white font-bold text-lg rounded-2xl transition-all duration-300 group"
+            className="w-full md:w-auto px-14 h-16 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 hover:shadow-xl hover:shadow-blue-500/40 hover:-translate-y-1 active:translate-y-0 text-white font-bold text-lg rounded-2xl transition-all duration-300 group"
           >
             {loading ? <Spinner className="w-6 h-6 animate-spin mx-auto" /> : 'Post Requirement'}
             {!loading && <span className="ml-2 opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-2 group-hover:translate-x-1 transition-all duration-300">→</span>}

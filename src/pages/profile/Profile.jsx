@@ -119,7 +119,7 @@ const Profile = () => {
               Account
             </BreadcrumbPage>
             <BreadcrumbSeparator />
-            <BreadcrumbPage className="capitalize font-regular text-orange-600 font-semibold">
+            <BreadcrumbPage className="capitalize font-regular text-blue-600 font-semibold">
               {pathname.split('/')[2] || 'Profile'}
             </BreadcrumbPage>
           </BreadcrumbItem>
@@ -135,7 +135,7 @@ const Profile = () => {
                 <Avatar className="w-28 h-28 border-gray-600 border-3 flex ">
                   {updateProfileLoading ? (
                     <div className="h-full w-full  flex items-center justify-center object-contain">
-                      <Spinner className="w-5 h-5 text-orange-500" />
+                      <Spinner className="w-5 h-5 text-blue-500" />
                     </div>
                   ) : (
                     <AvatarImage
@@ -180,7 +180,7 @@ const Profile = () => {
                 }
               }}
               href="javascript:void(0)"
-              className="mt-4 mb-2 text-sm font-bold text-orange-600 hover:text-orange-700 hover:underline text-center"
+              className="mt-4 mb-2 text-sm font-bold text-blue-600 hover:text-blue-700 hover:underline text-center"
             >
               Update Photo
             </a>
@@ -195,7 +195,7 @@ const Profile = () => {
                     end={tag.value === 'profile'}
                     className={({ isActive }) =>
                       `text-left px-4 py-2.5 cursor-pointer text-sm font-bold rounded-md transition-colors ${
-                        isActive ? 'bg-orange-50 text-orange-700 border-l-4 border-orange-600' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                        isActive ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                       }`
                     }
                   >

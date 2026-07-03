@@ -138,7 +138,7 @@ const renderMobileMenuItem = (item, setOpenSheet, navigate) => {
     <button
       key={item.title}
       onClick={() => handleNavigate(item.url)}
-      className="w-full flex items-center gap-3 rounded-lg px-3 py-3 text-sm sm:text-base font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-all duration-200"
+      className="w-full flex items-center gap-3 rounded-lg px-3 py-3 text-sm sm:text-base font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-all duration-200"
     >
       <span className="shrink-0">{item.icon}</span>
       <span>{item.title}</span>
@@ -359,7 +359,7 @@ const HomeNavbar = () => {
                   alt={p.title}
                 />
                 <div className="flex-1">
-                  <p className="text-md font-semibold text-orange-600">{p.title}</p>
+                  <p className="text-md font-semibold text-blue-600">{p.title}</p>
                   <p className="text-sm text-gray-600 line-clamp-2">{p.description}</p>
                 </div>
               </div>
@@ -597,12 +597,12 @@ const HomeNavbar = () => {
               </div>
 
             {/* Unified Search & Location Pill */}
-            <div className="flex-1 max-w-3xl flex items-center bg-white rounded-full border border-slate-200 shadow-sm hover:shadow-md focus-within:shadow-md focus-within:border-orange-300 transition-all duration-300 overflow-visible mx-4">
+            <div className="flex-1 max-w-3xl flex items-center bg-white rounded-full border border-slate-200 shadow-sm hover:shadow-md focus-within:shadow-md focus-within:border-blue-300 transition-all duration-300 overflow-visible mx-4">
               {/* Location */}
               <div className="flex items-center relative group shrink-0 w-36 lg:w-48 border-r border-slate-200 hover:bg-slate-50 rounded-l-full transition-colors">
                 <MapPin 
                   onClick={getGeoLocation}
-                  className="w-4 h-4 text-orange-500 absolute left-4 top-1/2 -translate-y-1/2 cursor-pointer hover:scale-110 transition-transform z-10"
+                  className="w-4 h-4 text-blue-500 absolute left-4 top-1/2 -translate-y-1/2 cursor-pointer hover:scale-110 transition-transform z-10"
                   title="Detect my location"
                 />
                 <Input
@@ -638,7 +638,7 @@ const HomeNavbar = () => {
                   placeholder="Looking For..."
                   className="pl-3 pr-10 shadow-none border-0 focus-visible:ring-0 h-full w-full bg-transparent rounded-r-full"
                 />
-                <div className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 bg-orange-500 hover:bg-orange-600 rounded-full flex items-center justify-center cursor-pointer transition-colors shadow-sm shadow-orange-500/30">
+                <div className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 bg-blue-500 hover:bg-blue-600 rounded-full flex items-center justify-center cursor-pointer transition-colors shadow-sm shadow-blue-500/30">
                   <SearchIcon className="h-4 w-4 text-white" />
                 </div>
 
@@ -656,7 +656,7 @@ const HomeNavbar = () => {
                       products.map(p => (
                         <Card
                           key={p._id}
-                          className="p-3 rounded-xl border border-slate-100 shadow-sm bg-white cursor-pointer hover:bg-orange-50 hover:border-orange-200 transition-all"
+                          className="p-3 rounded-xl border border-slate-100 shadow-sm bg-white cursor-pointer hover:bg-blue-50 hover:border-blue-200 transition-all"
                           onClick={() => {
                             setShowDropdown(false);
                             setProducts([]);
@@ -745,12 +745,12 @@ const HomeNavbar = () => {
                                   onClick={() => handleMessageClick(chat)}
                                   className={`flex w-full items-center gap-3 p-2 rounded-lg cursor-pointer transition ${
                                     isUnread
-                                      ? 'bg-orange-50 hover:bg-orange-100'
+                                      ? 'bg-blue-50 hover:bg-blue-100'
                                       : 'hover:bg-gray-50'
                                   }`}
                                 >
                                   {/* Avatar */}
-                                  <div className="bg-orange-500 p-2 rounded-full text-white flex items-center justify-center flex-shrink-0 relative">
+                                  <div className="bg-blue-500 p-2 rounded-full text-white flex items-center justify-center flex-shrink-0 relative">
                                     <MessageCircle className="w-4 h-4" />
                                     {isUnread && (
                                       <span className="absolute -top-1 -right-1 flex h-3 w-3">
@@ -802,7 +802,7 @@ const HomeNavbar = () => {
                                 setShowMessageDropdown(false);
                                 navigate('/chat');
                               }}
-                              className="w-full text-center text-sm font-medium cursor-pointer  text-orange-600 hover:text-orange-700 py-2 rounded-lg hover:bg-orange-50 transition-colors"
+                              className="w-full text-center text-sm font-medium cursor-pointer  text-blue-600 hover:text-blue-700 py-2 rounded-lg hover:bg-blue-50 transition-colors"
                             >
                               View All Chats
                             </button>
@@ -851,8 +851,8 @@ const HomeNavbar = () => {
                             <div
                               key={notif._id}
                               onClick={() => handleNotificationClick(notif)}
-                              className={`flex items-center gap-3 p-3 hover:bg-orange-50 cursor-pointer border-b last:border-b-0 ${
-                                !notif.seen ? 'bg-orange-50/50' : ''
+                              className={`flex items-center gap-3 p-3 hover:bg-blue-50 cursor-pointer border-b last:border-b-0 ${
+                                !notif.seen ? 'bg-blue-50/50' : ''
                               }`}
                             >
                               <div
@@ -872,7 +872,7 @@ const HomeNavbar = () => {
                                 </span>
                               </div>
                               {!notif.seen && (
-                                <div className="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0" />
+                                <div className="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0" />
                               )}
                             </div>
                           );
@@ -884,7 +884,7 @@ const HomeNavbar = () => {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="w-full text-orange-600 hover:text-orange-700 hover:bg-orange-100 h-8 cursor-pointer"
+                            className="w-full text-blue-600 hover:text-blue-700 hover:bg-blue-100 h-8 cursor-pointer"
                             onClick={() => {
                               setShowNotificationDropdown(false);
                               navigate('/account/notification');
@@ -909,7 +909,7 @@ const HomeNavbar = () => {
               }}
               variant="default"
               size="sm"
-              className="bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 hover:shadow-lg hover:shadow-orange-500/40 hover:-translate-y-0.5 active:scale-95 text-white font-bold px-6 py-2 rounded-full transition-all duration-300 cursor-pointer text-sm border-0 group ring-2 ring-white/50 ring-offset-1 ring-offset-orange-50"
+              className="bg-gradient-to-r from-blue-500 to-rose-500 hover:from-blue-600 hover:to-rose-600 hover:shadow-lg hover:shadow-blue-500/40 hover:-translate-y-0.5 active:scale-95 text-white font-bold px-6 py-2 rounded-full transition-all duration-300 cursor-pointer text-sm border-0 group ring-2 ring-white/50 ring-offset-1 ring-offset-blue-50"
             >
               Post Requirements
               <span className="ml-1 opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-1 group-hover:translate-x-1 transition-all duration-300">→</span>
@@ -919,7 +919,7 @@ const HomeNavbar = () => {
             <Button 
               onClick={handleProfileClick} 
               variant="outline" 
-              className="hidden lg:flex items-center gap-2 font-bold text-slate-700 border border-slate-200/60 hover:border-orange-300 hover:bg-orange-50 hover:text-orange-600 hover:shadow-md hover:-translate-y-0.5 px-5 py-2.5 rounded-full cursor-pointer transition-all duration-300 shadow-sm bg-white/80 active:scale-95"
+              className="hidden lg:flex items-center gap-2 font-bold text-slate-700 border border-slate-200/60 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600 hover:shadow-md hover:-translate-y-0.5 px-5 py-2.5 rounded-full cursor-pointer transition-all duration-300 shadow-sm bg-white/80 active:scale-95"
             >
               <UserRound className="w-4 h-4" />
               My Account
@@ -951,7 +951,7 @@ const HomeNavbar = () => {
                         <div className="flex items-center relative w-full">
                           <MapPin 
                             onClick={getGeoLocation}
-                            className="w-4 h-4 text-orange-500 absolute left-3 top-1/2 -translate-y-1/2 cursor-pointer hover:scale-110 transition-transform"
+                            className="w-4 h-4 text-blue-500 absolute left-3 top-1/2 -translate-y-1/2 cursor-pointer hover:scale-110 transition-transform"
                             title="Detect my location"
                           />
 
@@ -993,7 +993,7 @@ const HomeNavbar = () => {
                         </button>
                       ) : (
                         <button
-                          className="mt-4 w-full flex items-center justify-center gap-2 rounded-lg bg-orange-600 py-3 text-sm font-bold text-white hover:bg-orange-500 transition-colors"
+                          className="mt-4 w-full flex items-center justify-center gap-2 rounded-lg bg-blue-600 py-3 text-sm font-bold text-white hover:bg-blue-500 transition-colors"
                           onClick={() => {
                             setOpenSheet(false);
                             window.dispatchEvent(new Event('session-expired'));

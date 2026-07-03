@@ -229,7 +229,7 @@ export default function DiscussionChatbox() {
                     placeholder="Message..."
                     value={messageText}
                     onChange={(e) => setMessageText(e.target.value)}
-                    className="flex-1 text-sm bg-slate-50 border-slate-200 focus:border-orange-500 rounded-xl"
+                    className="flex-1 text-sm bg-slate-50 border-slate-200 focus:border-blue-500 rounded-xl"
                   />
                   <Button
                     type="submit"
@@ -280,7 +280,7 @@ export default function DiscussionChatbox() {
                         >
                           <Avatar className="w-9 h-9 border border-slate-200">
                             <AvatarImage src={chat.avatar} />
-                            <AvatarFallback className="text-[10px] font-black bg-orange-50 text-orange-600">
+                            <AvatarFallback className="text-[10px] font-black bg-blue-50 text-blue-600">
                               {fallBackName(chat.name)}
                             </AvatarFallback>
                           </Avatar>
@@ -306,7 +306,7 @@ export default function DiscussionChatbox() {
                             </p>
                           </div>
                           {unread > 0 && (
-                            <span className="w-4 h-4 bg-orange-600 text-white rounded-full flex items-center justify-center text-[9px] font-black shrink-0">
+                            <span className="w-4 h-4 bg-blue-600 text-white rounded-full flex items-center justify-center text-[9px] font-black shrink-0">
                               {unread}
                             </span>
                           )}
@@ -324,7 +324,7 @@ export default function DiscussionChatbox() {
       {/* Floating Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="floating-discussions-chatbox bg-orange-600 hover:bg-orange-700 text-white p-4 rounded-full shadow-2xl flex items-center justify-center transition-all duration-350 hover:scale-105 cursor-pointer border-2 border-white/20"
+        className="floating-discussions-chatbox bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-2xl flex items-center justify-center transition-all duration-350 hover:scale-105 cursor-pointer border-2 border-white/20"
         aria-label="Toggle discussions chat"
       >
         <MessageSquare className="w-6 h-6" />

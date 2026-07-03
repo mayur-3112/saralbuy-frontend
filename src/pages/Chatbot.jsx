@@ -105,12 +105,12 @@ const ContactsList = ({
                   if (!isSelected) onSelectContact(contact);
                 }}
                 className={`px-2 py-1 border-chat-border hover:bg-chat-message-bg cursor-pointer transition-colors ${
-                  isSelected ? 'bg-orange-50' : ''
+                  isSelected ? 'bg-blue-50' : ''
                 }`}
               >
                 <div
                   className={`flex items-start space-x-3 bg-white p-3 rounded-md ${
-                    isSelected ? 'border-2 border-orange-500' : ''
+                    isSelected ? 'border-2 border-blue-500' : ''
                   }`}
                 >
                   {/* Avatar with online dot */}
@@ -155,7 +155,7 @@ const ContactsList = ({
                         {contact.lastMessage?.message || 'No messages yet'}
                       </p>
                       {!isSelected && unreadCount > 0 && (
-                        <span className="ml-2 bg-orange-500 text-white rounded-full px-2 py-0.5 text-xs font-semibold">
+                        <span className="ml-2 bg-blue-500 text-white rounded-full px-2 py-0.5 text-xs font-semibold">
                           {unreadCount}
                         </span>
                       )}
@@ -429,7 +429,7 @@ const ChatArea = ({
               {/* Close Button */}
               <button
                 onClick={clearAttachment}
-                className="absolute top-3 right-3 bg-orange-100 text-orange-500 rounded-md p-1 cursor-pointer hover:bg-orange-200"
+                className="absolute top-3 right-3 bg-blue-100 text-blue-500 rounded-md p-1 cursor-pointer hover:bg-blue-200"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -469,7 +469,7 @@ const ChatArea = ({
                 }}
                 type="button"
                 disabled={uploadFileLoading}
-                className="w-32 bg-orange-600 border-2 border-orange-600 text-white hover:bg-orange-700 cursor-pointer"
+                className="w-32 bg-blue-600 border-2 border-blue-600 text-white hover:bg-blue-700 cursor-pointer"
               >
                 {uploadFileLoading ? 'Uploading...' : 'Send Attachment'}
               </Button>
@@ -486,7 +486,7 @@ const ChatArea = ({
           </div>
 
           {/* Avatar / name / online / close-deal button */}
-          <div className="flex items-center space-x-3 p-3 bg-orange-50">
+          <div className="flex items-center space-x-3 p-3 bg-blue-50">
             <div className="flex justify-between items-center w-full">
               <div className="relative flex items-center gap-3 justify-between w-full">
                 {/* Left: avatar + name + online status */}
@@ -547,10 +547,10 @@ const ChatArea = ({
                       isDealClosed
                         ? 'bg-green-600 hover:bg-green-600 text-white border-green-600 cursor-default'
                         : waitingSellerApproval
-                          ? 'bg-orange-600 hover:bg-orange-700 text-white border-orange-600 cursor-default'
+                          ? 'bg-blue-600 hover:bg-blue-700 text-white border-blue-600 cursor-default'
                           : isDealRejected
                             ? 'bg-red-500 hover:bg-red-500 text-white border-red-500 cursor-not-allowed'
-                            : 'text-orange-600 hover:text-orange-600 bg-transparent cursor-pointer hover:bg-transparent border-orange-600'
+                            : 'text-blue-600 hover:text-blue-600 bg-transparent cursor-pointer hover:bg-transparent border-blue-600'
                     } w-24 sm:w-auto px-4 text-sm font-medium`}
                     onClick={() => {
                       if (!isDealClosed && !isDealRejected && !waitingSellerApproval) {
@@ -670,7 +670,7 @@ const ChatArea = ({
                       <div
                         className={`max-w-[320px] sm:max-w-md relative px-4 py-2.5 shadow-xs ${
                           isMine
-                            ? 'bg-gradient-to-tr from-orange-600 to-amber-500 text-white rounded-2xl rounded-tr-xs'
+                            ? 'bg-gradient-to-tr from-blue-600 to-amber-500 text-white rounded-2xl rounded-tr-xs'
                             : 'bg-slate-100 text-slate-800 rounded-2xl rounded-tl-xs'
                         }`}
                       >
@@ -710,7 +710,7 @@ const ChatArea = ({
                             )}
 
                             <div
-                              className="absolute z-10 top-1 right-1 bg-orange-100 text-orange-500 rounded-sm p-1 cursor-pointer"
+                              className="absolute z-10 top-1 right-1 bg-blue-100 text-blue-500 rounded-sm p-1 cursor-pointer"
                               onClick={() => {
                                 downloadFile(message.attachment.url, message.attachment.fileName);
                               }}
@@ -752,15 +752,15 @@ const ChatArea = ({
 
           {/* Inline Deal Status Banners */}
           {waitingSellerApproval && (
-            <div className="p-4 rounded-xl border animate-fade-in shadow-xs max-w-2xl mx-auto w-full bg-orange-50 border-orange-200 mt-6">
+            <div className="p-4 rounded-xl border animate-fade-in shadow-xs max-w-2xl mx-auto w-full bg-blue-50 border-blue-200 mt-6">
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="flex items-start gap-3">
-                  <div className="bg-orange-500 p-2.5 rounded-full text-white shrink-0 mt-0.5 animate-pulse">
+                  <div className="bg-blue-500 p-2.5 rounded-full text-white shrink-0 mt-0.5 animate-pulse">
                     <Handshake className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold text-orange-950">⚡ Deal Awaiting Seller Approval</h4>
-                    <p className="text-xs text-orange-700 mt-0.5 leading-relaxed">
+                    <h4 className="text-sm font-semibold text-blue-950">⚡ Deal Awaiting Seller Approval</h4>
+                    <p className="text-xs text-blue-700 mt-0.5 leading-relaxed">
                       {userType === 'seller'
                         ? `The buyer has requested to close this deal at a final price of ₹${finalBudget}.`
                         : `You have requested to close this deal at a final price of ₹${finalBudget}. Awaiting supplier's response.`}
@@ -770,7 +770,7 @@ const ChatArea = ({
                 {userType === 'seller' && (
                   <Button
                     size="sm"
-                    className="bg-orange-600 text-white hover:bg-orange-700 font-medium whitespace-nowrap cursor-pointer shadow-sm"
+                    className="bg-blue-600 text-white hover:bg-blue-700 font-medium whitespace-nowrap cursor-pointer shadow-sm"
                     onClick={() => setShowApprovalPopup(true)}
                   >
                     Accept / Decline Deal
@@ -836,7 +836,7 @@ const ChatArea = ({
                     <p className="text-xs text-gray-500">
                       {selectedFile ? `${(selectedFile.size / 1024).toFixed(2)} KB` : ''}
                     </p>
-                    {isUploading && <p className="text-xs text-orange-500">Uploading...</p>}
+                    {isUploading && <p className="text-xs text-blue-500">Uploading...</p>}
                     {uploadedAttachment && !isUploading && (
                       <p className="text-xs text-green-500">Ready to send</p>
                     )}
@@ -863,7 +863,7 @@ const ChatArea = ({
                 value={messageText}
                 onChange={e => setMessageText(e.target.value)}
                 onKeyPress={e => e.key === 'Enter' && !isUploading && handleSendMessage()}
-                className="h-12 px-5 bg-white rounded-full text-sm placeholder:text-muted-foreground tracking-wide focus-visible:ring-1 focus-visible:ring-orange-500 border border-gray-300"
+                className="h-12 px-5 bg-white rounded-full text-sm placeholder:text-muted-foreground tracking-wide focus-visible:ring-1 focus-visible:ring-blue-500 border border-gray-300"
                 disabled={isSelfChat || isUploading}
               />
             </div>

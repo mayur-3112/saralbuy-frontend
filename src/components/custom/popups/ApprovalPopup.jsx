@@ -29,7 +29,7 @@ const ApprovalPopup = ({ open, setOpen, dealId, budget, partnerName, onAction, l
             </DialogTitle>
             <DialogDescription className="text-md text-gray-600 text-center">
               <span className="font-semibold">{partnerName}</span> has requested to close the deal
-              at <span className="font-bold text-orange-600">₹{budget}</span>.
+              at <span className="font-bold text-blue-600">₹{budget}</span>.
             </DialogDescription>
             <DialogDescription className="text-sm text-gray-500 text-center">
               Do you want to complete this deal or reject the request?
@@ -40,7 +40,7 @@ const ApprovalPopup = ({ open, setOpen, dealId, budget, partnerName, onAction, l
                 id="approval-popup-agreed"
                 checked={agreed}
                 onChange={e => setAgreed(e.target.checked)}
-                className="mt-1 w-4 h-4 text-orange-600 border-slate-300 rounded focus:ring-orange-500 cursor-pointer shrink-0"
+                className="mt-1 w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500 cursor-pointer shrink-0"
               />
               <label htmlFor="approval-popup-agreed" className="text-xs text-slate-500 cursor-pointer leading-normal">
                 I agree that SaralBuy holds Zero Liability if the materials are rejected upon delivery, or if payment disputes arise.
@@ -58,7 +58,7 @@ const ApprovalPopup = ({ open, setOpen, dealId, budget, partnerName, onAction, l
                 {loading ? 'Processing...' : 'Reject Deal'}
               </Button>
               <Button
-                className="bg-orange-600 cursor-pointer hover:bg-orange-700 text-white px-6 py-2 rounded font-semibold disabled:opacity-50"
+                className="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white px-6 py-2 rounded font-semibold disabled:opacity-50"
                 onClick={() => handleAction('accept')}
                 disabled={loading || !agreed}
               >

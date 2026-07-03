@@ -3,9 +3,9 @@ import { Bell, CheckCircle, FileText, Gavel, Star, XCircle } from 'lucide-react'
 export function getNotifMeta(type) {
   switch (type) {
     case 'new_bid':
-      return { Icon: Gavel, colorClass: 'bg-orange-500' };
+      return { Icon: Gavel, colorClass: 'bg-blue-500' };
     case 'bid':
-      return { Icon: Gavel, colorClass: 'bg-orange-500' };
+      return { Icon: Gavel, colorClass: 'bg-blue-500' };
     case 'chat_rating':
       return { Icon: Star, colorClass: 'bg-yellow-500' };
     case 'deal_accepted':

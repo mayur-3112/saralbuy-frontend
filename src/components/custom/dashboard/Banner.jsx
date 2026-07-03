@@ -132,14 +132,14 @@ const Banner = () => {
         <>
           <button 
             onClick={handlePrev}
-            className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-orange-600 text-white p-2 rounded-full cursor-pointer z-10 transition-colors opacity-0 group-hover/slider:opacity-100 duration-300 shadow-md"
+            className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-blue-600 text-white p-2 rounded-full cursor-pointer z-10 transition-colors opacity-0 group-hover/slider:opacity-100 duration-300 shadow-md"
             aria-label="Previous slide"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
           <button 
             onClick={handleNext}
-            className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-orange-600 text-white p-2 rounded-full cursor-pointer z-10 transition-colors opacity-0 group-hover/slider:opacity-100 duration-300 shadow-md"
+            className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-blue-600 text-white p-2 rounded-full cursor-pointer z-10 transition-colors opacity-0 group-hover/slider:opacity-100 duration-300 shadow-md"
             aria-label="Next slide"
           >
             <ChevronRight className="w-5 h-5" />
@@ -155,7 +155,7 @@ const Banner = () => {
               key={index}
               onClick={() => setCurrentIndex(index)}
               className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
-                index === currentIndex ? 'bg-orange-600 w-6' : 'bg-white/50 hover:bg-white w-2.5'
+                index === currentIndex ? 'bg-blue-600 w-6' : 'bg-white/50 hover:bg-white w-2.5'
               }`}
               aria-label={`Go to slide ${index + 1}`}
             />

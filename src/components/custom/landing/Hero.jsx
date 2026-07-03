@@ -59,26 +59,26 @@ export default function Hero({ onOpenAuth }) {
   };
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-slate-900 text-white border-b border-orange-500/20">
+    <section className="relative overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-slate-900 text-white border-b border-blue-500/20">
       {/* Industrial grid + accent glow — restrained, weighty B2B feel */}
       <div className="absolute inset-0 opacity-[0.05]" style={{
         backgroundImage: 'linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)',
         backgroundSize: '48px 48px'
       }} />
       <div className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full blur-3xl pointer-events-none"
-           style={{ background: 'radial-gradient(circle, rgba(251,146,60,0.18), transparent 70%)' }} />
+           style={{ background: 'radial-gradient(circle, rgba(59, 130, 246,0.18), transparent 70%)' }} />
       <div className="absolute -bottom-32 -left-32 w-[400px] h-[400px] rounded-full blur-3xl pointer-events-none"
-           style={{ background: 'radial-gradient(circle, rgba(251,146,60,0.10), transparent 70%)' }} />
+           style={{ background: 'radial-gradient(circle, rgba(59, 130, 246,0.10), transparent 70%)' }} />
 
       <div className="relative max-w-7xl mx-auto px-4 pt-14 pb-12 sm:pt-20 sm:pb-16 grid lg:grid-cols-12 gap-10 items-center">
 
         {/* Left: pain → promise → action */}
         <div className="lg:col-span-7 space-y-6 sm:space-y-7">
           {/* Eyebrow — bigger and clearer for older / non-tech eyes */}
-          <div className="inline-flex items-center gap-2 rounded-full border border-orange-400/50 bg-orange-500/15 px-4 py-1.5 text-sm font-bold text-orange-200">
+          <div className="inline-flex items-center gap-2 rounded-full border border-blue-400/50 bg-blue-500/15 px-4 py-1.5 text-sm font-bold text-blue-200">
             <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-orange-500" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500" />
             </span>
             Procurement exchange for construction materials
           </div>
@@ -87,7 +87,7 @@ export default function Hero({ onOpenAuth }) {
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-[1.05]">
             Stop chasing suppliers.
             <br />
-            <span className="bg-gradient-to-r from-orange-400 via-orange-300 to-amber-300 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-400 via-sky-300 to-cyan-300 bg-clip-text text-transparent">
               Post once, get quotes in hours.
             </span>
           </h1>
@@ -101,7 +101,7 @@ export default function Hero({ onOpenAuth }) {
 
           {/* Search — bigger input, bigger button, ready for real fingers */}
           <form onSubmit={handleSearch} className="max-w-xl">
-            <div className="group flex items-center bg-white rounded-xl overflow-hidden shadow-2xl shadow-black/30 ring-1 ring-white/10 focus-within:ring-4 focus-within:ring-orange-500/40 transition-all">
+            <div className="group flex items-center bg-white rounded-xl overflow-hidden shadow-2xl shadow-black/30 ring-1 ring-white/10 focus-within:ring-4 focus-within:ring-blue-500/40 transition-all">
               <Search className="w-6 h-6 text-slate-500 ml-5 shrink-0" />
               <input
                 type="text"
@@ -112,7 +112,7 @@ export default function Hero({ onOpenAuth }) {
               />
               <button
                 type="submit"
-                className="sb-big-tap bg-orange-600 hover:bg-orange-500 active:scale-[0.98] text-white text-base font-black px-6 sm:px-7 cursor-pointer transition-all"
+                className="sb-big-tap bg-blue-600 hover:bg-blue-500 active:scale-[0.98] text-white text-base font-black px-6 sm:px-7 cursor-pointer transition-all"
               >
                 Get Quotes
               </button>
@@ -125,7 +125,7 @@ export default function Hero({ onOpenAuth }) {
                   key={tag}
                   type="button"
                   onClick={() => setSearchQuery(tag)}
-                  className="px-3.5 py-1.5 bg-white/10 hover:bg-white/20 border border-white/15 hover:border-orange-400/60 text-slate-100 hover:text-orange-200 text-sm font-semibold rounded-full cursor-pointer transition-all"
+                  className="px-3.5 py-1.5 bg-white/10 hover:bg-white/20 border border-white/15 hover:border-blue-400/60 text-slate-100 hover:text-blue-200 text-sm font-semibold rounded-full cursor-pointer transition-all"
                 >
                   {tag}
                 </button>
@@ -137,7 +137,7 @@ export default function Hero({ onOpenAuth }) {
           <div className="flex flex-col sm:flex-row gap-3 pt-1">
             <button
               onClick={handlePostRequirement}
-              className="sb-big-tap group inline-flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-500 hover:shadow-xl hover:shadow-orange-500/30 active:scale-95 text-white font-black text-base px-8 py-4 rounded-xl cursor-pointer transition-all"
+              className="sb-big-tap group inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 hover:shadow-xl hover:shadow-blue-500/30 active:scale-95 text-white font-black text-base px-8 py-4 rounded-xl cursor-pointer transition-all"
             >
               Post a Requirement
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -178,7 +178,7 @@ export default function Hero({ onOpenAuth }) {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
               <div className="absolute bottom-6 left-6 z-20 space-y-1">
-                <span className="text-[9px] font-black uppercase tracking-widest bg-orange-500 text-white px-2 py-0.5 rounded">
+                <span className="text-[9px] font-black uppercase tracking-widest bg-blue-500 text-white px-2 py-0.5 rounded">
                   Live category
                 </span>
                 <p className="font-black text-xl text-white drop-shadow-lg">{img.caption}</p>
@@ -194,7 +194,7 @@ export default function Hero({ onOpenAuth }) {
                 onClick={() => setCurrentSlide(index)}
                 aria-label={`Show slide ${index + 1}`}
                 className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
-                  index === currentSlide ? 'bg-orange-400 w-6' : 'bg-white/50 hover:bg-white w-1.5'
+                  index === currentSlide ? 'bg-blue-400 w-6' : 'bg-white/50 hover:bg-white w-1.5'
                 }`}
               />
             ))}
@@ -208,8 +208,8 @@ export default function Hero({ onOpenAuth }) {
 function TrustAnchor({ icon: Icon, value, label }) {
   return (
     <div className="flex items-start gap-3">
-      <div className="w-11 h-11 rounded-lg bg-orange-500/15 border border-orange-500/30 flex items-center justify-center shrink-0 mt-0.5">
-        <Icon className="w-5 h-5 text-orange-300" />
+      <div className="w-11 h-11 rounded-lg bg-blue-500/15 border border-blue-500/30 flex items-center justify-center shrink-0 mt-0.5">
+        <Icon className="w-5 h-5 text-blue-300" />
       </div>
       <div className="min-w-0">
         <div className="text-lg font-black text-white leading-tight">{value}</div>

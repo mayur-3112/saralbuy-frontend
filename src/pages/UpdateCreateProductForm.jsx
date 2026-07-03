@@ -343,7 +343,7 @@ const CategoryForm = ({
               )}
 
               <div className="relative">
-                <p className="absolute top-1/2 left-2 text-sm text-orange-600 font-semibold -translate-y-1/2">
+                <p className="absolute top-1/2 left-2 text-sm text-blue-600 font-semibold -translate-y-1/2">
                   ₹
                 </p>
                 <Input
@@ -509,7 +509,7 @@ const CategoryForm = ({
                           renderTrack={({ props, children }) => (
                             <div {...props} className="h-1 w-full bg-gray-300 rounded relative">
                               <div
-                                className="absolute h-1 bg-orange-600 rounded"
+                                className="absolute h-1 bg-blue-600 rounded"
                                 style={{
                                   left: `${(values[0] / 20) * 100}%`,
                                   width: `${((values[1] - values[0]) / 20) * 100}%`,
@@ -521,7 +521,7 @@ const CategoryForm = ({
                           renderThumb={({ props }) => (
                             <div
                               {...props}
-                              className="w-3 h-3 bg-orange-500 rounded-full flex items-center justify-center shadow"
+                              className="w-3 h-3 bg-blue-500 rounded-full flex items-center justify-center shadow"
                             />
                           )}
                         />
@@ -713,7 +713,7 @@ const CategoryForm = ({
                 {!fileDoc && initialData?.document && (
                   <>
                     <div
-                      className="absolute top-2 right-2 z-10 bg-orange-100 text-orange-500 rounded-sm p-1 cursor-pointer"
+                      className="absolute top-2 right-2 z-10 bg-blue-100 text-blue-500 rounded-sm p-1 cursor-pointer"
                       onClick={e => {
                         e.stopPropagation();
                         previewDoc(initialData.document);
@@ -730,7 +730,7 @@ const CategoryForm = ({
 
                 {fileDoc && (
                   <div
-                    className="absolute top-2 right-2 z-10 bg-orange-100 text-orange-500 rounded-sm p-1 cursor-pointer"
+                    className="absolute top-2 right-2 z-10 bg-blue-100 text-blue-500 rounded-sm p-1 cursor-pointer"
                     onClick={e => {
                       e.stopPropagation();
                       setFileDoc(null);
@@ -1183,7 +1183,7 @@ const UpdateCreateProductForm = () => {
                       Category
                     </BreadcrumbPage>
                     <BreadcrumbSeparator />
-                    <BreadcrumbPage className="capitalize font-semibold text-orange-600">
+                    <BreadcrumbPage className="capitalize font-semibold text-blue-600">
                       {categoryLabel()}
                     </BreadcrumbPage>
                   </BreadcrumbItem>
@@ -1224,7 +1224,7 @@ const UpdateCreateProductForm = () => {
               </Button>
               <Button
                 type="button"
-                className="text-white w-32 cursor-pointer bg-orange-600 border-primary-btn border-2"
+                className="text-white w-32 cursor-pointer bg-blue-600 border-primary-btn border-2"
                 onClick={() => setBidPopUpOpen(true)}
                 disabled={updateLoading}
               >

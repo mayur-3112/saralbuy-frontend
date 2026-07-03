@@ -126,7 +126,7 @@ const ScrollablePagination = ({
         <div key={item._id || idx} className="w-full relative">
           {target === 'drafts' && (
             <div
-              className="absolute top-2 right-2 z-10 bg-orange-100 text-orange-500 rounded-sm p-1 cursor-pointer"
+              className="absolute top-2 right-2 z-10 bg-blue-100 text-blue-500 rounded-sm p-1 cursor-pointer"
               onClick={() => {
                 console.log(item);
                 setOpen?.(true);

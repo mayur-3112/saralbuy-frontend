@@ -19,7 +19,7 @@ const CHANNELS = [
     title: 'Product support',
     body: 'Something on the platform not working the way you expected?',
     email: 'support@saralbuy.in',
-    accent: 'from-orange-500/20 to-orange-500/5 border-orange-500/30 text-orange-700',
+    accent: 'from-blue-500/20 to-blue-500/5 border-blue-500/30 text-blue-700',
   },
   {
     icon: MessageCircle,
@@ -65,7 +65,7 @@ export default function ContactUs() {
       {/* Hero */}
       <section className="bg-slate-950 text-white py-14 sm:py-16">
         <div className="max-w-4xl mx-auto px-4">
-          <div className="text-[11px] font-black uppercase tracking-[0.2em] text-orange-400 mb-3">
+          <div className="text-[11px] font-black uppercase tracking-[0.2em] text-blue-400 mb-3">
             Get in touch
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-[1.1]">

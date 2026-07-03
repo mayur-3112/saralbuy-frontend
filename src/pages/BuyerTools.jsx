@@ -43,19 +43,19 @@ const BuyerTools = () => {
         <div className="flex bg-white rounded-lg p-1 border shadow-sm w-full md:w-fit">
           <button
             onClick={() => setActiveTab('benchmarker')}
-            className={`flex-1 md:flex-none px-6 py-2.5 text-sm font-semibold rounded-md transition-all flex items-center gap-2 ${activeTab === 'benchmarker' ? 'bg-orange-50 text-orange-600' : 'text-slate-600 hover:bg-slate-50'}`}
+            className={`flex-1 md:flex-none px-6 py-2.5 text-sm font-semibold rounded-md transition-all flex items-center gap-2 ${activeTab === 'benchmarker' ? 'bg-blue-50 text-blue-600' : 'text-slate-600 hover:bg-slate-50'}`}
           >
             <TrendingUp className="w-4 h-4" /> Cost Benchmarker
           </button>
           <button
             onClick={() => setActiveTab('templates')}
-            className={`flex-1 md:flex-none px-6 py-2.5 text-sm font-semibold rounded-md transition-all flex items-center gap-2 ${activeTab === 'templates' ? 'bg-orange-50 text-orange-600' : 'text-slate-600 hover:bg-slate-50'}`}
+            className={`flex-1 md:flex-none px-6 py-2.5 text-sm font-semibold rounded-md transition-all flex items-center gap-2 ${activeTab === 'templates' ? 'bg-blue-50 text-blue-600' : 'text-slate-600 hover:bg-slate-50'}`}
           >
             <LayoutTemplate className="w-4 h-4" /> Requirement Templates
           </button>
           <button
             onClick={() => setActiveTab('trust')}
-            className={`flex-1 md:flex-none px-6 py-2.5 text-sm font-semibold rounded-md transition-all flex items-center gap-2 ${activeTab === 'trust' ? 'bg-orange-50 text-orange-600' : 'text-slate-600 hover:bg-slate-50'}`}
+            className={`flex-1 md:flex-none px-6 py-2.5 text-sm font-semibold rounded-md transition-all flex items-center gap-2 ${activeTab === 'trust' ? 'bg-blue-50 text-blue-600' : 'text-slate-600 hover:bg-slate-50'}`}
           >
             <ShieldCheck className="w-4 h-4" /> Trust Checker
           </button>
@@ -101,22 +101,22 @@ const BuyerTools = () => {
                 </div>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="border border-slate-200 p-5 rounded-xl hover:border-orange-300 hover:shadow-md transition-all group cursor-pointer" onClick={() => navigate('/post-requirement')}>
-                    <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center mb-4 text-orange-600 group-hover:scale-110 transition-transform">
+                  <div className="border border-slate-200 p-5 rounded-xl hover:border-blue-300 hover:shadow-md transition-all group cursor-pointer" onClick={() => navigate('/post-requirement')}>
+                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-4 text-blue-600 group-hover:scale-110 transition-transform">
                       <LayoutTemplate className="w-5 h-5" />
                     </div>
                     <h3 className="font-bold text-slate-800">Commercial Foundation Setup</h3>
                     <p className="text-sm text-slate-500 mt-2 line-clamp-2">Includes TMT Steel (various mm), OPC 53 Cement, and aggregate templates.</p>
-                    <div className="mt-4 text-sm font-semibold text-orange-600 flex items-center gap-1">Use Template <Calculator className="w-4 h-4" /></div>
+                    <div className="mt-4 text-sm font-semibold text-blue-600 flex items-center gap-1">Use Template <Calculator className="w-4 h-4" /></div>
                   </div>
                   
-                  <div className="border border-slate-200 p-5 rounded-xl hover:border-orange-300 hover:shadow-md transition-all group cursor-pointer" onClick={() => navigate('/post-requirement')}>
+                  <div className="border border-slate-200 p-5 rounded-xl hover:border-blue-300 hover:shadow-md transition-all group cursor-pointer" onClick={() => navigate('/post-requirement')}>
                     <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-4 text-blue-600 group-hover:scale-110 transition-transform">
                       <LayoutTemplate className="w-5 h-5" />
                     </div>
                     <h3 className="font-bold text-slate-800">Electrical Wiring Bundle</h3>
                     <p className="text-sm text-slate-500 mt-2 line-clamp-2">FRLS wires, PVC conduits, modular switches, and standard DB boards.</p>
-                    <div className="mt-4 text-sm font-semibold text-orange-600 flex items-center gap-1">Use Template <Calculator className="w-4 h-4" /></div>
+                    <div className="mt-4 text-sm font-semibold text-blue-600 flex items-center gap-1">Use Template <Calculator className="w-4 h-4" /></div>
                   </div>
                 </div>
               </Card>
@@ -161,7 +161,7 @@ const BuyerTools = () => {
                       </div>
                       <div>
                         <div className="text-emerald-600/70 text-xs uppercase font-semibold mb-1">SaralBuy Score</div>
-                        <div className="font-semibold text-orange-600 text-lg">{searchResult.saralScore}</div>
+                        <div className="font-semibold text-blue-600 text-lg">{searchResult.saralScore}</div>
                       </div>
                     </div>
                   </div>
@@ -173,12 +173,12 @@ const BuyerTools = () => {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            <Card className="p-5 border-orange-100 bg-orange-50/50 shadow-sm">
+            <Card className="p-5 border-blue-100 bg-blue-50/50 shadow-sm">
               <h3 className="font-bold text-slate-800 flex items-center gap-2 mb-2">
-                <Download className="w-4 h-4 text-orange-600" /> Procurement Guide
+                <Download className="w-4 h-4 text-blue-600" /> Procurement Guide
               </h3>
               <p className="text-sm text-slate-600 mb-4">Download our free 2026 market analysis report for the construction sector.</p>
-              <Button variant="outline" className="w-full bg-white border-orange-200 text-orange-700 hover:bg-orange-50">Download PDF</Button>
+              <Button variant="outline" className="w-full bg-white border-blue-200 text-blue-700 hover:bg-blue-50">Download PDF</Button>
             </Card>
           </div>
         </div>

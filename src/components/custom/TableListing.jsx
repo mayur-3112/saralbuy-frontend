@@ -133,7 +133,7 @@ export default function TableListing({
               <TableRow>
                 <TableCell colSpan={columns.length}>
                   <div className="flex justify-center items-center py-10 w-full">
-                    <LoaderCircle className="w-8 h-8 text-orange-700 animate-spin duration-100" />
+                    <LoaderCircle className="w-8 h-8 text-blue-700 animate-spin duration-100" />
                   </div>
                 </TableCell>
               </TableRow>

@@ -68,7 +68,7 @@ export default function UserProfile() {
               <div className="flex items-end gap-4 flex-wrap">
                 <Avatar className="h-20 w-20 border-4 border-white shadow-md">
                   <AvatarImage src={data.profileImage} alt={fullName} />
-                  <AvatarFallback className="bg-orange-100 text-orange-700 font-black text-lg">
+                  <AvatarFallback className="bg-blue-100 text-blue-700 font-black text-lg">
                     {fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'S'}
                   </AvatarFallback>
                 </Avatar>

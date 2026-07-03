@@ -52,7 +52,7 @@ export default function LiveStatsTicker() {
             <span className={`px-1.5 py-0.5 rounded text-[9px] font-black uppercase ${
               activities[activeActivityIndex]?.type === 'quote' 
                 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' 
-                : 'bg-orange-500/20 text-orange-400 border border-orange-500/30'
+                : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
             }`}>
               {activities[activeActivityIndex]?.type === 'quote' ? 'Bid Placed' : 'RFQ Posted'}
             </span>

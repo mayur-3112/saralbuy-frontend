@@ -10,12 +10,12 @@ const DyanmicHomeCard = ({ bg, item }) => {
       <div className={`absolute inset-0 bg-${bg}-200/80 -z-[1]`}></div>
       <div className="flex justify-between items-center max-w-7xl mx-auto px-4">
         <p
-          className={`font-bold text-3xl  text-${bg || 'orange'}-700 border-l-5 border-${bg || 'orange'}-700 pl-3 tracking-tight capitalize`}
+          className={`font-bold text-3xl  text-${bg || 'blue'}-700 border-l-5 border-${bg || 'blue'}-700 pl-3 tracking-tight capitalize`}
         >
           {item?.categoryName}
         </p>
         {/* {
-      seeAllButton &&   <button className="text-md text-orange-600 hover:underline font-semibold">
+      seeAllButton &&   <button className="text-md text-blue-600 hover:underline font-semibold">
           See All
         </button>
      } */}
@@ -25,7 +25,7 @@ const DyanmicHomeCard = ({ bg, item }) => {
         {item?.products?.map(item => (
           <div
             key={item?._id}
-            className={`p-5 ${bg ? 'bg-white' : 'bg-orange-50'} rounded-[5px] shadow-none outline-none border-none`}
+            className={`p-5 ${bg ? 'bg-white' : 'bg-blue-50'} rounded-[5px] shadow-none outline-none border-none`}
           >
             <div className="flex justify-between items-center">
               <p className="text-sm text-gray-600 font-semibold ">
@@ -37,7 +37,7 @@ const DyanmicHomeCard = ({ bg, item }) => {
                 }}
                 variant="ghost"
                 size="lg"
-                className="border  shadow-orange-700 border-orange-700 text-orange-700 hover:bg-orange-700 hover:text-white cursor-pointer"
+                className="border  shadow-blue-700 border-blue-700 text-blue-700 hover:bg-blue-700 hover:text-white cursor-pointer"
               >
                 Place Quotation
               </Button>

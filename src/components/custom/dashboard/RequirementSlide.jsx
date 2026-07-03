@@ -16,12 +16,12 @@ const RequirementSlide = () => {
       <div className="absolute inset-0 bg-gray-200/80 -z-[1]"></div>
       <div className="flex justify-between items-center max-w-7xl mx-auto px-4">
         <p
-          className={`font-bold text-3xl  text-orange-700 border-l-5 border-orange-700 pl-3 tracking-tight`}
+          className={`font-bold text-3xl  text-blue-700 border-l-5 border-blue-700 pl-3 tracking-tight`}
         >
           Recent Requirements
         </p>
         {/* {
-      seeAllButton &&   <button className="text-md text-orange-600 hover:underline font-semibold">
+      seeAllButton &&   <button className="text-md text-blue-600 hover:underline font-semibold">
           See All
         </button>
      } */}

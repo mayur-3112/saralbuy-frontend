@@ -56,7 +56,7 @@ const LoginPopup = ({ open, setOpen, setNumber, setOtpPopup, setSessionId }) => 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-[450px] rounded-[24px] overflow-hidden border-slate-100 shadow-2xl p-0">
           <form onSubmit={handleSendOTP} className="p-8 w-full inline-block space-y-7 bg-white relative">
-            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-orange-400 via-pink-500 to-indigo-500" />
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-400 via-pink-500 to-indigo-500" />
             <div className="h-12 flex justify-center mb-2">
               <img src={SaralBuyLogo} alt="Logo" className="w-full h-full object-contain" />
             </div>
@@ -66,14 +66,14 @@ const LoginPopup = ({ open, setOpen, setNumber, setOtpPopup, setSessionId }) => 
               <button
                 type="button"
                 onClick={() => setRole('buyer')}
-                className={`flex-1 py-2 text-sm font-semibold transition-all duration-200 z-10 rounded-md ${role === 'buyer' ? 'text-orange-600 bg-white shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                className={`flex-1 py-2 text-sm font-semibold transition-all duration-200 z-10 rounded-md ${role === 'buyer' ? 'text-blue-600 bg-white shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
               >
                 I am a Buyer
               </button>
               <button
                 type="button"
                 onClick={() => setRole('supplier')}
-                className={`flex-1 py-2 text-sm font-semibold transition-all duration-200 z-10 rounded-md ${role === 'supplier' ? 'text-orange-600 bg-white shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                className={`flex-1 py-2 text-sm font-semibold transition-all duration-200 z-10 rounded-md ${role === 'supplier' ? 'text-blue-600 bg-white shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
               >
                 I am a Supplier
               </button>
@@ -92,7 +92,7 @@ const LoginPopup = ({ open, setOpen, setNumber, setOtpPopup, setSessionId }) => 
 
             <div className="space-y-5 w-full">
               <Input
-                className="w-full py-7 text-[17px] bg-slate-50/80 border-slate-200 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 rounded-xl transition-all shadow-sm tracking-wide"
+                className="w-full py-7 text-[17px] bg-slate-50/80 border-slate-200 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 rounded-xl transition-all shadow-sm tracking-wide"
                 type="text"
                 placeholder="Enter your Mobile Number"
                 value={mobileNumber}
@@ -109,7 +109,7 @@ const LoginPopup = ({ open, setOpen, setNumber, setOtpPopup, setSessionId }) => 
                   onChange={(e) => setAccepted(e.target.checked)}
                 />
                 <label htmlFor="terms-checkbox" className="leading-tight">
-                  I accept the <a href="/terms" className="text-orange-600 underline hover:text-orange-700">Terms</a> & <a href="/privacy" className="text-orange-600 underline hover:text-orange-700">Privacy Policy</a>. 
+                  I accept the <a href="/terms" className="text-blue-600 underline hover:text-blue-700">Terms</a> & <a href="/privacy" className="text-blue-600 underline hover:text-blue-700">Privacy Policy</a>. 
                   {role === 'supplier' 
                     ? ' I acknowledge that SaralBuy is a connection platform and is not liable for transactions, material quality, or GST compliance.' 
                     : ' I acknowledge SaralBuy does not guarantee supplier fulfillment or material quality.'}
@@ -120,7 +120,7 @@ const LoginPopup = ({ open, setOpen, setNumber, setOtpPopup, setSessionId }) => 
                 <Button
                   type="submit"
                   disabled={loading || mobileNumber.length < 10 || !accepted}
-                  className="w-full rounded-xl py-7 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold text-[17px] cursor-pointer transition-all duration-300 shadow-lg hover:shadow-orange-500/40 hover:-translate-y-0.5 active:translate-y-0 active:scale-95"
+                  className="w-full rounded-xl py-7 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold text-[17px] cursor-pointer transition-all duration-300 shadow-lg hover:shadow-blue-500/40 hover:-translate-y-0.5 active:translate-y-0 active:scale-95"
                 >
                   {loading ? <Spinner className="w-5 h-5 animate-spin" /> : 'Send OTP'}
                 </Button>

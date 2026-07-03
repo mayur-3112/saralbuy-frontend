@@ -176,13 +176,13 @@ export function AccountSettings() {
               <div className="flex bg-slate-100 rounded-lg p-1 w-full max-w-sm relative">
                 <label className="flex-1 cursor-pointer">
                   <input type="radio" value="buyer" {...register('accountRole')} className="peer sr-only" />
-                  <div className="py-2 text-center text-sm font-semibold transition-all duration-200 rounded-md peer-checked:text-orange-600 peer-checked:bg-white peer-checked:shadow-sm text-slate-500 hover:text-slate-700">
+                  <div className="py-2 text-center text-sm font-semibold transition-all duration-200 rounded-md peer-checked:text-blue-600 peer-checked:bg-white peer-checked:shadow-sm text-slate-500 hover:text-slate-700">
                     I am a Buyer
                   </div>
                 </label>
                 <label className="flex-1 cursor-pointer">
                   <input type="radio" value="supplier" {...register('accountRole')} className="peer sr-only" />
-                  <div className="py-2 text-center text-sm font-semibold transition-all duration-200 rounded-md peer-checked:text-orange-600 peer-checked:bg-white peer-checked:shadow-sm text-slate-500 hover:text-slate-700">
+                  <div className="py-2 text-center text-sm font-semibold transition-all duration-200 rounded-md peer-checked:text-blue-600 peer-checked:bg-white peer-checked:shadow-sm text-slate-500 hover:text-slate-700">
                     I am a Supplier
                   </div>
                 </label>
@@ -222,7 +222,7 @@ export function AccountSettings() {
 
             {/* Role-Specific Fields */}
             {selectedRole === 'supplier' ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-orange-50/50 p-4 rounded-md border border-orange-100">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-blue-50/50 p-4 rounded-md border border-blue-100">
                 <div className="space-y-2 w-full sm:col-span-2">
                   <Label className="text-gray-600 text-sm" htmlFor="business">
                     Registered Business Name
@@ -277,7 +277,7 @@ export function AccountSettings() {
                   <p
                     type="button"
                     variant="link"
-                    className="p-0 text-xs sm:text-sm text-orange-600 bg-transparent hover:underline cursor-pointer absolute right-2 top-1/2 -translate-y-1/2"
+                    className="p-0 text-xs sm:text-sm text-blue-600 bg-transparent hover:underline cursor-pointer absolute right-2 top-1/2 -translate-y-1/2"
                   >
                     Verify Email
                   </p>

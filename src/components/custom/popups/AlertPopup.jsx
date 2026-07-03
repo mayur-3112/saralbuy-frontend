@@ -17,7 +17,7 @@ const AlertPopup = ({ open, setOpen, message, deleteFunction, loading }) => {
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="flex gap-3">
-            <div className="bg-orange-100 rounded-full p-1">
+            <div className="bg-blue-100 rounded-full p-1">
               <CircleAlert className="text-yellow-500"></CircleAlert>
             </div>
             {message.title}

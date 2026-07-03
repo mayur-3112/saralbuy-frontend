@@ -265,21 +265,21 @@ const BidListing = () => {
             <Button 
               variant={activeTab === 'pending' ? 'default' : 'outline'} 
               onClick={() => setActiveTab('pending')}
-              className={activeTab === 'pending' ? 'bg-orange-600 hover:bg-orange-700 text-white' : ''}
+              className={activeTab === 'pending' ? 'bg-blue-600 hover:bg-blue-700 text-white' : ''}
             >
               Pending
             </Button>
             <Button 
               variant={activeTab === 'accepted' ? 'default' : 'outline'} 
               onClick={() => setActiveTab('accepted')}
-              className={activeTab === 'accepted' ? 'bg-orange-600 hover:bg-orange-700 text-white' : ''}
+              className={activeTab === 'accepted' ? 'bg-blue-600 hover:bg-blue-700 text-white' : ''}
             >
               Accepted
             </Button>
             <Button 
               variant={activeTab === 'rejected' ? 'default' : 'outline'} 
               onClick={() => setActiveTab('rejected')}
-              className={activeTab === 'rejected' ? 'bg-orange-600 hover:bg-orange-700 text-white' : ''}
+              className={activeTab === 'rejected' ? 'bg-blue-600 hover:bg-blue-700 text-white' : ''}
             >
               Rejected
             </Button>

@@ -113,8 +113,8 @@ export default function OnboardingTour() {
 
         <div className="p-6">
           <div className="flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 rounded-lg bg-orange-50 border border-orange-100 flex items-center justify-center">
-              <HandMetal className="w-4 h-4 text-orange-600" />
+            <div className="w-8 h-8 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center">
+              <HandMetal className="w-4 h-4 text-blue-600" />
             </div>
             <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
               Step {step + 1} of {STEPS.length}
@@ -159,7 +159,7 @@ export default function OnboardingTour() {
             <span
               key={i}
               className={`h-1 rounded-full transition-all ${
-                i === step ? 'w-6 bg-orange-500' : 'w-1 bg-slate-300'
+                i === step ? 'w-6 bg-blue-500' : 'w-1 bg-slate-300'
               }`}
             />
           ))}

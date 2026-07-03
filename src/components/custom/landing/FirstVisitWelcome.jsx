@@ -64,7 +64,7 @@ export default function FirstVisitWelcome({ onOpenAuth }) {
         </button>
 
         <div className="p-6 sm:p-8">
-          <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-orange-600 mb-3">
+          <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-blue-600 mb-3">
             <HardHat className="w-4 h-4" />
             Welcome to SaralBuy
           </div>
@@ -79,16 +79,16 @@ export default function FirstVisitWelcome({ onOpenAuth }) {
             {/* Buyer path */}
             <button
               onClick={pickBuyer}
-              className="group text-left p-5 rounded-xl border-2 border-slate-200 hover:border-orange-500 hover:bg-orange-50/40 hover:-translate-y-0.5 transition-all"
+              className="group text-left p-5 rounded-xl border-2 border-slate-200 hover:border-blue-500 hover:bg-blue-50/40 hover:-translate-y-0.5 transition-all"
             >
-              <div className="w-11 h-11 rounded-xl bg-orange-100 group-hover:bg-orange-200 flex items-center justify-center mb-3">
-                <Building2 className="w-5 h-5 text-orange-600" />
+              <div className="w-11 h-11 rounded-xl bg-blue-100 group-hover:bg-blue-200 flex items-center justify-center mb-3">
+                <Building2 className="w-5 h-5 text-blue-600" />
               </div>
               <div className="font-black text-slate-900">I need materials</div>
               <p className="text-sm text-slate-600 mt-1 leading-snug">
                 Post a requirement in 90 seconds. Get quotes from multiple suppliers &mdash; anonymously.
               </p>
-              <div className="mt-3 inline-flex items-center gap-1 text-orange-600 font-bold text-sm">
+              <div className="mt-3 inline-flex items-center gap-1 text-blue-600 font-bold text-sm">
                 Post a requirement
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>

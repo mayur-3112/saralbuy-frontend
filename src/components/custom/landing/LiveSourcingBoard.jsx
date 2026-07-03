@@ -76,7 +76,7 @@ export default function LiveSourcingBoard({ onOpenAuth }) {
           <button
             type="button"
             onClick={() => navigate('/product-listing')}
-            className="group inline-flex items-center gap-1.5 text-base font-bold text-orange-700 hover:text-orange-800"
+            className="group inline-flex items-center gap-1.5 text-base font-bold text-blue-700 hover:text-blue-800"
           >
             View all {requirements.length}
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
