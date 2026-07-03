@@ -421,12 +421,8 @@ const SellerForm = ({
                   </table>
                 </div>
 
-                <div className="p-4 grid grid-cols-2 gap-4 border-t border-slate-100 bg-slate-50">
-                  <div>
-                    <Label className="mb-1.5 text-xs text-slate-500">Global Discount (%)</Label>
-                    <Input type="number" step="0.1" min="0" max="100" placeholder="0%" className="h-9 bg-white" {...register('discount')} />
-                  </div>
-                  <div>
+                <div className="p-4 border-t border-slate-100 bg-slate-50">
+                  <div className="max-w-xs">
                     <Label className="mb-1.5 text-xs text-slate-500">Total Freight Cost (₹)</Label>
                     <Input type="number" step="0.01" min="0" placeholder="0.00" className="h-9 bg-white" {...register('freightCost')} />
                   </div>
@@ -601,19 +597,17 @@ const SellerForm = ({
         let totalFreight = 0;
         
         if (isMulti && items.length > 1) {
-          const globalDisc = parseFloat(watch('discount')) || 0;
           totalFreight = parseFloat(watch('freightCost')) || 0;
           items.forEach((item, idx) => {
             const uPrice = parseFloat(watch(`items.${idx}.unitPrice`)) || 0;
             const qty = item.quantity || 1;
-            subtotal += (uPrice * (1 - globalDisc/100)) * qty;
+            subtotal += uPrice * qty;
           });
         } else {
           const uPrice = parseFloat(watch('unitPrice')) || 0;
-          const disc = parseFloat(watch('discount')) || 0;
           totalFreight = parseFloat(watch('freightCost')) || 0;
           const qty = productResponse?.mainProduct?.quantity || 1;
-          subtotal = (uPrice * (1 - disc/100)) * qty;
+          subtotal = uPrice * qty;
         }
         
         const taxAmount = (subtotal + totalFreight) * (tRate/100);
@@ -623,7 +617,7 @@ const SellerForm = ({
           <div className="mt-6 border-t border-slate-200 pt-4 pb-2">
             <div className="flex flex-col gap-2 max-w-sm ml-auto text-sm">
               <div className="flex justify-between text-slate-600">
-                <span>Subtotal (After Discount):</span>
+                <span>Subtotal:</span>
                 <span>₹ {subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
               <div className="flex justify-between text-slate-600">
