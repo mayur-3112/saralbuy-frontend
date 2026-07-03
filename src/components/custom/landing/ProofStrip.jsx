@@ -65,25 +65,25 @@ export default function ProofStrip() {
       icon: TrendingUp,
       value: formatINR(stats.sourcedVolume),
       label: 'Sourced through platform',
-      accent: 'from-emerald-500/20 to-emerald-500/5 border-emerald-500/30 text-emerald-300',
+      accent: 'from-emerald-50 to-white border-emerald-200 text-emerald-600',
     },
     stats?.activeRequirements > 0 && {
       icon: PackageCheck,
       value: formatCount(stats.activeRequirements),
       label: 'Live requirements',
-      accent: 'from-blue-500/20 to-blue-500/5 border-blue-500/30 text-blue-300',
+      accent: 'from-blue-50 to-white border-blue-200 text-blue-600',
     },
     stats?.activeSuppliers > 0 && {
       icon: Users,
       value: formatCount(stats.activeSuppliers),
       label: 'Verified suppliers',
-      accent: 'from-blue-500/20 to-blue-500/5 border-blue-500/30 text-blue-300',
+      accent: 'from-blue-50 to-white border-blue-200 text-blue-600',
     },
     formatDurationMs(stats?.avgFirstQuoteMs) && {
       icon: Clock,
       value: formatDurationMs(stats.avgFirstQuoteMs),
       label: 'Avg. first quote',
-      accent: 'from-amber-500/20 to-amber-500/5 border-amber-500/30 text-amber-300',
+      accent: 'from-amber-50 to-white border-amber-200 text-amber-600',
     },
   ];
   const metrics = rawMetrics.filter(Boolean);
@@ -102,7 +102,7 @@ export default function ProofStrip() {
   }[metrics.length] || 'grid-cols-2 md:grid-cols-4';
 
   return (
-    <section className="bg-slate-950 border-b border-white/5">
+    <section className="bg-slate-50 border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 py-10 sm:py-14">
         {/* Honest proof numbers — larger, more readable tiles */}
         {metrics.length > 0 && (
@@ -113,10 +113,10 @@ export default function ProofStrip() {
               className={`relative rounded-xl border bg-gradient-to-br ${m.accent} p-5 sm:p-6`}
             >
               <m.icon className="w-6 h-6 mb-3 opacity-90" />
-              <div className="text-3xl sm:text-4xl font-black text-white leading-none tracking-tight">
+              <div className="text-3xl sm:text-4xl font-black text-slate-900 leading-none tracking-tight">
                 {m.value}
               </div>
-              <div className="text-sm font-bold text-slate-200 mt-2 leading-snug">
+              <div className="text-sm font-bold text-slate-600 mt-2 leading-snug">
                 {m.label}
               </div>
             </div>
@@ -126,13 +126,13 @@ export default function ProofStrip() {
 
         {/* Live activity ticker — the market pulse */}
         {activities.length > 0 && current && (
-          <div className="mt-5 flex items-center gap-3 sm:gap-4 rounded-lg bg-black/40 border border-white/5 px-4 py-2.5">
-            <div className="flex items-center gap-2 shrink-0 pr-3 sm:pr-4 border-r border-white/10">
+          <div className="mt-5 flex items-center gap-3 sm:gap-4 rounded-lg bg-white border border-slate-200 px-4 py-2.5 shadow-xs">
+            <div className="flex items-center gap-2 shrink-0 pr-3 sm:pr-4 border-r border-slate-200">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
               </span>
-              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 whitespace-nowrap hidden sm:inline">
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 whitespace-nowrap hidden sm:inline">
                 Live
               </span>
             </div>
@@ -140,13 +140,13 @@ export default function ProofStrip() {
               <span
                 className={`shrink-0 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ${
                   current.type === 'quote'
-                    ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
-                    : 'bg-blue-500/15 text-blue-300 border border-blue-500/30'
+                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                    : 'bg-blue-50 text-blue-700 border border-blue-200'
                 }`}
               >
                 {current.type === 'quote' ? 'Quote' : 'RFQ'}
               </span>
-              <span className="text-xs sm:text-sm text-slate-300 font-medium truncate">
+              <span className="text-xs sm:text-sm text-slate-700 font-medium truncate">
                 {current.title}
               </span>
             </div>

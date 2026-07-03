@@ -14,7 +14,7 @@ import FirstVisitWelcome from './FirstVisitWelcome';
  * we can't back up yet (0 verified suppliers, no brand relationships).
  * It'll come back when it can be true.
  *
- *   1. Hero              — dark, industrial, pain-first headline
+ *   1. Hero              — light, pain-first headline + category carousel
  *   2. ProofStrip        — live numbers + activity ticker (self-hides empty tiles)
  *   3. LiveSourcingBoard — actual live RFQs (proof of activity)
  *   4. B2BProductGrid    — category directory (browse mode)
