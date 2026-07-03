@@ -140,20 +140,36 @@ const ScrollablePagination = ({
             </div>
           )}
           
-          <ProductListingCard 
-            product={item} 
+          <ProductListingCard
+            product={item}
             actionLabel={target === 'drafts' ? 'Edit Draft' : 'View RFQ'}
             onActionClick={() => {
               if (target === 'drafts') {
+                // Draft items ARE product docs → item._id is the product id.
                 navigate('/update-draft/' + item._id);
               } else {
-                navigate('/product-overview?productId=' + item._id);
+                // Requirement items are shaped { _id: requirementId, product: {…} }.
+                // The detail page queries the PRODUCT collection, so we must pass the
+                // nested product id — not the requirement id (was the "product not
+                // found" bug). Falls back to item._id if already flattened.
+                const prod = item?.productId || item?.product || item;
+                const pid = prod?._id || item._id;
+                navigate('/product-overview?productId=' + pid);
               }
             }}
             showOwnerActions={target === 'requirements'}
-            onEdit={() => navigate('/update-product/' + item._id)}
+            onEdit={() => {
+              const prod = item?.productId || item?.product || item;
+              const pid = prod?._id || item._id;
+              navigate('/update-product/' + pid);
+            }}
             onDelete={() => {
-              setSelectedTileId?.(item._id);
+              // Deletion targets the PRODUCT (backend deleteProduct also removes the
+              // linked requirement). For requirement rows that's item.product._id;
+              // for drafts the row IS the product so item._id is correct.
+              const prod = item?.productId || item?.product || item;
+              const pid = prod?._id || item._id;
+              setSelectedTileId?.(pid);
               setOpen?.(true);
             }}
           />

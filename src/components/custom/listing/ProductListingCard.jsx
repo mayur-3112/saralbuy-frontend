@@ -88,12 +88,20 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
     deliveryDateObj = new Date(deliveryDateStr);
   }
 
+  // Expiry safety-net: an RFQ past its validity can't be quoted on. We disable the
+  // action ONLY when it's a quote action (a "Quote"/"Sign in to Quote" label) — the
+  // owner's own "View RFQ" / "Edit Draft" must still work on an expired RFQ.
+  const isExpired =
+    expiryDateObj && !isNaN(expiryDateObj.getTime()) && expiryDateObj.getTime() < Date.now();
+  const isQuoteAction = /quote/i.test(actionLabel);
+  const disableAction = isExpired && isQuoteAction;
+
   return (
     <>
       <Authentication setOpen={setOpen} open={open} />
-      <div 
-        className="group w-full rounded-xl border border-blue-200 p-5 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 ease-out flex flex-col md:flex-row justify-between mb-4 relative overflow-hidden bg-white"
-        style={{background: 'linear-gradient(135deg, #ffffff 0%, #fff7ed 50%, #ffedd5 100%)'}}
+      <div
+        className="group w-full rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 ease-out flex flex-col md:flex-row justify-between mb-4 relative overflow-hidden bg-white"
+        style={{ background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)' }}
       >
         {/* Left accent bar that slides in on hover */}
         <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-500 scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-top rounded-l-xl" />
@@ -212,9 +220,15 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
             {expiryDateObj && !isNaN(expiryDateObj.getTime()) && (
               <div className="flex justify-between items-center gap-2">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Validity</span>
-                <span className="text-[12px] font-bold text-gray-700">
-                  {format(expiryDateObj, 'MMM d, yyyy')}
-                </span>
+                {isExpired ? (
+                  <span className="text-[12px] font-black text-red-600 flex items-center gap-1">
+                    Expired
+                  </span>
+                ) : (
+                  <span className="text-[12px] font-bold text-gray-700">
+                    {format(expiryDateObj, 'MMM d, yyyy')}
+                  </span>
+                )}
               </div>
             )}
             {deliveryDateObj && (
@@ -227,12 +241,17 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
             )}
           </div>
 
-          {/* Action Button */}
+          {/* Action Button — disabled + relabelled when an expired RFQ can't be quoted */}
           <Button
-            onClick={(e) => { e.stopPropagation(); handleAction(); }}
-            className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg py-4 shadow-md mt-4 md:mt-6 hover:shadow-blue-300 hover:shadow-lg active:scale-95 transition-all duration-200"
+            disabled={disableAction}
+            onClick={(e) => { e.stopPropagation(); if (!disableAction) handleAction(); }}
+            className={`w-full font-semibold rounded-lg py-4 mt-4 md:mt-6 transition-all duration-200 ${
+              disableAction
+                ? 'bg-slate-200 text-slate-500 cursor-not-allowed shadow-none'
+                : 'bg-blue-600 hover:bg-blue-500 text-white shadow-md hover:shadow-blue-300 hover:shadow-lg active:scale-95'
+            }`}
           >
-            {actionLabel}
+            {disableAction ? 'Expired — quoting closed' : actionLabel}
           </Button>
         </div>
 

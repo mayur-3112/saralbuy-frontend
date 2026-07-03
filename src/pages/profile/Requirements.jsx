@@ -41,8 +41,8 @@ const Requirement = () => {
   const [open, setOpen] = useState(false);
   const [_, setIsAscSorting] = useState(false);
   const message = {
-    title: 'Warning',
-    message: `This action cannot be undone. This ${tab === 'requirements' ? 'Requirement' : 'Draft'} will permanently delete your account.`,
+    title: tab === 'requirements' ? 'Delete Requirement' : 'Delete Draft',
+    message: `This action cannot be undone. This ${tab === 'requirements' ? 'requirement' : 'draft'} will be permanently deleted.`,
   };
   useEffect(() => {
     if (tab === 'requirements') {
@@ -118,7 +118,11 @@ const Requirement = () => {
     if (deleteLiveReqRes) {
       setGetMyRequirementsRes(prevState => {
         if (!Array.isArray(prevState?.data)) return prevState;
-        const filtered = prevState.data.filter(item => item._id !== selectedId);
+        // selectedId is the PRODUCT id (see ScrollablePagination onDelete), so match
+        // rows on their nested product id rather than the requirement id.
+        const filtered = prevState.data.filter(
+          item => (item.product?._id || item._id) !== selectedId
+        );
         return {
           ...prevState,
           data: filtered,

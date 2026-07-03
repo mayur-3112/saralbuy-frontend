@@ -41,11 +41,10 @@ export default function B2BProductGrid({ onOpenAuth }) {
   }, [trendingData]);
 
   const handleCategoryClick = (cat) => {
-    // Store intent so the auth-then-post flow lands them on the right form
-    localStorage.setItem('pending_rfq_product', cat.categoryName || '');
-    localStorage.setItem('pending_rfq_qty', 'Bulk');
-    if (user) navigate('/requirement');
-    else if (onOpenAuth) onOpenAuth('buyer');
+    // Clicking a category BROWSES its live RFQs (ProductListing reads ?category=).
+    // Previously this sent users to the post-requirement form, which is why the
+    // "N live" badge felt disconnected from what the card did.
+    navigate(`/product-listing?category=${cat._id}`);
   };
 
   if (categories.length === 0) return null;

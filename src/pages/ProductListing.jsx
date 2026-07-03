@@ -14,137 +14,13 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useCategory, useCategoryState } from '@/redux/hooks/useCategory';
 import { Range } from 'react-range';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import productService from '@/services/product.service';
 import ProductListingCard from '@/components/custom/listing/ProductListingCard';
 import { ProductListingCardSkeleton } from '@/const/CustomSkeletons';
-import { ChevronDown, ChevronUp, Search, MapPin, SlidersHorizontal } from 'lucide-react';
+import { ChevronDown, ChevronUp, Search, MapPin, SlidersHorizontal, PackageOpen } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
-
-// ─── Rich mock sourcing listings so the Explore page is NEVER empty ───
-const MOCK_EXPLORE_LISTINGS = [
-  {
-    _id: 'prod_mock_1',
-    rfqId: 'EP#5051',
-    title: 'UltraTech OPC 53 Grade Cement',
-    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-    timeline: new Date(Date.now() + 7 * 86400000).toISOString(),
-    userId: { companyName: 'LARSEN & TOUBRO LIMITED', address: 'Peenya Project Site, Bengaluru', country: 'India' },
-    categoryId: { categoryName: 'Building & Structural' },
-    country: 'India',
-  },
-  {
-    _id: 'prod_mock_2',
-    rfqId: 'EP#5052',
-    title: 'Fe 550 TMT Steel Reinforcement Bars',
-    createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
-    timeline: new Date(Date.now() + 10 * 86400000).toISOString(),
-    userId: { companyName: 'PRESTIGE ESTATES PROJECTS', address: 'Smart City Project, Mangaluru', country: 'India' },
-    categoryId: { categoryName: 'Building & Structural' },
-    country: 'India',
-  },
-  {
-    _id: 'prod_mock_3',
-    rfqId: 'EP#5053',
-    title: 'Heavy Duty PVC Conduit Pipes (20mm)',
-    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-    timeline: new Date(Date.now() + 5 * 86400000).toISOString(),
-    userId: { companyName: 'BRIGADE ENTERPRISES', address: 'Commercial Complex, Hubballi', country: 'India' },
-    categoryId: { categoryName: 'Plumbing & Sanitaryware' },
-    country: 'India',
-  },
-  {
-    _id: 'prod_mock_4',
-    rfqId: 'EP#5054',
-    title: 'Double Charge Vitrified Floor Tiles (600x600mm)',
-    createdAt: new Date(Date.now() - 36 * 60 * 60 * 1000).toISOString(),
-    timeline: new Date(Date.now() + 8 * 86400000).toISOString(),
-    userId: { companyName: 'SOBHA DEVELOPERS', address: 'Residential Villa Project, Belagavi', country: 'India' },
-    categoryId: { categoryName: 'Flooring, Tiles & Granite' },
-    country: 'India',
-  },
-  {
-    _id: 'prod_mock_5',
-    rfqId: 'EP#5055',
-    title: 'Polished Granite Slabs (Sira Grey, 18mm)',
-    createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(),
-    timeline: new Date(Date.now() + 6 * 86400000).toISOString(),
-    userId: { companyName: 'PURAVANKARA LIMITED', address: 'IT Park Site, Mysuru', country: 'India' },
-    categoryId: { categoryName: 'Flooring, Tiles & Granite' },
-    country: 'India',
-  },
-  {
-    _id: 'prod_mock_6',
-    rfqId: 'EP#5056',
-    title: 'Recessed LED Panel Lights (15W, Warm White)',
-    createdAt: new Date(Date.now() - 72 * 60 * 60 * 1000).toISOString(),
-    timeline: new Date(Date.now() + 4 * 86400000).toISOString(),
-    userId: { companyName: 'MAHINDRA LIFESPACES', address: 'Apartment Project, Tumakuru', country: 'India' },
-    categoryId: { categoryName: 'Electrical & Lighting' },
-    country: 'India',
-  },
-  {
-    _id: 'prod_mock_7',
-    rfqId: 'EP#5057',
-    title: 'Waterproof Commercial Plywood (18mm BWP)',
-    createdAt: new Date(Date.now() - 4 * 86400000).toISOString(),
-    timeline: new Date(Date.now() + 9 * 86400000).toISOString(),
-    userId: { companyName: 'SQUARE YARDS CONTRACTING', address: 'HSR Layout Residential Site, Bengaluru', country: 'India' },
-    categoryId: { categoryName: 'Plywood & Hardware' },
-    country: 'India',
-  },
-  {
-    _id: 'prod_mock_8',
-    rfqId: 'EP#5058',
-    title: 'Premium Exterior Emulsion Weatherproof Paint',
-    createdAt: new Date(Date.now() - 5 * 86400000).toISOString(),
-    timeline: new Date(Date.now() + 12 * 86400000).toISOString(),
-    userId: { companyName: 'TATA HOUSING PROJECTS', address: 'Golf Course Extension, Mysuru', country: 'India' },
-    categoryId: { categoryName: 'Interior & Paints' },
-    country: 'India',
-  },
-  {
-    _id: 'prod_mock_9',
-    rfqId: 'EP#5059',
-    title: 'Industrial Safety Shoes & Helmets Combo',
-    createdAt: new Date(Date.now() - 6 * 86400000).toISOString(),
-    timeline: new Date(Date.now() + 3 * 86400000).toISOString(),
-    userId: { companyName: 'SHAPOORJI PALLONJI', address: 'Industrial Area Phase 2, Dharwad', country: 'India' },
-    categoryId: { categoryName: 'Safety Gear & Uniforms' },
-    country: 'India',
-  },
-  {
-    _id: 'prod_mock_10',
-    rfqId: 'EP#5060',
-    title: 'Submersible Water Pumps (5 HP, 3 Phase)',
-    createdAt: new Date(Date.now() - 7 * 86400000).toISOString(),
-    timeline: new Date(Date.now() + 14 * 86400000).toISOString(),
-    userId: { companyName: 'KIRLOSKAR CONSTRUCTIONS', address: 'Water Treatment Plant, Belagavi', country: 'India' },
-    categoryId: { categoryName: 'Industrial Tools & Pumps' },
-    country: 'India',
-  },
-  {
-    _id: 'prod_mock_11',
-    rfqId: 'EP#5061',
-    title: 'CPVC Pipes & Fittings (SDR 11, 1 inch)',
-    createdAt: new Date(Date.now() - 8 * 86400000).toISOString(),
-    timeline: new Date(Date.now() + 11 * 86400000).toISOString(),
-    userId: { companyName: 'GODREJ PROPERTIES', address: 'Township Project, Bengaluru', country: 'India' },
-    categoryId: { categoryName: 'Plumbing & Sanitaryware' },
-    country: 'India',
-  },
-  {
-    _id: 'prod_mock_12',
-    rfqId: 'EP#5062',
-    title: 'AAC Blocks (600x200x150mm) Lightweight',
-    createdAt: new Date(Date.now() - 9 * 86400000).toISOString(),
-    timeline: new Date(Date.now() + 6 * 86400000).toISOString(),
-    userId: { companyName: 'RAYMOND REALTY', address: 'Satellite Town, Mangaluru', country: 'India' },
-    categoryId: { categoryName: 'Building & Structural' },
-    country: 'India',
-  },
-];
 
 // ─── FilterPanel extracted OUTSIDE so it is never re-created on parent re-render ───
 function FilterPanel({
@@ -291,6 +167,7 @@ function FilterPanel({
 
 // ─── Main page component ─────────────────────────────────────────────────────
 export default function ProductListing() {
+  const navigate = useNavigate();
   const [values, setValues] = useState([0, 50001]);
   const [filters, setFilters] = useState([
     { id: 'category', name: 'All Category', options: [] },
@@ -521,24 +398,11 @@ export default function ProductListing() {
     handleRemoveFilter,
   };
 
-  // ── Filter mock listings by local search/location ──
-  const filteredMockListings = MOCK_EXPLORE_LISTINGS.filter(item => {
-    const search = localSearch.toLowerCase();
-    const loc = localLocation.toLowerCase();
-    const matchesSearch = !search || 
-      item.title.toLowerCase().includes(search) ||
-      item.userId?.companyName?.toLowerCase().includes(search) ||
-      item.categoryId?.categoryName?.toLowerCase().includes(search);
-    const matchesLocation = !loc || 
-      item.userId?.address?.toLowerCase().includes(loc);
-    return matchesSearch && matchesLocation;
-  });
-
-  // Combine server products with mock listings (deduplicate by _id)
-  const serverIds = new Set(products.map(p => p._id));
-  const mockToShow = filteredMockListings.filter(m => !serverIds.has(m._id));
-  const combinedListings = [...products, ...mockToShow];
-  const displayTotal = total + mockToShow.length;
+  // Real server products only — no mock/demo listings. An empty result shows an
+  // honest "nothing here yet — post one" state instead of fabricated leads that
+  // 404 when clicked.
+  const combinedListings = products;
+  const displayTotal = total;
 
   return (
     <div className="">
@@ -689,59 +553,58 @@ export default function ProductListing() {
                       ))}
                     </div>
                   ) : combinedListings.length === 0 ? (
-                    <div className="flex justify-center items-center h-64 flex-col space-y-4">
-                      <p className="text-5xl">🔍</p>
-                      <p className="text-lg text-center text-gray-800 font-bold">No sourcing leads match your filters</p>
-                      <p className="text-sm text-gray-500 text-center max-w-md">Try adjusting your search keywords, location, or category filters.</p>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setLocalSearch('');
-                          setLocalLocation('');
-                          handleRemoveFilter();
-                        }}
-                        className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg text-sm transition-colors cursor-pointer shadow-sm"
-                      >
-                        Reset All Filters
-                      </button>
+                    <div className="flex justify-center items-center min-h-64 flex-col space-y-4 py-12 text-center">
+                      <div className="w-16 h-16 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center">
+                        <PackageOpen className="w-7 h-7 text-slate-400" />
+                      </div>
+                      {isFilterActive ? (
+                        <>
+                          <p className="text-lg text-slate-900 font-bold">No RFQs match your filters</p>
+                          <p className="text-sm text-slate-500 max-w-md">Try widening your search, location, or category — or reset the filters.</p>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setLocalSearch('');
+                              setLocalLocation('');
+                              handleRemoveFilter();
+                            }}
+                            className="sb-big-tap px-6 py-3 bg-white border-2 border-slate-200 hover:border-slate-900 text-slate-900 font-bold rounded-xl text-base transition-colors cursor-pointer"
+                          >
+                            Reset filters
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <p className="text-lg text-slate-900 font-bold">No live requirements here yet</p>
+                          <p className="text-sm text-slate-500 max-w-md">Be the first — post a requirement and verified suppliers will start quoting.</p>
+                          <button
+                            type="button"
+                            onClick={() => navigate('/requirement')}
+                            className="sb-big-tap px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl text-base transition-colors cursor-pointer"
+                          >
+                            Post a requirement
+                          </button>
+                        </>
+                      )}
                     </div>
                   ) : (
-                    <>
-                      {/* Show server products with infinite scroll if they exist */}
-                      {products.length > 0 ? (
-                        <InfiniteScroll
-                          dataLength={products.length}
-                          next={fetchMoreData}
-                          hasMore={hasMore}
-                          loader={
-                            <div className="grid grid-cols-1 gap-4 mt-4">
-                              {new Array(2).fill(0).map((_, i) => (
-                                <ProductListingCardSkeleton key={`more-skeleton-${i}`} />
-                              ))}
-                            </div>
-                          }
-                          className="grid grid-cols-1 gap-4"
-                        >
-                          {products.map(product => (
-                            <ProductListingCard key={product._id} product={product} />
-                          ))}
-                        </InfiniteScroll>
-                      ) : null}
-
-                      {/* Show mock listings below server products */}
-                      {mockToShow.length > 0 && (
-                        <div className={`grid grid-cols-1 gap-4 ${products.length > 0 ? 'mt-4' : ''}`}>
-                          {products.length > 0 && mockToShow.length > 0 && (
-                            <div className="border-t border-slate-200 pt-4 mb-2">
-                              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">More Sourcing Leads from the Exchange</p>
-                            </div>
-                          )}
-                          {mockToShow.map(item => (
-                            <ProductListingCard key={item._id} product={item} actionLabel="Quote Now" />
+                    <InfiniteScroll
+                      dataLength={products.length}
+                      next={fetchMoreData}
+                      hasMore={hasMore}
+                      loader={
+                        <div className="grid grid-cols-1 gap-4 mt-4">
+                          {new Array(2).fill(0).map((_, i) => (
+                            <ProductListingCardSkeleton key={`more-skeleton-${i}`} />
                           ))}
                         </div>
-                      )}
-                    </>
+                      }
+                      className="grid grid-cols-1 gap-4"
+                    >
+                      {products.map(product => (
+                        <ProductListingCard key={product._id} product={product} />
+                      ))}
+                    </InfiniteScroll>
                   )}
                 </div>
               </div>
