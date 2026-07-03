@@ -62,6 +62,7 @@ const PostRequirementForm = () => {
       items: [
         { itemName: '', itemDescription: '', quantity: '', quantityUnit: 'pcs', brand: 'Any' }
       ],
+      description: '',
       otherTerms: '',
       deliveryDate: undefined,
       expiryDate: undefined,
@@ -138,7 +139,7 @@ const PostRequirementForm = () => {
       // Map to the backend expected structure
       const commonDetails = {
         title: data.title,
-        description: data.otherTerms,
+        description: [data.description, data.otherTerms].filter(t => t && t.trim()).join('\n\n'),
         bidExpiryDate: data.expiryDate,
         paymentAndDelivery: {
           ex_deliveryDate: data.deliveryDate,
@@ -309,11 +310,11 @@ const PostRequirementForm = () => {
               {/* Desktop Material Headers */}
               <div className="hidden sm:grid grid-cols-12 gap-3 mb-2 px-2 text-[10px] font-black text-slate-400 uppercase tracking-wider">
                 <div className="col-span-3">Item Name</div>
-                <div className="col-span-3">Specs / Description</div>
+                <div className="col-span-2">Specs / Description</div>
                 <div className="col-span-2">Quantity</div>
-                <div className="col-span-1.5">Units</div>
+                <div className="col-span-2">Units</div>
                 <div className="col-span-2">Brand</div>
-                <div className="col-span-0.5 text-center">Action</div>
+                <div className="col-span-1 text-center">Action</div>
               </div>
 
               <div className="space-y-3">
@@ -324,7 +325,7 @@ const PostRequirementForm = () => {
                       <Input placeholder="e.g., Cement" {...register(`items.${index}.itemName`)} className="bg-white border-slate-200 font-medium text-sm" />
                     </div>
 
-                    <div className="sm:col-span-3">
+                    <div className="sm:col-span-2">
                       <label className="block sm:hidden text-xs font-semibold text-slate-400 mb-1">Specs / Desc</label>
                       <Input placeholder="e.g., Grade 53" {...register(`items.${index}.itemDescription`)} className="bg-white border-slate-200 font-medium text-sm" />
                     </div>
@@ -334,7 +335,7 @@ const PostRequirementForm = () => {
                       <Input type="number" placeholder="Qty" {...register(`items.${index}.quantity`)} className="bg-white border-slate-200 font-medium text-sm" min="1" />
                     </div>
 
-                    <div className="sm:col-span-1.5">
+                    <div className="sm:col-span-2">
                       <label className="block sm:hidden text-xs font-semibold text-slate-400 mb-1">Units</label>
                       <Controller
                         name={`items.${index}.quantityUnit`}
@@ -399,7 +400,7 @@ const PostRequirementForm = () => {
                       />
                     </div>
 
-                    <div className="sm:col-span-0.5 flex justify-end sm:justify-center mt-2 sm:mt-0">
+                    <div className="sm:col-span-1 flex justify-end sm:justify-center mt-2 sm:mt-0">
                       <button type="button" onClick={() => remove(index)} disabled={fields.length <= 1} className={`p-1.5 rounded transition-colors ${fields.length <= 1 ? 'text-slate-200 cursor-not-allowed' : 'text-slate-400 hover:text-red-500 hover:bg-red-50'}`} title="Delete Item">
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -521,6 +522,16 @@ const PostRequirementForm = () => {
             </h3>
 
             <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Description</label>
+                <p className="text-[10px] text-slate-400 mb-1.5 font-medium">A short summary of what you need — shown to suppliers alongside your documents.</p>
+                <Textarea
+                  placeholder="e.g., Need teak wood flush doors for a 3BHK, standard sizes, delivered to site in 2 weeks..."
+                  {...register('description')}
+                  className="bg-slate-50/50 border-slate-200 font-medium min-h-[90px]"
+                />
+              </div>
+
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Attachments (Max 2)</label>
                 <div className="p-4 bg-slate-50/50 border border-dashed border-slate-200 rounded-lg text-center hover:bg-slate-50 transition-colors">
