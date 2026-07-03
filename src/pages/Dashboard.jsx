@@ -36,8 +36,21 @@ import {
  * action or a real count.
  */
 
-function NextUpCard({ state, navigate, quotesCount, sourcingCount }) {
+function NextUpCard({ state, navigate, quotesCount, sourcingCount, isSupplier }) {
   const card = (() => {
+    if (isSupplier) {
+      if (state === 'first_visit') {
+        return {
+          eyebrow: 'Welcome to SaralBuy',
+          title: 'Find active sourcing leads',
+          body: 'Browse live bulk requirements posted by verified contractors and buyers. Submit your quotes to start winning deals.',
+          cta: { label: 'Explore live RFQs', onClick: () => navigate('/product-listing'), icon: Compass },
+          alt: { label: 'Or post a requirement instead', onClick: () => navigate('/requirement') },
+          icon: Rocket,
+        };
+      }
+    }
+
     if (state === 'first_visit') {
       return {
         eyebrow: 'Welcome to SaralBuy',
@@ -71,9 +84,11 @@ function NextUpCard({ state, navigate, quotesCount, sourcingCount }) {
     return {
       eyebrow: 'All caught up',
       title: 'Nothing pending. Nice work.',
-      body: 'Post another requirement or browse fresh leads posted by other buyers.',
+      body: isSupplier 
+        ? 'Submit quotes for new requirements, or check status on your submitted quotes.'
+        : 'Post another requirement or browse fresh leads posted by other buyers.',
       cta: { label: 'Explore live RFQs', onClick: () => navigate('/product-listing'), icon: Compass },
-      alt: { label: 'Post a requirement', onClick: () => navigate('/requirement') },
+      alt: isSupplier ? null : { label: 'Post a requirement', onClick: () => navigate('/requirement') },
       icon: CheckCircle2,
     };
   })();
@@ -130,7 +145,8 @@ export default function Dashboard() {
     return 'caught_up';
   })();
 
-  const { card } = NextUpCard({ state, navigate, quotesCount: bids.length, sourcingCount: drafts.length });
+  const isSupplier = user?.role === 'supplier' || user?.verificationStatus !== 'unverified';
+  const { card } = NextUpCard({ state, navigate, quotesCount: bids.length, sourcingCount: drafts.length, isSupplier });
   const CardIcon = card.icon;
 
   return (

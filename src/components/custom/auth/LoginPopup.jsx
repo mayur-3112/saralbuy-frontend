@@ -24,7 +24,11 @@ const LoginPopup = ({ open, setOpen, setNumber, setOtpPopup, setSessionId }) => 
     }
   };
 
-  const [role, setRole] = useState('buyer');
+  const [role, setRole] = useState(() => {
+    const savedRole = localStorage.getItem('auth_default_role');
+    localStorage.removeItem('auth_default_role'); // Clear it immediately
+    return savedRole === 'seller' || savedRole === 'supplier' ? 'supplier' : 'buyer';
+  });
 
   const handleSendOTP = async e => {
     e.preventDefault();
