@@ -70,10 +70,10 @@ export default function Hero({ onOpenAuth }) {
       <div className="absolute -bottom-32 -left-32 w-[400px] h-[400px] rounded-full blur-3xl pointer-events-none"
            style={{ background: 'radial-gradient(circle, rgba(59, 130, 246,0.10), transparent 70%)' }} />
 
-      <div className="relative max-w-7xl mx-auto px-4 pt-14 pb-12 sm:pt-20 sm:pb-16 grid lg:grid-cols-12 gap-10 items-center">
+      <div className="relative max-w-7xl mx-auto px-4 pt-14 pb-12 sm:pt-20 sm:pb-16 grid grid-cols-1 gap-10 items-center justify-center">
 
-        {/* Left: pain → promise → action */}
-        <div className="lg:col-span-7 space-y-6 sm:space-y-7">
+        {/* Center/Full-Width: pain → promise → action */}
+        <div className="max-w-4xl mx-auto space-y-6 sm:space-y-7 text-center flex flex-col items-center">
           {/* Eyebrow — bigger and clearer for older / non-tech eyes */}
           <div className="inline-flex items-center gap-2 rounded-full border border-blue-400/50 bg-blue-500/15 px-4 py-1.5 text-sm font-bold text-blue-200">
             <span className="relative flex h-2.5 w-2.5">
@@ -93,14 +93,14 @@ export default function Hero({ onOpenAuth }) {
           </h1>
 
           {/* Promise-line — larger body text for readability */}
-          <p className="text-slate-200 text-lg sm:text-xl leading-relaxed max-w-2xl">
+          <p className="text-slate-200 text-lg sm:text-xl leading-relaxed max-w-2xl text-center">
             Whether you&apos;re building a home, running a site, or fitting out an office &mdash;
             SaralBuy sends your requirement to verified suppliers across Karnataka.
             <span className="font-bold text-white block mt-2"> One post. Multiple quotes. Anonymous until you choose.</span>
           </p>
 
           {/* Search — bigger input, bigger button, ready for real fingers */}
-          <form onSubmit={handleSearch} className="max-w-xl">
+          <form onSubmit={handleSearch} className="w-full max-w-2xl mt-2">
             <div className="group flex items-center bg-white rounded-xl overflow-hidden shadow-2xl shadow-black/30 ring-1 ring-white/10 focus-within:ring-4 focus-within:ring-blue-500/40 transition-all">
               <Search className="w-6 h-6 text-slate-500 ml-5 shrink-0" />
               <input
@@ -118,7 +118,7 @@ export default function Hero({ onOpenAuth }) {
               </button>
             </div>
             {/* Popular searches — bigger label so it's actually noticed */}
-            <div className="flex flex-wrap items-center gap-2 mt-4">
+            <div className="flex flex-wrap items-center justify-center gap-2 mt-4">
               <span className="text-sm text-slate-300 font-bold">Popular:</span>
               {['OPC 53 Cement', 'TMT Steel', 'Vitrified Tiles', 'PVC Pipes', 'Wall Putty'].map((tag) => (
                 <button
@@ -134,17 +134,17 @@ export default function Hero({ onOpenAuth }) {
           </form>
 
           {/* Dual action — both buttons big + readable + always labelled */}
-          <div className="flex flex-col sm:flex-row gap-3 pt-1">
+          <div className="flex flex-col sm:flex-row gap-3 pt-3 justify-center w-full sm:w-auto">
             <button
               onClick={handlePostRequirement}
-              className="sb-big-tap group inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 hover:shadow-xl hover:shadow-blue-500/30 active:scale-95 text-white font-black text-base px-8 py-4 rounded-xl cursor-pointer transition-all"
+              className="sb-big-tap group inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 hover:shadow-xl hover:shadow-blue-500/30 active:scale-95 text-white font-black text-base px-8 py-4 rounded-xl cursor-pointer transition-all w-full sm:w-auto"
             >
               Post a Requirement
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
             <button
               onClick={handleFindLeads}
-              className="sb-big-tap group inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 border border-white/25 hover:border-white/50 active:scale-95 text-white font-bold text-base px-8 py-4 rounded-xl cursor-pointer transition-all backdrop-blur-sm"
+              className="sb-big-tap group inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 border border-white/25 hover:border-white/50 active:scale-95 text-white font-bold text-base px-8 py-4 rounded-xl cursor-pointer transition-all backdrop-blur-sm w-full sm:w-auto"
             >
               I&apos;m a Supplier &mdash; Find Leads
             </button>
@@ -154,72 +154,10 @@ export default function Hero({ onOpenAuth }) {
               stats. These are always true regardless of user count or
               deal volume; the actual metrics live in ProofStrip below and
               self-hide when they'd be zero. */}
-          <div className="grid grid-cols-3 gap-4 pt-6 border-t border-white/10">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-8 border-t border-white/10 w-full mt-6">
             <TrustAnchor icon={Zap} value="One post" label="Reaches every supplier in your category" />
             <TrustAnchor icon={Users} value="Anonymous" label="Your details stay hidden until you choose" />
             <TrustAnchor icon={ShieldCheck} value="Reviewed" label="Every supplier vetted by our team" />
-          </div>
-        </div>
-
-        {/* Right: category carousel — fully responsive, touch-friendly, high-contrast and premium */}
-        <div className="lg:col-span-5 relative w-full h-[280px] sm:h-[360px] lg:h-[440px] rounded-2xl overflow-hidden shadow-2xl shadow-black/50 ring-1 ring-white/10 group mt-6 lg:mt-0">
-          {HERO_IMAGES.map((img, index) => (
-            <div
-              key={index}
-              className={`absolute inset-0 transition-all duration-700 ease-in-out ${
-                index === currentSlide ? 'opacity-100 scale-100 z-10' : 'opacity-0 scale-95 z-0'
-              }`}
-            >
-              <img
-                src={img.url}
-                alt={img.caption}
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.target.src = 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=800&q=80';
-                }}
-                style={{ transform: index === currentSlide ? 'scale(1.05)' : 'scale(1)', transition: 'transform 5000ms ease-out' }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
-              <div className="absolute bottom-6 left-6 z-20 space-y-1.5">
-                <span className="text-xs font-black uppercase tracking-widest bg-blue-600 text-white px-2.5 py-1 rounded-md">
-                  Live category
-                </span>
-                <p className="font-black text-xl sm:text-2xl text-white drop-shadow-lg">{img.caption}</p>
-              </div>
-            </div>
-          ))}
-
-          {/* Left/Right Buttons - Visible on hover for premium desktop, tap-friendly on mobile */}
-          <button
-            type="button"
-            onClick={() => setCurrentSlide((prev) => (prev - 1 + HERO_IMAGES.length) % HERO_IMAGES.length)}
-            className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-slate-900/60 hover:bg-blue-600 text-white flex items-center justify-center backdrop-blur-sm opacity-0 group-hover:opacity-100 active:scale-90 transition-all duration-300 pointer-events-auto cursor-pointer"
-            aria-label="Previous slide"
-          >
-            ‹
-          </button>
-          <button
-            type="button"
-            onClick={() => setCurrentSlide((prev) => (prev + 1) % HERO_IMAGES.length)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-slate-900/60 hover:bg-blue-600 text-white flex items-center justify-center backdrop-blur-sm opacity-0 group-hover:opacity-100 active:scale-90 transition-all duration-300 pointer-events-auto cursor-pointer"
-            aria-label="Next slide"
-          >
-            ›
-          </button>
-
-          {/* Dots — larger & clickable */}
-          <div className="absolute bottom-6 right-6 flex gap-2 z-20 bg-slate-950/40 p-2 rounded-full backdrop-blur-xs">
-            {HERO_IMAGES.map((_, index) => (
-              <button
-                key={index}
-                type="button"
-                onClick={() => setCurrentSlide(index)}
-                aria-label={`Show slide ${index + 1}`}
-                className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
-                  index === currentSlide ? 'bg-blue-500 w-6' : 'bg-white/60 hover:bg-white w-2.5'
-                }`}
-              />
-            ))}
           </div>
         </div>
       </div>
