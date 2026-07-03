@@ -80,6 +80,10 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
      // it's a duration in days like "1", "3", "7"
      const days = Number(expiryDateStr);
      expiryDateObj = new Date(new Date(createdAt || Date.now()).getTime() + days * 24 * 60 * 60 * 1000);
+  } else if (!expiryDateStr && createdAt) {
+     // Fallback for legacy DB entries with no expiry dates: mark as expired if older than 1 day
+     const days = Number(prod?.bidActiveDuration || product?.bidActiveDuration || '1');
+     expiryDateObj = new Date(new Date(createdAt).getTime() + days * 24 * 60 * 60 * 1000);
   }
 
   const deliveryDateStr = prod?.paymentAndDelivery?.ex_deliveryDate || product?.paymentAndDelivery?.ex_deliveryDate;
