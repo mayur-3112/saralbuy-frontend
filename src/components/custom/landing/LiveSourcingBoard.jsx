@@ -110,13 +110,13 @@ export default function LiveSourcingBoard({ onOpenAuth }) {
 
       {/* Category chip strip — horizontal scroll on mobile, no wrap */}
       {categories.length > 0 && (
-        <div className="flex items-center gap-1.5 mb-6 overflow-x-auto no-scrollbar pb-1 -mx-1 px-1">
+        <div className="flex items-center gap-2 mb-6 overflow-x-auto no-scrollbar pb-1 -mx-1 px-1">
           {['All', ...categories].map((cat) => (
             <button
               key={cat}
               type="button"
               onClick={() => setSelectedCategory(cat)}
-              className={`shrink-0 px-3 py-1.5 text-xs font-bold border rounded-full transition-all cursor-pointer ${
+              className={`shrink-0 px-4 py-2 text-sm font-bold border rounded-full transition-all cursor-pointer ${
                 selectedCategory === cat
                   ? 'bg-slate-900 border-slate-900 text-white'
                   : 'bg-white border-slate-200 text-slate-600 hover:border-slate-400 hover:text-slate-900'

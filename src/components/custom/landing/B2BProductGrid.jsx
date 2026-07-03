@@ -52,7 +52,7 @@ export default function B2BProductGrid({ onOpenAuth }) {
   return (
     <section>
       <div className="mb-6">
-        <div className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2">
+        <div className="text-xs font-black uppercase tracking-[0.2em] text-slate-500 mb-2">
           What are you sourcing?
         </div>
         <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-tight">
@@ -74,23 +74,23 @@ export default function B2BProductGrid({ onOpenAuth }) {
               onClick={() => handleCategoryClick(cat)}
               className="group text-left bg-white border border-slate-200 hover:border-slate-900 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 rounded-xl p-4 relative"
             >
-              <ArrowUpRight className="absolute top-3 right-3 w-4 h-4 text-slate-300 group-hover:text-slate-900 transition-colors" />
+              <ArrowUpRight className="absolute top-3 right-3 w-4.5 h-4.5 text-slate-300 group-hover:text-slate-900 transition-colors" />
               <h3 className="font-black text-sm text-slate-900 leading-snug pr-6">
                 {cat.categoryName}
               </h3>
               <div className="mt-3 pt-3 border-t border-slate-100 flex items-center gap-2">
                 {hasActivity ? (
                   <>
-                    <span className="inline-flex items-center gap-1.5 text-[11px] font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                       {count} live
                     </span>
-                    <span className="text-[10px] text-slate-500 font-medium">
+                    <span className="text-xs text-slate-500 font-medium">
                       {count === 1 ? 'RFQ' : 'RFQs'}
                     </span>
                   </>
                 ) : (
-                  <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wide">
+                  <span className="text-xs font-bold text-slate-500 uppercase tracking-wide">
                     Be the first
                   </span>
                 )}

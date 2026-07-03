@@ -445,10 +445,18 @@ const RequirementOverview = () => {
     return <CategoryFormSkeleton />;
   }
 
-  if (!currentProduct) {
+  if (!currentProduct || !currentProduct.product) {
     return (
-      <div className="w-full max-w-7xl mx-auto px-4 py-10">
-        <div className="text-center text-sm sm:text-base">No product data available</div>
+      <div className="w-full max-w-xl mx-auto px-4 py-20 text-center">
+        <div className="bg-red-50 border border-red-200 rounded-xl p-8 space-y-4">
+          <h2 className="text-xl font-bold text-red-700">Requirement Product Data Unavailable</h2>
+          <p className="text-sm text-slate-600">
+            This requirement's underlying product details could not be found. The item might have been deleted, or there was a data synchronization error during creation.
+          </p>
+          <Button onClick={() => navigate(-1)} className="bg-blue-600 hover:bg-blue-700 text-white mt-2">
+            Go Back
+          </Button>
+        </div>
       </div>
     );
   }

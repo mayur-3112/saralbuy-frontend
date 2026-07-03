@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920, height=1080">
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #1A1A1A;
+        font-family: "Geist", sans-serif;
+        color: #1A1A1A;
+      }
+      .clip {
+        position: absolute;
+        width: 1920px;
+        height: 1080px;
+        top: 0;
+        left: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+      }
+
+      /* Scene 1: Hook */
+      #scene-hook {
+        background: #1A1A1A;
+        color: white;
+        flex-direction: column;
+        z-index: 10;
+      }
+      .hook-text {
+        font-size: 80px;
+        font-weight: 900;
+        text-align: center;
+        opacity: 0;
+      }
+
+      /* Scene 2: Grid */
+      #scene-grid {
+        background: white;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 20;
+      }
+      .grid-header {
+        font-size: 64px;
+        font-weight: 900;
+        margin-bottom: 60px;
+        text-align: center;
+        width: 100%;
+      }
+      .specs-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 350px);
+        gap: 40px;
+      }
+      .spec-card {
+        background: white;
+        border: 2px solid #E2E8F0;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        opacity: 0;
+      }
+      .spec-label {
+        font-size: 24px;
+        font-weight: 700;
+        color: #64748B;
+        margin-bottom: 10px;
+      }
+      .spec-val {
+        font-size: 40px;
+        font-weight: 900;
+        color: #1A1A1A;
+      }
+      .spec-val.orange {
+        color: #EB7813;
+      }
+
+      /* Scene 3: Action */
+      #scene-action {
+        background: transparent;
+        z-index: 30;
+      }
+      .quote-drawer {
+        position: absolute;
+        right: -900px;
+        top: 0;
+        width: 850px;
+        height: 1080px;
+        background: #F8FAFC;
+        border-left: 2px solid #E2E8F0;
+        box-shadow: -20px 0 50px rgba(0,0,0,0.1);
+        padding: 60px;
+        display: flex;
+        flex-direction: column;
+      }
+      .drawer-title {
+        font-size: 56px;
+        font-weight: 900;
+        margin-bottom: 40px;
+        border-bottom: 2px solid #E2E8F0;
+        padding-bottom: 20px;
+      }
+      .form-mock {
+        width: 100%;
+        height: 80px;
+        background: white;
+        border: 2px solid #E2E8F0;
+        border-radius: 12px;
+        margin-bottom: 30px;
+        opacity: 0;
+      }
+
+      /* Scene 4: Outro */
+      #scene-outro {
+        background: #EB7813;
+        color: white;
+        z-index: 40;
+        flex-direction: column;
+      }
+      .outro-title {
+        font-size: 96px;
+        font-weight: 900;
+        margin-bottom: 30px;
+      }
+      .outro-sub {
+        font-size: 48px;
+        font-weight: 700;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div data-hf-id="hf-kbh8" id="root" data-composition-id="main" data-start="0" data-duration="15" data-width="1920" data-height="1080">
+      <audio data-hf-id="hf-35uc" id="music" data-start="0" data-duration="auto" data-track-index="1" data-volume="1" src="assets/music/track.mp3"></audio>
+
+      <!-- SCENE 1 -->
+      <div data-hf-id="hf-sxn2" id="scene-hook" class="clip" data-start="0" data-duration="3.5" data-track-index="2">
+        <div data-hf-id="hf-hehk" class="hook-text" id="hook-1">B2B Sourcing used to be slow.</div>
+        <div data-hf-id="hf-9r9m" class="hook-text" id="hook-2" style="position:absolute;">Not anymore.</div>
+      </div>
+
+      <!-- SCENE 2 -->
+      <div data-hf-id="hf-trhi" id="scene-grid" class="clip" data-start="3.5" data-duration="4" data-track-index="3">
+        <div data-hf-id="hf-zmvt" class="grid-header">Requirement Specifications</div>
+        <div data-hf-id="hf-40g9" class="specs-grid">
+          <div data-hf-id="hf-ftt4" class="spec-card">
+            <div data-hf-id="hf-bxug" class="spec-label">Category</div>
+            <div data-hf-id="hf-rdcp" class="spec-val">Building Materials</div>
+          </div>
+          <div data-hf-id="hf-mqhs" class="spec-card">
+            <div data-hf-id="hf-m57t" class="spec-label">Sub-Category</div>
+            <div data-hf-id="hf-zlp1" class="spec-val">OPC 53 Cement</div>
+          </div>
+          <div data-hf-id="hf-ljkp" class="spec-card">
+            <div data-hf-id="hf-mbcz" class="spec-label">Estimated Budget</div>
+            <div data-hf-id="hf-6slz" class="spec-val orange">₹380</div>
+          </div>
+          <div data-hf-id="hf-lxvq" class="spec-card">
+            <div data-hf-id="hf-uixh" class="spec-label">Quantity</div>
+            <div data-hf-id="hf-92m8" class="spec-val">1500 Bags</div>
+          </div>
+          <div data-hf-id="hf-kqyn" class="spec-card">
+            <div data-hf-id="hf-jcjh" class="spec-label">Brand</div>
+            <div data-hf-id="hf-ebmj" class="spec-val">UltraTech</div>
+          </div>
+          <div data-hf-id="hf-l59o" class="spec-card">
+            <div data-hf-id="hf-yztd" class="spec-label">Delivery To</div>
+            <div data-hf-id="hf-ymze" class="spec-val">Bengaluru</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCENE 3 -->
+      <div data-hf-id="hf-43ij" id="scene-action" class="clip" data-start="7.5" data-duration="4" data-track-index="4">
+        <div data-hf-id="hf-jkpi" class="quote-drawer">
+          <div data-hf-id="hf-316g" class="drawer-title">Submit Quotation</div>
+          <div data-hf-id="hf-ctbp" class="form-mock"></div>
+          <div data-hf-id="hf-lxgp" class="form-mock"></div>
+          <div data-hf-id="hf-owrp" class="form-mock" style="height:200px;"></div>
+          <div data-hf-id="hf-p23f" class="form-mock" style="background:#EB7813; border:none; height:100px;"></div>
+        </div>
+      </div>
+
+      <!-- SCENE 4 -->
+      <div data-hf-id="hf-uss8" id="scene-outro" class="clip" data-start="11.5" data-duration="3.5" data-track-index="5">
+        <div data-hf-id="hf-3r66" class="outro-title">Quotex by SaralBuy</div>
+        <div data-hf-id="hf-vng7" class="outro-sub">Start sourcing today.</div>
+      </div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      // Scene 1
+      tl.set("#scene-hook", { opacity: 1 }, 0);
+      tl.to("#hook-1", { opacity: 1, y: -20, duration: 0.5, ease: "power3.out" }, 0.5);
+      tl.to("#hook-1", { opacity: 0, y: -40, duration: 0.3 }, 2.0);
+      tl.to("#hook-2", { opacity: 1, y: 0, scale: 1.2, duration: 0.5, ease: "back.out(1.7)" }, 2.3);
+
+      // Scene 2
+      tl.set("#scene-grid", { opacity: 1 }, 3.5);
+      tl.from(".grid-header", { opacity: 0, y: 30, duration: 0.5 }, 3.5);
+      tl.to(".spec-card", { 
+        opacity: 1, 
+        y: -10, 
+        stagger: 0.1, 
+        duration: 0.4, 
+        ease: "power2.out" 
+      }, 3.8); // beat-grid: 3.8, 3.9, 4.0...
+
+      // Scene 3
+      tl.set("#scene-action", { opacity: 1 }, 7.5);
+      // Let the grid stay visible beneath the drawer
+      tl.to(".quote-drawer", { x: -900, duration: 0.8, ease: "power4.out" }, 7.5); // beat-locked: 7.5s
+      tl.to(".form-mock", { opacity: 1, y: -10, stagger: 0.1, duration: 0.4 }, 8.0);
+
+      // Scene 4
+      tl.to("#scene-outro", { opacity: 1, duration: 0.5 }, 11.5); // beat-locked: 11.5s
+      tl.from(".outro-title", { opacity: 0, scale: 0.9, duration: 0.6, ease: "power3.out" }, 11.8);
+      tl.from(".outro-sub", { opacity: 0, y: 20, duration: 0.6, ease: "power3.out" }, 12.0);
+
+      // Fade music out
+      tl.to("#music", { volume: 0, duration: 2 }, 13.0);
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

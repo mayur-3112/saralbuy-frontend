@@ -144,33 +144,33 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
             {/* Grid of Key Details */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-4 gap-x-4">
               <div className="flex flex-col">
-                <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Buyer</span>
-                <span className="text-[13px] font-semibold text-slate-700 line-clamp-1">{buyerName}</span>
+                <span className="text-xs uppercase font-extrabold text-slate-400 tracking-wider">Buyer</span>
+                <span className="text-sm font-semibold text-slate-700 line-clamp-1">{buyerName}</span>
               </div>
               {categoryName && (
                 <div className="flex flex-col">
-                  <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Category</span>
-                  <span className="text-[13px] font-semibold text-slate-800 line-clamp-1">{categoryName}</span>
+                  <span className="text-xs uppercase font-extrabold text-slate-400 tracking-wider">Category</span>
+                  <span className="text-sm font-semibold text-slate-800 line-clamp-1">{categoryName}</span>
                 </div>
               )}
               {rfqCode && (
                 <div className="flex flex-col">
-                  <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">RFQ ID</span>
-                  <span className="text-[13px] font-semibold text-slate-700 line-clamp-1">{rfqCode}</span>
+                  <span className="text-xs uppercase font-extrabold text-slate-400 tracking-wider">RFQ ID</span>
+                  <span className="text-sm font-semibold text-slate-700 line-clamp-1">{rfqCode}</span>
                 </div>
               )}
               {user?.state && (
                 <div className="flex flex-col">
-                  <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">State</span>
-                  <span className="text-[13px] font-semibold text-slate-700 line-clamp-1">{user.state}</span>
+                  <span className="text-xs uppercase font-extrabold text-slate-400 tracking-wider">State</span>
+                  <span className="text-sm font-semibold text-slate-700 line-clamp-1">{user.state}</span>
                 </div>
               )}
               
               {/* Dynamic Items (if few items, fit in grid, else span below) */}
               {items.length > 0 && items.length <= 1 && (
                 <div className="flex flex-col">
-                  <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Item</span>
-                  <span className="text-[13px] font-semibold text-slate-700 line-clamp-1">{items[0]}</span>
+                  <span className="text-xs uppercase font-extrabold text-slate-400 tracking-wider">Item</span>
+                  <span className="text-sm font-semibold text-slate-700 line-clamp-1">{items[0]}</span>
                 </div>
               )}
             </div>
@@ -178,12 +178,12 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
             {/* Large Items Array */}
             {items.length > 1 && (
               <div>
-                <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider block mb-1.5">Requested Items</span>
+                <span className="text-xs uppercase font-extrabold text-slate-400 tracking-wider block mb-1.5">Requested Items</span>
                 <div className="flex flex-wrap items-center gap-1.5">
                   {items.map((item, idx) => (
                     <span 
                       key={idx} 
-                      className="px-2.5 py-1 rounded bg-slate-100 text-xs font-medium text-slate-700 hover:bg-slate-200 transition-colors duration-200 cursor-default"
+                      className="px-2.5 py-1 rounded bg-slate-100 text-xs font-semibold text-slate-700 hover:bg-slate-200 transition-colors duration-200 cursor-default"
                     >
                       {item}
                     </span>
@@ -195,8 +195,8 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
             {/* Address */}
             {address && (
               <div>
-                <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider block mb-1">Delivery Address</span>
-                <p className="text-[12px] text-gray-600 font-medium max-w-lg">
+                <span className="text-xs uppercase font-extrabold text-slate-400 tracking-wider block mb-1">Delivery Address</span>
+                <p className="text-sm text-slate-600 font-medium max-w-lg">
                   {address}
                 </p>
               </div>
@@ -212,20 +212,20 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
           {/* Dates Box */}
           <div className="w-full space-y-2.5 bg-white/40 p-3 rounded-lg border border-blue-100/50">
             <div className="flex justify-between items-center gap-2">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Posted</span>
-              <span className="text-[12px] font-bold text-gray-700">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Posted</span>
+              <span className="text-xs font-bold text-slate-700">
                 {createdAt ? format(new Date(createdAt), 'MMM d, yyyy') : format(new Date(), 'MMM d, yyyy')}
               </span>
             </div>
             {expiryDateObj && !isNaN(expiryDateObj.getTime()) && (
               <div className="flex justify-between items-center gap-2">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Validity</span>
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Validity</span>
                 {isExpired ? (
-                  <span className="text-[12px] font-black text-red-600 flex items-center gap-1">
+                  <span className="text-xs font-black text-red-600 flex items-center gap-1">
                     Expired
                   </span>
                 ) : (
-                  <span className="text-[12px] font-bold text-gray-700">
+                  <span className="text-xs font-bold text-slate-700">
                     {format(expiryDateObj, 'MMM d, yyyy')}
                   </span>
                 )}
@@ -233,8 +233,8 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
             )}
             {deliveryDateObj && (
               <div className="flex justify-between items-center gap-2">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Delivery</span>
-                <span className="text-[12px] font-bold text-gray-700">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Delivery</span>
+                <span className="text-xs font-bold text-slate-700">
                   {format(deliveryDateObj, 'MMM d, yyyy')}
                 </span>
               </div>

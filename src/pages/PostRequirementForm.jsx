@@ -196,14 +196,13 @@ const PostRequirementForm = () => {
       setLoading(false);
     }
   };
-
   return (
-    <div className="w-full max-w-5xl mx-auto px-4 min-h-screen py-10 bg-slate-50">
-      <div className="flex gap-3 items-center mb-8 pb-4 border-b border-slate-200">
+    <div className="w-full max-w-7xl mx-auto px-4 min-h-screen py-10 bg-slate-50">
+      <div className="flex gap-4 items-center mb-8 pb-4 border-b border-slate-200">
         <MoveLeft className="w-6 h-6 cursor-pointer text-slate-600 hover:text-blue-600 transition-colors" onClick={() => navigate(-1)} />
         <div>
           <h2 className="text-2xl font-black text-slate-900 tracking-tight">Post Your Requirement (RFQ)</h2>
-          <p className="text-sm text-slate-500 mt-0.5">Fill in the details below to get quotes from verified suppliers.</p>
+          <p className="text-sm text-slate-500 mt-0.5">Publish your requirements to receive competitive bids from verified suppliers.</p>
         </div>
       </div>
 
@@ -228,364 +227,351 @@ const PostRequirementForm = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        
-        {/* Step 1 — Basic Information */}
-        <div className="p-6 md:p-8 bg-white border border-slate-200 rounded-2xl shadow-sm relative overflow-hidden">
-          <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-400 rounded-l-2xl" />
-          <div className="mb-6 border-b border-slate-100 pb-4 flex items-start gap-3">
-            <span className="shrink-0 w-7 h-7 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center mt-0.5">1</span>
-            <div>
-              <h3 className="text-lg font-black text-slate-900">Basic Information</h3>
-              <p className="text-[13px] text-slate-400 mt-0.5">Provide the primary details of your requirement to help suppliers quickly understand what you need.</p>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="md:col-span-2">
-              <label className="block text-sm font-extrabold text-slate-800 mb-2">Title of Requirement*</label>
-              <Input placeholder="e.g., Procurement of Seamless Pipes and Tubes" {...register('title')} className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium" />
-            </div>
+      <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* Left Side: Product/Category Info & Materials Table */}
+        <div className="lg:col-span-8 space-y-6">
+          
+          {/* Section 1: Basic Information */}
+          <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-xs relative">
+            <h3 className="text-lg font-black text-slate-900 mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
+              <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center">1</span>
+              Basic Information
+            </h3>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="sm:col-span-2">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Title of Requirement*</label>
+                <Input placeholder="e.g., Procurement of Seamless Pipes and Tubes" {...register('title')} className="bg-slate-50/50 border-slate-200 focus-visible:ring-blue-500/20 font-medium" />
+              </div>
 
-            <div>
-              <label className="block text-sm font-extrabold text-slate-800 mb-2">Category*</label>
-              <Controller
-                name="categoryId"
-                control={control}
-                render={({ field: { onChange, value } }) => (
-                  <Select value={value} onValueChange={(val) => { onChange(val); setValue('subCategoryId', ''); }}>
-                    <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-blue-300 focus:ring-blue-500/30 focus:border-blue-500 transition-all font-medium">
-                      <SelectValue placeholder="Select Main Category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories?.map(c => (
-                        <SelectItem key={c._id} value={c._id}>{c.categoryName}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-extrabold text-slate-800 mb-2">Subcategory*</label>
-              <Controller
-                name="subCategoryId"
-                control={control}
-                render={({ field: { onChange, value } }) => (
-                  <Select 
-                    value={value} 
-                    onValueChange={(val) => {
-                      const selectedSub = subCategories.find(s => s._id === val);
-                      if (selectedSub && (selectedSub.name.toLowerCase() === 'other' || selectedSub.name.toLowerCase() === 'others')) {
-                        setPendingSubCategoryId(val);
-                        setShowCustomCategoryWarning(true);
-                      } else {
-                        onChange(val);
-                      }
-                    }} 
-                    disabled={!selectedCategoryId}
-                  >
-                    <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-blue-300 focus:ring-blue-500/30 focus:border-blue-500 transition-all font-medium">
-                      <SelectValue placeholder="Select Subcategory" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {subCategories.map(sub => (
-                        <SelectItem key={sub._id} value={sub._id}>{sub.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Step 2 — Items */}
-        {mode === 'single' && (
-          <div className="p-6 md:p-8 bg-white border border-slate-200 rounded-2xl shadow-sm relative overflow-hidden">
-            <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-300 rounded-l-2xl" />
-            <div className="border-b border-slate-200 pb-4 mb-4 flex items-start gap-3">
-              <span className="shrink-0 w-7 h-7 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center mt-0.5">2</span>
               <div>
-                <h3 className="text-lg font-black text-slate-900">List of Materials</h3>
-                <p className="text-[13px] text-slate-400 mt-0.5">Add the specific items or materials you need, including quantities and specifications.</p>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Category*</label>
+                <Controller
+                  name="categoryId"
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <Select value={value} onValueChange={(val) => { onChange(val); setValue('subCategoryId', ''); }}>
+                      <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 focus:ring-blue-500/20 font-medium">
+                        <SelectValue placeholder="Select Category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categories?.map(c => (
+                          <SelectItem key={c._id} value={c._id}>{c.categoryName}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Subcategory*</label>
+                <Controller
+                  name="subCategoryId"
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <Select 
+                      value={value} 
+                      onValueChange={(val) => {
+                        const selectedSub = subCategories.find(s => s._id === val);
+                        if (selectedSub && (selectedSub.name.toLowerCase() === 'other' || selectedSub.name.toLowerCase() === 'others')) {
+                          setPendingSubCategoryId(val);
+                          setShowCustomCategoryWarning(true);
+                        } else {
+                          onChange(val);
+                        }
+                      }} 
+                      disabled={!selectedCategoryId}
+                    >
+                      <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 focus:ring-blue-500/20 font-medium">
+                        <SelectValue placeholder="Select Subcategory" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {subCategories.map(sub => (
+                          <SelectItem key={sub._id} value={sub._id}>{sub.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
               </div>
             </div>
-          
-            {/* Header Row for Desktop */}
-            <div className="hidden md:grid grid-cols-12 gap-3 mb-2 px-2 text-xs font-extrabold text-slate-500 uppercase tracking-wider">
-              <div className="col-span-3">Item Name</div>
-              <div className="col-span-3">Description / Specs</div>
-              <div className="col-span-2">Quantity</div>
-              <div className="col-span-1">Units</div>
-              <div className="col-span-2">Brand</div>
-              <div className="col-span-1 text-center">Action</div>
-            </div>
+          </div>
 
-            <div className="space-y-4">
-              {fields.map((item, index) => (
-                <div key={item.id} className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-white p-3 rounded-xl border border-slate-200 hover:border-blue-300 hover:shadow-md transition-all">
-                  <div className="md:col-span-3">
-                    <label className="block md:hidden text-xs font-bold text-slate-500 mb-1">Item Name</label>
-                    <Input placeholder="e.g., Pipe" {...register(`items.${index}.itemName`)} className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium" />
-                  </div>
+          {/* Section 2: Material Items List */}
+          {mode === 'single' && (
+            <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-xs">
+              <h3 className="text-lg font-black text-slate-900 mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center">2</span>
+                List of Materials
+              </h3>
 
-                  <div className="md:col-span-3">
-                    <label className="block md:hidden text-xs font-bold text-slate-500 mb-1">Description / Specs</label>
-                    <Input placeholder="e.g., DN65 ASTM A106" {...register(`items.${index}.itemDescription`)} className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium" />
-                  </div>
-                  
-                  <div className="md:col-span-2">
-                    <label className="block md:hidden text-xs font-bold text-slate-500 mb-1">Qty</label>
-                    <Input type="number" placeholder="Qty" {...register(`items.${index}.quantity`)} className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium" min="1" />
-                  </div>
-                  
-                  <div className="md:col-span-1">
-                    <label className="block md:hidden text-xs font-bold text-slate-500 mb-1">Units</label>
-                    <Controller
-                      name={`items.${index}.quantityUnit`}
-                      control={control}
-                      render={({ field: { onChange, value } }) => (
-                        <Select value={value} onValueChange={onChange}>
-                          <SelectTrigger className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus:ring-blue-500/30 focus:border-blue-500 transition-all font-medium">
-                            <SelectValue placeholder="Unit" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {['pcs', 'ltr', 'kg', 'ft', 'mtr', 'tons', 'bags', 'set'].map(u => (
-                              <SelectItem key={u} value={u} className="uppercase">{u}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      )}
-                    />
-                  </div>
+              {/* Desktop Material Headers */}
+              <div className="hidden sm:grid grid-cols-12 gap-3 mb-2 px-2 text-[10px] font-black text-slate-400 uppercase tracking-wider">
+                <div className="col-span-3">Item Name</div>
+                <div className="col-span-3">Specs / Description</div>
+                <div className="col-span-2">Quantity</div>
+                <div className="col-span-1.5">Units</div>
+                <div className="col-span-2">Brand</div>
+                <div className="col-span-0.5 text-center">Action</div>
+              </div>
 
-                  <div className="md:col-span-2">
-                    <label className="block md:hidden text-xs font-bold text-slate-500 mb-1">Brand</label>
-                    <Controller
-                      name={`items.${index}.brand`}
-                      control={control}
-                      render={({ field: { onChange, value } }) => {
-                        const isCustom = value === '__custom__' || (!availableBrands.includes(value) && value !== 'Any');
-                        return isCustom ? (
-                          <div className="flex gap-1.5">
-                            <Input
-                              type="text"
-                              value={value === '__custom__' ? '' : value}
-                              placeholder="Type brand name..."
-                              className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium flex-1"
-                              autoFocus={value === '__custom__'}
-                              onChange={(e) => onChange(e.target.value)}
-                              onBlur={(e) => {
-                                if (!e.target.value.trim()) onChange('Any');
-                              }}
-                            />
-                            <button
-                              type="button"
-                              className="text-xs text-slate-400 hover:text-slate-600 px-1 shrink-0"
-                              onClick={() => onChange('Any')}
-                              title="Back to dropdown"
-                            >✕</button>
-                          </div>
-                        ) : (
+              <div className="space-y-3">
+                {fields.map((item, index) => (
+                  <div key={item.id} className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center bg-slate-50/30 p-3 rounded-lg border border-slate-200/60 hover:border-blue-400/40 transition-colors">
+                    <div className="sm:col-span-3">
+                      <label className="block sm:hidden text-xs font-semibold text-slate-400 mb-1">Item Name</label>
+                      <Input placeholder="e.g., Cement" {...register(`items.${index}.itemName`)} className="bg-white border-slate-200 font-medium text-sm" />
+                    </div>
+
+                    <div className="sm:col-span-3">
+                      <label className="block sm:hidden text-xs font-semibold text-slate-400 mb-1">Specs / Desc</label>
+                      <Input placeholder="e.g., Grade 53" {...register(`items.${index}.itemDescription`)} className="bg-white border-slate-200 font-medium text-sm" />
+                    </div>
+
+                    <div className="sm:col-span-2">
+                      <label className="block sm:hidden text-xs font-semibold text-slate-400 mb-1">Quantity</label>
+                      <Input type="number" placeholder="Qty" {...register(`items.${index}.quantity`)} className="bg-white border-slate-200 font-medium text-sm" min="1" />
+                    </div>
+
+                    <div className="sm:col-span-1.5">
+                      <label className="block sm:hidden text-xs font-semibold text-slate-400 mb-1">Units</label>
+                      <Controller
+                        name={`items.${index}.quantityUnit`}
+                        control={control}
+                        render={({ field: { onChange, value } }) => (
                           <Select value={value} onValueChange={onChange}>
-                            <SelectTrigger className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus:ring-blue-500/30 focus:border-blue-500 transition-all font-medium">
-                              <SelectValue placeholder="Brand" />
+                            <SelectTrigger className="bg-white border-slate-200 font-medium text-sm">
+                              <SelectValue placeholder="Unit" />
                             </SelectTrigger>
                             <SelectContent>
-                              {availableBrands.map(b => (
-                                <SelectItem key={b} value={b}>{b}</SelectItem>
+                              {['pcs', 'ltr', 'kg', 'ft', 'mtr', 'tons', 'bags', 'set'].map(u => (
+                                <SelectItem key={u} value={u} className="uppercase">{u}</SelectItem>
                               ))}
-                              <SelectItem value="__custom__" className="text-blue-600 font-semibold border-t border-slate-100 mt-1">
-                                ✏️ Other (type your own)
-                              </SelectItem>
                             </SelectContent>
                           </Select>
-                        );
-                      }}
-                    />
-                  </div>
+                        )}
+                      />
+                    </div>
 
-                  <div className="md:col-span-1 flex justify-end md:justify-center mt-2 md:mt-0">
-                    <button type="button" onClick={() => remove(index)} disabled={fields.length <= 1} className={`p-2 rounded transition-colors ${fields.length <= 1 ? 'text-slate-200 cursor-not-allowed' : 'text-slate-400 hover:text-red-500 hover:bg-red-50'}`} title={fields.length <= 1 ? 'At least one item is required' : 'Delete Row'}>
-                      <Trash2 className="w-5 h-5" />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
+                    <div className="sm:col-span-2">
+                      <label className="block sm:hidden text-xs font-semibold text-slate-400 mb-1">Brand</label>
+                      <Controller
+                        name={`items.${index}.brand`}
+                        control={control}
+                        render={({ field: { onChange, value } }) => {
+                          const isCustom = value === '__custom__' || (!availableBrands.includes(value) && value !== 'Any');
+                          return isCustom ? (
+                            <div className="flex gap-1.5">
+                              <Input
+                                type="text"
+                                value={value === '__custom__' ? '' : value}
+                                placeholder="Brand..."
+                                className="bg-white border-slate-200 font-medium text-sm flex-1"
+                                autoFocus={value === '__custom__'}
+                                onChange={(e) => onChange(e.target.value)}
+                                onBlur={(e) => {
+                                  if (!e.target.value.trim()) onChange('Any');
+                                }}
+                              />
+                              <button
+                                type="button"
+                                className="text-xs text-slate-400 hover:text-slate-600 px-1 shrink-0 font-bold"
+                                onClick={() => onChange('Any')}
+                              >✕</button>
+                            </div>
+                          ) : (
+                            <Select value={value} onValueChange={onChange}>
+                              <SelectTrigger className="bg-white border-slate-200 font-medium text-sm">
+                                <SelectValue placeholder="Brand" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {availableBrands.map(b => (
+                                  <SelectItem key={b} value={b}>{b}</SelectItem>
+                                ))}
+                                <SelectItem value="__custom__" className="text-blue-600 font-bold border-t border-slate-100 mt-1">
+                                  ✏️ Custom
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                          );
+                        }}
+                      />
+                    </div>
 
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => append({ itemName: '', itemDescription: '', quantity: '', quantityUnit: 'pcs', brand: 'Any' })}
-              className="mt-4 text-blue-600 hover:text-blue-700 hover:bg-blue-50 font-extrabold border border-dashed border-blue-200"
-            >
-              <Plus className="w-4 h-4 mr-1" /> Add Another Item
-            </Button>
-          </div>
-        )}
-
-        {/* Step 3 — Documents & Terms */}
-        <div className="p-6 md:p-8 bg-white border border-slate-200 rounded-2xl shadow-sm relative overflow-hidden">
-          <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-300 rounded-l-2xl" />
-          <div className="border-b border-slate-200 pb-4 mb-6 flex items-start gap-3">
-            <span className="shrink-0 w-7 h-7 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center mt-0.5">3</span>
-            <div>
-              <h3 className="text-lg font-black text-slate-900">Other Details & Terms</h3>
-              <p className="text-[13px] text-slate-400 mt-0.5">Upload relevant documents, reference images, or specifications, and mention any specific terms.</p>
-            </div>
-          </div>
-          
-          <div className="mb-8">
-            <label className="block text-sm font-extrabold text-slate-800 mb-2">Attachments (Optional, max 2 docs)</label>
-            <div className="p-6 bg-slate-50 border-2 border-dashed border-slate-300 rounded-lg text-center hover:bg-slate-100 transition-colors">
-              <UploadCloud className="w-10 h-10 text-slate-400 mx-auto mb-2" />
-              <p className="text-slate-600 font-medium text-sm mb-4">Drag and drop or click to upload</p>
-              <input
-                type="file"
-                id="file-upload"
-                multiple
-                className="hidden"
-                ref={fileInputRef}
-                onChange={handleFileChange}
-                accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.jpg,.png"
-              />
-              <Button type="button" variant="outline" className="font-bold border-slate-300 bg-white" onClick={() => fileInputRef.current.click()}>
-                Choose Files
-              </Button>
-              <p className="text-xs text-slate-400 mt-3 font-medium">Max size: 10MB per file. Formats: PDF, Excel, Word, Image</p>
-            </div>
-            
-            {selectedFiles.length > 0 && (
-              <div className="mt-4 flex flex-wrap gap-3">
-                {selectedFiles.map((file, idx) => (
-                  <div key={idx} className="flex items-center gap-2 bg-emerald-50 border border-emerald-100 text-emerald-700 px-3 py-2 rounded-md shadow-sm">
-                    <FileText className="w-4 h-4 shrink-0" />
-                    <span className="text-xs font-bold truncate max-w-[150px]">{file.name}</span>
-                    <button type="button" onClick={() => removeFile(idx)} className="text-emerald-500 hover:text-emerald-800 ml-1">
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
+                    <div className="sm:col-span-0.5 flex justify-end sm:justify-center mt-2 sm:mt-0">
+                      <button type="button" onClick={() => remove(index)} disabled={fields.length <= 1} className={`p-1.5 rounded transition-colors ${fields.length <= 1 ? 'text-slate-200 cursor-not-allowed' : 'text-slate-400 hover:text-red-500 hover:bg-red-50'}`} title="Delete Item">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
-            )}
-          </div>
 
-          <div>
-            <label className="block text-sm font-extrabold text-slate-800 mb-2">Other Terms</label>
-            <Textarea
-              placeholder="Any specific delivery terms, conditions, or quotation instructions..."
-              {...register('otherTerms')}
-              className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium min-h-[100px]"
-            />
-          </div>
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => append({ itemName: '', itemDescription: '', quantity: '', quantityUnit: 'pcs', brand: 'Any' })}
+                className="mt-4 text-blue-600 hover:text-blue-700 hover:bg-blue-50 font-bold border border-dashed border-blue-200 text-xs px-4 py-2"
+              >
+                <Plus className="w-3.5 h-3.5 mr-1" /> Add Another Item
+              </Button>
+            </div>
+          )}
         </div>
 
-        {/* Step 4 — Delivery & Organization */}
-        <div className="p-6 md:p-8 bg-white border border-slate-200 rounded-2xl shadow-sm relative overflow-hidden">
-          <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-400 rounded-l-2xl" />
-          <div className="border-b border-slate-100 pb-5 mb-8 flex items-start gap-3">
-            <span className="shrink-0 w-7 h-7 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center mt-0.5">4</span>
-            <div>
-              <h3 className="text-lg font-black text-slate-900">Delivery & Organization Details</h3>
-              <p className="text-[13px] text-slate-400 mt-0.5">Specify your timeline, payment terms, and delivery location so suppliers can quote accurately.</p>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            <div>
-              <label className="block text-sm font-extrabold text-slate-800 mb-2">Delivery Date</label>
-              <Controller
-                control={control}
-                name="deliveryDate"
-                render={({ field: { onChange, value } }) => (
-                  <DatePicker date={value} title="Select Date" disabledBeforeDate={new Date()} setDate={onChange} />
-                )}
-              />
-            </div>
+        {/* Right Side: Delivery, Terms & Submit Panel */}
+        <div className="lg:col-span-4 space-y-6">
+          {/* Section 3: Delivery Terms */}
+          <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-xs">
+            <h3 className="text-lg font-black text-slate-900 mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
+              <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center">3</span>
+              Timeline & Payment
+            </h3>
 
-            <div>
-              <label className="block text-sm font-extrabold text-slate-800 mb-2">Bid Valid Until</label>
-              <Controller
-                control={control}
-                name="expiryDate"
-                render={({ field: { onChange, value } }) => (
-                  <DatePicker date={value} title="Select Expiry" disabledBeforeDate={new Date()} setDate={onChange} />
-                )}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-extrabold text-slate-800 mb-2">Payment Mode</label>
-              <Controller
-                name="paymentMode"
-                control={control}
-                render={({ field: { onChange, value } }) => (
-                  <Select value={value} onValueChange={onChange}>
-                    <SelectTrigger className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus:ring-blue-500/30 focus:border-blue-500 transition-all font-medium">
-                      <SelectValue placeholder="Select Payment Mode" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="cash">Cash</SelectItem>
-                      <SelectItem value="bank or online">Banking or Online mode</SelectItem>
-                      <SelectItem value="credit">Credit terms</SelectItem>
-                      <SelectItem value="any">Any</SelectItem>
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-extrabold text-slate-800 mb-2">GST Input Required?</label>
-              <Controller
-                name="gstRequired"
-                control={control}
-                render={({ field: { onChange, value } }) => (
-                  <Select value={value} onValueChange={onChange}>
-                    <SelectTrigger className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus:ring-blue-500/30 focus:border-blue-500 transition-all font-medium">
-                      <SelectValue placeholder="Yes / No" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="yes">Yes</SelectItem>
-                      <SelectItem value="no">No</SelectItem>
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-            </div>
-
-            {gstField === 'yes' && (
-              <div className="sm:col-span-2 md:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-6 p-4 bg-blue-50/50 border border-blue-100 rounded-md">
-                <div>
-                  <label className="block text-sm font-extrabold text-slate-800 mb-2">GST Number*</label>
-                  <Input placeholder="Enter GSTIN" {...register('gstNumber')} className="bg-white border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium uppercase" maxLength={15} />
-                </div>
-                <div>
-                  <label className="block text-sm font-extrabold text-slate-800 mb-2">Organization Name</label>
-                  <Input placeholder="Registered Company Name" {...register('organizationName')} className="bg-white border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium" />
-                </div>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Delivery Date</label>
+                <Controller
+                  control={control}
+                  name="deliveryDate"
+                  render={({ field: { onChange, value } }) => (
+                    <DatePicker date={value} title="Select Date" disabledBeforeDate={new Date()} setDate={onChange} />
+                  )}
+                />
               </div>
-            )}
 
-            <div className="sm:col-span-2 md:col-span-3">
-              <label className="block text-sm font-extrabold text-slate-800 mb-2">Locality, City, State*</label>
-              <p className="text-xs text-slate-500 mb-2 font-medium">⚠️ For your privacy, please provide only the city, state, or general area. Do not enter your full street address.</p>
-              <Input placeholder="e.g. Rajajinagar, Bangalore, Karnataka" {...register('deliveryAddress')} className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium" />
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Bid Valid Until</label>
+                <Controller
+                  control={control}
+                  name="expiryDate"
+                  render={({ field: { onChange, value } }) => (
+                    <DatePicker date={value} title="Select Expiry" disabledBeforeDate={new Date()} setDate={onChange} />
+                  )}
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Payment Mode</label>
+                <Controller
+                  name="paymentMode"
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <Select value={value} onValueChange={onChange}>
+                      <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 font-medium">
+                        <SelectValue placeholder="Select Payment Mode" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="cash">Cash</SelectItem>
+                        <SelectItem value="bank or online">Banking or Online mode</SelectItem>
+                        <SelectItem value="credit">Credit terms</SelectItem>
+                        <SelectItem value="any">Any</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">GST Input Required?</label>
+                <Controller
+                  name="gstRequired"
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <Select value={value} onValueChange={onChange}>
+                      <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 font-medium">
+                        <SelectValue placeholder="Yes / No" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="yes">Yes</SelectItem>
+                        <SelectItem value="no">No</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </div>
+
+              {gstField === 'yes' && (
+                <div className="space-y-4 p-4 bg-blue-50/30 border border-blue-100 rounded-lg">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">GST Number*</label>
+                    <Input placeholder="Enter GSTIN" {...register('gstNumber')} className="bg-white border-slate-200 font-medium uppercase" maxLength={15} />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Organization Name</label>
+                    <Input placeholder="Registered Company Name" {...register('organizationName')} className="bg-white border-slate-200 font-medium" />
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Locality, City, State*</label>
+                <p className="text-[10px] text-slate-400 mb-1.5 font-medium">⚠️ Provide general area (e.g. city/state), not full street address.</p>
+                <Input placeholder="e.g. Indiranagar, Bangalore, KA" {...register('deliveryAddress')} className="bg-slate-50/50 border-slate-200 font-medium" />
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Action Button */}
-        <div className="flex justify-end pt-4 pb-12">
+          {/* Section 4: Attachments & Notes */}
+          <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-xs">
+            <h3 className="text-lg font-black text-slate-900 mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
+              <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center">4</span>
+              Files & Terms
+            </h3>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Attachments (Max 2)</label>
+                <div className="p-4 bg-slate-50/50 border border-dashed border-slate-200 rounded-lg text-center hover:bg-slate-50 transition-colors">
+                  <UploadCloud className="w-8 h-8 text-slate-400 mx-auto mb-1.5" />
+                  <input
+                    type="file"
+                    id="file-upload"
+                    multiple
+                    className="hidden"
+                    ref={fileInputRef}
+                    onChange={handleFileChange}
+                    accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.jpg,.png"
+                  />
+                  <Button type="button" variant="outline" className="font-bold border-slate-300 bg-white text-xs h-8 px-3" onClick={() => fileInputRef.current.click()}>
+                    Choose Files
+                  </Button>
+                </div>
+                
+                {selectedFiles.length > 0 && (
+                  <div className="mt-3 space-y-2">
+                    {selectedFiles.map((file, idx) => (
+                      <div key={idx} className="flex items-center justify-between bg-emerald-50 text-emerald-800 px-3 py-1.5 rounded border border-emerald-100 text-xs font-medium">
+                        <span className="truncate max-w-[160px]">{file.name}</span>
+                        <button type="button" onClick={() => removeFile(idx)} className="text-emerald-500 hover:text-emerald-800">
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Other Terms / Notes</label>
+                <Textarea
+                  placeholder="Quotation instructions, brand preferences, specific conditions..."
+                  {...register('otherTerms')}
+                  className="bg-slate-50/50 border-slate-200 font-medium min-h-[90px]"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Submit Actions */}
           <Button
             type="submit"
             disabled={loading}
-            className="w-full md:w-auto px-14 h-16 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 hover:shadow-xl hover:shadow-blue-500/40 hover:-translate-y-1 active:translate-y-0 text-white font-bold text-lg rounded-2xl transition-all duration-300 group"
+            className="w-full h-14 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 hover:shadow-lg text-white font-bold text-base rounded-xl transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-md"
           >
-            {loading ? <Spinner className="w-6 h-6 animate-spin mx-auto" /> : 'Post Requirement'}
-            {!loading && <span className="ml-2 opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-2 group-hover:translate-x-1 transition-all duration-300">→</span>}
+            {loading ? <span className="animate-spin mr-2">⏳</span> : 'Post Requirement'}
+            {!loading && <span>→</span>}
           </Button>
         </div>
       </form>

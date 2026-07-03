@@ -161,40 +161,62 @@ export default function Hero({ onOpenAuth }) {
           </div>
         </div>
 
-        {/* Right: category carousel — kept, but now tighter and darker to fit */}
-        <div className="lg:col-span-5 relative w-full h-[360px] sm:h-[440px] rounded-2xl overflow-hidden shadow-2xl shadow-black/50 ring-1 ring-white/10 hidden lg:block">
+        {/* Right: category carousel — fully responsive, touch-friendly, high-contrast and premium */}
+        <div className="lg:col-span-5 relative w-full h-[280px] sm:h-[360px] lg:h-[440px] rounded-2xl overflow-hidden shadow-2xl shadow-black/50 ring-1 ring-white/10 group mt-6 lg:mt-0">
           {HERO_IMAGES.map((img, index) => (
             <div
               key={index}
-              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'
+              className={`absolute inset-0 transition-all duration-700 ease-in-out ${
+                index === currentSlide ? 'opacity-100 scale-100 z-10' : 'opacity-0 scale-95 z-0'
               }`}
             >
               <img
                 src={img.url}
                 alt={img.caption}
                 className="w-full h-full object-cover"
-                style={{ transform: index === currentSlide ? 'scale(1.04)' : 'scale(1)', transition: 'transform 4500ms ease-out' }}
+                onError={(e) => {
+                  e.target.src = 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=800&q=80';
+                }}
+                style={{ transform: index === currentSlide ? 'scale(1.05)' : 'scale(1)', transition: 'transform 5000ms ease-out' }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
-              <div className="absolute bottom-6 left-6 z-20 space-y-1">
-                <span className="text-[9px] font-black uppercase tracking-widest bg-blue-500 text-white px-2 py-0.5 rounded">
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
+              <div className="absolute bottom-6 left-6 z-20 space-y-1.5">
+                <span className="text-xs font-black uppercase tracking-widest bg-blue-600 text-white px-2.5 py-1 rounded-md">
                   Live category
                 </span>
-                <p className="font-black text-xl text-white drop-shadow-lg">{img.caption}</p>
+                <p className="font-black text-xl sm:text-2xl text-white drop-shadow-lg">{img.caption}</p>
               </div>
             </div>
           ))}
-          {/* Dots — subtle */}
-          <div className="absolute bottom-6 right-6 flex gap-1.5 z-20">
+
+          {/* Left/Right Buttons - Visible on hover for premium desktop, tap-friendly on mobile */}
+          <button
+            type="button"
+            onClick={() => setCurrentSlide((prev) => (prev - 1 + HERO_IMAGES.length) % HERO_IMAGES.length)}
+            className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-slate-900/60 hover:bg-blue-600 text-white flex items-center justify-center backdrop-blur-sm opacity-0 group-hover:opacity-100 active:scale-90 transition-all duration-300 pointer-events-auto cursor-pointer"
+            aria-label="Previous slide"
+          >
+            ‹
+          </button>
+          <button
+            type="button"
+            onClick={() => setCurrentSlide((prev) => (prev + 1) % HERO_IMAGES.length)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-slate-900/60 hover:bg-blue-600 text-white flex items-center justify-center backdrop-blur-sm opacity-0 group-hover:opacity-100 active:scale-90 transition-all duration-300 pointer-events-auto cursor-pointer"
+            aria-label="Next slide"
+          >
+            ›
+          </button>
+
+          {/* Dots — larger & clickable */}
+          <div className="absolute bottom-6 right-6 flex gap-2 z-20 bg-slate-950/40 p-2 rounded-full backdrop-blur-xs">
             {HERO_IMAGES.map((_, index) => (
               <button
                 key={index}
                 type="button"
                 onClick={() => setCurrentSlide(index)}
                 aria-label={`Show slide ${index + 1}`}
-                className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
-                  index === currentSlide ? 'bg-blue-400 w-6' : 'bg-white/50 hover:bg-white w-1.5'
+                className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
+                  index === currentSlide ? 'bg-blue-500 w-6' : 'bg-white/60 hover:bg-white w-2.5'
                 }`}
               />
             ))}
