@@ -365,17 +365,17 @@ const SellerForm = ({
                     Margin Calculator
                   </a>
                 </div>
-                {/* Perfect Browser Table to guarantee columns spacing and prevent any overlapping */}
-                <div className="w-full overflow-x-auto">
-                  <table className="w-full text-left border-collapse min-w-[700px]">
+                {/* Table with fixed layout and larger min-width to enforce spacing at high zoom factors */}
+                <div className="w-full overflow-x-auto border border-slate-100 rounded-lg shadow-sm">
+                  <table className="w-full text-left border-collapse min-w-[850px] table-fixed">
                     <thead>
                       <tr className="bg-slate-50 text-[11px] font-extrabold text-slate-500 uppercase tracking-wider border-b border-slate-100">
-                        <th className="px-4 py-3 w-1/4">Item Name</th>
-                        <th className="px-4 py-3 w-1/4">Description / Specs</th>
-                        <th className="px-4 py-3 text-center w-12">Quantity</th>
-                        <th className="px-4 py-3 text-center w-12">Units</th>
-                        <th className="px-4 py-3 w-28">Brand</th>
-                        <th className="px-4 py-3 text-right w-36">Unit Price (₹)</th>
+                        <th className="px-4 py-3 w-[220px]">Item Name</th>
+                        <th className="px-4 py-3 w-[220px]">Description / Specs</th>
+                        <th className="px-4 py-3 text-center w-[90px]">Quantity</th>
+                        <th className="px-4 py-3 text-center w-[90px]">Units</th>
+                        <th className="px-4 py-3 w-[110px]">Brand</th>
+                        <th className="px-4 py-3 text-right w-[120px]">Unit Price (₹)</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
