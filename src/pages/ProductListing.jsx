@@ -330,7 +330,7 @@ export default function ProductListing() {
 
     try {
       const response = await productService.getProductByTitle(title, currentPage, limit, {
-        category,
+        categoryId: category,
         subCategoryId,
         min_budget,
         max_budget,
