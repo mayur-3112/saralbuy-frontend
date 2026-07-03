@@ -596,11 +596,11 @@ const HomeNavbar = () => {
 
               </div>
 
-            {/* Unified Search & Location Pill - Hidden on landing page for redundancy */}
-            {window.location.pathname === '/' ? (
-              <div className="flex-1" />
-            ) : (
-              <div className="flex-1 max-w-3xl flex items-center bg-white rounded-full border border-slate-200 shadow-sm hover:shadow-md focus-within:shadow-md focus-within:border-blue-300 transition-all duration-300 overflow-visible mx-4">
+            {/* Unified Search & Location Pill — the single site-wide search.
+                Shown on EVERY page including the landing page: the hero search
+                was removed, so hiding this on '/' left the homepage with no
+                search at all. */}
+            <div className="flex-1 max-w-3xl flex items-center bg-white rounded-full border border-slate-200 shadow-sm hover:shadow-md focus-within:shadow-md focus-within:border-blue-300 transition-all duration-300 overflow-visible mx-4">
               {/* Location */}
               <div className="flex items-center relative group shrink-0 w-36 lg:w-48 border-r border-slate-200 hover:bg-slate-50 rounded-l-full transition-colors">
                 <MapPin 
@@ -690,7 +690,6 @@ const HomeNavbar = () => {
                 )}
               </div>
             </div>
-            )}
 
             {/* Right Side Actions */}
             <div className="flex items-center gap-3 xl:gap-5 shrink-0">
