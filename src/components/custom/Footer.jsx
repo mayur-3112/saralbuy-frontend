@@ -20,7 +20,7 @@ export default function Footer() {
 
       <div className="relative max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-12 z-10">
         {/* Company block */}
-        <div className="lg:col-span-5 space-y-5">
+        <div className="lg:col-span-6 space-y-5">
           <Link to="/" className="inline-block transition-transform hover:scale-105 duration-300">
             <img src={SaralBuyLogo} alt="SaralBuy" className="h-14 w-auto drop-shadow-[0_2px_8px_rgba(59,130,246,0.3)]" />
           </Link>
@@ -29,7 +29,7 @@ export default function Footer() {
             Post a requirement, receive quotes from multiple suppliers, and stay anonymous
             until you choose one.
           </p>
-          <div className="flex gap-4 pt-1">
+          <div className="flex flex-wrap gap-4 pt-1">
             <div className="text-xs font-semibold text-blue-400 bg-blue-950/80 border border-blue-500/30 px-3.5 py-1.5 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.15)]">
               🚀 Audited Suppliers
             </div>
@@ -39,27 +39,8 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Sourcing categories */}
-        <div className="lg:col-span-3">
-          <h4 className="text-xs font-black uppercase tracking-[0.25em] text-blue-400/90 mb-5">
-            Sourcing Categories
-          </h4>
-          <ul className="space-y-3 font-semibold">
-            {CATEGORIES.map(c => (
-              <li key={c}>
-                <Link
-                  to="/product-listing"
-                  className="text-sm text-slate-300 hover:text-white hover:underline underline-offset-4 decoration-blue-500/50 decoration-2 transition-all"
-                >
-                  {c}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
         {/* Company links */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-3">
           <h4 className="text-xs font-black uppercase tracking-[0.25em] text-blue-400/90 mb-5">
             Company
           </h4>
@@ -72,7 +53,7 @@ export default function Footer() {
         </div>
 
         {/* Legal */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-3">
           <h4 className="text-xs font-black uppercase tracking-[0.25em] text-blue-400/90 mb-5">
             Legal
           </h4>
