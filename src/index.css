@@ -247,3 +247,56 @@
 }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 
+/*
+ * Accessibility layer — targeting real users who may be older, less English-
+ * comfortable, or non-tech-fluent. Overrides / additions used by big-touch
+ * screens (post-requirement CTA, dashboard next-up card, homepage hero).
+ *
+ * Rules:
+ *   .sb-big-tap      — 52px min tap target (WCAG mobile recommendation)
+ *   .sb-warm-bg      — cream-ish base instead of stark white for older eyes
+ *   .sb-readable     — 16px minimum, generous line-height, no uppercase
+ *   .sb-signal-*     — high-contrast semantic color pills
+ *
+ * These are additive — old designs still work. Progressive adoption.
+ */
+.sb-big-tap {
+  min-height: 52px;
+  font-size: 15px;
+  line-height: 1.3;
+}
+.sb-warm-bg { background-color: #fdfaf6; }
+
+.sb-readable {
+  font-size: 16px;
+  line-height: 1.6;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* Traffic-light semantic pills — high contrast so they READ */
+.sb-signal-verified {
+  background: #dcfce7;
+  color: #14532d;
+  border: 1px solid #86efac;
+  font-weight: 800;
+}
+.sb-signal-pending {
+  background: #fef3c7;
+  color: #78350f;
+  border: 1px solid #fcd34d;
+  font-weight: 800;
+}
+.sb-signal-error {
+  background: #fee2e2;
+  color: #7f1d1d;
+  border: 1px solid #fca5a5;
+  font-weight: 800;
+}
+.sb-signal-info {
+  background: #dbeafe;
+  color: #1e3a8a;
+  border: 1px solid #93c5fd;
+  font-weight: 800;
+}
+

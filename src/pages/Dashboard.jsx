@@ -134,17 +134,17 @@ export default function Dashboard() {
   const CardIcon = card.icon;
 
   return (
-    <main className="relative min-h-screen bg-slate-50 pb-16">
+    <main className="relative min-h-screen bg-orange-50/30 pb-16">
       <OnboardingTour />
       <div className="w-full max-w-7xl mx-auto px-4">
 
-        {/* Welcome header */}
-        <div className="pt-8 pb-5">
-          <div className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 mb-1">
+        {/* Welcome header — warm and specific */}
+        <div className="pt-8 pb-6">
+          <div className="text-sm font-bold text-slate-600 mb-1">
             {new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-            {user?.firstName ? `Hi, ${user.firstName}.` : 'Welcome back.'}
+          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
+            {user?.firstName ? `Namaste, ${user.firstName}` : 'Welcome back'}
           </h1>
         </div>
 
@@ -154,15 +154,15 @@ export default function Dashboard() {
             <div className="absolute -top-16 -right-16 w-56 h-56 rounded-full blur-3xl pointer-events-none"
                  style={{ background: 'radial-gradient(circle, rgba(251,146,60,0.25), transparent 70%)' }} />
             <div className="relative flex flex-col sm:flex-row sm:items-center gap-5">
-              <div className="w-14 h-14 rounded-xl bg-orange-500/15 border border-orange-500/30 flex items-center justify-center shrink-0">
-                <CardIcon className="w-7 h-7 text-orange-300" />
+              <div className="w-16 h-16 rounded-xl bg-orange-500/15 border border-orange-500/30 flex items-center justify-center shrink-0">
+                <CardIcon className="w-8 h-8 text-orange-300" />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-[10px] font-black uppercase tracking-[0.2em] text-orange-300 mb-1">
+                <div className="text-sm font-black text-orange-300 mb-1.5">
                   {card.eyebrow}
                 </div>
-                <h2 className="text-xl sm:text-2xl font-black leading-tight">{card.title}</h2>
-                <p className="text-sm text-slate-300 mt-2 max-w-2xl">{card.body}</p>
+                <h2 className="text-2xl sm:text-3xl font-black leading-tight">{card.title}</h2>
+                <p className="text-base text-slate-300 mt-3 max-w-2xl leading-relaxed">{card.body}</p>
               </div>
               <div className="flex flex-col sm:items-end gap-2 shrink-0">
                 <button
@@ -170,15 +170,15 @@ export default function Dashboard() {
                     if (card.cta.jumpTo) setActiveTab(card.cta.jumpTo);
                     else card.cta.onClick();
                   }}
-                  className="inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-500 active:scale-95 text-white font-black text-sm px-5 py-3 rounded-lg transition-all"
+                  className="sb-big-tap inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-500 active:scale-95 text-white font-black text-base px-6 py-3.5 rounded-lg transition-all"
                 >
-                  <card.cta.icon className="w-4 h-4" />
+                  <card.cta.icon className="w-5 h-5" />
                   {card.cta.label}
                 </button>
                 {card.alt && (
                   <button
                     onClick={card.alt.onClick}
-                    className="text-xs font-bold text-slate-400 hover:text-white transition-colors"
+                    className="text-sm font-bold text-slate-300 hover:text-white transition-colors"
                   >
                     {card.alt.label} →
                   </button>
@@ -188,53 +188,53 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Quick actions — always visible, always the same two */}
+        {/* Quick actions — big and obvious, icon+label */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
           <button
             onClick={() => navigate('/requirement')}
-            className="group flex items-center justify-center gap-2 bg-white border border-slate-200 hover:border-slate-900 text-slate-900 hover:shadow-md font-bold text-sm px-5 py-3.5 rounded-xl transition-all"
+            className="sb-big-tap group flex items-center justify-center gap-2 bg-white border-2 border-slate-200 hover:border-slate-900 text-slate-900 hover:shadow-md font-bold text-base px-5 py-4 rounded-xl transition-all"
           >
-            <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform duration-200" />
+            <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-200" />
             Post a requirement
           </button>
           <button
             onClick={() => navigate('/product-listing')}
-            className="group flex items-center justify-center gap-2 bg-white border border-slate-200 hover:border-slate-900 text-slate-900 hover:shadow-md font-bold text-sm px-5 py-3.5 rounded-xl transition-all"
+            className="sb-big-tap group flex items-center justify-center gap-2 bg-white border-2 border-slate-200 hover:border-slate-900 text-slate-900 hover:shadow-md font-bold text-base px-5 py-4 rounded-xl transition-all"
           >
-            <Search className="w-4 h-4" />
+            <Search className="w-5 h-5" />
             Browse live RFQs
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </button>
         </div>
 
-        {/* Tabs — Quotes / Sourcing */}
-        <div className="flex border-b border-slate-200 mb-6 bg-white rounded-xl p-1.5 gap-1">
+        {/* Tabs — bigger text, bigger tap targets */}
+        <div className="flex border-b border-slate-200 mb-6 bg-white rounded-xl p-2 gap-1 shadow-sm">
           <button
             onClick={() => setActiveTab('quotes')}
-            className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 font-bold text-xs rounded-lg transition-all ${
+            className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 font-bold text-sm rounded-lg transition-all ${
               activeTab === 'quotes'
                 ? 'bg-slate-900 text-white'
-                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
             }`}
           >
-            <Gavel className="w-3.5 h-3.5" />
+            <Gavel className="w-4 h-4" />
             My quotes
-            <span className={`text-[10px] font-black px-1.5 py-0.5 rounded ${
-              activeTab === 'quotes' ? 'bg-white/20' : 'bg-slate-100 text-slate-500'
+            <span className={`text-xs font-black px-2 py-0.5 rounded-full ${
+              activeTab === 'quotes' ? 'bg-white/20' : 'bg-slate-100 text-slate-600'
             }`}>{bids.length}</span>
           </button>
           <button
             onClick={() => setActiveTab('requirements')}
-            className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 font-bold text-xs rounded-lg transition-all ${
+            className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 font-bold text-sm rounded-lg transition-all ${
               activeTab === 'requirements'
                 ? 'bg-slate-900 text-white'
-                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
             }`}
           >
-            <FileText className="w-3.5 h-3.5" />
+            <FileText className="w-4 h-4" />
             My sourcing
-            <span className={`text-[10px] font-black px-1.5 py-0.5 rounded ${
-              activeTab === 'requirements' ? 'bg-white/20' : 'bg-slate-100 text-slate-500'
+            <span className={`text-xs font-black px-2 py-0.5 rounded-full ${
+              activeTab === 'requirements' ? 'bg-white/20' : 'bg-slate-100 text-slate-600'
             }`}>{drafts.length}</span>
           </button>
         </div>

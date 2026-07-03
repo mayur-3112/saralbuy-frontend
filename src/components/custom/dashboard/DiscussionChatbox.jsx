@@ -198,16 +198,16 @@ export default function DiscussionChatbox() {
                           className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}
                         >
                           <div
-                            className={`max-w-[75%] rounded-2xl px-3.5 py-2 text-sm leading-relaxed shadow-xs ${
+                            className={`max-w-[78%] rounded-2xl px-4 py-2.5 text-base leading-normal shadow-sm ${
                               isMe
-                                ? 'bg-slate-900 text-white rounded-br-md'
-                                : 'bg-white text-slate-800 border border-slate-200 rounded-bl-md'
+                                ? 'bg-emerald-600 text-white rounded-br-md'
+                                : 'bg-white text-slate-900 border border-slate-200 rounded-bl-md'
                             }`}
                           >
                             <p>{msg.text}</p>
                             <span
-                              className={`block text-[9px] text-right mt-1 font-medium ${
-                                isMe ? 'text-slate-400' : 'text-slate-400'
+                              className={`block text-[10px] text-right mt-1 font-medium ${
+                                isMe ? 'text-emerald-100' : 'text-slate-400'
                               }`}
                             >
                               {new Date(msg.timestamp).toLocaleTimeString('en-US', {

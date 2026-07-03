@@ -57,18 +57,18 @@ export default function LiveSourcingBoard({ onOpenAuth }) {
       <div className="flex items-end justify-between gap-4 mb-6 flex-wrap">
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <span className="relative flex h-2 w-2">
+            <span className="relative flex h-2.5 w-2.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-600" />
             </span>
-            <span className="text-[11px] font-black uppercase tracking-[0.2em] text-emerald-700">
+            <span className="text-sm font-black text-emerald-700">
               {requirements.length > 0 ? `${requirements.length} live now` : 'Live board'}
             </span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-tight">
             Real requirements. Real quotes.
           </h2>
-          <p className="text-sm text-slate-500 mt-1 max-w-xl">
+          <p className="text-base text-slate-600 mt-2 max-w-xl">
             These are actual RFQs posted on SaralBuy. Sign in to quote, or browse them here.
           </p>
         </div>
@@ -76,10 +76,10 @@ export default function LiveSourcingBoard({ onOpenAuth }) {
           <button
             type="button"
             onClick={() => navigate('/product-listing')}
-            className="group inline-flex items-center gap-1.5 text-sm font-bold text-orange-700 hover:text-orange-800"
+            className="group inline-flex items-center gap-1.5 text-base font-bold text-orange-700 hover:text-orange-800"
           >
             View all {requirements.length}
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </button>
         )}
       </div>

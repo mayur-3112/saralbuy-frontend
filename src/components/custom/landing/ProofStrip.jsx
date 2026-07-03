@@ -104,19 +104,19 @@ export default function ProofStrip() {
   return (
     <section className="bg-slate-950 border-b border-white/5">
       <div className="max-w-7xl mx-auto px-4 py-10 sm:py-14">
-        {/* Honest proof numbers — only tiles with real data render */}
+        {/* Honest proof numbers — larger, more readable tiles */}
         {metrics.length > 0 && (
         <div className={`grid ${gridCols} gap-3 sm:gap-4`}>
           {metrics.map((m) => (
             <div
               key={m.label}
-              className={`relative rounded-xl border bg-gradient-to-br ${m.accent} p-4 sm:p-5`}
+              className={`relative rounded-xl border bg-gradient-to-br ${m.accent} p-5 sm:p-6`}
             >
-              <m.icon className="w-5 h-5 mb-2 opacity-80" />
-              <div className="text-2xl sm:text-3xl font-black text-white leading-none tracking-tight">
+              <m.icon className="w-6 h-6 mb-3 opacity-90" />
+              <div className="text-3xl sm:text-4xl font-black text-white leading-none tracking-tight">
                 {m.value}
               </div>
-              <div className="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-slate-400 mt-1.5">
+              <div className="text-sm font-bold text-slate-200 mt-2 leading-snug">
                 {m.label}
               </div>
             </div>
