@@ -300,3 +300,14 @@
   font-weight: 800;
 }
 
+/* Disable scroll wheel value changes and hide arrows on numeric input fields */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
