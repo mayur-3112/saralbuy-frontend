@@ -23,6 +23,7 @@ export default function LiveSourcingBoard({ onOpenAuth }) {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('All locations');
+  const [showExpired, setShowExpired] = useState(false);
   const [open, setOpen] = useState(false);
   const { user } = useUserState();
   const navigate = useNavigate();
@@ -46,7 +47,23 @@ export default function LiveSourcingBoard({ onOpenAuth }) {
     const matchesCategory = selectedCategory === 'All' || req.categoryId?.categoryName === selectedCategory;
     const reqLocation = (req.userId?.address || '').toLowerCase();
     const matchesLocation = selectedLocation === 'All locations' || reqLocation.includes(selectedLocation.toLowerCase());
-    return matchesSearch && matchesCategory && matchesLocation;
+    
+    // Check expiry
+    let isExpired = false;
+    const expiryDateStr = req.bidExpiryDate || req.timeline || req.bidActiveDuration;
+    if (expiryDateStr && isNaN(Number(expiryDateStr))) {
+      isExpired = new Date(expiryDateStr).getTime() < Date.now();
+    } else if (expiryDateStr && !isNaN(Number(expiryDateStr))) {
+      const days = Number(expiryDateStr);
+      isExpired = new Date(new Date(req.createdAt || Date.now()).getTime() + days * 24 * 60 * 60 * 1000).getTime() < Date.now();
+    } else if (!expiryDateStr && req.createdAt) {
+      const days = Number(req.bidActiveDuration || '1');
+      isExpired = new Date(new Date(req.createdAt).getTime() + days * 24 * 60 * 60 * 1000).getTime() < Date.now();
+    }
+
+    const matchesExpiry = showExpired || !isExpired;
+
+    return matchesSearch && matchesCategory && matchesLocation && matchesExpiry;
   });
 
   const categories = Array.from(new Set(requirements.map(r => r.categoryId?.categoryName).filter(Boolean)));
@@ -84,8 +101,8 @@ export default function LiveSourcingBoard({ onOpenAuth }) {
         )}
       </div>
 
-      {/* Compact inline filter row */}
-      <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-2 mb-4">
+      {/* Compact inline filter row with Show Expired Toggle */}
+      <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_auto] gap-2 mb-4 items-center">
         <div className="relative flex items-center bg-white border border-slate-200 rounded-lg focus-within:border-slate-400 transition-colors">
           <Search className="absolute left-3 h-4 w-4 text-slate-400 pointer-events-none" />
           <input
@@ -106,6 +123,18 @@ export default function LiveSourcingBoard({ onOpenAuth }) {
             {CITIES.map((city) => <option key={city} value={city}>{city}</option>)}
           </select>
         </div>
+        <button
+          type="button"
+          onClick={() => setShowExpired(prev => !prev)}
+          className={`px-4 py-2.5 text-xs font-extrabold border rounded-lg cursor-pointer transition-all flex items-center gap-1.5 h-[42px] ${
+            showExpired 
+              ? 'bg-slate-900 border-slate-900 text-white hover:bg-slate-800' 
+              : 'bg-white border-slate-200 text-slate-600 hover:border-slate-400'
+          }`}
+        >
+          <span>⏰</span>
+          {showExpired ? 'Hide Expired' : 'Show Expired'}
+        </button>
       </div>
 
       {/* Category chip strip — horizontal scroll on mobile, no wrap */}
