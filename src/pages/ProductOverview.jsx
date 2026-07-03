@@ -1213,10 +1213,6 @@ const ProductOverview = () => {
                   )}
                 </div>
 
-                <p className="text-[15px] text-slate-600 leading-relaxed font-medium">
-                  {productResponse?.mainProduct?.description || bidOverviewRes?.product?.description}
-                </p>
-
                 {bidStats && bidStats.totalBids > 0 && (
                   <div className="bg-blue-50/80 border border-blue-200 rounded-lg p-4 mt-4 grid grid-cols-3 gap-2 text-center max-w-lg">
                     <div>
@@ -1452,6 +1448,23 @@ const ProductOverview = () => {
                       </p>
                     )}
                   </div>
+
+                  {/* Additional Information — the buyer's free-text notes/description.
+                      Moved here from the page header so it sits with the reference
+                      documents instead of crowding the title block. */}
+                  {(() => {
+                    const desc = productResponse?.mainProduct?.description || bidOverviewRes?.product?.description;
+                    if (!desc || !desc.trim()) return null;
+                    return (
+                      <div className="pt-4 mt-4 border-t border-slate-100">
+                        <h4 className="font-semibold text-slate-800 mb-2">Additional Information</h4>
+                        <p className="text-[15px] text-slate-600 leading-relaxed font-medium whitespace-pre-line">
+                          {desc}
+                        </p>
+                      </div>
+                    );
+                  })()}
+
                   {/* Attachments Section */}
                   {(() => {
                     const mp = bidOverviewRes?.product || productResponse?.mainProduct;
