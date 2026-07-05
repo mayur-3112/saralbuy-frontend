@@ -12,6 +12,8 @@ import {
   Handshake,
   CheckCircle,
   XCircle,
+  FileText,
+  ChevronRight,
 } from 'lucide-react';
 // import RatingPopup from '@/components/Popup/RatingPopup';
 // import ApprovalPopup from '@/components/Popup/ApprovalPopup';
@@ -34,7 +36,150 @@ import TooltipComp from '@/lib/TooltipComp';
 import pdfImage from '/pdf_img.png';
 import { useFetch } from '@/hooks/useFetch';
 import bucketService from '@/services/bucket.service';
+import bidService from '@/services/bid.service';
 import { formatSize } from '@/utils/sizeFormatter';
+import { currencyConvertor } from '@/utils/currencyConvertor';
+// ─────────────────────────────────────────────
+// helpers
+// ─────────────────────────────────────────────
+const fmt = val => (val && val !== '' ? val.replace(/_/g, ' ') : null);
+const fmtDate = val => {
+  if (!val) return null;
+  const d = new Date(val);
+  return isNaN(d) ? null : d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+};
+
+// ─────────────────────────────────────────────
+// QuoteDetailsPanel — supplier proof card
+// ─────────────────────────────────────────────
+const QuoteDetailsPanel = ({ quote, loading }) => {
+  if (loading) {
+    return (
+      <div className="h-full flex items-center justify-center bg-slate-50">
+        <div className="text-xs text-slate-400 animate-pulse">Loading quote details…</div>
+      </div>
+    );
+  }
+  if (!quote) {
+    return (
+      <div className="h-full flex flex-col items-center justify-center gap-2 bg-slate-50 px-4 text-center">
+        <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">
+          <FileText className="w-5 h-5 text-slate-300" />
+        </div>
+        <p className="text-xs text-slate-400">No quote details available</p>
+      </div>
+    );
+  }
+
+  const seller = quote.sellerId || {};
+  const biz = quote.businessDets || {};
+
+  const sections = [
+    {
+      heading: 'Quote Summary',
+      color: 'orange',
+      rows: [
+        { label: 'Quoted Price', value: quote.budgetQuation ? `₹ ${Number(quote.budgetQuation).toLocaleString('en-IN')}` : null },
+        { label: 'Brand Available', value: fmt(quote.availableBrand) },
+        { label: 'Earliest Delivery', value: fmtDate(quote.earliestDeliveryDate) },
+        { label: 'Location', value: fmt(quote.location) },
+      ],
+    },
+    {
+      heading: 'Terms & Logistics',
+      color: 'blue',
+      rows: [
+        { label: 'Seller Type', value: fmt(quote.sellerType) },
+        { label: 'Price Basis', value: fmt(quote.priceBasis) },
+        { label: 'Taxes', value: fmt(quote.taxes) },
+        { label: 'Freight Terms', value: fmt(quote.freightTerms) },
+        { label: 'Payment Terms', value: fmt(quote.paymentTerms) },
+      ],
+    },
+    {
+      heading: 'Business Identity',
+      color: 'green',
+      rows: [
+        { label: 'Business Type', value: fmt(quote.businessType) },
+        { label: 'Company Name', value: biz.company_name || null },
+        { label: 'Company Reg No', value: biz.company_reg_num || null },
+        { label: 'GST Number', value: biz.gst_num || null },
+        { label: 'GST (Profile)', value: seller.gstin || null },
+      ],
+    },
+    {
+      heading: 'Supplier Profile',
+      color: 'purple',
+      rows: [
+        { label: 'Name', value: seller.firstName ? `${seller.firstName} ${seller.lastName || ''}`.trim() : null },
+        { label: 'Business Name', value: seller.businessName || null },
+        { label: 'Categories', value: seller.supplierCategories || null },
+        { label: 'Phone', value: seller.phone ? seller.phone.toString().replace(/(\d{3})\d{4}(\d{3})/, '$1****$2') : null },
+      ],
+    },
+  ];
+
+  const colorMap = {
+    orange: 'bg-orange-500',
+    blue: 'bg-slate-500',
+    green: 'bg-emerald-500',
+    purple: 'bg-violet-500',
+  };
+
+  return (
+    <div className="h-full flex flex-col bg-slate-50 overflow-y-auto">
+      <div className="px-4 py-3 border-b border-slate-200 bg-white shrink-0">
+        <p className="text-xs font-bold text-slate-700 uppercase tracking-wider">Supplier Quote Details</p>
+        <p className="text-[10px] text-slate-400 mt-0.5">Proof provided by supplier at time of quoting</p>
+      </div>
+
+      <div className="flex-1 overflow-y-auto px-3 py-3 space-y-3">
+        {sections.map(section => {
+          const filledRows = section.rows.filter(r => r.value);
+          if (filledRows.length === 0) return null;
+          return (
+            <div key={section.heading} className="bg-white rounded-xl border border-slate-100 overflow-hidden">
+              <div className={`flex items-center gap-2 px-3 py-2 ${colorMap[section.color]} bg-opacity-10`}
+                style={{ background: section.color === 'orange' ? '#fff7ed' : section.color === 'blue' ? '#f8fafc' : section.color === 'green' ? '#f0fdf4' : '#faf5ff' }}>
+                <span className={`w-1.5 h-1.5 rounded-full ${colorMap[section.color]}`} />
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-600">{section.heading}</p>
+              </div>
+              <div className="divide-y divide-slate-50">
+                {filledRows.map(row => (
+                  <div key={row.label} className="flex items-start justify-between gap-2 px-3 py-2">
+                    <span className="text-[11px] text-slate-400 shrink-0 mt-px">{row.label}</span>
+                    <span className="text-[11px] font-semibold text-slate-700 text-right capitalize break-all">{row.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+
+        {/* Note to buyer */}
+        {quote.buyerNote && (
+          <div className="bg-amber-50 border border-amber-100 rounded-xl p-3">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-amber-600 mb-1">Note from Supplier</p>
+            <p className="text-xs text-amber-800 leading-relaxed">{quote.buyerNote}</p>
+          </div>
+        )}
+
+        {/* Quote status badge */}
+        {quote.quoteStatus && (
+          <div className={`rounded-xl px-3 py-2 text-center text-xs font-bold capitalize ${
+            quote.quoteStatus === 'accepted' ? 'bg-green-50 text-green-700 border border-green-200' :
+            quote.quoteStatus === 'shortlisted' ? 'bg-orange-50 text-orange-700 border border-orange-200' :
+            quote.quoteStatus === 'rejected' ? 'bg-red-50 text-red-700 border border-red-200' :
+            'bg-slate-100 text-slate-600'
+          }`}>
+            Quote Status: {quote.quoteStatus}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 // ─────────────────────────────────────────────
 // ContactsList — sidebar list of recent chats
 // ─────────────────────────────────────────────
@@ -66,17 +211,17 @@ const ContactsList = ({
     });
 
   return (
-    <div className="h-full flex flex-col bg-chat-sidebar border-r-0 border-chat-border">
+    <div className="h-full flex flex-col bg-white border-r border-slate-200">
       {/* Header + Search */}
-      <div className="p-4 border-b border-chat-border">
-        <h2 className="text-lg font-semibold mb-2 text-gray-600">Messaging</h2>
+      <div className="px-4 pt-4 pb-3 border-b border-slate-100">
+        <h2 className="text-base font-bold text-slate-800 mb-3">Messages</h2>
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 h-3.5 w-3.5" />
           <Input
-            placeholder="Search in dashboard..."
+            placeholder="Search conversations…"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="pl-10 bg-background border-chat-border"
+            className="pl-9 h-8 text-sm bg-slate-50 border-slate-200 rounded-lg focus-visible:ring-orange-400"
           />
         </div>
       </div>
@@ -84,8 +229,9 @@ const ContactsList = ({
       {/* Contact Items */}
       <div className="flex-1 overflow-y-auto">
         {filteredContacts.length === 0 ? (
-          <div className="p-4 text-center text-muted-foreground">
-            <p>No Contact Found</p>
+          <div className="flex flex-col items-center justify-center h-40 gap-2 text-slate-400">
+            <Search className="w-8 h-8 opacity-30" />
+            <p className="text-sm">No conversations yet</p>
           </div>
         ) : (
           filteredContacts.map(contact => {
@@ -95,72 +241,68 @@ const ContactsList = ({
                 : contact.sellerUnreadCount || 0;
 
             const isSelected = contact.roomId === selectedContactId;
-            // TODO: replace with your online-status logic
             const isOnline = contact.isOnline || false;
+
+            const timeStr = contact.lastMessage?.timestamp
+              ? (() => {
+                  const d = new Date(contact.lastMessage.timestamp);
+                  const now = new Date();
+                  const isToday = d.toDateString() === now.toDateString();
+                  return isToday
+                    ? d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })
+                    : d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+                })()
+              : '';
 
             return (
               <div
                 key={contact.roomId}
-                onClick={() => {
-                  if (!isSelected) onSelectContact(contact);
-                }}
-                className={`px-2 py-1 border-chat-border hover:bg-chat-message-bg cursor-pointer transition-colors ${
-                  isSelected ? 'bg-orange-50' : ''
+                ref={el => { contactRefs.current[filteredContacts.indexOf(contact)] = el; }}
+                onClick={() => { if (!isSelected) onSelectContact(contact); }}
+                className={`flex items-center gap-3 px-3 py-3 cursor-pointer transition-all border-b border-slate-50 ${
+                  isSelected
+                    ? 'bg-orange-50 border-l-[3px] border-l-orange-500'
+                    : 'hover:bg-slate-50 border-l-[3px] border-l-transparent'
                 }`}
               >
-                <div
-                  className={`flex items-start space-x-3 bg-white p-3 rounded-md ${
-                    isSelected ? 'border-2 border-orange-500' : ''
-                  }`}
-                >
-                  {/* Avatar with online dot */}
-                  <div className="relative">
-                    <Avatar className="h-12 w-12">
-                      <AvatarImage src={contact.avatar} alt={contact.name} />
-                      <AvatarFallback>{fallBackName(contact.name)}</AvatarFallback>
-                    </Avatar>
-                    <div
-                      className={`absolute -bottom-1 -right-1 w-4 h-4 border-2 border-white rounded-full`}
-                    />
-                    {/* ${
-                        isOnline ? 'bg-green-500' : 'bg-red-500'
-                      } */}
-                  </div>
+                {/* Avatar with online dot */}
+                <div className="relative shrink-0">
+                  <Avatar className="h-11 w-11">
+                    <AvatarImage src={contact.avatar} alt={contact.name} />
+                    <AvatarFallback className="bg-orange-100 text-orange-700 text-sm font-bold">
+                      {fallBackName(contact.name)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span
+                    className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${
+                      isOnline ? 'bg-green-500' : 'bg-slate-300'
+                    }`}
+                  />
+                </div>
 
-                  {/* Name, last message, timestamp, rating, unread */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex justify-between items-start">
-                      <h3 className="font-semibold text-gray-600 truncate">{contact.name}</h3>
-                      <div className="flex flex-col items-end gap-1">
-                        <span className="text-xs text-muted-foreground ml-2">
-                          {contact.lastMessage?.timestamp
-                            ? new Date(contact.lastMessage.timestamp).toLocaleTimeString('en-US', {
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                hour12: true,
-                              })
-                            : ''}
-                        </span>
-                        {contact.chatrating > 0 && (
-                          <div className="flex items-center text-yellow-500">
-                            <Star className="w-3 h-3 mr-1 fill-yellow-500" />
-                            <span className="text-xs font-medium">{contact.chatrating}</span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <p className="text-[13px] text-muted-foreground font-medium truncate mt-1">
-                        {contact.lastMessage?.message || 'No messages yet'}
-                      </p>
-                      {!isSelected && unreadCount > 0 && (
-                        <span className="ml-2 bg-orange-500 text-white rounded-full px-2 py-0.5 text-xs font-semibold">
-                          {unreadCount}
-                        </span>
-                      )}
-                    </div>
+                {/* Name + last message */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-1">
+                    <p className={`text-sm font-semibold truncate ${isSelected ? 'text-orange-800' : 'text-slate-800'}`}>
+                      {contact.name}
+                    </p>
+                    <span className="text-[10px] text-slate-400 shrink-0">{timeStr}</span>
                   </div>
+                  <div className="flex items-center justify-between gap-1 mt-0.5">
+                    <p className="text-xs text-slate-500 truncate">
+                      {contact.lastMessage?.message || 'Start the conversation'}
+                    </p>
+                    {!isSelected && unreadCount > 0 && (
+                      <span className="shrink-0 min-w-[18px] h-[18px] bg-orange-500 text-white rounded-full px-1 text-[10px] font-bold flex items-center justify-center">
+                        {unreadCount}
+                      </span>
+                    )}
+                  </div>
+                  {contact.productName && (
+                    <p className="text-[10px] text-orange-500 font-medium truncate mt-0.5">
+                      {contact.productName}
+                    </p>
+                  )}
                 </div>
               </div>
             );
@@ -176,12 +318,10 @@ const ContactsList = ({
 // ─────────────────────────────────────────────
 const ChatArea = ({
   selectedContact,
-  userType, // 'buyer' | 'seller'
+  userType,
   currentUserId,
   messages = [],
   setMessages,
-
-  // Deal state (manage in parent or pass as props)
   isClosingDeal,
   isDealClosed,
   isDealRejected,
@@ -190,8 +330,6 @@ const ChatArea = ({
   isBuyer,
   finalBudget,
   closedDealId,
-
-  // Popup state
   showRatingPopup,
   setShowRatingPopup,
   ratingLoading,
@@ -199,21 +337,22 @@ const ChatArea = ({
   showApprovalPopup,
   setShowApprovalPopup,
   approvalLoading,
-
-  // Callbacks — wire up your logic here
-  onSendMessage, // (messageText, attachment) => void
-  onCloseDeal, // () => void
-  onSubmitRating, // (chatId, rating) => void
-  onDealApproval, // (dealId, 'accept' | 'reject') => void
-
+  onSendMessage,
+  onCloseDeal,
+  onSubmitRating,
+  onDealApproval,
   isOnline,
   socket,
   productId,
   dealSellerRating = 0,
+  // Quote panel
+  showQuotePanel,
+  setShowQuotePanel,
+  quoteDetails,
+  quoteLoading,
 }) => {
   const chatContainerRef = useRef(null);
   const fileInputRef = useRef(null);
-  console.log(selectedContact, 23);
   const [messageText, setMessageText] = useState('');
 
   // Attachment local UI state
@@ -403,10 +542,9 @@ const ChatArea = ({
   // ── Empty state ────────────────────────────
   if (!selectedContact) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-background">
-        <div className="text-center text-muted-foreground">
-          <h3 className="text-lg font-medium mb-2">Select a conversation</h3>
-          <p className="text-sm">Choose a contact from the sidebar to start messaging</p>
+      <div className="flex-1 flex items-center justify-center bg-slate-50">
+        <div className="text-center text-slate-400">
+          <p className="text-sm">Select a conversation to start</p>
         </div>
       </div>
     );
@@ -422,7 +560,9 @@ const ChatArea = ({
         loading={isClosingDeal}
       />
 
-      <div className="flex-1 relative flex flex-col border-1 rounded-md w-full min-h-0">
+      <div className="flex-1 flex flex-row min-h-0 overflow-hidden">
+      {/* ── Chat column ── */}
+      <div className="flex-1 relative flex flex-col min-h-0 overflow-hidden">
         {(previewObjectURL || selectedFileType === 'document') && (
           <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/5">
             <div className="relative w-[420px] rounded-xl bg-gray-50 p-6 shadow-md flex flex-col items-center gap-5">
@@ -477,147 +617,134 @@ const ChatArea = ({
           </div>
         )}
         {/* ── Chat Header ── */}
-        <div className="border-b border-chat-border bg-background">
-          {/* Product name bar */}
-          <div className="flex justify-between items-center bg-gray-100 p-2">
-            <p className="text-sm text-muted-foreground font-semibold">
-              Product Name: {selectedContact.productName || 'Product Discussion'}
+        <div className="border-b border-slate-200 bg-white">
+          {/* Product tag */}
+          <div className="px-4 py-1.5 bg-orange-50 border-b border-orange-100 flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-orange-400 shrink-0" />
+            <p className="text-xs text-orange-700 font-semibold truncate">
+              {selectedContact.productName || 'Product Discussion'}
             </p>
           </div>
 
-          {/* Avatar / name / online / close-deal button */}
-          <div className="flex items-center space-x-3 p-3 bg-orange-50">
-            <div className="flex justify-between items-center w-full">
-              <div className="relative flex items-center gap-3 justify-between w-full">
-                {/* Left: avatar + name + online status */}
-                <div className="flex items-center gap-3 ">
-                  <div
-                    className="cursor-pointer"
-                    onClick={() => {
-                      navigate(
-                        '/user-profile/' +
-                          (selectedContact.buyerId === currentUserId
-                            ? selectedContact.sellerId
-                            : selectedContact.buyerId)
-                      );
-                    }}
-                  >
-                    <Avatar className="h-10 w-10">
-                      <AvatarImage src={selectedContact.avatar} alt={selectedContact.name} />
-                      <AvatarFallback>{selectedContact.name?.charAt(0)}</AvatarFallback>
-                    </Avatar>
-                  </div>
-                  <div className="flex flex-col">
-                    <div>
-                      <h3 className="font-semibold text-gray-700">{selectedContact.name}</h3>
-                      {/* product Rating */}
-                      {dealSellerRating > 0 && (
-                        <div className="flex items-center gap-0.5">
-                          {[1, 2, 3, 4, 5].map(star => (
-                            <Star
-                              key={star}
-                              className={`w-4 h-4 ${
-                                star <= dealSellerRating
-                                  ? 'fill-yellow-400 text-yellow-400'
-                                  : 'fill-gray-200 text-gray-200'
-                              }`}
-                            />
-                          ))}
-                          {/* <span className="text-xs text-gray-500 ml-1">{dealSellerRating}/5</span> */}
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <div className={`h-2 w-2 rounded-full `} />
-                      {/* ${isOnline ? 'bg-green-600' : 'bg-red-600'} */}
-                      <span className={`text-sm font-medium `}>
-                        {/* ${isOnline ? 'text-green-600' : 'text-red-600'} */}
-                        {/* {isOnline ? 'Online' : 'Offline'} */}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Right: close-deal button (visible to buyer, or when deal is closed/rejected) */}
-                {/* ── Close Deal / Deal Status Button ── */}
-                {userType === 'buyer' ? (
-                  <Button
-                    size="sm"
-                    className={`${
-                      isDealClosed
-                        ? 'bg-green-600 hover:bg-green-600 text-white border-green-600 cursor-default'
-                        : waitingSellerApproval
-                          ? 'bg-orange-600 hover:bg-orange-700 text-white border-orange-600 cursor-default'
-                          : isDealRejected
-                            ? 'bg-red-500 hover:bg-red-500 text-white border-red-500 cursor-not-allowed'
-                            : 'text-orange-600 hover:text-orange-600 bg-transparent cursor-pointer hover:bg-transparent border-orange-600'
-                    } w-24 sm:w-auto px-4 text-sm font-medium`}
-                    onClick={() => {
-                      if (!isDealClosed && !isDealRejected && !waitingSellerApproval) {
-                        handleCloseDealClick();
-                      }
-                    }}
-                    disabled={
-                      isClosingDeal ||
-                      isDealClosed ||
-                      isDealRejected ||
-                      waitingSellerApproval ||
-                      messages.length === 0
-                    }
-                  >
-                    {isClosingDeal
-                      ? 'Closing...'
-                      : isDealClosed
-                        ? 'Deal Closed'
-                        : waitingSellerApproval
-                          ? 'Deal in Progress'
-                          : isDealRejected
-                            ? 'Deal Rejected'
-                            : 'Close Deal'}
-                  </Button>
-                ) : (
-                  (isDealClosed || isDealRejected) && (
-                    <Button
-                      disabled={
-                        isClosingDeal ||
-                        isDealClosed ||
-                        isDealRejected ||
-                        waitingSellerApproval ||
-                        messages.length === 0
-                      }
-                      size="sm"
-                      className={`px-4 text-sm font-medium cursor-default ${
-                        isDealClosed
-                          ? 'bg-green-600 hover:bg-green-600 text-white border-green-600'
-                          : 'bg-red-500 hover:bg-red-500 text-white border-red-500'
-                      }`}
-                    >
-                      {isDealClosed ? 'Deal Closed' : 'Deal Rejected'}
-                    </Button>
+          {/* Avatar / name / deal button */}
+          <div className="flex items-center justify-between px-4 py-3 gap-3">
+            {/* Left: avatar + name */}
+            <div className="flex items-center gap-3 min-w-0">
+              <div
+                className="cursor-pointer shrink-0"
+                onClick={() =>
+                  navigate(
+                    '/user-profile/' +
+                      (selectedContact.buyerId === currentUserId
+                        ? selectedContact.sellerId
+                        : selectedContact.buyerId)
                   )
-                )}
-
-                {/* ✅ Seller sees "Deal Closed" / "Deal Rejected" as a read-only badge after refresh */}
-                {/* {userType === 'seller' && (isDealClosed || isDealRejected) && (
+                }
+              >
+                <div className="relative">
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage src={selectedContact.avatar} alt={selectedContact.name} />
+                    <AvatarFallback className="bg-orange-100 text-orange-700 font-bold text-sm">
+                      {fallBackName(selectedContact.name)}
+                    </AvatarFallback>
+                  </Avatar>
                   <span
-                    className={`px-4 py-1.5 rounded text-sm font-medium border ${
-                      isDealClosed
-                        ? 'bg-green-100 text-green-700 border-green-300'
-                        : 'bg-red-100 text-red-600 border-red-200'
+                    className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-white ${
+                      isOnline ? 'bg-green-500' : 'bg-slate-300'
                     }`}
-                  >
-                    {isDealClosed ? 'Deal Closed' : 'Deal Rejected'}
-                  </span>
-                )} */}
+                  />
+                </div>
+              </div>
+              <div className="min-w-0">
+                <h3 className="font-bold text-slate-800 text-sm leading-tight truncate">
+                  {selectedContact.name}
+                </h3>
+                {dealSellerRating > 0 ? (
+                  <div className="flex items-center gap-0.5 mt-0.5">
+                    {[1, 2, 3, 4, 5].map(star => (
+                      <Star
+                        key={star}
+                        className={`w-3 h-3 ${
+                          star <= dealSellerRating
+                            ? 'fill-yellow-400 text-yellow-400'
+                            : 'fill-gray-200 text-gray-200'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    {isOnline ? 'Online' : 'Offline'}
+                  </p>
+                )}
               </div>
             </div>
+
+            {/* Right: Close Deal button */}
+            {userType === 'buyer' ? (
+              <Button
+                size="sm"
+                className={`shrink-0 text-xs font-semibold px-3 h-8 rounded-lg transition-all ${
+                  isDealClosed
+                    ? 'bg-green-600 hover:bg-green-600 text-white cursor-default'
+                    : waitingSellerApproval
+                      ? 'bg-orange-500 hover:bg-orange-500 text-white cursor-default'
+                      : isDealRejected
+                        ? 'bg-red-500 hover:bg-red-500 text-white cursor-not-allowed'
+                        : 'bg-orange-600 hover:bg-orange-700 text-white shadow-sm shadow-orange-200'
+                }`}
+                onClick={() => {
+                  if (!isDealClosed && !isDealRejected && !waitingSellerApproval) {
+                    handleCloseDealClick();
+                  }
+                }}
+                disabled={
+                  isClosingDeal || isDealClosed || isDealRejected || waitingSellerApproval || messages.length === 0
+                }
+              >
+                {isClosingDeal
+                  ? 'Closing…'
+                  : isDealClosed
+                    ? '✓ Deal Closed'
+                    : waitingSellerApproval
+                      ? 'Awaiting Seller'
+                      : isDealRejected
+                        ? 'Deal Rejected'
+                        : 'Close Deal'}
+              </Button>
+            ) : (
+              (isDealClosed || isDealRejected) && (
+                <span
+                  className={`shrink-0 text-xs font-semibold px-3 py-1.5 rounded-lg ${
+                    isDealClosed
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-red-100 text-red-600'
+                  }`}
+                >
+                  {isDealClosed ? '✓ Deal Closed' : 'Deal Rejected'}
+                </span>
+              )
+            )}
+            {/* Quote panel toggle */}
+            <button
+              onClick={() => setShowQuotePanel(p => !p)}
+              title="View supplier quote details"
+              className={`shrink-0 p-1.5 rounded-lg transition-colors cursor-pointer ${
+                showQuotePanel
+                  ? 'bg-orange-100 text-orange-600'
+                  : 'text-slate-400 hover:bg-slate-100 hover:text-slate-600'
+              }`}
+            >
+              <PanelRightIcon className="w-4 h-4" />
+            </button>
           </div>
         </div>
 
         {/* ── Messages Area ── */}
         <div
           ref={chatContainerRef}
-          className="flex-1 overflow-y-auto p-4 space-y-6 chat-messages-container"
+          className="flex-1 overflow-y-auto p-4 space-y-4"
+          style={{ background: 'linear-gradient(180deg, #fff8f4 0%, #ffffff 60%)' }}
         >
           {/*  messages */}
 
@@ -814,7 +941,7 @@ const ChatArea = ({
         </div>
 
         {/* ── Message Input ── */}
-        <div className="p-4 border-t border-chat-border bg-background">
+        <div className="p-3 border-t border-slate-200 bg-white">
           {/* Attachment preview */}
           {/* {(selectedFile || uploadedAttachment) && (
             <div className="mb-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
@@ -900,7 +1027,15 @@ const ChatArea = ({
             </Button>
           </div>
         </div>
-      </div>
+      </div>{/* end chat column */}
+
+      {/* ── Quote details panel ── */}
+      {showQuotePanel && (
+        <div className="hidden md:flex w-72 shrink-0 flex-col border-l border-slate-200">
+          <QuoteDetailsPanel quote={quoteDetails} loading={quoteLoading} />
+        </div>
+      )}
+      </div>{/* end flex row */}
 
       {/* Rating popup */}
       <RatingPopup
@@ -984,6 +1119,9 @@ const Chatbot = () => {
   const [pendingDealId, setPendingDealId] = useState(null);
   const [pendingDealAmount, setPendingDealAmount] = useState(0);
   const [dealSellerRating, setDealSellerRating] = useState(0);
+  const [showQuotePanel, setShowQuotePanel] = useState(false);
+  const [quoteDetails, setQuoteDetails] = useState(null);
+  const [quoteLoading, setQuoteLoading] = useState(false);
   // Replace your existing auto-select useEffect with this:
   useEffect(() => {
     if (!productId || !sellerId) return;
@@ -1238,6 +1376,17 @@ const Chatbot = () => {
     setShowApprovalPopup(false);
 
     setSelectedContact(contact);
+    setQuoteDetails(null);
+    // Fetch quote proof details for this product+seller pair
+    const pId = contact.productId;
+    const sId = contact.sellerId;
+    if (pId && sId) {
+      setQuoteLoading(true);
+      bidService.getBidByProductIdAndSellerId(pId, sId)
+        .then(data => setQuoteDetails(data))
+        .catch(() => setQuoteDetails(null))
+        .finally(() => setQuoteLoading(false));
+    }
     updateMessages([]);
     updateSetActiveRoom(contact.roomId);
     updateMarkRoomRead({ roomId: contact.roomId, readerType: userType });
@@ -1311,10 +1460,10 @@ const Chatbot = () => {
         <Loader />
       ) : (
         <div className="w-full max-w-7xl mx-auto px-4 mb-5">
-          <div className="h-[calc(100vh-100px)] border-chat-border rounded-lg overflow-hidden sm:mt-5">
+          <div className="h-[calc(100vh-80px)] border border-slate-200 rounded-xl overflow-hidden sm:mt-4 shadow-sm">
             <div className="flex h-full gap-2">
               {/* Sidebar */}
-              <div className="hidden md:block w-80 bg-gray-100 border-1 rounded-md">
+              <div className="hidden md:block w-72 border-r border-slate-200 shrink-0">
                 {isLoadingChats ? (
                   <div className="flex items-center justify-center h-full">
                     <p className="text-muted-foreground">Loading chats...</p>
@@ -1333,31 +1482,26 @@ const Chatbot = () => {
               {/* Main area */}
               <div className="flex-1 flex flex-col min-h-0">
                 {/* Mobile header */}
-                <div className="md:hidden py-2 border-chat-border bg-chat-sidebar">
-                  <div className="flex items-center gap-x-2">
-                    <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-                      <SheetTrigger asChild>
-                        <Button variant="ghost" size="md">
-                          <TooltipComp
-                            hoverChildren={<PanelRightOpen className="h-8 w-8" />}
-                            contentChildren={<p>Remove Doc</p>}
-                          />
-                        </Button>
-                      </SheetTrigger>
-                      <SheetContent side="left" className="p-0 w-80">
-                        <ContactsList
-                          onSelectContact={contact => {
-                            handleSelectContact(contact);
-                            setIsMobileMenuOpen(false);
-                          }}
-                          contacts={recentChats}
-                          selectedContactId={selectedContact?.roomId || null}
-                          currentUserId={currentUserId}
-                        />
-                      </SheetContent>
-                    </Sheet>
-                    <h2 className="text-md sm:text-lg font-semibold text-foreground">Messages</h2>
-                  </div>
+                <div className="md:hidden flex items-center gap-2 px-3 py-2.5 border-b border-slate-200 bg-white">
+                  <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+                    <SheetTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-600">
+                        <PanelRightOpen className="h-5 w-5" />
+                      </Button>
+                    </SheetTrigger>
+                    <SheetContent side="left" className="p-0 w-80">
+                      <ContactsList
+                        onSelectContact={contact => {
+                          handleSelectContact(contact);
+                          setIsMobileMenuOpen(false);
+                        }}
+                        contacts={recentChats}
+                        selectedContactId={selectedContact?.roomId || null}
+                        currentUserId={currentUserId}
+                      />
+                    </SheetContent>
+                  </Sheet>
+                  <h2 className="text-sm font-bold text-slate-800">Messages</h2>
                 </div>
 
                 {selectedContact ? (
@@ -1389,19 +1533,29 @@ const Chatbot = () => {
                     socket={socket}
                     productId={productId}
                     dealSellerRating={dealSellerRating}
+                    showQuotePanel={showQuotePanel}
+                    setShowQuotePanel={setShowQuotePanel}
+                    quoteDetails={quoteDetails}
+                    quoteLoading={quoteLoading}
                   />
                 ) : (
-                  <div className="flex-1 flex items-center justify-center bg-background">
+                  <div
+                    className="flex-1 flex items-center justify-center"
+                    style={{ background: 'linear-gradient(180deg, #fff8f4 0%, #ffffff 60%)' }}
+                  >
                     {recentChats.length === 0 ? (
-                      <div className="flex justify-center items-center h-full flex-col space-y-2">
-                        <img src="no-chat.webp" alt="" className="h-28 w-28" />
-                        <p className="text-center text-lg capitalize">No chats available</p>
+                      <div className="flex flex-col items-center gap-3 text-center px-6">
+                        <img src="no-chat.webp" alt="" className="h-24 w-24 opacity-60" />
+                        <p className="text-sm font-semibold text-slate-600">No conversations yet</p>
+                        <p className="text-xs text-slate-400">Click "Chat Now" on an RFQ to start a conversation with a supplier</p>
                       </div>
                     ) : (
-                      <div className="text-center text-muted-foreground">
-                        <p className="text-sm">
-                          Choose a contact from the sidebar to start messaging
-                        </p>
+                      <div className="flex flex-col items-center gap-2 text-center px-6">
+                        <div className="w-14 h-14 rounded-full bg-orange-50 flex items-center justify-center">
+                          <Send className="w-6 h-6 text-orange-400" />
+                        </div>
+                        <p className="text-sm font-semibold text-slate-600">Select a conversation</p>
+                        <p className="text-xs text-slate-400">Choose from the sidebar to continue</p>
                       </div>
                     )}
                   </div>

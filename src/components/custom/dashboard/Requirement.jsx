@@ -20,7 +20,11 @@ const Requirement = () => {
   const disptachCategories = useCategory();
   const { categories: serverCategories, loading, error } = useCategoryState();
 
-  const data = serverCategories || [];
+  const data = [...(serverCategories || [])].sort((a, b) => {
+    const aOther = a.categoryName?.toLowerCase().includes('other') ? 1 : 0;
+    const bOther = b.categoryName?.toLowerCase().includes('other') ? 1 : 0;
+    return aOther - bOther;
+  });
   const [currentWinSize, setCurrentWinSize] = useState(window.innerWidth);
   const navigate = useNavigate();
 
