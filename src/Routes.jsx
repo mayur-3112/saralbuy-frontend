@@ -1,13 +1,13 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
 import {
+  createBrowserRouter,
+  createRoutesFromElements,
   Navigate,
   Outlet,
   Route,
-  BrowserRouter as Router,
-  Routes,
   useLocation,
   useNavigate,
-} from 'react-router';
+} from 'react-router-dom';
 import HomeNavbar from './components/custom/dashboard/HomeNavbar';
 import Footer from './components/custom/Footer';
 import { toast } from 'sonner';
@@ -78,7 +78,7 @@ const ProfileCompletionEffect = () => {
 };
 
 // const Profile = lazy(() => import("./pages/profile/Profile"));
-export default function AppRoutes() {
+const RootLayout = () => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -86,8 +86,9 @@ export default function AppRoutes() {
     window.addEventListener('session-expired', handler);
     return () => window.removeEventListener('session-expired', handler);
   }, []);
+
   return (
-    <Router>
+    <>
       <ScrollToTop />
       <ProfileCompletionEffect />
       <Authentication open={open} setOpen={setOpen} />
@@ -95,8 +96,17 @@ export default function AppRoutes() {
       <DiscussionChatbox />
       <HomeNavbar />
       <Suspense fallback={<Loader />}>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
+        <Outlet />
+      </Suspense>
+      <Footer />
+    </>
+  );
+};
+
+export const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route element={<RootLayout />}>
+      <Route path="/" element={<LandingPage />} />
           <Route path="/requirement" element={<Requirement />} />
           <Route path="/post-requirement" element={<PostRequirementForm />} />
           <Route path="/category/:categoryId/:subCategoryId" element={<CreateProductForm />} />
@@ -130,9 +140,6 @@ export default function AppRoutes() {
             <Route path="/bid-overview/:bidId" element={<BidOverview />} />
           </Route>
           <Route path="*" element={<NoRouteFound />} />
-        </Routes>
-      </Suspense>
-      <Footer />
-    </Router>
-  );
-}
+    </Route>
+  )
+);

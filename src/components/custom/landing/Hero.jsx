@@ -69,7 +69,7 @@ export default function Hero({ onOpenAuth }) {
           {/* ── Left: message + actions ─────────────────────────────── */}
           <div className="text-center lg:text-left flex flex-col items-center lg:items-start">
             {/* Eyebrow badge */}
-            <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-xs sm:text-sm font-bold text-blue-700 mb-6">
+            <div className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-4 py-2 text-xs sm:text-sm font-bold text-orange-700 mb-6">
               <span className="relative flex h-2.5 w-2.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
@@ -80,7 +80,7 @@ export default function Hero({ onOpenAuth }) {
             <h1 className="text-4xl sm:text-5xl xl:text-6xl font-black tracking-tight leading-[1.08] text-slate-900">
               Stop chasing suppliers.
               <br />
-              <span className="bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-orange-600 to-cyan-500 bg-clip-text text-transparent">
                 Post once, get quotes in hours.
               </span>
             </h1>
@@ -96,14 +96,14 @@ export default function Hero({ onOpenAuth }) {
             <div className="flex flex-col sm:flex-row gap-4 pt-8 w-full sm:w-auto">
               <button
                 onClick={handlePostRequirement}
-                className="group inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-black text-base sm:text-lg px-8 py-4 rounded-xl cursor-pointer shadow-lg shadow-blue-600/20 hover:shadow-blue-600/30 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 transition-all duration-300 w-full sm:w-auto"
+                className="group inline-flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-700 text-white font-black text-base sm:text-lg px-8 py-4 rounded-xl cursor-pointer shadow-lg shadow-orange-600/20 hover:shadow-orange-600/30 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 transition-all duration-300 w-full sm:w-auto"
               >
                 Post a Requirement
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
               <button
                 onClick={handleFindLeads}
-                className="inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 border-2 border-slate-300 hover:border-blue-500 text-slate-800 hover:text-blue-700 font-bold text-base sm:text-lg px-8 py-4 rounded-xl cursor-pointer active:scale-95 transition-all duration-300 w-full sm:w-auto"
+                className="inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 border-2 border-slate-300 hover:border-orange-500 text-slate-800 hover:text-orange-700 font-bold text-base sm:text-lg px-8 py-4 rounded-xl cursor-pointer active:scale-95 transition-all duration-300 w-full sm:w-auto"
               >
                 I&apos;m a Supplier &mdash; Find Leads
               </button>
@@ -146,7 +146,7 @@ export default function Hero({ onOpenAuth }) {
                   onClick={() => setCurrentSlide(index)}
                   className={`h-2.5 rounded-full cursor-pointer transition-all duration-300 ${
                     index === currentSlide
-                      ? 'w-7 bg-blue-600'
+                      ? 'w-7 bg-orange-600'
                       : 'w-2.5 bg-slate-300 hover:bg-slate-400'
                   }`}
                 />
@@ -168,9 +168,9 @@ export default function Hero({ onOpenAuth }) {
 
 function TrustAnchor({ icon: Icon, value, label }) {
   return (
-    <div className="flex items-center sm:items-start gap-4 bg-white p-4 rounded-xl border border-slate-200 hover:border-blue-300 hover:shadow-sm transition-all duration-300">
-      <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0">
-        <Icon className="w-6 h-6 text-blue-600" />
+    <div className="flex items-center sm:items-start gap-4 bg-white p-4 rounded-xl border border-slate-200 hover:border-orange-300 hover:shadow-sm transition-all duration-300">
+      <div className="w-12 h-12 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center shrink-0">
+        <Icon className="w-6 h-6 text-orange-600" />
       </div>
       <div className="text-left min-w-0">
         <div className="text-base sm:text-lg font-black text-slate-900 leading-tight">{value}</div>

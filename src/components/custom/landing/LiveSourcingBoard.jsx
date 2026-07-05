@@ -23,7 +23,7 @@ export default function LiveSourcingBoard({ onOpenAuth }) {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('All locations');
-  const [showExpired, setShowExpired] = useState(false);
+  const [statusFilter, setStatusFilter] = useState('active'); // active, expired, all
   const [open, setOpen] = useState(false);
   const { user } = useUserState();
   const navigate = useNavigate();
@@ -60,8 +60,9 @@ export default function LiveSourcingBoard({ onOpenAuth }) {
       const days = Number(req.bidActiveDuration || '1');
       isExpired = new Date(new Date(req.createdAt).getTime() + days * 24 * 60 * 60 * 1000).getTime() < Date.now();
     }
-
-    const matchesExpiry = showExpired || !isExpired;
+    let matchesExpiry = true;
+    if (statusFilter === 'active') matchesExpiry = !isExpired;
+    if (statusFilter === 'expired') matchesExpiry = isExpired;
 
     return matchesSearch && matchesCategory && matchesLocation && matchesExpiry;
   });
@@ -93,7 +94,7 @@ export default function LiveSourcingBoard({ onOpenAuth }) {
           <button
             type="button"
             onClick={() => navigate('/product-listing')}
-            className="group inline-flex items-center gap-1.5 text-base font-bold text-blue-700 hover:text-blue-800"
+            className="group inline-flex items-center gap-1.5 text-base font-bold text-orange-700 hover:text-orange-800"
           >
             View all {requirements.length}
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -125,21 +126,20 @@ export default function LiveSourcingBoard({ onOpenAuth }) {
         </div>
         <button
           type="button"
-          onClick={() => setShowExpired(prev => !prev)}
-          className={`px-4 py-2.5 text-xs font-extrabold border rounded-lg cursor-pointer transition-all flex items-center gap-1.5 h-[42px] ${
-            showExpired 
-              ? 'bg-slate-900 border-slate-900 text-white hover:bg-slate-800' 
-              : 'bg-white border-slate-200 text-slate-600 hover:border-slate-400'
+          onClick={() => setStatusFilter(statusFilter === 'active' ? 'all' : 'active')}
+          className={`px-4 py-2 text-sm font-bold border rounded-lg transition-colors whitespace-nowrap h-[42px] flex items-center justify-center gap-2 ${
+            statusFilter === 'all'
+              ? 'bg-slate-900 border-slate-900 text-white'
+              : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300'
           }`}
         >
-          <span>⏰</span>
-          {showExpired ? 'Hide Expired' : 'Show Expired'}
+          <span>{statusFilter === 'all' ? 'Hide Expired' : 'Show All (Active + Expired)'}</span>
         </button>
       </div>
 
-      {/* Category chip strip — horizontal scroll on mobile, no wrap */}
+      {/* Category chip strip — horizontal scroll on mobile, flex-wrap on desktop */}
       {categories.length > 0 && (
-        <div className="flex items-center gap-2 mb-6 overflow-x-auto no-scrollbar pb-1 -mx-1 px-1">
+        <div className="flex items-center gap-2 mb-6 overflow-x-auto sm:overflow-x-visible sm:flex-wrap no-scrollbar pb-1 -mx-1 px-1">
           {['All', ...categories].map((cat) => (
             <button
               key={cat}

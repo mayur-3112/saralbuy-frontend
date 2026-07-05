@@ -49,7 +49,7 @@ export default function TermsAndPrivacy() {
         <TabsContent value="terms" className="bg-white border border-slate-200 rounded-2xl p-6 md:p-8 shadow-sm space-y-6">
           <section className="space-y-3">
             <h2 className="text-xl font-black text-slate-800 flex items-center gap-2">
-              <Landmark className="w-5 h-5 text-blue-600" />
+              <Landmark className="w-5 h-5 text-orange-600" />
               1. Platform Nature and Matching
             </h2>
             <p className="text-sm text-slate-600 leading-relaxed">
@@ -59,7 +59,7 @@ export default function TermsAndPrivacy() {
 
           <section className="space-y-3">
             <h2 className="text-xl font-black text-slate-800 flex items-center gap-2">
-              <ShieldAlert className="w-5 h-5 text-blue-600" />
+              <ShieldAlert className="w-5 h-5 text-orange-600" />
               2. Absolute Liability Limit & Material Rejection
             </h2>
             <p className="text-sm text-slate-600 leading-relaxed">
@@ -69,7 +69,7 @@ export default function TermsAndPrivacy() {
 
           <section className="space-y-3">
             <h2 className="text-xl font-black text-slate-800 flex items-center gap-2">
-              <BookOpen className="w-5 h-5 text-blue-600" />
+              <BookOpen className="w-5 h-5 text-orange-600" />
               3. Verification of Identity & GST
             </h2>
             <p className="text-sm text-slate-600 leading-relaxed">
@@ -81,7 +81,7 @@ export default function TermsAndPrivacy() {
         <TabsContent value="privacy" className="bg-white border border-slate-200 rounded-2xl p-6 md:p-8 shadow-sm space-y-6">
           <section className="space-y-3">
             <h2 className="text-xl font-black text-slate-800 flex items-center gap-2">
-              <Lock className="w-5 h-5 text-blue-600" />
+              <Lock className="w-5 h-5 text-orange-600" />
               1. Security of Business Documents
             </h2>
             <p className="text-sm text-slate-600 leading-relaxed">
@@ -91,7 +91,7 @@ export default function TermsAndPrivacy() {
 
           <section className="space-y-3">
             <h2 className="text-xl font-black text-slate-800 flex items-center gap-2">
-              <Users className="w-5 h-5 text-blue-600" />
+              <Users className="w-5 h-5 text-orange-600" />
               2. Transactional and Chat Logging
             </h2>
             <p className="text-sm text-slate-600 leading-relaxed">

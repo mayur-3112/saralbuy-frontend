@@ -82,7 +82,7 @@ export default function FAQ() {
       {/* Hero */}
       <section className="bg-slate-950 text-white py-14 sm:py-16">
         <div className="max-w-3xl mx-auto px-4">
-          <div className="text-[11px] font-black uppercase tracking-[0.2em] text-blue-400 mb-3">
+          <div className="text-[11px] font-black uppercase tracking-[0.2em] text-orange-400 mb-3">
             FAQ
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-[1.1]">
@@ -90,7 +90,7 @@ export default function FAQ() {
           </h1>
           <p className="text-slate-300 mt-3 text-sm sm:text-base">
             Can&apos;t find your answer?{' '}
-            <Link to="/contact-us" className="text-blue-300 hover:text-blue-200 font-bold underline underline-offset-4">
+            <Link to="/contact-us" className="text-orange-300 hover:text-orange-200 font-bold underline underline-offset-4">
               Ask us directly
             </Link>
             .
@@ -104,7 +104,7 @@ export default function FAQ() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search FAQs (e.g. 'phone number', 'GSTIN')"
-              className="w-full pl-10 pr-4 py-3 rounded-xl bg-white text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-4 focus:ring-blue-500/30"
+              className="w-full pl-10 pr-4 py-3 rounded-xl bg-white text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-4 focus:ring-orange-500/30"
             />
           </div>
         </div>
@@ -116,7 +116,7 @@ export default function FAQ() {
           {filtered.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-slate-500 font-bold">No FAQs match that.</p>
-              <Link to="/contact-us" className="mt-3 inline-block font-bold text-blue-700 hover:text-blue-800 underline underline-offset-4">
+              <Link to="/contact-us" className="mt-3 inline-block font-bold text-orange-700 hover:text-orange-800 underline underline-offset-4">
                 Ask us directly →
               </Link>
             </div>

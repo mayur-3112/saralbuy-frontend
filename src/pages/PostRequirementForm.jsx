@@ -240,7 +240,7 @@ const PostRequirementForm = () => {
     <div className="w-full max-w-7xl mx-auto px-4 min-h-screen py-10 bg-slate-50">
       <div className="flex gap-4 items-center mb-8 pb-4 border-b border-slate-200">
         <div onClick={handleBackClick} className="cursor-pointer">
-          <MoveLeft className="w-6 h-6 text-slate-600 hover:text-blue-600 transition-colors" />
+          <MoveLeft className="w-6 h-6 text-slate-600 hover:text-orange-600 transition-colors" />
         </div>
         <div>
           <h2 className="text-2xl font-black text-slate-900 tracking-tight">Post Your Requirement (RFQ)</h2>
@@ -297,7 +297,7 @@ const PostRequirementForm = () => {
           <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-xs relative">
             <div className="mb-4 pb-3 border-b border-slate-100">
               <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center">1</span>
+                <span className="w-6 h-6 rounded-full bg-orange-100 text-orange-600 text-xs font-bold flex items-center justify-center">1</span>
                 Basic Information
               </h3>
               <p className="text-sm text-slate-500 mt-1 ml-8">Choose the category that best matches what you need, and give your requirement a clear title.</p>
@@ -306,7 +306,7 @@ const PostRequirementForm = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="sm:col-span-2">
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Title of Requirement*</label>
-                <Input placeholder="e.g., Procurement of Seamless Pipes and Tubes" {...register('title')} className="bg-slate-50/50 border-slate-200 focus-visible:ring-blue-500/20 font-medium" />
+                <Input placeholder="e.g., Procurement of Seamless Pipes and Tubes" {...register('title')} className="bg-slate-50/50 border-slate-200 focus-visible:ring-orange-500/20 font-medium" />
               </div>
 
               <div>
@@ -316,7 +316,7 @@ const PostRequirementForm = () => {
                   control={control}
                   render={({ field: { onChange, value } }) => (
                     <Select value={value} onValueChange={(val) => { onChange(val); setValue('subCategoryId', ''); }} disabled={!!initialCat}>
-                      <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 focus:ring-blue-500/20 font-medium">
+                      <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 focus:ring-orange-500/20 font-medium">
                         <SelectValue placeholder="Select Category" />
                       </SelectTrigger>
                       <SelectContent>
@@ -341,7 +341,7 @@ const PostRequirementForm = () => {
                         onValueChange={onChange}
                         disabled={!selectedCategoryId || !!initialSub}
                       >
-                        <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 focus:ring-blue-500/20 font-medium">
+                        <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 focus:ring-orange-500/20 font-medium">
                           <SelectValue placeholder="Select Subcategory" />
                         </SelectTrigger>
                         <SelectContent>
@@ -368,12 +368,12 @@ const PostRequirementForm = () => {
             <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-xs">
               <div className="mb-4 pb-3 border-b border-slate-100">
                 <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
-                  <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center">2</span>
+                  <span className="w-6 h-6 rounded-full bg-orange-100 text-orange-600 text-xs font-bold flex items-center justify-center">2</span>
                   Upload Your Document
                 </h3>
                 <p className="text-sm text-slate-500 mt-1 ml-8">Upload your BOQ, Excel sheet, or PDF. Suppliers will quote based on this document.</p>
               </div>
-              <div className="p-8 bg-slate-50 border-2 border-dashed border-slate-300 rounded-xl text-center hover:bg-slate-100 hover:border-blue-300 transition-colors">
+              <div className="p-8 bg-slate-50 border-2 border-dashed border-slate-300 rounded-xl text-center hover:bg-slate-100 hover:border-orange-300 transition-colors">
                 <UploadCloud className="w-12 h-12 text-slate-400 mx-auto mb-3" />
                 <p className="text-sm font-semibold text-slate-600 mb-1">Drag & drop or click to upload</p>
                 <p className="text-xs text-slate-400 mb-4">PDF, Excel, Word, CSV, JPG, PNG — max 2 files</p>
@@ -405,7 +405,7 @@ const PostRequirementForm = () => {
             <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-xs">
               <div className="mb-4 pb-3 border-b border-slate-100">
                 <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
-                  <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center">2</span>
+                  <span className="w-6 h-6 rounded-full bg-orange-100 text-orange-600 text-xs font-bold flex items-center justify-center">2</span>
                   List of Materials
                 </h3>
                 <p className="text-sm text-slate-500 mt-1 ml-8">Add each item you need. Specify quantity, unit, and preferred brand so suppliers can quote accurately.</p>
@@ -423,7 +423,7 @@ const PostRequirementForm = () => {
 
               <div className="space-y-4">
                 {fields.map((item, index) => (
-                  <div key={item.id} className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center bg-white sm:bg-slate-50/30 p-4 sm:p-3 rounded-xl sm:rounded-lg border border-slate-200 sm:border-slate-200/60 shadow-sm sm:shadow-none hover:border-blue-400/40 transition-colors">
+                  <div key={item.id} className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center bg-white sm:bg-slate-50/30 p-4 sm:p-3 rounded-xl sm:rounded-lg border border-slate-200 sm:border-slate-200/60 shadow-sm sm:shadow-none hover:border-orange-400/40 transition-colors">
                     <div className="sm:col-span-3">
                       <label className="block sm:hidden text-xs font-semibold text-slate-400 mb-1">Item Name</label>
                       <Input placeholder="e.g., Cement" {...register(`items.${index}.itemName`)} className="bg-white border-slate-200 font-medium text-sm" />
@@ -494,7 +494,7 @@ const PostRequirementForm = () => {
                                 {availableBrands.map(b => (
                                   <SelectItem key={b} value={b}>{b}</SelectItem>
                                 ))}
-                                <SelectItem value="__custom__" className="text-blue-600 font-bold border-t border-slate-100 mt-1">
+                                <SelectItem value="__custom__" className="text-orange-600 font-bold border-t border-slate-100 mt-1">
                                   ✏️ Custom
                                 </SelectItem>
                               </SelectContent>
@@ -517,7 +517,7 @@ const PostRequirementForm = () => {
                 type="button"
                 variant="ghost"
                 onClick={() => append({ itemName: '', itemDescription: '', quantity: '', quantityUnit: 'pcs', brand: 'Any' })}
-                className="mt-4 text-blue-600 hover:text-blue-700 hover:bg-blue-50 font-bold border border-dashed border-blue-200 text-xs px-4 py-2"
+                className="mt-4 text-orange-600 hover:text-orange-700 hover:bg-orange-50 font-bold border border-dashed border-orange-200 text-xs px-4 py-2"
               >
                 <Plus className="w-3.5 h-3.5 mr-1" /> Add Another Item
               </Button>
@@ -528,7 +528,7 @@ const PostRequirementForm = () => {
           <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-xs">
             <div className="mb-4 pb-3 border-b border-slate-100">
               <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center">3</span>
+                <span className="w-6 h-6 rounded-full bg-orange-100 text-orange-600 text-xs font-bold flex items-center justify-center">3</span>
                 Timeline & Payment
               </h3>
               <p className="text-sm text-slate-500 mt-1 ml-8">Set your delivery deadline, how long suppliers can bid, and how you prefer to pay.</p>
@@ -598,7 +598,7 @@ const PostRequirementForm = () => {
               </div>
 
               {gstField === 'yes' && (
-                <div className="space-y-4 p-4 bg-blue-50/30 border border-blue-100 rounded-lg">
+                <div className="space-y-4 p-4 bg-orange-50/30 border border-orange-100 rounded-lg">
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">GST Number*</label>
                     <Input placeholder="Enter GSTIN" {...register('gstNumber')} className="bg-white border-slate-200 font-medium uppercase" maxLength={15} />
@@ -622,7 +622,7 @@ const PostRequirementForm = () => {
           <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-xs">
             <div className="mb-4 pb-3 border-b border-slate-100">
               <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center">4</span>
+                <span className="w-6 h-6 rounded-full bg-orange-100 text-orange-600 text-xs font-bold flex items-center justify-center">4</span>
                 {mode === 'upload' ? 'Additional Notes' : 'Reference Files & Notes'}
               </h3>
               <p className="text-sm text-slate-500 mt-1 ml-8">
@@ -679,7 +679,7 @@ const PostRequirementForm = () => {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full h-14 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 hover:shadow-lg text-white font-bold text-base rounded-xl transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-md"
+            className="w-full h-14 bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 hover:shadow-lg text-white font-bold text-base rounded-xl transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-md"
           >
             {loading ? <span className="animate-spin mr-2">⏳</span> : 'Post Requirement'}
             {!loading && <span>→</span>}

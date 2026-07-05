@@ -56,7 +56,7 @@ export default function PolicyConsentPopup() {
               href="/terms" 
               target="_blank" 
               rel="noopener noreferrer" 
-              className="underline text-blue-600 hover:text-blue-700 font-bold"
+              className="underline text-orange-600 hover:text-orange-700 font-bold"
             >
               Terms of Service
             </a>{' '}
@@ -65,7 +65,7 @@ export default function PolicyConsentPopup() {
               href="/privacy" 
               target="_blank" 
               rel="noopener noreferrer" 
-              className="underline text-blue-600 hover:text-blue-700 font-bold"
+              className="underline text-orange-600 hover:text-orange-700 font-bold"
             >
               Privacy Policy
             </a>.
@@ -73,7 +73,7 @@ export default function PolicyConsentPopup() {
 
           <Button
             onClick={handleAccept}
-            className="w-full bg-blue-600 cursor-pointer hover:bg-blue-700 text-white font-extrabold py-2.5 rounded-lg flex items-center justify-center gap-2 shadow-md shadow-blue-600/10"
+            className="w-full bg-orange-600 cursor-pointer hover:bg-orange-700 text-white font-extrabold py-2.5 rounded-lg flex items-center justify-center gap-2 shadow-md shadow-orange-600/10"
           >
             <Check className="w-4 h-4" />
             I Accept and Agree

@@ -13,7 +13,7 @@ const ProductCard = ({ product: item }) => {
           {item?.productId?.categoryId?.categoryName || item?.categoryId?.categoryName}
         </span>
         {item?.productId?.isMergeQuote && (
-          <Merge className="w-9 h-9  bg-blue-100 text-blue-500 rounded-full p-2" />
+          <Merge className="w-9 h-9  bg-orange-100 text-orange-500 rounded-full p-2" />
         )}
       </div>
       {/* image */}
@@ -80,7 +80,7 @@ const ProductCard = ({ product: item }) => {
             </div>
           ) : (
             <div className="mt-2 text-sm text-gray-700">
-              <p className="font-semibold text-blue-600 mb-1 border-b pb-1">
+              <p className="font-semibold text-orange-600 mb-1 border-b pb-1">
                 {(item?.productId?.items || item?.items || []).length} Items Requested:
               </p>
               <ul className="list-disc pl-4 text-xs space-y-1">
@@ -91,7 +91,7 @@ const ProductCard = ({ product: item }) => {
                 ))}
               </ul>
               {(item?.productId?.items || item?.items || []).length > 3 && (
-                <p className="text-xs text-blue-600 mt-1 italic pl-1">+ {(item?.productId?.items || item?.items || []).length - 3} more items...</p>
+                <p className="text-xs text-orange-600 mt-1 italic pl-1">+ {(item?.productId?.items || item?.items || []).length - 3} more items...</p>
               )}
             </div>
           )}
@@ -107,7 +107,7 @@ const ProductCard = ({ product: item }) => {
           }}
           variant="ghost"
           size="lg"
-          className="border  shadow-blue-700 border-blue-700 text-blue-700 hover:bg-blue-700 hover:text-white cursor-pointer"
+          className="border  shadow-orange-700 border-orange-700 text-orange-700 hover:bg-orange-700 hover:text-white cursor-pointer"
         >
           {item?.productId?.isMergeQuote ? 'Connect with Buyer' : ' Place Quotation'}
         </Button>

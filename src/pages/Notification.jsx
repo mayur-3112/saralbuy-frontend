@@ -119,8 +119,8 @@ const Notification = () => {
   const getNotificationBgClass = (index, type) => {
     if (type === 'deal_accepted') return 'bg-green-100/40';
     if (type === 'deal_rejected') return 'bg-red-100/40';
-    if (type === 'deal_request') return 'bg-blue-100/50';
-    return index % 2 === 0 ? 'bg-blue-100/50' : 'bg-transparent';
+    if (type === 'deal_request') return 'bg-orange-100/50';
+    return index % 2 === 0 ? 'bg-orange-100/50' : 'bg-transparent';
   };
 
   const formatDate = dateString => {
@@ -255,11 +255,11 @@ const Notification = () => {
                             <span className="break-words flex gap-2">
                               {title}{' '}
                               <div
-                                className={`${!seen ? 'w-2 h-2 rounded-full bg-blue-400' : ''}`}
+                                className={`${!seen ? 'w-2 h-2 rounded-full bg-orange-400' : ''}`}
                               ></div>
                             </span>
                           </div>
-                          <p className="text-sm text-blue-500 col-span-1 text-right">
+                          <p className="text-sm text-orange-500 col-span-1 text-right">
                             {formatDate(createdAt)}
                           </p>
                         </div>

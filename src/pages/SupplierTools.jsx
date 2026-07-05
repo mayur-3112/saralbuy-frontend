@@ -32,11 +32,11 @@ export default function SupplierTools() {
         
         {/* Header Section */}
         <div className="bg-white rounded-2xl p-8 border border-slate-200/60 shadow-sm relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-radial from-blue-100/40 to-transparent rounded-full blur-3xl -z-10"></div>
+          <div className="absolute top-0 right-0 w-64 h-64 bg-radial from-orange-100/40 to-transparent rounded-full blur-3xl -z-10"></div>
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative z-10">
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">
+                <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center text-orange-600">
                   <Calculator className="w-5 h-5" />
                 </div>
                 <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Supplier Tools</h1>
@@ -68,7 +68,7 @@ export default function SupplierTools() {
                   setLaborCost('');
                   setOtherCosts('');
                 }}
-                className="text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors"
+                className="text-sm font-semibold text-orange-600 hover:text-orange-700 transition-colors"
               >
                 Reset All
               </button>
@@ -98,17 +98,17 @@ export default function SupplierTools() {
               {/* Direct Costs */}
               <div className="space-y-3">
                 <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
-                  <LayoutDashboard className="w-4 h-4 text-blue-500" />
+                  <LayoutDashboard className="w-4 h-4 text-orange-500" />
                   Material / Purchase Cost
                 </label>
                 <div className="relative group">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-medium group-focus-within:text-blue-500 transition-colors">₹</span>
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-medium group-focus-within:text-orange-500 transition-colors">₹</span>
                   <input 
                     type="number"
                     value={materialCost}
                     onChange={(e) => setMaterialCost(e.target.value)}
                     placeholder="e.g. 35000"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-10 pr-4 text-slate-900 font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-10 pr-4 text-slate-900 font-semibold focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 focus:bg-white transition-all"
                   />
                 </div>
               </div>
@@ -121,13 +121,13 @@ export default function SupplierTools() {
                     Logistics / Delivery
                   </label>
                   <div className="relative group">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-medium text-sm group-focus-within:text-blue-500 transition-colors">₹</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-medium text-sm group-focus-within:text-orange-500 transition-colors">₹</span>
                     <input 
                       type="number"
                       value={transportCost}
                       onChange={(e) => setTransportCost(e.target.value)}
                       placeholder="0"
-                      className="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 pl-8 pr-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 pl-8 pr-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 focus:bg-white transition-all"
                     />
                   </div>
                 </div>
@@ -138,13 +138,13 @@ export default function SupplierTools() {
                     Labor / Loading
                   </label>
                   <div className="relative group">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-medium text-sm group-focus-within:text-blue-500 transition-colors">₹</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-medium text-sm group-focus-within:text-orange-500 transition-colors">₹</span>
                     <input 
                       type="number"
                       value={laborCost}
                       onChange={(e) => setLaborCost(e.target.value)}
                       placeholder="0"
-                      className="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 pl-8 pr-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 pl-8 pr-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 focus:bg-white transition-all"
                     />
                   </div>
                 </div>
@@ -155,13 +155,13 @@ export default function SupplierTools() {
                     Other Miscellaneous Costs
                   </label>
                   <div className="relative group">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-medium text-sm group-focus-within:text-blue-500 transition-colors">₹</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-medium text-sm group-focus-within:text-orange-500 transition-colors">₹</span>
                     <input 
                       type="number"
                       value={otherCosts}
                       onChange={(e) => setOtherCosts(e.target.value)}
                       placeholder="0"
-                      className="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 pl-8 pr-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 pl-8 pr-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 focus:bg-white transition-all"
                     />
                   </div>
                 </div>
@@ -171,7 +171,7 @@ export default function SupplierTools() {
 
           {/* Results Panel */}
           <div className="lg:col-span-5 bg-slate-900 rounded-2xl border border-slate-800 shadow-xl overflow-hidden relative flex flex-col">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-radial from-blue-500/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-radial from-orange-500/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
             <div className="p-6 sm:p-8 flex-1 flex flex-col">
               <h2 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
                 <Settings2 className="w-5 h-5 text-slate-400" />

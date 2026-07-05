@@ -120,7 +120,8 @@ const CategoryForm = ({
   setQuantityUnit,
   quantityValue,
   setQuantityValue,
-  categoryId
+  categoryId,
+  handleBackClick
 }) => {
   console.log('INITIAL STATE OF UPDATE PRODUCT FORM------->', initialData);
   const [values, setValues] = useState([
@@ -138,7 +139,6 @@ const CategoryForm = ({
   const imageRef = useRef(null);
   const fileDocRef = useRef(null);
   const navigate = useNavigate();
-  const gstField = watch('gst_requirement');
   const productField = watch('productType');
   const selectedSubCategoryId = watch('subCategoryId');
   const paymentMode = watch('paymentAndDelivery.paymentMode');
@@ -255,9 +255,7 @@ const CategoryForm = ({
             <div className="flex gap-2 items-center mb-2">
               <MoveLeft
                 className="w-6 cursor-pointer"
-                onClick={() => {
-                  navigate(-1);
-                }}
+                onClick={handleBackClick || (() => navigate(-1))}
               />
               <h2 className="text-[15px] font-semibold  text-center">Tell us about your need</h2>
             </div>
@@ -342,17 +340,11 @@ const CategoryForm = ({
                 />
               )}
 
-              <div className="relative">
-                <p className="absolute top-1/2 left-2 text-sm text-blue-600 font-semibold -translate-y-1/2">
-                  ₹
-                </p>
-                <Input
-                  type="text"
-                  placeholder="Enter a Budget range"
-                  {...register('minimumBudget')}
-                  className="bg-white pl-5"
-                />
-              </div>
+              <Textarea
+                placeholder="Description*"
+                {...register('description')}
+                className="bg-white min-h-24 col-span-1 md:col-span-3"
+              />
 
               {currentCategoryName !== 'service' && (
                 <div className="flex items-center gap-2">
@@ -509,7 +501,7 @@ const CategoryForm = ({
                           renderTrack={({ props, children }) => (
                             <div {...props} className="h-1 w-full bg-gray-300 rounded relative">
                               <div
-                                className="absolute h-1 bg-blue-600 rounded"
+                                className="absolute h-1 bg-orange-600 rounded"
                                 style={{
                                   left: `${(values[0] / 20) * 100}%`,
                                   width: `${((values[1] - values[0]) / 20) * 100}%`,
@@ -521,7 +513,7 @@ const CategoryForm = ({
                           renderThumb={({ props }) => (
                             <div
                               {...props}
-                              className="w-3 h-3 bg-blue-500 rounded-full flex items-center justify-center shadow"
+                              className="w-3 h-3 bg-orange-500 rounded-full flex items-center justify-center shadow"
                             />
                           )}
                         />
@@ -585,13 +577,6 @@ const CategoryForm = ({
                     className="bg-white"
                   />
                 )}
-
-              <Input
-                type="text"
-                placeholder={currentCategoryName === 'service' ? 'Service Type' : 'Product Type'}
-                {...register('typeOfProduct')}
-                className="bg-white"
-              />
 
               {currentCategoryName === 'industrial' && (
                 <Select value={toolTypeValue} onValueChange={v => setValue('toolType', v)}>
@@ -713,7 +698,7 @@ const CategoryForm = ({
                 {!fileDoc && initialData?.document && (
                   <>
                     <div
-                      className="absolute top-2 right-2 z-10 bg-blue-100 text-blue-500 rounded-sm p-1 cursor-pointer"
+                      className="absolute top-2 right-2 z-10 bg-orange-100 text-orange-500 rounded-sm p-1 cursor-pointer"
                       onClick={e => {
                         e.stopPropagation();
                         previewDoc(initialData.document);
@@ -724,13 +709,13 @@ const CategoryForm = ({
                         contentChildren={<p>View Document</p>}
                       />
                     </div>
-                    <p className="text-xs mt-2 text-blue-600">Current document uploaded</p>
+                    <p className="text-xs mt-2 text-orange-600">Current document uploaded</p>
                   </>
                 )}
 
                 {fileDoc && (
                   <div
-                    className="absolute top-2 right-2 z-10 bg-blue-100 text-blue-500 rounded-sm p-1 cursor-pointer"
+                    className="absolute top-2 right-2 z-10 bg-orange-100 text-orange-500 rounded-sm p-1 cursor-pointer"
                     onClick={e => {
                       e.stopPropagation();
                       setFileDoc(null);
@@ -745,12 +730,6 @@ const CategoryForm = ({
                 )}
               </div>
             </div>
-
-            <Textarea
-              placeholder="Description*"
-              {...register('description')}
-              className="bg-white min-h-24"
-            />
           </div>
 
           {/* ── Payment & Delivery ── */}
@@ -782,45 +761,6 @@ const CategoryForm = ({
                   <SelectItem value="any">Any</SelectItem>
                 </SelectContent>
               </Select>
-
-              <Select value={gstField} onValueChange={v => setValue('gst_requirement', v)}>
-                <SelectTrigger className="w-full bg-white">
-                  <SelectValue placeholder="GST Input Required" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="yes">Yes</SelectItem>
-                  <SelectItem value="no">No</SelectItem>
-                </SelectContent>
-              </Select>
-
-              {gstField === 'yes' && (
-                <>
-                  <Input
-                    type="text"
-                    placeholder="GST Number (15 characters - Format: 22AAAAA0000A1Z5)"
-                    {...register('paymentAndDelivery.gstNumber')}
-                    className="bg-white"
-                    maxLength={15}
-                    onChange={e => {
-                      setValue('paymentAndDelivery.gstNumber', e.target.value.toUpperCase(), {
-                        shouldValidate: true,
-                      });
-                    }}
-                  />
-                  <Input
-                    type="text"
-                    placeholder="Entity Name"
-                    {...register('paymentAndDelivery.organizationName')}
-                    className="bg-white"
-                  />
-                  <Input
-                    type="text"
-                    placeholder="Entity Address"
-                    {...register('paymentAndDelivery.organizationAddress')}
-                    className="bg-white"
-                  />
-                </>
-              )}
             </div>
           </div>
         </div>
@@ -871,9 +811,11 @@ const UpdateCreateProductForm = () => {
   const [fileDoc, setFileDoc] = useState(null);
   const [quantityUnit, setQuantityUnit] = useState('pcs');
   const [quantityValue, setQuantityValue] = useState('');
+  const [showExitWarning, setShowExitWarning] = useState(false);
+  const [isSubmittingData, setIsSubmittingData] = useState(false);
 
   // ── useForm — same pattern as CreateProductForm ───────────────────────────
-  const { watch, setValue, register, getValues } = useForm({
+  const { watch, setValue, register, getValues, formState: { isDirty } } = useForm({
     resolver: zodResolver(CategoryFormSchema),
     defaultValues: {
       title: '',
@@ -1062,34 +1004,70 @@ const UpdateCreateProductForm = () => {
     }
   }, [user]);
 
+  const formValues = watch();
+  const hasUserChanges = isDirty || 
+    (formValues.title && formValues.title.trim() !== '') || 
+    (formValues.subCategoryId && formValues.subCategoryId !== draftState?.subCategoryId);
+
+  const shouldBlock = hasUserChanges && !isSubmittingData && !saveAsDraftRes && !updateDraftRes;
+
+  const blocker = useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      shouldBlock && currentLocation.pathname !== nextLocation.pathname
+  );
+
+  useEffect(() => {
+    if (blocker.state === 'blocked') {
+      setShowExitWarning(true);
+    }
+  }, [blocker.state]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (shouldBlock) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [shouldBlock]);
+
+  const handleBackClick = () => {
+    if (shouldBlock) {
+      setShowExitWarning(true);
+    } else {
+      navigate(-1);
+    }
+  };
+
   // ── Submit — same pattern as CreateProductForm ────────────────────────────
   const handleSubmit = async (isDraft, resolvedBidDuration) => {
+    setIsSubmittingData(true);
     if (!user) {
       setOpen(true);
+      setIsSubmittingData(false);
       return;
     }
 
     const formData = getValues();
     if (!formData.title) {
       toast.error('Please fill the form first');
+      setIsSubmittingData(false);
       return;
     }
 
     const isValid = validateForm(formData, isDraft);
-    if (!isValid) return;
+    if (!isValid) {
+      setIsSubmittingData(false);
+      return;
+    }
 
     if (quantityValue && currentCategoryName?.toLowerCase() !== 'service') {
       const qty = quantityValue.toString().trim();
       if (!/^\d+(\.\d+)?$/.test(qty) || parseFloat(qty) < 0) {
         toast.error('Invalid Quantity');
-        return;
-      }
-    }
-    if (formData.minimumBudget) {
-      const mb = formData.minimumBudget.toString().trim();
-
-      if (!/^\d+$/.test(mb) || parseInt(mb) < 1) {
-        toast.error('Invalid Budget range');
+        setIsSubmittingData(false);
         return;
       }
     }
@@ -1174,6 +1152,44 @@ const UpdateCreateProductForm = () => {
           <CategoryFormSkeleton />
         ) : (
           <>
+            <AlertDialog 
+              open={showExitWarning} 
+              onOpenChange={(open) => {
+                if (!open) setShowExitWarning(false);
+              }}
+            >
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Unsaved Changes</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    You have unsaved changes. Would you like to save this requirement as a draft or discard it?
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter className="sm:justify-between flex-col sm:flex-row gap-3">
+                  <Button variant="ghost" onClick={() => { 
+                      setShowExitWarning(false);
+                      if (blocker.state === 'blocked') blocker.proceed();
+                      else navigate(-1); 
+                    }} className="text-slate-500 w-full sm:w-auto">
+                    Leave & Discard
+                  </Button>
+                  <div className="flex gap-2 w-full sm:w-auto">
+                    <AlertDialogCancel onClick={() => {
+                      setShowExitWarning(false);
+                      if (blocker.state === 'blocked') blocker.reset();
+                    }} className="mt-0 w-full sm:w-auto">Cancel</AlertDialogCancel>
+                    <Button onClick={() => { 
+                      setShowExitWarning(false); 
+                      handleSubmit(true, resolvedBidDuration).then(() => {
+                        if (blocker.state === 'blocked') blocker.proceed();
+                      });
+                    }} className="w-full sm:w-auto bg-slate-900 text-white">
+                      Save as Draft
+                    </Button>
+                  </div>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
             <div className="flex flex-row sm:justify-between justify-end items-center gap-3 mb-6">
               <Breadcrumb className="sm:block hidden">
                 <BreadcrumbList>
@@ -1183,7 +1199,7 @@ const UpdateCreateProductForm = () => {
                       Category
                     </BreadcrumbPage>
                     <BreadcrumbSeparator />
-                    <BreadcrumbPage className="capitalize font-semibold text-blue-600">
+                    <BreadcrumbPage className="capitalize font-semibold text-orange-600">
                       {categoryLabel()}
                     </BreadcrumbPage>
                   </BreadcrumbItem>
@@ -1210,6 +1226,7 @@ const UpdateCreateProductForm = () => {
               quantityValue={quantityValue}
               setQuantityValue={setQuantityValue}
               categoryId={draftState?.categoryId?._id}
+              handleBackClick={handleBackClick}
             />
 
             <div className="flex justify-end gap-3 my-5">
@@ -1224,7 +1241,7 @@ const UpdateCreateProductForm = () => {
               </Button>
               <Button
                 type="button"
-                className="text-white w-32 cursor-pointer bg-blue-600 border-primary-btn border-2"
+                className="text-white w-32 cursor-pointer bg-orange-600 border-primary-btn border-2"
                 onClick={() => setBidPopUpOpen(true)}
                 disabled={updateLoading}
               >

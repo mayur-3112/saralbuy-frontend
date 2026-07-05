@@ -122,7 +122,7 @@ const BidListing = () => {
           return <Badge className="bg-red-100 text-red-500 rounded-full px-3 w-28 text-center flex justify-center">Rejected</Badge>;
         }
         if (status === 'shortlisted') {
-          return <Badge className="bg-blue-100 text-blue-600 rounded-full px-3 w-28 text-center flex justify-center">Shortlisted</Badge>;
+          return <Badge className="bg-orange-100 text-orange-600 rounded-full px-3 w-28 text-center flex justify-center">Shortlisted</Badge>;
         }
         return <Badge className="bg-gray-100 text-gray-600 rounded-full px-3 w-28 text-center flex justify-center">Pending</Badge>;
       },
@@ -133,52 +133,27 @@ const BidListing = () => {
       cell: ({ row }) => {
         return (
           <div className="flex items-center gap-2">
-            <TooltipComp
-              hoverChildren={
-                <Button
-                  className="text-sm cursor-pointer text-gray-600 underline"
-                  variant={'link'}
-                  onClick={() => {
-                    navigate('/bid-overview/' + row.original?._id);
-                  }}
-                >
-                  View
-                </Button>
-              }
-              contentChildren={<p>View Quote</p>}
-            ></TooltipComp>
-
-            {/* <p onClick={() => {
-                        // Store chat IDs in localStorage for persistence across refresh
-                        localStorage.setItem('chatIds', JSON.stringify({
-                            productId: row.original?.productId,
-                            buyerId: row.original?.productBuyerId,
-                            sellerId: user._id
-                        }));
-                        navigate('/chat', {
-                            state: {
-                                productId: row.original?.productId,
-                                buyerId: row.original?.productBuyerId,
-                                sellerId: user._id
-                            }
-                        });
-                    }}>Chat now</p> */}
-            <TooltipComp
-              hoverChildren={
-                <div
-                  onClick={() => {
-                    if (deleteBidloading) return;
-                    setCurrentBidId(row.original?._id);
-                    // handleDeleteBid(row.original?._id)
-                    setOpen(true);
-                  }}
-                  className="hover:bg-red-100 p-1 rounded-md ease-in-out transition-all duration-300"
-                >
-                  <Trash2Icon className="h-4 w-4  text-red-500 cursor-pointer rounded-full" />
-                </div>
-              }
-              contentChildren={<p>Delete Quote</p>}
-            ></TooltipComp>
+            <Button
+              className="text-sm cursor-pointer text-orange-600 hover:text-orange-800 bg-orange-50/50 hover:bg-orange-100 h-8 px-3 rounded-md"
+              variant={'ghost'}
+              onClick={() => {
+                navigate('/bid-overview/' + row.original?._id);
+              }}
+            >
+              View
+            </Button>
+            <Button
+              className="text-sm cursor-pointer text-red-500 hover:text-red-700 bg-red-50/50 hover:bg-red-100 h-8 w-8 p-0 rounded-md"
+              variant={'ghost'}
+              onClick={() => {
+                if (deleteBidloading) return;
+                setCurrentBidId(row.original?._id);
+                setOpen(true);
+              }}
+              title="Delete Quote"
+            >
+              <Trash2Icon className="h-4 w-4" />
+            </Button>
           </div>
         );
       },
@@ -263,23 +238,23 @@ const BidListing = () => {
         <div className="space-y-4">
           <div className="flex gap-2">
             <Button 
-              variant={activeTab === 'pending' ? 'default' : 'outline'} 
+              variant="outline" 
               onClick={() => setActiveTab('pending')}
-              className={activeTab === 'pending' ? 'bg-blue-600 hover:bg-blue-700 text-white' : ''}
+              className={activeTab === 'pending' ? 'bg-orange-50 text-orange-700 border-orange-200' : 'text-slate-600 hover:bg-slate-50'}
             >
               Pending
             </Button>
             <Button 
-              variant={activeTab === 'accepted' ? 'default' : 'outline'} 
+              variant="outline" 
               onClick={() => setActiveTab('accepted')}
-              className={activeTab === 'accepted' ? 'bg-blue-600 hover:bg-blue-700 text-white' : ''}
+              className={activeTab === 'accepted' ? 'bg-orange-50 text-orange-700 border-orange-200' : 'text-slate-600 hover:bg-slate-50'}
             >
               Accepted
             </Button>
             <Button 
-              variant={activeTab === 'rejected' ? 'default' : 'outline'} 
+              variant="outline" 
               onClick={() => setActiveTab('rejected')}
-              className={activeTab === 'rejected' ? 'bg-blue-600 hover:bg-blue-700 text-white' : ''}
+              className={activeTab === 'rejected' ? 'bg-orange-50 text-orange-700 border-orange-200' : 'text-slate-600 hover:bg-slate-50'}
             >
               Rejected
             </Button>

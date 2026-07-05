@@ -211,7 +211,7 @@ const Requirement = () => {
                 // drafts.map((item: any, idx: number) => (
                 //   <div key={idx} className='border-2 border-gray-300 p-4 rounded-md w-full mb-2 relative'>
                 //     <div
-                //       className='absolute top-1 left-1 z-10 bg-blue-50 text-blue-400 rounded-sm p-1 cursor-pointer'
+                //       className='absolute top-1 left-1 z-10 bg-orange-50 text-orange-400 rounded-sm p-1 cursor-pointer'
                 //       onClick={() => navigate('/update-draft/' + item._id)}
                 //     >
                 //       <TooltipComp

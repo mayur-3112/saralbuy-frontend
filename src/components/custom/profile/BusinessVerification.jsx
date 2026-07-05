@@ -148,8 +148,8 @@ export default function BusinessVerification() {
   return (
     <Card className="p-6 md:p-8 space-y-6">
       <div className="flex items-start gap-3">
-        <div className="w-10 h-10 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0">
-          <ShieldCheck className="w-5 h-5 text-blue-600" />
+        <div className="w-10 h-10 rounded-lg bg-orange-50 border border-orange-100 flex items-center justify-center shrink-0">
+          <ShieldCheck className="w-5 h-5 text-orange-600" />
         </div>
         <div>
           <h3 className="text-lg font-black text-slate-900">Business Verification</h3>
@@ -244,7 +244,7 @@ export default function BusinessVerification() {
               <Button
                 type="submit"
                 disabled={submitting}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6"
+                className="bg-orange-600 hover:bg-orange-700 text-white font-bold px-6"
               >
                 {submitting ? (
                   <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Submitting…</>
@@ -279,7 +279,7 @@ function DocSlot({ label, accept, file, onFile, onClear, inputRef, disabled }) {
       ) : (
         <label
           className={`mt-1 flex items-center gap-2 rounded-lg border border-dashed border-slate-300 bg-slate-50 px-3 py-2 text-xs text-slate-500 ${
-            disabled ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer hover:border-blue-300 hover:bg-blue-50/40'
+            disabled ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer hover:border-orange-300 hover:bg-orange-50/40'
           }`}
         >
           <Upload className="w-4 h-4" />

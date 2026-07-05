@@ -50,10 +50,10 @@ export default function SourcingWorkspace({ user, userBidsCount, userDraftsCount
         
         {/* KPI 1: Active Sourcing Leads */}
         <div 
-          className="group bg-white border border-slate-200 hover:border-blue-200 rounded-xl p-5 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-4 cursor-pointer relative overflow-hidden"
+          className="group bg-white border border-slate-200 hover:border-orange-200 rounded-xl p-5 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-4 cursor-pointer relative overflow-hidden"
           style={{ background: 'linear-gradient(135deg, #ffffff 80%, #fff9f3 100%)' }}
         >
-          <div className="w-12 h-12 rounded bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shrink-0 group-hover:scale-110 group-hover:bg-blue-100 group-hover:text-blue-700 transition-all duration-300">
+          <div className="w-12 h-12 rounded bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-600 shrink-0 group-hover:scale-110 group-hover:bg-orange-100 group-hover:text-orange-700 transition-all duration-300">
             <Briefcase className="w-5 h-5" />
           </div>
           <div>
@@ -64,10 +64,10 @@ export default function SourcingWorkspace({ user, userBidsCount, userDraftsCount
 
         {/* KPI 2: My Submitted Quotes */}
         <div 
-          className="group bg-white border border-slate-200 hover:border-blue-200 rounded-xl p-5 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-4 cursor-pointer relative overflow-hidden"
+          className="group bg-white border border-slate-200 hover:border-orange-200 rounded-xl p-5 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-4 cursor-pointer relative overflow-hidden"
           style={{ background: 'linear-gradient(135deg, #ffffff 80%, #f0f7ff 100%)' }}
         >
-          <div className="w-12 h-12 rounded bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shrink-0 group-hover:scale-110 group-hover:bg-blue-100 group-hover:text-blue-700 transition-all duration-300">
+          <div className="w-12 h-12 rounded bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-600 shrink-0 group-hover:scale-110 group-hover:bg-orange-100 group-hover:text-orange-700 transition-all duration-300">
             <Gavel className="w-5 h-5" />
           </div>
           <div>
@@ -78,7 +78,7 @@ export default function SourcingWorkspace({ user, userBidsCount, userDraftsCount
 
         {/* KPI 3: My Sourcing Drafts */}
         <div 
-          className="group bg-white border border-slate-200 hover:border-blue-200 rounded-xl p-5 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-4 cursor-pointer relative overflow-hidden"
+          className="group bg-white border border-slate-200 hover:border-orange-200 rounded-xl p-5 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-4 cursor-pointer relative overflow-hidden"
           style={{ background: 'linear-gradient(135deg, #ffffff 80%, #fffbeb 100%)' }}
         >
           <div className="w-12 h-12 rounded bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 shrink-0 group-hover:scale-110 group-hover:bg-amber-100 group-hover:text-amber-700 transition-all duration-300">
@@ -92,7 +92,7 @@ export default function SourcingWorkspace({ user, userBidsCount, userDraftsCount
 
         {/* KPI 4: Negotiation Rooms */}
         <div 
-          className="group bg-white border border-slate-200 hover:border-blue-200 rounded-xl p-5 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-4 cursor-pointer relative overflow-hidden"
+          className="group bg-white border border-slate-200 hover:border-orange-200 rounded-xl p-5 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-4 cursor-pointer relative overflow-hidden"
           style={{ background: 'linear-gradient(135deg, #ffffff 80%, #f0fdf4 100%)' }}
         >
           <div className="w-12 h-12 rounded bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shrink-0 group-hover:scale-110 group-hover:bg-emerald-100 group-hover:text-emerald-700 transition-all duration-300">
@@ -116,7 +116,7 @@ export default function SourcingWorkspace({ user, userBidsCount, userDraftsCount
           
           <button
             onClick={() => navigate('/requirement')}
-            className="group w-full lg:w-auto px-5 py-3 bg-blue-600 hover:bg-blue-500 active:scale-[0.98] text-white font-bold rounded-lg text-xs flex items-center justify-center gap-2 cursor-pointer shadow-sm transition-all duration-200 hover:shadow-md hover:shadow-blue-600/15"
+            className="group w-full lg:w-auto px-5 py-3 bg-orange-600 hover:bg-orange-500 active:scale-[0.98] text-white font-bold rounded-lg text-xs flex items-center justify-center gap-2 cursor-pointer shadow-sm transition-all duration-200 hover:shadow-md hover:shadow-orange-600/15"
           >
             <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" /> Post New Project Sourcing Need
           </button>
@@ -125,7 +125,7 @@ export default function SourcingWorkspace({ user, userBidsCount, userDraftsCount
         {/* Filter Form Controls */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Keyword Search */}
-          <div className="relative flex items-center bg-white border border-slate-300 rounded-lg focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/15 transition-all duration-300 overflow-hidden">
+          <div className="relative flex items-center bg-white border border-slate-300 rounded-lg focus-within:border-orange-500 focus-within:ring-4 focus-within:ring-orange-500/15 transition-all duration-300 overflow-hidden">
             <Search className="absolute left-3.5 h-4 w-4 text-slate-400 pointer-events-none" />
             <input
               type="text"
@@ -137,7 +137,7 @@ export default function SourcingWorkspace({ user, userBidsCount, userDraftsCount
           </div>
 
           {/* Industry Category Filter */}
-          <div className="relative flex items-center bg-white border border-slate-300 rounded-lg focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/15 transition-all duration-300 overflow-hidden">
+          <div className="relative flex items-center bg-white border border-slate-300 rounded-lg focus-within:border-orange-500 focus-within:ring-4 focus-within:ring-orange-500/15 transition-all duration-300 overflow-hidden">
             <Grid className="absolute left-3.5 h-4 w-4 text-slate-400 pointer-events-none" />
             <select
               value={selectedCategory}
@@ -154,7 +154,7 @@ export default function SourcingWorkspace({ user, userBidsCount, userDraftsCount
           </div>
 
           {/* Location City Filter */}
-          <div className="relative flex items-center bg-white border border-slate-300 rounded-lg focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/15 transition-all duration-300 overflow-hidden">
+          <div className="relative flex items-center bg-white border border-slate-300 rounded-lg focus-within:border-orange-500 focus-within:ring-4 focus-within:ring-orange-500/15 transition-all duration-300 overflow-hidden">
             <MapPin className="absolute left-3.5 h-4 w-4 text-slate-400 pointer-events-none" />
             <select
               value={selectedLocation}
@@ -173,7 +173,7 @@ export default function SourcingWorkspace({ user, userBidsCount, userDraftsCount
       <div className="space-y-4">
         <div className="flex justify-between items-center px-1">
           <p className="text-sm text-slate-500 font-semibold">
-            Showing <span className="text-blue-600 font-extrabold">{filteredRequirements.length}</span> active listings
+            Showing <span className="text-orange-600 font-extrabold">{filteredRequirements.length}</span> active listings
           </p>
         </div>
 

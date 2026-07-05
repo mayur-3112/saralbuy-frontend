@@ -21,7 +21,7 @@ export default function Footer() {
             until you choose one.
           </p>
           <div className="flex flex-wrap gap-4 pt-1">
-            <div className="text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 px-3.5 py-1.5 rounded-full">
+            <div className="text-xs font-semibold text-orange-700 bg-orange-50 border border-orange-200 px-3.5 py-1.5 rounded-full">
               🚀 Audited Suppliers
             </div>
             <div className="text-xs font-semibold text-cyan-700 bg-cyan-50 border border-cyan-200 px-3.5 py-1.5 rounded-full">
@@ -36,10 +36,10 @@ export default function Footer() {
             Company
           </h4>
           <ul className="space-y-3 font-semibold">
-            <li><Link to="/how-it-works" className="text-sm text-slate-600 hover:text-blue-700 hover:underline underline-offset-4 decoration-blue-300 decoration-2 transition-all">How it works</Link></li>
-            <li><Link to="/about-us" className="text-sm text-slate-600 hover:text-blue-700 hover:underline underline-offset-4 decoration-blue-300 decoration-2 transition-all">About Us</Link></li>
-            <li><Link to="/contact-us" className="text-sm text-slate-600 hover:text-blue-700 hover:underline underline-offset-4 decoration-blue-300 decoration-2 transition-all">Contact Us</Link></li>
-            <li><Link to="/faq" className="text-sm text-slate-600 hover:text-blue-700 hover:underline underline-offset-4 decoration-blue-300 decoration-2 transition-all">FAQ</Link></li>
+            <li><Link to="/how-it-works" className="text-sm text-slate-600 hover:text-orange-700 hover:underline underline-offset-4 decoration-orange-300 decoration-2 transition-all">How it works</Link></li>
+            <li><Link to="/about-us" className="text-sm text-slate-600 hover:text-orange-700 hover:underline underline-offset-4 decoration-orange-300 decoration-2 transition-all">About Us</Link></li>
+            <li><Link to="/contact-us" className="text-sm text-slate-600 hover:text-orange-700 hover:underline underline-offset-4 decoration-orange-300 decoration-2 transition-all">Contact Us</Link></li>
+            <li><Link to="/faq" className="text-sm text-slate-600 hover:text-orange-700 hover:underline underline-offset-4 decoration-orange-300 decoration-2 transition-all">FAQ</Link></li>
           </ul>
         </div>
 
@@ -49,8 +49,8 @@ export default function Footer() {
             Legal
           </h4>
           <ul className="space-y-3 font-semibold">
-            <li><Link to="/terms" className="text-sm text-slate-600 hover:text-blue-700 hover:underline underline-offset-4 decoration-blue-300 decoration-2 transition-all">Terms of Use</Link></li>
-            <li><Link to="/privacy" className="text-sm text-slate-600 hover:text-blue-700 hover:underline underline-offset-4 decoration-blue-300 decoration-2 transition-all">Privacy Policy</Link></li>
+            <li><Link to="/terms" className="text-sm text-slate-600 hover:text-orange-700 hover:underline underline-offset-4 decoration-orange-300 decoration-2 transition-all">Terms of Use</Link></li>
+            <li><Link to="/privacy" className="text-sm text-slate-600 hover:text-orange-700 hover:underline underline-offset-4 decoration-orange-300 decoration-2 transition-all">Privacy Policy</Link></li>
           </ul>
         </div>
       </div>

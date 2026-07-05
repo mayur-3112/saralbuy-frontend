@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useBlocker } from 'react-router-dom';
 
 import {
   Breadcrumb,
@@ -116,7 +116,8 @@ const CategoryForm = ({
   setQuantityUnit,
   quantityValue,
   setQuantityValue,
-  categoryId
+  categoryId,
+  handleBackClick
 }) => {
   const [values, setValues] = useState([0, 2]);
   const [date, setDate] = useState(undefined);
@@ -126,7 +127,6 @@ const CategoryForm = ({
   const imageRef = useRef(null);
   const fileDocRef = useRef(null);
   const navigate = useNavigate();
-  const gstField = watch('gst_requirement');
   const productField = watch('productType');
   const paymentMode = watch('paymentAndDelivery.paymentMode');
   const genderValue = watch('gender');
@@ -173,42 +173,20 @@ const CategoryForm = ({
 
   const subCategoryIdValue = watch('subCategoryId');
   const [showCustomCategoryWarning, setShowCustomCategoryWarning] = useState(false);
-  const [pendingSubCategoryId, setPendingSubCategoryId] = useState(null);
 
   const handleSubCategoryChange = (val) => {
     const selectedCategory = subCategroies.find(c => c._id === val);
+    setValue('subCategoryId', val);
     if (selectedCategory && (selectedCategory.name.toLowerCase() === 'other' || selectedCategory.name.toLowerCase() === 'others')) {
-      setPendingSubCategoryId(val);
       setShowCustomCategoryWarning(true);
     } else {
-      setValue('subCategoryId', val);
+      setShowCustomCategoryWarning(false);
     }
   };
 
   console.log({ subCatgoryName });
   return (
     <div className="relative">
-      <AlertDialog open={showCustomCategoryWarning} onOpenChange={setShowCustomCategoryWarning}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>⚠️ Custom Category Notice</AlertDialogTitle>
-            <AlertDialogDescription>
-              Please note: Any custom requirement you enter must be aligned with our existing construction and building material offerings. Unrelated products may be removed.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => {
-              setShowCustomCategoryWarning(false);
-              setPendingSubCategoryId(null);
-            }}>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={() => {
-              setShowCustomCategoryWarning(false);
-              setValue('subCategoryId', pendingSubCategoryId);
-            }}>Accept & Continue</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Left Panel */}
         <div className="md:col-span-1 lg:col-span-1 bg-transparent border-0 p-6 xs:grid xs:grid-cols-2 gap-6 space-y-4">
@@ -216,9 +194,7 @@ const CategoryForm = ({
             <div className="flex gap-2 items-center mb-2">
               <MoveLeft
                 className="w-6 cursor-pointer"
-                onClick={() => {
-                  navigate(-1);
-                }}
+                onClick={handleBackClick || (() => navigate(-1))}
               />
               <h2 className="text-[15px] font-semibold  text-center">Tell us about your need</h2>
             </div>
@@ -243,12 +219,12 @@ const CategoryForm = ({
               <Input
                 type="text"
                 placeholder="Title* (Give a short title for your post - specify your required product in 3–4 words)"
-                className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium col-span-1 md:col-span-3"
+                className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium col-span-1 md:col-span-3"
                 {...register('title')}
               />
 
               <Select value={subCategoryIdValue} onValueChange={handleSubCategoryChange}>
-                <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-blue-300 focus:ring-blue-500/30 focus:border-blue-500 transition-all font-medium">
+                <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
                   <SelectValue placeholder="Category*" />
                 </SelectTrigger>
                 <SelectContent>
@@ -259,6 +235,12 @@ const CategoryForm = ({
                   ))}
                 </SelectContent>
               </Select>
+
+              {showCustomCategoryWarning && (
+                <div className="col-span-1 md:col-span-3 bg-amber-50 border border-amber-200 rounded-md p-3 text-amber-800 text-sm">
+                  <strong>⚠️ Custom Category Notice:</strong> Please note: Any custom requirement you enter must be aligned with our existing construction and building material offerings. Unrelated products may be removed.
+                </div>
+              )}
 
               {currentCategoryName !== 'service' && currentCategoryName !== 'others' && (
                 <div className="col-span-1 md:col-span-3">
@@ -275,7 +257,7 @@ const CategoryForm = ({
                               onClick={() => setbrand(brandName)}
                               className={`px-3 py-1.5 text-xs font-semibold rounded-full border transition-all ${
                                 brand === brandName
-                                  ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                                  ? 'bg-orange-600 text-white border-orange-600 shadow-xs'
                                   : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
                               }`}
                             >
@@ -288,7 +270,7 @@ const CategoryForm = ({
                           onClick={() => setbrand('others')}
                           className={`px-3 py-1.5 text-xs font-semibold rounded-full border transition-all ${
                             brand === 'others'
-                              ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                              ? 'bg-orange-600 text-white border-orange-600 shadow-xs'
                               : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
                           }`}
                         >
@@ -298,7 +280,7 @@ const CategoryForm = ({
                       <SearchableDropdown
                         setValue={setbrand}
                         value={brand}
-                        className="w-full bg-slate-50/50 border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium"
+                        className="w-full bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium"
                         dropdownTitle="Or search/select brand*"
                         renderItems={brandRenderItems}
                       />
@@ -309,7 +291,7 @@ const CategoryForm = ({
                       placeholder="Type your brand name..."
                       value={brand}
                       onChange={e => setbrand(e.target.value)}
-                      className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium"
+                      className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium"
                     />
                   )}
                 </div>
@@ -323,7 +305,7 @@ const CategoryForm = ({
                   onChange={e => {
                     setbrand(e.target.value);
                   }}
-                  className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium"
+                  className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium"
                 />
               )}
 
@@ -332,21 +314,15 @@ const CategoryForm = ({
                   type="text"
                   placeholder="Specific Brand Name..."
                   {...register('brandName')}
-                  className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium"
+                  className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium"
                 />
               )}
 
-              <div className="relative">
-                <p className="absolute top-1/2 left-2 text-sm text-blue-600 font-semibold -translate-y-1/2">
-                  ₹
-                </p>
-                <Input
-                  type="text"
-                  placeholder="Enter a Budget range"
-                  {...register('minimumBudget')}
-                  className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium pl-6"
-                />
-              </div>
+              <Textarea
+                placeholder="Description*"
+                {...register('description')}
+                className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium min-h-24 col-span-1 md:col-span-3"
+              />
 
               {currentCategoryName !== 'service' && (
                 // <Input
@@ -357,7 +333,7 @@ const CategoryForm = ({
                 // />
                 <div className="flex items-center gap-2">
                   <Select value={quantityUnit} onValueChange={setQuantityUnit} defaultValue="pcs">
-                    <SelectTrigger className="w-[85px] bg-slate-50/50 border-slate-200 hover:border-blue-300 focus:ring-blue-500/30 focus:border-blue-500 transition-all font-medium">
+                    <SelectTrigger className="w-[85px] bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
                       <SelectValue placeholder="Unit" />
                     </SelectTrigger>
                     <SelectContent>
@@ -374,7 +350,7 @@ const CategoryForm = ({
                     placeholder="Qty"
                     value={quantityValue}
                     onChange={e => setQuantityValue(e.target.value)}
-                    className="flex-1 bg-slate-50/50 border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium"
+                    className="flex-1 bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium"
                     min="0"
                   />
                 </div>
@@ -382,7 +358,7 @@ const CategoryForm = ({
 
               {currentCategoryName === 'fashion' && (
                 <Select value={genderValue} onValueChange={value => setValue('gender', value)}>
-                  <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-blue-300 focus:ring-blue-500/30 focus:border-blue-500 transition-all font-medium">
+                  <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
                     <SelectValue placeholder="Gender" />
                   </SelectTrigger>
                   <SelectContent>
@@ -400,7 +376,7 @@ const CategoryForm = ({
                       value={fuelTypeValue}
                       onValueChange={value => setValue('fuelType', value)}
                     >
-                      <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-blue-300 focus:ring-blue-500/30 focus:border-blue-500 transition-all font-medium">
+                      <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
                         <SelectValue placeholder="Fuel Type" />
                       </SelectTrigger>
                       <SelectContent>
@@ -418,7 +394,7 @@ const CategoryForm = ({
                           type="text"
                           placeholder="Model"
                           {...register('model')}
-                          className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium col-span-1"
+                          className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium col-span-1"
                         />
                     )}
 
@@ -427,7 +403,7 @@ const CategoryForm = ({
                           type="text"
                           placeholder="Color"
                           value={colorValue}
-                          className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium col-span-1"
+                          className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium col-span-1"
                           onChange={e => {
                             setValue('color', e.target.value);
                           }}
@@ -441,7 +417,7 @@ const CategoryForm = ({
                         value={transmissionValue}
                         onValueChange={value => setValue('transmission', value)}
                       >
-                        <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-blue-300 focus:ring-blue-500/30 focus:border-blue-500 transition-all font-medium">
+                        <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
                           <SelectValue placeholder="Transmission" />
                         </SelectTrigger>
                         <SelectContent>
@@ -458,7 +434,7 @@ const CategoryForm = ({
                   type="text"
                   placeholder="Model"
                   {...register('model')}
-                  className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium col-span-1"
+                  className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium col-span-1"
                 />
               )}
 
@@ -475,7 +451,7 @@ const CategoryForm = ({
                         value={productField}
                         onValueChange={value => setValue('productType', value)}
                       >
-                        <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-blue-300 focus:ring-blue-500/30 focus:border-blue-500 transition-all font-medium">
+                        <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
                           <SelectValue placeholder="Product Condition" />
                         </SelectTrigger>
                         <SelectContent>
@@ -506,7 +482,7 @@ const CategoryForm = ({
                             renderTrack={({ props, children }) => (
                               <div {...props} className="h-1 w-full bg-gray-300 rounded relative">
                                 <div
-                                  className="absolute h-1 bg-blue-600 rounded"
+                                  className="absolute h-1 bg-orange-600 rounded"
                                   style={{
                                     left: `${(values[0] / 20) * 100}%`,
                                     width: `${((values[1] - values[0]) / 20) * 100}%`,
@@ -518,7 +494,7 @@ const CategoryForm = ({
                             renderThumb={({ props }) => (
                               <div
                                 {...props}
-                                className="w-3 h-3 bg-blue-500 rounded-full flex items-center justify-center shadow"
+                                className="w-3 h-3 bg-orange-500 rounded-full flex items-center justify-center shadow"
                               />
                             )}
                           />
@@ -548,7 +524,7 @@ const CategoryForm = ({
                     type="text"
                     placeholder="Product Condition"
                     {...register('productCondition')}
-                    className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium"
+                    className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium"
                   />
                 </>
               )}
@@ -558,7 +534,7 @@ const CategoryForm = ({
                   value={conditionOfProductValue}
                   onValueChange={value => setValue('conditionOfProduct', value)}
                 >
-                  <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-blue-300 focus:ring-blue-500/30 focus:border-blue-500 transition-all font-medium">
+                  <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
                     <SelectValue placeholder="Product Condition" />
                   </SelectTrigger>
                   <SelectContent>
@@ -582,20 +558,13 @@ const CategoryForm = ({
                     type="text"
                     placeholder="Type of Vehicle"
                     {...register('typeOfVehicle')}
-                    className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium"
+                    className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium"
                   />
                 )}
 
-              <Input
-                type="text"
-                placeholder={currentCategoryName === 'service' ? 'Service Type' : 'Product Type'}
-                {...register('typeOfProduct')}
-                className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium"
-              />
-
               {currentCategoryName === 'industrial' && (
                 <Select value={toolTypeValue} onValueChange={value => setValue('toolType', value)}>
-                  <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-blue-300 focus:ring-blue-500/30 focus:border-blue-500 transition-all font-medium">
+                  <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
                     <SelectValue placeholder="Tool Type" />
                   </SelectTrigger>
                   <SelectContent>
@@ -695,7 +664,7 @@ const CategoryForm = ({
 
                 {fileDoc && (
                   <div
-                    className="absolute top-2 right-2 z-10 bg-blue-100 text-blue-500 rounded-sm p-1 cursor-pointer"
+                    className="absolute top-2 right-2 z-10 bg-orange-100 text-orange-500 rounded-sm p-1 cursor-pointer"
                     onClick={e => {
                       e.stopPropagation();
                       setFileDoc(null);
@@ -710,11 +679,6 @@ const CategoryForm = ({
                 )}
               </div>
             </div>
-            <Textarea
-              placeholder="Description*"
-              {...register('description')}
-              className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium min-h-24 mt-4"
-            />
           </div>
 
           <div className="rounded-2xl p-6 sm:p-8 bg-white/90 backdrop-blur-xl border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all mb-8 hover:shadow-[0_8px_30px_rgb(234,88,12,0.08)]">
@@ -736,7 +700,7 @@ const CategoryForm = ({
                 value={paymentMode}
                 onValueChange={value => setValue('paymentAndDelivery.paymentMode', value)}
               >
-                <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-blue-300 focus:ring-blue-500/30 focus:border-blue-500 transition-all font-medium">
+                <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
                   <SelectValue placeholder="Payment Mode" />
                 </SelectTrigger>
                 <SelectContent>
@@ -747,7 +711,7 @@ const CategoryForm = ({
               </Select>
 
               <Select value={gstField} onValueChange={value => setValue('gst_requirement', value)}>
-                <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-blue-300 focus:ring-blue-500/30 focus:border-blue-500 transition-all font-medium">
+                <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 hover:border-orange-300 focus:ring-orange-500/30 focus:border-orange-500 transition-all font-medium">
                   <SelectValue placeholder="GST Input Required" />
                 </SelectTrigger>
                 <SelectContent>
@@ -762,7 +726,7 @@ const CategoryForm = ({
                     type="text"
                     placeholder="GST Number (15 characters - Format: 22AAAAA0000A1Z5)"
                     {...register('paymentAndDelivery.gstNumber')}
-                    className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium uppercase"
+                    className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium uppercase"
                     maxLength={15}
                     onChange={e => {
                       const value = e.target.value.toUpperCase();
@@ -775,13 +739,13 @@ const CategoryForm = ({
                     type="text"
                     placeholder="Entity Name"
                     {...register('paymentAndDelivery.organizationName')}
-                    className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium"
+                    className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium"
                   />
                   <Input
                     type="text"
                     placeholder="Entity Address"
                     {...register('paymentAndDelivery.organizationAddress')}
-                    className="bg-slate-50/50 border-slate-200 hover:border-blue-300 focus-visible:ring-blue-500/30 focus-visible:border-blue-500 transition-all font-medium"
+                    className="bg-slate-50/50 border-slate-200 hover:border-orange-300 focus-visible:ring-orange-500/30 focus-visible:border-orange-500 transition-all font-medium"
                   />
                 </>
               )}
@@ -800,7 +764,7 @@ const CreateProductForm = () => {
   useEffect(() => {
     dispatachCategory();
   }, []);
-  const { categoryId, subCategoryId } = useParams();
+  const { categoryId: paramCategoryId, subCategoryId } = useParams();
   const [subCategroies, setSubCategoies] = useState([]);
   const { fn: getCatByIdFn, data: catByIdData } = useFetch(categoryService.getCategoriesById);
   const {
@@ -819,7 +783,9 @@ const CreateProductForm = () => {
   const [buttonType, setButtonType] = useState(false);
   const [quantityUnit, setQuantityUnit] = useState('pcs');
   const [quantityValue, setQuantityValue] = useState('');
-  const { watch, setValue, register, getValues } = useForm({
+  const [showExitWarning, setShowExitWarning] = useState(false);
+  const [isSubmittingData, setIsSubmittingData] = useState(false);
+  const { watch, setValue, register, getValues, formState: { isDirty } } = useForm({
     resolver: zodResolver(CategoryFormSchema),
     defaultValues: {
       title: '',
@@ -957,9 +923,48 @@ const CreateProductForm = () => {
     }
   }, [user]);
 
+  const formValues = watch();
+  const hasUserChanges = isDirty || 
+    (formValues.title && formValues.title.trim() !== '') || 
+    formValues.subCategoryId;
+
+  const shouldBlock = hasUserChanges && !isSubmittingData && !createProductRes;
+
+  const blocker = useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      shouldBlock && currentLocation.pathname !== nextLocation.pathname
+  );
+
+  useEffect(() => {
+    if (blocker.state === 'blocked') {
+      setShowExitWarning(true);
+    }
+  }, [blocker.state]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (shouldBlock) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [shouldBlock]);
+
+  const handleBackClick = () => {
+    if (shouldBlock) {
+      setShowExitWarning(true);
+    } else {
+      navigate(-1);
+    }
+  };
+
   const handleSubmit = async (isDraft, resolvedBidDuration) => {
+    setIsSubmittingData(true);
     if (!user) {
       setOpen(true);
+      setIsSubmittingData(false);
       return;
     }
 
@@ -971,6 +976,7 @@ const CreateProductForm = () => {
     ) {
       toast.info('Please update your profile first before adding quotes');
       navigate('/account');
+      setIsSubmittingData(false);
       return;
     }
 
@@ -978,32 +984,21 @@ const CreateProductForm = () => {
 
     if (!formData.title) {
       toast.error('Please fill the form first');
+      setIsSubmittingData(false);
       return;
     }
 
     const isValid = validateForm(formData, isDraft);
-    if (!isValid) return;
+    if (!isValid) {
+      setIsSubmittingData(false);
+      return;
+    }
 
-    // if (formData.quantity) {
-    //   const qty = formData.quantity.toString().trim();
-    //   if (!/^\d+$/.test(qty) || parseInt(qty) < 1) {
-    //     toast.error('Invalid Quantity');
-    //     return;
-    //   }
-    // }
     if (quantityValue && currentCategoryName?.toLowerCase() !== 'service') {
       const qty = quantityValue.toString().trim();
       if (!/^\d+(\.\d+)?$/.test(qty) || parseFloat(qty) < 0) {
         toast.error('Invalid Quantity');
-        return;
-      }
-    }
-
-    if (formData.minimumBudget) {
-      const minBudget = formData.minimumBudget.toString().trim();
-      console.log(minBudget);
-      if (!/^\d+$/.test(minBudget) || parseInt(minBudget) < 1) {
-        toast.error('Invalid Budget range');
+        setIsSubmittingData(false);
         return;
       }
     }
@@ -1072,6 +1067,47 @@ const CreateProductForm = () => {
           createProductFn={handleSubmit}
         />
 
+        <AlertDialog 
+          open={showExitWarning} 
+          onOpenChange={(open) => {
+            if (!open) {
+              setShowExitWarning(false);
+            }
+          }}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Unsaved Changes</AlertDialogTitle>
+              <AlertDialogDescription>
+                You have unsaved changes. Would you like to save this requirement as a draft or discard it?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter className="sm:justify-between flex-col sm:flex-row gap-3">
+              <Button variant="ghost" onClick={() => { 
+                  setShowExitWarning(false);
+                  if (blocker.state === 'blocked') blocker.proceed();
+                  else navigate(-1); 
+                }} className="text-slate-500 w-full sm:w-auto">
+                Leave & Discard
+              </Button>
+              <div className="flex gap-2 w-full sm:w-auto">
+                <AlertDialogCancel onClick={() => {
+                  setShowExitWarning(false);
+                  if (blocker.state === 'blocked') blocker.reset();
+                }} className="mt-0 w-full sm:w-auto">Cancel</AlertDialogCancel>
+                <Button onClick={() => { 
+                  setShowExitWarning(false); 
+                  handleSubmit(true, resolvedBidDuration).then(() => {
+                    if (blocker.state === 'blocked') blocker.proceed();
+                  });
+                }} className="w-full sm:w-auto bg-slate-900 text-white">
+                  Save as Draft
+                </Button>
+              </div>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
         <CategoryForm
           currentCategoryName={currentCategoryName}
           catByIdData={catByIdData}
@@ -1090,6 +1126,7 @@ const CreateProductForm = () => {
           quantityValue={quantityValue}
           setQuantityValue={setQuantityValue}
           categoryId={categoryId}
+          handleBackClick={handleBackClick}
         />
 
         <div className="flex justify-end gap-3 my-5">
@@ -1105,7 +1142,7 @@ const CreateProductForm = () => {
           <Button
             type="button"
             disabled={addProductLoading}
-            className="text-white w-32 cursor-pointer bg-blue-600 border-primary-btn border-2"
+            className="text-white w-32 cursor-pointer bg-orange-600 border-primary-btn border-2"
             onClick={() => setBidPopUpOpen(true)}
           >
             Submit

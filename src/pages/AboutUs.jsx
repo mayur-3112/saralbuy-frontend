@@ -12,12 +12,12 @@ export default function AboutUs() {
       {/* Hero */}
       <section className="bg-slate-950 text-white py-16 sm:py-20">
         <div className="max-w-4xl mx-auto px-4">
-          <div className="text-[11px] font-black uppercase tracking-[0.2em] text-blue-400 mb-3">
+          <div className="text-[11px] font-black uppercase tracking-[0.2em] text-orange-400 mb-3">
             About SaralBuy
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-[1.1]">
             Sourcing construction materials should be simple.
-            <span className="block bg-gradient-to-r from-blue-300 to-amber-300 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-orange-300 to-amber-300 bg-clip-text text-transparent">
               We&apos;re building the tool for that.
             </span>
           </h1>
@@ -76,7 +76,7 @@ export default function AboutUs() {
           <p className="text-slate-600 mt-3 text-sm sm:text-base max-w-xl mx-auto">
             SaralBuy is a small team based in Karnataka. If something on the platform doesn&apos;t
             work, tell us at{' '}
-            <Link to="/contact-us" className="font-bold text-blue-700 hover:text-blue-800 underline underline-offset-4">
+            <Link to="/contact-us" className="font-bold text-orange-700 hover:text-orange-800 underline underline-offset-4">
               contact
             </Link>
             . We read every message.
@@ -97,8 +97,8 @@ export default function AboutUs() {
 function Pillar({ icon: Icon, eyebrow, title, children }) {
   return (
     <div className="flex gap-4 sm:gap-5">
-      <div className="shrink-0 w-11 h-11 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center">
-        <Icon className="w-5 h-5 text-blue-600" />
+      <div className="shrink-0 w-11 h-11 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center">
+        <Icon className="w-5 h-5 text-orange-600" />
       </div>
       <div className="flex-1">
         <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">

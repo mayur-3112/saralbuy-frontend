@@ -150,7 +150,7 @@ export default function Dashboard() {
   const CardIcon = card.icon;
 
   return (
-    <main className="relative min-h-screen bg-blue-50/30 pb-16">
+    <main className="relative min-h-screen bg-orange-50/30 pb-16">
       <OnboardingTour />
       <div className="w-full max-w-7xl mx-auto px-4">
 
@@ -170,11 +170,11 @@ export default function Dashboard() {
             <div className="absolute -top-16 -right-16 w-56 h-56 rounded-full blur-3xl pointer-events-none"
                  style={{ background: 'radial-gradient(circle, rgba(59, 130, 246,0.25), transparent 70%)' }} />
             <div className="relative flex flex-col sm:flex-row sm:items-center gap-5">
-              <div className="w-16 h-16 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center shrink-0">
-                <CardIcon className="w-8 h-8 text-blue-300" />
+              <div className="w-16 h-16 rounded-xl bg-orange-500/15 border border-orange-500/30 flex items-center justify-center shrink-0">
+                <CardIcon className="w-8 h-8 text-orange-300" />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-sm font-black text-blue-300 mb-1.5">
+                <div className="text-sm font-black text-orange-300 mb-1.5">
                   {card.eyebrow}
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-black leading-tight">{card.title}</h2>
@@ -186,7 +186,7 @@ export default function Dashboard() {
                     if (card.cta.jumpTo) setActiveTab(card.cta.jumpTo);
                     else card.cta.onClick();
                   }}
-                  className="sb-big-tap inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 active:scale-95 text-white font-black text-base px-6 py-3.5 rounded-lg transition-all"
+                  className="sb-big-tap inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-500 active:scale-95 text-white font-black text-base px-6 py-3.5 rounded-lg transition-all"
                 >
                   <card.cta.icon className="w-5 h-5" />
                   {card.cta.label}
@@ -234,7 +234,7 @@ export default function Dashboard() {
             }`}
           >
             <Gavel className="w-4 h-4" />
-            My quotes
+            Active Quotes
             <span className={`text-xs font-black px-2 py-0.5 rounded-full ${
               activeTab === 'quotes' ? 'bg-white/20' : 'bg-slate-100 text-slate-600'
             }`}>{bids.length}</span>
@@ -248,7 +248,7 @@ export default function Dashboard() {
             }`}
           >
             <FileText className="w-4 h-4" />
-            My sourcing
+            Open Requirements
             <span className={`text-xs font-black px-2 py-0.5 rounded-full ${
               activeTab === 'requirements' ? 'bg-white/20' : 'bg-slate-100 text-slate-600'
             }`}>{drafts.length}</span>

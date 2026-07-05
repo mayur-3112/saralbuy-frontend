@@ -49,7 +49,7 @@ const SellerVerificationPopup = ({
               </DialogHeader>
               <DialogTitle className=" text-sm text-gray-600">
                 {isGstRequired ? (
-                  <span className="text-blue-600 font-semibold flex items-center gap-1">
+                  <span className="text-orange-600 font-semibold flex items-center gap-1">
                     ⚠️ This RFQ requires a GST invoice. You must quote as a Business.
                   </span>
                 ) : (
@@ -100,7 +100,7 @@ const SellerVerificationPopup = ({
               <Button
                 disabled={!value || createBidLoading}
                 type="submit"
-                className="w-full rounded-sm py-5  text-white font-bold cursor-pointer bg-blue-600 hover:bg-blue-700"
+                className="w-full rounded-sm py-5  text-white font-bold cursor-pointer bg-orange-600 hover:bg-orange-700"
               >
                 {createBidLoading ? <Spinner className="w-5 h-5 animate-spin" /> : 'Place Quote'}
               </Button>

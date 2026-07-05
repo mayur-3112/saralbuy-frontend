@@ -22,7 +22,7 @@ export default function NoRouteFound() {
       />
 
       <div className="relative z-10 text-center max-w-lg">
-        <div className="text-[11px] font-black uppercase tracking-[0.2em] text-blue-400 mb-4">
+        <div className="text-[11px] font-black uppercase tracking-[0.2em] text-orange-400 mb-4">
           Page not found · 404
         </div>
         <h1 className="text-5xl sm:text-6xl md:text-7xl font-black tracking-tight leading-none">
@@ -35,7 +35,7 @@ export default function NoRouteFound() {
         <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
           <Link
             to="/requirement"
-            className="group inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-black text-sm px-6 py-3.5 rounded-xl transition-all"
+            className="group inline-flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-500 text-white font-black text-sm px-6 py-3.5 rounded-xl transition-all"
           >
             Post a requirement
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

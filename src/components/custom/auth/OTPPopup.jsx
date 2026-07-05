@@ -130,7 +130,7 @@ const OtpPopup = ({ open, setOpen, number, sessionId, setSessionId }) => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="max-w-md w-full rounded-[24px] overflow-hidden border-slate-100 shadow-2xl p-0">
         <div className="p-8 w-full inline-block space-y-6 bg-white relative">
-          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-400 via-pink-500 to-indigo-500" />
+          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-orange-400 via-pink-500 to-indigo-500" />
           <div className="h-12 flex justify-center mb-4">
             <img src={SaralBuyLogo} alt="Logo" className="w-full h-full object-contain" />
           </div>
@@ -139,7 +139,7 @@ const OtpPopup = ({ open, setOpen, number, sessionId, setSessionId }) => {
               OTP Verification
             </DialogTitle>
             <p className="text-sm text-slate-500 font-medium">
-              Enter the OTP code sent on your number <span className="text-blue-600 font-bold">{number?.toString().slice(0, 4)}******</span>
+              Enter the OTP code sent on your number <span className="text-orange-600 font-bold">{number?.toString().slice(0, 4)}******</span>
             </p>
           {import.meta.env.MODE === 'development' && (
             <p className="text-xs text-amber-700 font-semibold bg-amber-50 p-2 rounded border border-amber-200">
@@ -158,7 +158,7 @@ const OtpPopup = ({ open, setOpen, number, sessionId, setSessionId }) => {
                 <InputOTPSlot
                   key={index}
                   index={index}
-                  className="bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 rounded-xl shadow-sm text-xl font-bold h-14 w-12 transition-all"
+                  className="bg-slate-50 border border-slate-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/30 rounded-xl shadow-sm text-xl font-bold h-14 w-12 transition-all"
                 />
               ))}
             </InputOTPGroup>
@@ -169,7 +169,7 @@ const OtpPopup = ({ open, setOpen, number, sessionId, setSessionId }) => {
               disabled={sentTimer > 0 || resendLoading}
               onClick={handleResend}
               className={`text-sm text-right w-full underline
-    ${sentTimer > 0 || resendLoading ? 'cursor-not-allowed text-gray-400' : 'cursor-pointer text-blue-700'}`}
+    ${sentTimer > 0 || resendLoading ? 'cursor-not-allowed text-gray-400' : 'cursor-pointer text-orange-700'}`}
             >
               {resendLoading ? 'Sending…' : `Resend OTP ${sentTimer > 0 ? `(${sentTimer}s)` : ''}`}
             </button>
@@ -177,7 +177,7 @@ const OtpPopup = ({ open, setOpen, number, sessionId, setSessionId }) => {
             <Button
               type="submit"
               disabled={verifying || value.length !== 6}
-              className="w-full rounded-xl py-7 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold text-[17px] cursor-pointer transition-all duration-300 shadow-lg hover:shadow-blue-500/40 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 mt-2"
+              className="w-full rounded-xl py-7 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold text-[17px] cursor-pointer transition-all duration-300 shadow-lg hover:shadow-orange-500/40 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 mt-2"
             >
               {verifying ? <Spinner className="w-5 h-5 animate-spin" /> : 'Verify & Continue'}
             </Button>

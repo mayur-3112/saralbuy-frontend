@@ -43,7 +43,7 @@ const BudgetInputDialog = ({ open, setOpen, onConfirm, loading }) => {
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="flex gap-3">
-            <div className="bg-blue-100 rounded-full p-1">
+            <div className="bg-orange-100 rounded-full p-1">
               <CircleAlert className="text-yellow-500" />
             </div>
             Close Deal
@@ -70,7 +70,7 @@ const BudgetInputDialog = ({ open, setOpen, onConfirm, loading }) => {
               id="budget-dialog-agreed"
               checked={agreed}
               onChange={e => setAgreed(e.target.checked)}
-              className="mt-1 w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500 cursor-pointer shrink-0"
+              className="mt-1 w-4 h-4 text-orange-600 border-slate-300 rounded focus:ring-orange-500 cursor-pointer shrink-0"
             />
             <label htmlFor="budget-dialog-agreed" className="text-xs text-slate-500 cursor-pointer leading-normal">
               I agree to the SaralBuy Deal Closure Policy (the platform holds Zero Liability for any material disputes, quality issues, or payment/delivery defaults).
@@ -85,7 +85,7 @@ const BudgetInputDialog = ({ open, setOpen, onConfirm, loading }) => {
           <AlertDialogAction
             disabled={loading || !agreed}
             onClick={handleConfirm}
-            className="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white px-6 py-2 rounded font-semibold disabled:opacity-50"
+            className="bg-orange-600 cursor-pointer hover:bg-orange-700 text-white px-6 py-2 rounded font-semibold disabled:opacity-50"
           >
             {loading ? 'Closing...' : 'Confirm & Close Deal'}
           </AlertDialogAction>

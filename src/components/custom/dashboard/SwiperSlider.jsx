@@ -60,7 +60,7 @@ const SwiperSlider = ({ title, color, target, data }) => {
                         <p className="text-sm text-gray-500 mb-1">Dated: {item.date}</p>
                       )}
                       <p
-                        className={` ${target === 'bids' ? 'text-blue-700 capitalize font-semibold' : 'cc'}`}
+                        className={` ${target === 'bids' ? 'text-orange-700 capitalize font-semibold' : 'cc'}`}
                       >
                         {item.category}
                       </p>
@@ -88,11 +88,11 @@ const SwiperSlider = ({ title, color, target, data }) => {
                       <div className="flex gap-1 items-center">
                         <span className="hidden sm:block">Total</span>
                         Quotes:{' '}
-                        <span className="font-semibold text-blue-600">{item.totalBids}</span>
+                        <span className="font-semibold text-orange-600">{item.totalBids}</span>
                       </div>
                     </div>
                   ) : (
-                    <p className="text-sm text-blue-500 mb-1">Dated: {item.date}</p>
+                    <p className="text-sm text-orange-500 mb-1">Dated: {item.date}</p>
                   )}
                   <div className="flex gap-1 items-center justify-end">
                     <a
@@ -140,7 +140,7 @@ const SwiperSlider = ({ title, color, target, data }) => {
               <Button
                 size="sm"
                 onClick={() => navigate('/requirement')}
-                className="mt-3.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl cursor-pointer"
+                className="mt-3.5 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold rounded-xl cursor-pointer"
               >
                 Post a Requirement
               </Button>

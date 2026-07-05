@@ -71,13 +71,13 @@ export default function ProofStrip() {
       icon: PackageCheck,
       value: formatCount(stats.activeRequirements),
       label: 'Live requirements',
-      accent: 'from-blue-50 to-white border-blue-200 text-blue-600',
+      accent: 'from-orange-50 to-white border-orange-200 text-orange-600',
     },
     stats?.activeSuppliers > 0 && {
       icon: Users,
       value: formatCount(stats.activeSuppliers),
       label: 'Verified suppliers',
-      accent: 'from-blue-50 to-white border-blue-200 text-blue-600',
+      accent: 'from-orange-50 to-white border-orange-200 text-orange-600',
     },
     formatDurationMs(stats?.avgFirstQuoteMs) && {
       icon: Clock,
@@ -141,7 +141,7 @@ export default function ProofStrip() {
                 className={`shrink-0 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ${
                   current.type === 'quote'
                     ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                    : 'bg-blue-50 text-blue-700 border border-blue-200'
+                    : 'bg-orange-50 text-orange-700 border border-orange-200'
                 }`}
               >
                 {current.type === 'quote' ? 'Quote' : 'RFQ'}

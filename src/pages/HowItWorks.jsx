@@ -71,7 +71,7 @@ export default function HowItWorks() {
       {/* Hero */}
       <section className="bg-slate-950 text-white py-14 sm:py-16 border-b border-white/5">
         <div className="max-w-4xl mx-auto px-4">
-          <div className="text-[11px] font-black uppercase tracking-[0.2em] text-blue-400 mb-3">
+          <div className="text-[11px] font-black uppercase tracking-[0.2em] text-orange-400 mb-3">
             How it works
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-[1.1]">
@@ -87,7 +87,7 @@ export default function HowItWorks() {
             <button
               onClick={() => setRole('buyer')}
               className={`px-4 py-2 rounded-lg text-sm font-black flex items-center gap-2 transition-colors ${
-                role === 'buyer' ? 'bg-blue-600 text-white' : 'text-slate-300 hover:text-white'
+                role === 'buyer' ? 'bg-orange-600 text-white' : 'text-slate-300 hover:text-white'
               }`}
             >
               <Building2 className="w-4 h-4" />
@@ -96,7 +96,7 @@ export default function HowItWorks() {
             <button
               onClick={() => setRole('supplier')}
               className={`px-4 py-2 rounded-lg text-sm font-black flex items-center gap-2 transition-colors ${
-                role === 'supplier' ? 'bg-blue-600 text-white' : 'text-slate-300 hover:text-white'
+                role === 'supplier' ? 'bg-orange-600 text-white' : 'text-slate-300 hover:text-white'
               }`}
             >
               <Truck className="w-4 h-4" />
@@ -117,7 +117,7 @@ export default function HowItWorks() {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <s.icon className="w-4 h-4 text-blue-600" />
+                    <s.icon className="w-4 h-4 text-orange-600" />
                     <h3 className="text-lg sm:text-xl font-black text-slate-900 leading-tight">
                       {s.title}
                     </h3>
@@ -169,7 +169,7 @@ export default function HowItWorks() {
           </p>
           <Link
             to={role === 'buyer' ? '/requirement' : '/product-listing'}
-            className="mt-6 inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-black text-sm px-6 py-3.5 rounded-xl transition-colors"
+            className="mt-6 inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-500 text-white font-black text-sm px-6 py-3.5 rounded-xl transition-colors"
           >
             {role === 'buyer' ? 'Post a requirement' : 'Browse live RFQs'}
             <ArrowRight className="w-4 h-4" />

@@ -338,7 +338,7 @@ const RequirementOverview = () => {
         return (
           <div className="flex  items-center gap-3">
             <Button
-              className="text-xs sm:text-sm cursor-pointer text-blue-600  px-0"
+              className="text-xs sm:text-sm cursor-pointer text-orange-600  px-0"
               variant="link"
               onClick={() =>
                 handleChatNavigate(row.original.sellerId, row.original.bid_buy, row.original.avtar)
@@ -355,7 +355,7 @@ const RequirementOverview = () => {
                 setGetBidByProductIdAndSellerIdData(null);
                 await getBidByProductIdAndSellerIdFn(productId, sellerId);
               }}
-              className=" bg-blue-100 text-blue-500 rounded-sm  p-1 cursor-pointer"
+              className=" bg-orange-100 text-orange-500 rounded-sm  p-1 cursor-pointer"
             >
               <TooltipComp
                 hoverChildren={<Eye className="w-5 h-5" />}
@@ -368,7 +368,7 @@ const RequirementOverview = () => {
                 <Button 
                   size="sm" 
                   variant="outline" 
-                  className="text-blue-600 border-blue-600 hover:bg-blue-50"
+                  className="text-orange-600 border-orange-600 hover:bg-orange-50"
                   onClick={() => handleUpdateQuoteStatus(row.original.bidId, 'shortlisted')}
                 >
                   Shortlist
@@ -395,7 +395,7 @@ const RequirementOverview = () => {
               <Badge className="bg-green-100 text-green-700 hover:bg-green-100 rounded-full px-3">Accepted</Badge>
             )}
             {row.original.quoteStatus === 'shortlisted' && (
-               <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 rounded-full px-3">Shortlisted</Badge>
+               <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100 rounded-full px-3">Shortlisted</Badge>
             )}
           </div>
         );
@@ -453,7 +453,7 @@ const RequirementOverview = () => {
           <p className="text-sm text-slate-600">
             This requirement's underlying product details could not be found. The item might have been deleted, or there was a data synchronization error during creation.
           </p>
-          <Button onClick={() => navigate(-1)} className="bg-blue-600 hover:bg-blue-700 text-white mt-2">
+          <Button onClick={() => navigate(-1)} className="bg-orange-600 hover:bg-orange-700 text-white mt-2">
             Go Back
           </Button>
         </div>
@@ -540,7 +540,7 @@ const RequirementOverview = () => {
                   ) : (
                     <Button
                       variant="ghost"
-                      className="border rounded-full hover:bg-blue-700 hover:text-white text-xs sm:text-sm bg-blue-700 text-white"
+                      className="border rounded-full hover:bg-orange-700 hover:text-white text-xs sm:text-sm bg-orange-700 text-white"
                     >
                       {timeLeft !== 'Expired' ? timeLeft : 'Expired'}
                     </Button>
@@ -549,7 +549,7 @@ const RequirementOverview = () => {
               </div>
 
               <h2 className="text-lg sm:text-xl lg:text-2xl font-bold capitalize break-words">
-                {item.title || 'N/A'}
+                {item.title || item.itemName || item.subCategoryName || `Item ${idx + 1}`}
               </h2>
 
               <p className="text-sm text-gray-600 leading-relaxed break-words">
@@ -602,26 +602,26 @@ const RequirementOverview = () => {
         ))}
 
         {/* Table */}
-        <div className="bg-blue-50 p-2 sm:p-4 rounded-xl overflow-hidden mt-4">
+        <div className="bg-orange-50 p-2 sm:p-4 rounded-xl overflow-hidden mt-4">
           <div className="flex gap-2 mb-4">
             <Button 
               variant={activeTab === 'pending' ? 'default' : 'outline'} 
               onClick={() => setActiveTab('pending')}
-              className={activeTab === 'pending' ? 'bg-blue-600 hover:bg-blue-700 text-white' : ''}
+              className={activeTab === 'pending' ? 'bg-orange-600 hover:bg-orange-700 text-white' : ''}
             >
               New (Pending)
             </Button>
             <Button 
               variant={activeTab === 'shortlisted' ? 'default' : 'outline'} 
               onClick={() => setActiveTab('shortlisted')}
-              className={activeTab === 'shortlisted' ? 'bg-blue-600 hover:bg-blue-700 text-white' : ''}
+              className={activeTab === 'shortlisted' ? 'bg-orange-600 hover:bg-orange-700 text-white' : ''}
             >
               Shortlisted
             </Button>
             <Button 
               variant={activeTab === 'accepted' ? 'default' : 'outline'} 
               onClick={() => setActiveTab('accepted')}
-              className={activeTab === 'accepted' ? 'bg-blue-600 hover:bg-blue-700 text-white' : ''}
+              className={activeTab === 'accepted' ? 'bg-orange-600 hover:bg-orange-700 text-white' : ''}
             >
               Accepted
             </Button>

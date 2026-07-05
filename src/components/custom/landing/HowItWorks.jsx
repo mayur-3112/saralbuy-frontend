@@ -32,7 +32,7 @@ export default function HowItWorks({ onOpenAuth }) {
       <div className="max-w-6xl mx-auto px-4">
         {/* Section header */}
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <div className="text-[11px] font-black uppercase tracking-[0.2em] text-blue-600 mb-2">
+          <div className="text-[11px] font-black uppercase tracking-[0.2em] text-orange-600 mb-2">
             The difference
           </div>
           <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight leading-tight">
@@ -76,11 +76,11 @@ export default function HowItWorks({ onOpenAuth }) {
                  style={{ background: 'radial-gradient(circle, rgba(59, 130, 246,0.25), transparent 70%)' }} />
             <div className="relative">
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-9 h-9 rounded-lg bg-blue-500/15 border border-blue-500/30 flex items-center justify-center">
-                  <Sparkles className="w-4 h-4 text-blue-300" />
+                <div className="w-9 h-9 rounded-lg bg-orange-500/15 border border-orange-500/30 flex items-center justify-center">
+                  <Sparkles className="w-4 h-4 text-orange-300" />
                 </div>
                 <div>
-                  <div className="text-[10px] font-black uppercase tracking-widest text-blue-300">
+                  <div className="text-[10px] font-black uppercase tracking-widest text-orange-300">
                     With SaralBuy
                   </div>
                   <div className="font-black text-white text-lg leading-tight">
@@ -100,7 +100,7 @@ export default function HowItWorks({ onOpenAuth }) {
               <button
                 type="button"
                 onClick={() => onOpenAuth('buyer')}
-                className="mt-6 group inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 active:scale-95 text-white font-black text-sm px-5 py-3 rounded-lg transition-all"
+                className="mt-6 group inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-500 active:scale-95 text-white font-black text-sm px-5 py-3 rounded-lg transition-all"
               >
                 Post your first requirement
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
