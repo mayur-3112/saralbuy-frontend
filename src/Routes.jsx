@@ -10,6 +10,7 @@ import {
 } from 'react-router-dom';
 import HomeNavbar from './components/custom/dashboard/HomeNavbar';
 import Footer from './components/custom/Footer';
+import MobileBottomNav from './components/custom/MobileBottomNav';
 import { toast } from 'sonner';
 const Requirement = lazy(() => import('./components/custom/dashboard/Requirement'));
 import Authentication from './components/custom/auth/Authenticate';
@@ -96,9 +97,12 @@ const RootLayout = () => {
       <DiscussionChatbox />
       <HomeNavbar />
       <Suspense fallback={<Loader />}>
-        <Outlet />
+        <div className="pb-16 sm:pb-0">
+          <Outlet />
+        </div>
       </Suspense>
       <Footer />
+      <MobileBottomNav />
     </>
   );
 };

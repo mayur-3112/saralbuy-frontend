@@ -104,8 +104,8 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
     <>
       <Authentication setOpen={setOpen} open={open} />
       <div
-        className="group w-full rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 ease-out flex flex-col md:flex-row justify-between mb-4 relative overflow-hidden bg-white"
-        style={{ background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)' }}
+        className="group tap-card w-full rounded-xl border border-orange-100/60 p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 ease-out flex flex-col md:flex-row justify-between mb-4 relative overflow-hidden bg-white"
+        style={{ background: 'linear-gradient(135deg, #ffffff 0%, #fff8f4 100%)' }}
       >
         {/* Left accent bar that slides in on hover */}
         <div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-500 scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-top rounded-l-xl" />

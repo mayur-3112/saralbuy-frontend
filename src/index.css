@@ -123,10 +123,28 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-color: #fffaf7; /* warm orange-50/40 tint across all pages */
   }
   html {
     @apply font-sans;
   }
+}
+
+/* ── App-feel utilities ──────────────────────────────────────────── */
+
+/* Tap feedback on interactive cards / buttons */
+.tap-card {
+  @apply transition-all duration-150 active:scale-[0.98] active:shadow-sm;
+}
+
+/* Lifted card — used on product/requirement cards */
+.card-lift {
+  @apply shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200;
+}
+
+/* Safe-area padding for bottom nav on iOS notched phones */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0.5rem);
 }
 
 .dropdown-hover {
