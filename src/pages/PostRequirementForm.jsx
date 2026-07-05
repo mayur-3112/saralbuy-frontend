@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, useBlocker } from 'react-router-dom';
 import { MoveLeft, Plus, Trash2, UploadCloud, FileText, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -47,14 +47,15 @@ const PostRequirementForm = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const fileInputRef = useRef(null);
 
-  const [showCustomCategoryWarning, setShowCustomCategoryWarning] = useState(false);
+  const [showExitWarning, setShowExitWarning] = useState(false);
   const [pendingSubCategoryId, setPendingSubCategoryId] = useState(null);
+  const [isSubmittingData, setIsSubmittingData] = useState(false);
 
   useEffect(() => {
     dispatachCategory();
   }, []);
 
-  const { control, register, handleSubmit, watch, setValue } = useForm({
+  const { control, register, handleSubmit, watch, setValue, formState: { isDirty } } = useForm({
     defaultValues: {
       title: '',
       categoryId: initialCat || '',
@@ -104,11 +105,13 @@ const PostRequirementForm = () => {
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
-  const onSubmit = async (data) => {
+  const handleSave = async (data, isDraft = false) => {
     if (!user?._id) {
       setAuthOpen(true);
       return;
     }
+
+    setIsSubmittingData(true);
 
     const selectedCat = categories?.find(c => c._id === data.categoryId);
     const hasSubCategories = selectedCat?.subCategories?.length > 0;
@@ -126,6 +129,10 @@ const PostRequirementForm = () => {
     if (data.gstRequired === 'yes' && !data.gstNumber) {
       toast.error('Please provide a GST Number.');
       return;
+    }
+
+    if (isDraft) {
+      // Allow saving draft with less validation if needed, but for now we keep basic validation
     }
 
     setLoading(true);
@@ -147,7 +154,7 @@ const PostRequirementForm = () => {
           organizationName: data.organizationName,
           organizationAddress: data.deliveryAddress,
         },
-        draft: false,
+        draft: isDraft,
       };
 
       const categoryGroups = [{
@@ -194,40 +201,104 @@ const PostRequirementForm = () => {
       toast.error(error?.response?.data?.message || 'Failed to post requirement.');
     } finally {
       setLoading(false);
+      setIsSubmittingData(false);
     }
   };
+
+  const formValues = watch();
+  const hasUserChanges = isDirty || 
+    (formValues.title && formValues.title.trim() !== '') || 
+    formValues.categoryId !== (initialCat || '') ||
+    (formValues.items && formValues.items[0]?.itemName?.trim() !== '');
+
+  const shouldBlock = hasUserChanges && !isSubmittingData;
+
+  const blocker = useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      shouldBlock && currentLocation.pathname !== nextLocation.pathname
+  );
+
+  useEffect(() => {
+    if (blocker.state === 'blocked') {
+      setShowExitWarning(true);
+    }
+  }, [blocker.state]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (shouldBlock) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [shouldBlock]);
+
+  const handleBackClick = () => {
+    if (shouldBlock) {
+      setShowExitWarning(true);
+    } else {
+      navigate(-1);
+    }
+  };
+
   return (
     <div className="w-full max-w-7xl mx-auto px-4 min-h-screen py-10 bg-slate-50">
       <div className="flex gap-4 items-center mb-8 pb-4 border-b border-slate-200">
-        <MoveLeft className="w-6 h-6 cursor-pointer text-slate-600 hover:text-blue-600 transition-colors" onClick={() => navigate(-1)} />
+        <div onClick={handleBackClick} className="cursor-pointer">
+          <MoveLeft className="w-6 h-6 text-slate-600 hover:text-blue-600 transition-colors" />
+        </div>
         <div>
           <h2 className="text-2xl font-black text-slate-900 tracking-tight">Post Your Requirement (RFQ)</h2>
           <p className="text-sm text-slate-500 mt-0.5">Publish your requirements to receive competitive bids from verified suppliers.</p>
         </div>
       </div>
 
-      <AlertDialog open={showCustomCategoryWarning} onOpenChange={setShowCustomCategoryWarning}>
+      <AlertDialog 
+        open={showExitWarning} 
+        onOpenChange={(open) => {
+          if (!open) {
+            setShowExitWarning(false);
+          }
+        }}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>⚠️ Custom Category Notice</AlertDialogTitle>
+            <AlertDialogTitle>Unsaved Changes</AlertDialogTitle>
             <AlertDialogDescription>
-              Please note: Any custom requirement you enter must be aligned with our existing construction and building material offerings. Unrelated products may be removed.
+              You have unsaved changes. Would you like to save this requirement as a draft or discard it?
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => {
-              setShowCustomCategoryWarning(false);
-              setPendingSubCategoryId(null);
-            }}>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={() => {
-              setShowCustomCategoryWarning(false);
-              setValue('subCategoryId', pendingSubCategoryId);
-            }}>Accept & Continue</AlertDialogAction>
+          <AlertDialogFooter className="sm:justify-between flex-col sm:flex-row gap-3">
+            <Button variant="ghost" onClick={() => { 
+                setShowExitWarning(false);
+                if (blocker.state === 'blocked') blocker.proceed();
+                else navigate(-1); 
+              }} className="text-slate-500 w-full sm:w-auto">
+              Leave & Discard
+            </Button>
+            <div className="flex gap-2 w-full sm:w-auto">
+              <AlertDialogCancel onClick={() => {
+                setShowExitWarning(false);
+                if (blocker.state === 'blocked') blocker.reset();
+              }} className="mt-0 w-full sm:w-auto">Cancel</AlertDialogCancel>
+              <Button onClick={() => { 
+                setShowExitWarning(false); 
+                handleSubmit((data) => {
+                  handleSave(data, true).then(() => {
+                    if (blocker.state === 'blocked') blocker.proceed();
+                  });
+                })(); 
+              }} className="w-full sm:w-auto bg-slate-900 text-white">
+                Save as Draft
+              </Button>
+            </div>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <form onSubmit={handleSubmit((data) => handleSave(data, false))} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Left Side: Product/Category Info & Materials Table */}
         <div className="lg:col-span-8 space-y-6">
           
@@ -264,37 +335,37 @@ const PostRequirementForm = () => {
                 />
               </div>
 
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Subcategory*</label>
-                <Controller
-                  name="subCategoryId"
-                  control={control}
-                  render={({ field: { onChange, value } }) => (
-                    <Select 
-                      value={value} 
-                      onValueChange={(val) => {
-                        const selectedSub = subCategories.find(s => s._id === val);
-                        if (selectedSub && (selectedSub.name.toLowerCase() === 'other' || selectedSub.name.toLowerCase() === 'others')) {
-                          setPendingSubCategoryId(val);
-                          setShowCustomCategoryWarning(true);
-                        } else {
-                          onChange(val);
-                        }
-                      }} 
-                      disabled={!selectedCategoryId || !!initialSub}
-                    >
-                      <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 focus:ring-blue-500/20 font-medium">
-                        <SelectValue placeholder="Select Subcategory" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {subCategories.map(sub => (
-                          <SelectItem key={sub._id} value={sub._id}>{sub.name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+              {dynamicSubcategories.length > 0 && (
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Subcategory*</label>
+                  <Controller
+                    name="subCategoryId"
+                    control={control}
+                    render={({ field: { onChange, value } }) => (
+                      <Select
+                        value={value}
+                        onValueChange={onChange}
+                        disabled={!selectedCategoryId || !!initialSub}
+                      >
+                        <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 focus:ring-blue-500/20 font-medium">
+                          <SelectValue placeholder="Select Subcategory" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {subCategories.map(sub => (
+                            <SelectItem key={sub._id} value={sub._id}>{sub.name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                  {selectedSubCategory && (selectedSubCategory.name.toLowerCase() === 'other' || selectedSubCategory.name.toLowerCase() === 'others') && (
+                    <div className="mt-2 text-xs text-amber-600 bg-amber-50 p-2 rounded-md border border-amber-200 flex items-start gap-1.5">
+                      <span className="text-amber-500 font-bold">⚠️</span>
+                      <span>Note: Please ensure custom requirements match our platform's building material scope.</span>
+                    </div>
                   )}
-                />
-              </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -309,22 +380,22 @@ const PostRequirementForm = () => {
               {/* Desktop Material Headers */}
               <div className="hidden sm:grid grid-cols-12 gap-3 mb-2 px-2 text-[10px] font-black text-slate-400 uppercase tracking-wider">
                 <div className="col-span-3">Item Name</div>
-                <div className="col-span-3">Specs / Description</div>
+                <div className="col-span-2">Specs / Description</div>
                 <div className="col-span-2">Quantity</div>
-                <div className="col-span-1.5">Units</div>
+                <div className="col-span-2">Units</div>
                 <div className="col-span-2">Brand</div>
-                <div className="col-span-0.5 text-center">Action</div>
+                <div className="col-span-1 text-center">Action</div>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {fields.map((item, index) => (
-                  <div key={item.id} className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center bg-slate-50/30 p-3 rounded-lg border border-slate-200/60 hover:border-blue-400/40 transition-colors">
+                  <div key={item.id} className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center bg-white sm:bg-slate-50/30 p-4 sm:p-3 rounded-xl sm:rounded-lg border border-slate-200 sm:border-slate-200/60 shadow-sm sm:shadow-none hover:border-blue-400/40 transition-colors">
                     <div className="sm:col-span-3">
                       <label className="block sm:hidden text-xs font-semibold text-slate-400 mb-1">Item Name</label>
                       <Input placeholder="e.g., Cement" {...register(`items.${index}.itemName`)} className="bg-white border-slate-200 font-medium text-sm" />
                     </div>
 
-                    <div className="sm:col-span-3">
+                    <div className="sm:col-span-2">
                       <label className="block sm:hidden text-xs font-semibold text-slate-400 mb-1">Specs / Desc</label>
                       <Input placeholder="e.g., Grade 53" {...register(`items.${index}.itemDescription`)} className="bg-white border-slate-200 font-medium text-sm" />
                     </div>
@@ -334,7 +405,7 @@ const PostRequirementForm = () => {
                       <Input type="number" placeholder="Qty" {...register(`items.${index}.quantity`)} className="bg-white border-slate-200 font-medium text-sm" min="1" />
                     </div>
 
-                    <div className="sm:col-span-1.5">
+                    <div className="sm:col-span-2">
                       <label className="block sm:hidden text-xs font-semibold text-slate-400 mb-1">Units</label>
                       <Controller
                         name={`items.${index}.quantityUnit`}
@@ -399,7 +470,7 @@ const PostRequirementForm = () => {
                       />
                     </div>
 
-                    <div className="sm:col-span-0.5 flex justify-end sm:justify-center mt-2 sm:mt-0">
+                    <div className="sm:col-span-1 flex justify-end sm:justify-center mt-2 sm:mt-0">
                       <button type="button" onClick={() => remove(index)} disabled={fields.length <= 1} className={`p-1.5 rounded transition-colors ${fields.length <= 1 ? 'text-slate-200 cursor-not-allowed' : 'text-slate-400 hover:text-red-500 hover:bg-red-50'}`} title="Delete Item">
                         <Trash2 className="w-4 h-4" />
                       </button>
