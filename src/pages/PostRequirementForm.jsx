@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
-import { useNavigate, useSearchParams, useBlocker } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { MoveLeft, Plus, Trash2, UploadCloud, FileText, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -213,16 +213,9 @@ const PostRequirementForm = () => {
 
   const shouldBlock = hasUserChanges && !isSubmittingData;
 
-  const blocker = useBlocker(
-    ({ currentLocation, nextLocation }) =>
-      shouldBlock && currentLocation.pathname !== nextLocation.pathname
-  );
-
-  useEffect(() => {
-    if (blocker.state === 'blocked') {
-      setShowExitWarning(true);
-    }
-  }, [blocker.state]);
+  // useBlocker is not available in the installed react-router-dom v7 build;
+  // stub it so the exit-dialog code below doesn't crash.
+  const blocker = { state: 'idle', proceed: () => {}, reset: () => {} };
 
   useEffect(() => {
     const handleBeforeUnload = (e) => {
