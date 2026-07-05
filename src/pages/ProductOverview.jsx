@@ -367,15 +367,15 @@ const SellerForm = ({
                 </div>
                 {/* Table with fixed layout and larger min-width to enforce spacing at high zoom factors */}
                 <div className="w-full overflow-x-auto border border-slate-100 rounded-lg shadow-sm">
-                  <table className="w-full text-left border-collapse min-w-[850px] table-fixed">
+                  <table className="w-full text-left border-collapse min-w-[850px] table-auto">
                     <thead>
                       <tr className="bg-slate-50 text-[11px] font-extrabold text-slate-500 uppercase tracking-wider border-b border-slate-100">
-                        <th className="px-4 py-3 w-[220px]">Item Name</th>
-                        <th className="px-4 py-3 w-[220px]">Description / Specs</th>
-                        <th className="px-4 py-3 text-center w-[90px]">Quantity</th>
-                        <th className="px-4 py-3 text-center w-[90px]">Units</th>
-                        <th className="px-4 py-3 w-[110px]">Brand</th>
-                        <th className="px-4 py-3 text-right w-[120px]">Unit Price (₹)</th>
+                        <th className="px-4 py-3 min-w-[220px]">Item Name</th>
+                        <th className="px-4 py-3 min-w-[220px]">Description / Specs</th>
+                        <th className="px-4 py-3 text-center min-w-[90px]">Quantity</th>
+                        <th className="px-4 py-3 text-center min-w-[90px]">Units</th>
+                        <th className="px-4 py-3 min-w-[110px]">Brand</th>
+                        <th className="px-4 py-3 text-right min-w-[120px]">Unit Price (₹)</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
@@ -392,7 +392,7 @@ const SellerForm = ({
                             </td>
                             <td className="px-4 py-4 align-middle">
                               <div className="text-sm text-slate-600 leading-relaxed max-w-xs break-words">
-                                {item.itemDescription || item.typeOfProduct || item.model || 'N/A'}
+                                {item.itemDescription || item.description || item.typeOfProduct || item.model || 'N/A'}
                               </div>
                             </td>
                             <td className="px-4 py-4 align-middle text-center">
@@ -735,7 +735,6 @@ const ProductOverview = () => {
       firstName: '',
       lastName: '',
       unitPrice: '',
-      discount: '',
       freightCost: '',
       earliestDeliveryDate: undefined,
       sellerType: '',
@@ -834,20 +833,18 @@ const ProductOverview = () => {
     let totalFreight = 0;
     
     if (isMulti && items.length > 1) {
-      const globalDisc = parseFloat(getValues('discount')) || 0;
       totalFreight = parseFloat(getValues('freightCost')) || 0;
       items.forEach((item, idx) => {
         const formValues = getValues();
         const uPrice = parseFloat(formValues.items?.[idx]?.unitPrice) || 0;
         const qty = item.quantity || 1;
-        subtotal += (uPrice * (1 - globalDisc/100)) * qty;
+        subtotal += uPrice * qty;
       });
     } else {
       const uPrice = parseFloat(getValues('unitPrice')) || 0;
-      const disc = parseFloat(getValues('discount')) || 0;
       totalFreight = parseFloat(getValues('freightCost')) || 0;
       const qty = productResponse?.mainProduct?.quantity || 1;
-      subtotal = (uPrice * (1 - disc/100)) * qty;
+      subtotal = uPrice * qty;
     }
     
     const taxAmount = (subtotal + totalFreight) * (tRate/100);
@@ -1053,10 +1050,17 @@ const ProductOverview = () => {
         if (intervalRef.current) clearInterval(intervalRef.current);
         return;
       }
-      const hours = Math.floor(diff / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-      setTimeLeft(`${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`);
+      const totalSeconds = Math.floor(diff / 1000);
+      const days = Math.floor(totalSeconds / 86400);
+      const hours = Math.floor((totalSeconds % 86400) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+      let label;
+      if (days >= 2) label = `${days} days`;
+      else if (days === 1) label = `1 day ${hours}h`;
+      else if (hours >= 1) label = `${hours}h ${String(minutes).padStart(2,'0')}m`;
+      else label = `${minutes}m ${String(seconds).padStart(2,'0')}s`;
+      setTimeLeft(label);
     };
 
     if (!soldProduct) {
@@ -1212,6 +1216,13 @@ const ProductOverview = () => {
                     </div>
                   )}
                 </div>
+
+                {mainProductData?.description && (
+                  <div className="mb-4 text-[14px] text-slate-600 leading-relaxed font-medium bg-blue-50/30 p-4 rounded-lg border border-blue-50 whitespace-pre-line">
+                    <strong className="text-slate-800 block mb-1">Description:</strong>
+                    {mainProductData.description}
+                  </div>
+                )}
 
                 {bidStats && bidStats.totalBids > 0 && (
                   <div className="bg-blue-50/80 border border-blue-200 rounded-lg p-4 mt-4 grid grid-cols-3 gap-2 text-center max-w-lg">
@@ -1410,7 +1421,7 @@ const ProductOverview = () => {
                               return (
                               <tr key={idx} className="hover:bg-slate-50 transition-colors">
                                 <td className="px-5 py-4 text-sm font-bold text-gray-900">{resolvedName}</td>
-                                <td className="px-5 py-4 text-sm text-gray-600">{item.itemDescription || item.typeOfProduct || item.model || "N/A"}</td>
+                                <td className="px-5 py-4 text-sm text-gray-600">{item.itemDescription || item.description || item.typeOfProduct || item.model || "N/A"}</td>
                                 <td className="px-5 py-4 text-sm font-black text-blue-600">{item.quantity}</td>
                                 <td className="px-5 py-4 text-sm font-bold text-gray-500 uppercase">{item.quantityUnit}</td>
                                 <td className="px-5 py-4 text-sm text-gray-600">{item.brand || "Any"}</td>
@@ -1449,21 +1460,7 @@ const ProductOverview = () => {
                     )}
                   </div>
 
-                  {/* Additional Information — the buyer's free-text notes/description.
-                      Moved here from the page header so it sits with the reference
-                      documents instead of crowding the title block. */}
-                  {(() => {
-                    const desc = productResponse?.mainProduct?.description || bidOverviewRes?.product?.description;
-                    if (!desc || !desc.trim()) return null;
-                    return (
-                      <div className="pt-4 mt-4 border-t border-slate-100">
-                        <h4 className="font-semibold text-slate-800 mb-2">Additional Information</h4>
-                        <p className="text-[15px] text-slate-600 leading-relaxed font-medium whitespace-pre-line">
-                          {desc}
-                        </p>
-                      </div>
-                    );
-                  })()}
+                  {/* Additional Information block moved to the top */}
 
                   {/* Attachments Section */}
                   {(() => {
