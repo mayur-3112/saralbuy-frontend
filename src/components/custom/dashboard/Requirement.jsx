@@ -18,8 +18,8 @@ import { useCategory, useCategoryState } from '@/redux/hooks/useCategory';
 const Requirement = () => {
   const [postMode, setPostMode] = useState('single');
   const disptachCategories = useCategory();
-  const { categories: serverCategories } = useCategoryState();
-  
+  const { categories: serverCategories, loading, error } = useCategoryState();
+
   const data = serverCategories || [];
   const [currentWinSize, setCurrentWinSize] = useState(window.innerWidth);
   const navigate = useNavigate();
@@ -89,13 +89,27 @@ const Requirement = () => {
       </div>
 
       <h1 className="text-xl font-bold text-gray-700 mb-4">Select a Category</h1>
-      {currentWinSize >= 768 ? (
+      {loading ? (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="border border-slate-200 bg-white rounded-lg p-5 animate-pulse flex items-center gap-3 h-[72px]">
+              <div className="w-10 h-10 rounded-lg bg-slate-200 flex-shrink-0" />
+              <div className="h-4 bg-slate-200 rounded w-3/4" />
+            </div>
+          ))}
+        </div>
+      ) : error ? (
+        <div className="text-center py-12 text-slate-500">
+          <p className="font-medium">Could not load categories.</p>
+          <button onClick={() => disptachCategories()} className="mt-2 text-blue-600 text-sm underline">Retry</button>
+        </div>
+      ) : currentWinSize >= 768 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {data && data?.map(item => (
-            <ItemCard 
-              key={item._id} 
-              {...item} 
-              onSelect={(catId, subId) => navigate(`/post-requirement?mode=${postMode}&cat=${catId}&sub=${subId}`)} 
+            <ItemCard
+              key={item._id}
+              {...item}
+              onSelect={(catId, subId) => navigate(`/post-requirement?mode=${postMode}&cat=${catId}&sub=${subId}`)}
             />
           ))}
         </div>
