@@ -298,16 +298,17 @@ const PostRequirementForm = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      <form onSubmit={handleSubmit((data) => handleSave(data, false))} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left Side: Product/Category Info & Materials Table */}
-        <div className="lg:col-span-8 space-y-6">
-          
+      <form onSubmit={handleSubmit((data) => handleSave(data, false))} className="max-w-3xl mx-auto space-y-6">
+
           {/* Section 1: Basic Information */}
           <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-xs relative">
-            <h3 className="text-lg font-black text-slate-900 mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
-              <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center">1</span>
-              Basic Information
-            </h3>
+            <div className="mb-4 pb-3 border-b border-slate-100">
+              <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center">1</span>
+                Basic Information
+              </h3>
+              <p className="text-sm text-slate-500 mt-1 ml-8">Choose the category that best matches what you need, and give your requirement a clear title.</p>
+            </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="sm:col-span-2">
@@ -369,13 +370,53 @@ const PostRequirementForm = () => {
             </div>
           </div>
 
-          {/* Section 2: Material Items List */}
-          {mode === 'single' && (
+          {/* Section 2: Material Items List (single) OR File Upload (upload) */}
+          {mode === 'upload' ? (
             <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-xs">
-              <h3 className="text-lg font-black text-slate-900 mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center">2</span>
-                List of Materials
-              </h3>
+              <div className="mb-4 pb-3 border-b border-slate-100">
+                <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center">2</span>
+                  Upload Your Document
+                </h3>
+                <p className="text-sm text-slate-500 mt-1 ml-8">Upload your BOQ, Excel sheet, or PDF. Suppliers will quote based on this document.</p>
+              </div>
+              <div className="p-8 bg-slate-50 border-2 border-dashed border-slate-300 rounded-xl text-center hover:bg-slate-100 hover:border-blue-300 transition-colors">
+                <UploadCloud className="w-12 h-12 text-slate-400 mx-auto mb-3" />
+                <p className="text-sm font-semibold text-slate-600 mb-1">Drag & drop or click to upload</p>
+                <p className="text-xs text-slate-400 mb-4">PDF, Excel, Word, CSV, JPG, PNG — max 2 files</p>
+                <input
+                  type="file"
+                  id="file-upload"
+                  multiple
+                  className="hidden"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.jpg,.png"
+                />
+                <Button type="button" variant="outline" className="font-bold border-slate-300 bg-white" onClick={() => fileInputRef.current.click()}>
+                  Choose Files
+                </Button>
+              </div>
+              {selectedFiles.length > 0 && (
+                <div className="mt-4 space-y-2">
+                  {selectedFiles.map((file, idx) => (
+                    <div key={idx} className="flex items-center justify-between bg-emerald-50 text-emerald-800 px-3 py-2 rounded-lg border border-emerald-100 text-sm font-medium">
+                      <div className="flex items-center gap-2"><FileText className="w-4 h-4" /><span className="truncate max-w-[260px]">{file.name}</span></div>
+                      <button type="button" onClick={() => removeFile(idx)} className="text-emerald-500 hover:text-emerald-800 ml-2"><Trash2 className="w-4 h-4" /></button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-xs">
+              <div className="mb-4 pb-3 border-b border-slate-100">
+                <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center">2</span>
+                  List of Materials
+                </h3>
+                <p className="text-sm text-slate-500 mt-1 ml-8">Add each item you need. Specify quantity, unit, and preferred brand so suppliers can quote accurately.</p>
+              </div>
 
               {/* Desktop Material Headers */}
               <div className="hidden sm:grid grid-cols-12 gap-3 mb-2 px-2 text-[10px] font-black text-slate-400 uppercase tracking-wider">
@@ -489,16 +530,16 @@ const PostRequirementForm = () => {
               </Button>
             </div>
           )}
-        </div>
 
-        {/* Right Side: Delivery, Terms & Submit Panel */}
-        <div className="lg:col-span-4 space-y-6">
-          {/* Section 3: Delivery Terms */}
+          {/* Section 3: Timeline & Payment */}
           <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-xs">
-            <h3 className="text-lg font-black text-slate-900 mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
-              <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center">3</span>
-              Timeline & Payment
-            </h3>
+            <div className="mb-4 pb-3 border-b border-slate-100">
+              <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center">3</span>
+                Timeline & Payment
+              </h3>
+              <p className="text-sm text-slate-500 mt-1 ml-8">Set your delivery deadline, how long suppliers can bid, and how you prefer to pay.</p>
+            </div>
 
             <div className="space-y-4">
               <div>
@@ -586,56 +627,62 @@ const PostRequirementForm = () => {
 
           {/* Section 4: Attachments & Notes */}
           <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-xs">
-            <h3 className="text-lg font-black text-slate-900 mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
-              <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center">4</span>
-              Files & Terms
-            </h3>
+            <div className="mb-4 pb-3 border-b border-slate-100">
+              <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center">4</span>
+                {mode === 'upload' ? 'Additional Notes' : 'Reference Files & Notes'}
+              </h3>
+              <p className="text-sm text-slate-500 mt-1 ml-8">
+                {mode === 'upload'
+                  ? 'Add any extra instructions or conditions for suppliers quoting on your document.'
+                  : 'Optionally attach reference drawings or documents, and add any specific quotation instructions.'}
+              </p>
+            </div>
 
             <div className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Attachments (Max 2)</label>
-                <div className="p-4 bg-slate-50/50 border border-dashed border-slate-200 rounded-lg text-center hover:bg-slate-50 transition-colors">
-                  <UploadCloud className="w-8 h-8 text-slate-400 mx-auto mb-1.5" />
-                  <input
-                    type="file"
-                    id="file-upload"
-                    multiple
-                    className="hidden"
-                    ref={fileInputRef}
-                    onChange={handleFileChange}
-                    accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.jpg,.png"
-                  />
-                  <Button type="button" variant="outline" className="font-bold border-slate-300 bg-white text-xs h-8 px-3" onClick={() => fileInputRef.current.click()}>
-                    Choose Files
-                  </Button>
-                </div>
-                
-                {selectedFiles.length > 0 && (
-                  <div className="mt-3 space-y-2">
-                    {selectedFiles.map((file, idx) => (
-                      <div key={idx} className="flex items-center justify-between bg-emerald-50 text-emerald-800 px-3 py-1.5 rounded border border-emerald-100 text-xs font-medium">
-                        <span className="truncate max-w-[160px]">{file.name}</span>
-                        <button type="button" onClick={() => removeFile(idx)} className="text-emerald-500 hover:text-emerald-800">
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    ))}
+              {mode === 'single' && (
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Attachments (Max 2)</label>
+                  <div className="p-4 bg-slate-50/50 border border-dashed border-slate-200 rounded-lg text-center hover:bg-slate-50 transition-colors">
+                    <UploadCloud className="w-8 h-8 text-slate-400 mx-auto mb-1.5" />
+                    <input
+                      type="file"
+                      id="file-upload"
+                      multiple
+                      className="hidden"
+                      ref={fileInputRef}
+                      onChange={handleFileChange}
+                      accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.jpg,.png"
+                    />
+                    <Button type="button" variant="outline" className="font-bold border-slate-300 bg-white text-xs h-8 px-3" onClick={() => fileInputRef.current.click()}>
+                      Choose Files
+                    </Button>
                   </div>
-                )}
-              </div>
+                  {selectedFiles.length > 0 && (
+                    <div className="mt-3 space-y-2">
+                      {selectedFiles.map((file, idx) => (
+                        <div key={idx} className="flex items-center justify-between bg-emerald-50 text-emerald-800 px-3 py-1.5 rounded border border-emerald-100 text-xs font-medium">
+                          <div className="flex items-center gap-2"><FileText className="w-3.5 h-3.5" /><span className="truncate max-w-[240px]">{file.name}</span></div>
+                          <button type="button" onClick={() => removeFile(idx)} className="text-emerald-500 hover:text-emerald-800"><Trash2 className="w-3.5 h-3.5" /></button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Other Terms / Notes</label>
                 <Textarea
                   placeholder="Quotation instructions, brand preferences, specific conditions..."
                   {...register('otherTerms')}
-                  className="bg-slate-50/50 border-slate-200 font-medium min-h-[90px]"
+                  className="bg-slate-50/50 border-slate-200 font-medium min-h-[100px]"
                 />
               </div>
             </div>
           </div>
 
-          {/* Submit Actions */}
+          {/* Submit */}
           <Button
             type="submit"
             disabled={loading}
@@ -644,7 +691,7 @@ const PostRequirementForm = () => {
             {loading ? <span className="animate-spin mr-2">⏳</span> : 'Post Requirement'}
             {!loading && <span>→</span>}
           </Button>
-        </div>
+
       </form>
 
       <Authentication open={authOpen} setOpen={setAuthOpen} />
