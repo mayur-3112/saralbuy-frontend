@@ -118,21 +118,20 @@ const PostRequirementForm = () => {
 
     if (!data.title || !data.categoryId || (hasSubCategories && !data.subCategoryId)) {
       toast.error('Please fill in the title, category, and subcategory.');
+      setIsSubmittingData(false);
       return;
     }
 
     if (data.items.length === 0) {
       toast.error('Please add at least one item.');
+      setIsSubmittingData(false);
       return;
     }
 
     if (data.gstRequired === 'yes' && !data.gstNumber) {
       toast.error('Please provide a GST Number.');
+      setIsSubmittingData(false);
       return;
-    }
-
-    if (isDraft) {
-      // Allow saving draft with less validation if needed, but for now we keep basic validation
     }
 
     setLoading(true);
@@ -441,22 +440,17 @@ const PostRequirementForm = () => {
 
                     <div className="sm:col-span-2">
                       <label className="block sm:hidden text-xs font-semibold text-slate-400 mb-1">Units</label>
-                      <Controller
-                        name={`items.${index}.quantityUnit`}
-                        control={control}
-                        render={({ field: { onChange, value } }) => (
-                          <Select value={value} onValueChange={onChange}>
-                            <SelectTrigger className="bg-white border-slate-200 font-medium text-sm">
-                              <SelectValue placeholder="Unit" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {['pcs', 'ltr', 'kg', 'ft', 'mtr', 'tons', 'bags', 'set'].map(u => (
-                                <SelectItem key={u} value={u} className="uppercase">{u}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        )}
+                      <Input
+                        list={`unit-options-${index}`}
+                        placeholder="e.g. pcs, kg, mtr"
+                        {...register(`items.${index}.quantityUnit`)}
+                        className="bg-white border-slate-200 font-medium text-sm"
                       />
+                      <datalist id={`unit-options-${index}`}>
+                        {['pcs', 'ltr', 'kg', 'ft', 'mtr', 'tons', 'bags', 'set', 'rmt', 'sqft', 'nos', 'mt'].map(u => (
+                          <option key={u} value={u} />
+                        ))}
+                      </datalist>
                     </div>
 
                     <div className="sm:col-span-2">
@@ -524,11 +518,68 @@ const PostRequirementForm = () => {
             </div>
           )}
 
-          {/* Section 3: Timeline & Payment */}
+          {/* Section 3: Reference Files & Notes */}
           <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-xs">
             <div className="mb-4 pb-3 border-b border-slate-100">
               <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
                 <span className="w-6 h-6 rounded-full bg-orange-100 text-orange-600 text-xs font-bold flex items-center justify-center">3</span>
+                {mode === 'upload' ? 'Additional Notes' : 'Reference Files & Notes'}
+              </h3>
+              <p className="text-sm text-slate-500 mt-1 ml-8">
+                {mode === 'upload'
+                  ? 'Add any extra instructions or conditions for suppliers quoting on your document.'
+                  : 'Optionally attach reference drawings or documents, and add any specific quotation instructions.'}
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              {mode === 'single' && (
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Attachments (Max 2)</label>
+                  <div className="p-4 bg-slate-50/50 border border-dashed border-slate-200 rounded-lg text-center hover:bg-slate-50 transition-colors">
+                    <UploadCloud className="w-8 h-8 text-slate-400 mx-auto mb-1.5" />
+                    <input
+                      type="file"
+                      id="file-upload"
+                      multiple
+                      className="hidden"
+                      ref={fileInputRef}
+                      onChange={handleFileChange}
+                      accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.jpg,.png"
+                    />
+                    <Button type="button" variant="outline" className="font-bold border-slate-300 bg-white text-xs h-8 px-3" onClick={() => fileInputRef.current.click()}>
+                      Choose Files
+                    </Button>
+                  </div>
+                  {selectedFiles.length > 0 && (
+                    <div className="mt-3 space-y-2">
+                      {selectedFiles.map((file, idx) => (
+                        <div key={idx} className="flex items-center justify-between bg-emerald-50 text-emerald-800 px-3 py-1.5 rounded border border-emerald-100 text-xs font-medium">
+                          <div className="flex items-center gap-2"><FileText className="w-3.5 h-3.5" /><span className="truncate max-w-[240px]">{file.name}</span></div>
+                          <button type="button" onClick={() => removeFile(idx)} className="text-emerald-500 hover:text-emerald-800"><Trash2 className="w-3.5 h-3.5" /></button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Other Terms / Notes</label>
+                <Textarea
+                  placeholder="Quotation instructions, brand preferences, specific conditions..."
+                  {...register('otherTerms')}
+                  className="bg-slate-50/50 border-slate-200 font-medium min-h-[100px]"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Section 4: Timeline & Payment */}
+          <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-xs">
+            <div className="mb-4 pb-3 border-b border-slate-100">
+              <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-orange-100 text-orange-600 text-xs font-bold flex items-center justify-center">4</span>
                 Timeline & Payment
               </h3>
               <p className="text-sm text-slate-500 mt-1 ml-8">Set your delivery deadline, how long suppliers can bid, and how you prefer to pay.</p>
@@ -618,71 +669,23 @@ const PostRequirementForm = () => {
             </div>
           </div>
 
-          {/* Section 4: Attachments & Notes */}
-          <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-xs">
-            <div className="mb-4 pb-3 border-b border-slate-100">
-              <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-orange-100 text-orange-600 text-xs font-bold flex items-center justify-center">4</span>
-                {mode === 'upload' ? 'Additional Notes' : 'Reference Files & Notes'}
-              </h3>
-              <p className="text-sm text-slate-500 mt-1 ml-8">
-                {mode === 'upload'
-                  ? 'Add any extra instructions or conditions for suppliers quoting on your document.'
-                  : 'Optionally attach reference drawings or documents, and add any specific quotation instructions.'}
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              {mode === 'single' && (
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Attachments (Max 2)</label>
-                  <div className="p-4 bg-slate-50/50 border border-dashed border-slate-200 rounded-lg text-center hover:bg-slate-50 transition-colors">
-                    <UploadCloud className="w-8 h-8 text-slate-400 mx-auto mb-1.5" />
-                    <input
-                      type="file"
-                      id="file-upload"
-                      multiple
-                      className="hidden"
-                      ref={fileInputRef}
-                      onChange={handleFileChange}
-                      accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.jpg,.png"
-                    />
-                    <Button type="button" variant="outline" className="font-bold border-slate-300 bg-white text-xs h-8 px-3" onClick={() => fileInputRef.current.click()}>
-                      Choose Files
-                    </Button>
-                  </div>
-                  {selectedFiles.length > 0 && (
-                    <div className="mt-3 space-y-2">
-                      {selectedFiles.map((file, idx) => (
-                        <div key={idx} className="flex items-center justify-between bg-emerald-50 text-emerald-800 px-3 py-1.5 rounded border border-emerald-100 text-xs font-medium">
-                          <div className="flex items-center gap-2"><FileText className="w-3.5 h-3.5" /><span className="truncate max-w-[240px]">{file.name}</span></div>
-                          <button type="button" onClick={() => removeFile(idx)} className="text-emerald-500 hover:text-emerald-800"><Trash2 className="w-3.5 h-3.5" /></button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Other Terms / Notes</label>
-                <Textarea
-                  placeholder="Quotation instructions, brand preferences, specific conditions..."
-                  {...register('otherTerms')}
-                  className="bg-slate-50/50 border-slate-200 font-medium min-h-[100px]"
-                />
-              </div>
-            </div>
-          </div>
-
           {/* Submit */}
           <Button
             type="submit"
-            disabled={loading}
-            className="w-full h-14 bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 hover:shadow-lg text-white font-bold text-base rounded-xl transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-md"
+            disabled={isSubmittingData}
+            className="w-full h-14 bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 hover:shadow-lg text-white font-bold text-base rounded-xl transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-md disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            {loading ? <span className="animate-spin mr-2">⏳</span> : 'Post Requirement'}
-            {!loading && <span>→</span>}
+            {isSubmittingData ? (
+              <>
+                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>
+                {selectedFiles.length > 0 ? 'Uploading & Posting…' : 'Posting Requirement…'}
+              </>
+            ) : (
+              <>Post Requirement <span>→</span></>
+            )}
           </Button>
 
       </form>

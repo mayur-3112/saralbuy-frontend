@@ -552,10 +552,6 @@ const RequirementOverview = () => {
                 {item.title || item.itemName || item.subCategoryName || `Item ${idx + 1}`}
               </h2>
 
-              <p className="text-sm text-gray-600 leading-relaxed break-words">
-                {item.description || 'No description available'}
-              </p>
-
               <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-5 text-sm text-gray-600">
                 <div className="flex items-center gap-2 sm:pr-4 sm:border-r-2 py-1">
                   <div className="flex gap-1 items-center">
@@ -595,6 +591,35 @@ const RequirementOverview = () => {
                   <span className="text-gray-600 capitalize">
                     {item.conditionOfProduct.replace('_', ' ')}
                   </span>
+                </div>
+              )}
+
+              {/* Documents uploaded with the requirement */}
+              {item.document && item.document.length > 0 && (
+                <div className="mt-2">
+                  <p className="text-sm font-semibold text-gray-700 mb-1.5">Uploaded Documents</p>
+                  <div className="flex flex-wrap gap-2">
+                    {item.document.map((doc, dIdx) => (
+                      <a
+                        key={dIdx}
+                        href={doc}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 border border-orange-200 text-orange-700 text-xs font-medium rounded-lg hover:bg-orange-100 transition-colors"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+                        Document {dIdx + 1}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Additional Info — shown after documents */}
+              {item.description && (
+                <div className="mt-2 p-3 bg-gray-50 rounded-lg border border-gray-100">
+                  <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Additional Info</p>
+                  <p className="text-sm text-gray-600 leading-relaxed break-words">{item.description}</p>
                 </div>
               )}
             </div>

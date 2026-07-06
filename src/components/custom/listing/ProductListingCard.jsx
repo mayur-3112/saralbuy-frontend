@@ -58,8 +58,8 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
   const items = [];
   if (prod?.items && prod.items.length > 0) {
     prod.items.forEach(item => {
-      const name = item.typeOfProduct || item.subCategoryName || item.brand || item.productType;
-      if (name && !items.includes(name)) items.push(name);
+      const name = item.typeOfProduct || item.subCategoryName || item.productType;
+      if (name && name.trim() && !items.includes(name)) items.push(name);
     });
   } else if (prod?.isUpload || prod?.document) {
     items.push("Refer to Attached Document");

@@ -1,8 +1,6 @@
 import Hero from './Hero';
 import ProofStrip from './ProofStrip';
-import B2BProductGrid from './B2BProductGrid';
 import LiveSourcingBoard from './LiveSourcingBoard';
-import HowItWorks from './HowItWorks';
 import FirstVisitWelcome from './FirstVisitWelcome';
 
 /**
@@ -35,11 +33,8 @@ export default function LandingPage() {
       <div className="max-w-7xl mx-auto px-4 py-12">
         <main className="space-y-16">
           <LiveSourcingBoard onOpenAuth={triggerAuth} />
-          <B2BProductGrid onOpenAuth={triggerAuth} />
         </main>
       </div>
-
-      <HowItWorks onOpenAuth={triggerAuth} />
 
       <FirstVisitWelcome onOpenAuth={triggerAuth} />
     </div>
