@@ -1,4 +1,4 @@
-import { Box, Home, Paperclip, Star, Package, Calculator, ShieldCheck } from 'lucide-react';
+import { Box, Home, Paperclip, Star, Package, ShieldCheck } from 'lucide-react';
 import {
   Breadcrumb,
   BreadcrumbItem,
