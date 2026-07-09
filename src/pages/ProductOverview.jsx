@@ -474,74 +474,80 @@ const SellerForm = ({
         </>
       ) : (
         <>
-          {/* Item-by-item pricing */}
-          <div className="w-full bg-white rounded-md border border-orange-100 overflow-hidden">
-            <div className="bg-orange-50/50 px-4 py-3 border-b border-orange-100">
-              <h4 className="font-semibold text-sm text-slate-800 flex items-center gap-2">
-                <Package className="w-4 h-4 text-orange-600" />
-                List of Materials
-              </h4>
-              <p className="text-xs text-slate-500 mt-0.5">{items.length} item(s) — enter a unit price for each</p>
-            </div>
-            <div className="w-full overflow-x-auto border border-slate-100 rounded-lg shadow-sm">
-              <table className="w-full text-left border-collapse min-w-[920px] table-auto">
-                <thead>
-                  <tr className="bg-slate-50 text-[11px] font-extrabold text-slate-500 uppercase tracking-wider border-b border-slate-100">
-                    <th className="px-4 py-3 min-w-[200px]">Item Name</th>
-                    <th className="px-4 py-3 min-w-[200px]">Description / Specs</th>
-                    <th className="px-4 py-3 text-center min-w-[80px]">Qty</th>
-                    <th className="px-4 py-3 text-center min-w-[80px]">Unit</th>
-                    <th className="px-4 py-3 min-w-[100px]">Brand</th>
-                    <th className="px-4 py-3 text-right min-w-[120px]">Price / Unit (₹)</th>
-                    <th className="px-4 py-3 text-right min-w-[120px]">Total (₹)</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {items.map((item, idx) => {
-                    const catObj = localMainProduct?.categoryId || localMainProduct?.category;
-                    const resolvedItemName = item.itemName || item.subCategoryName || catObj?.subCategories?.find(s => s._id === item.subCategoryId || s._id === item.subCategoryId?.toString())?.name || 'Item ' + (idx + 1);
-                    const qty = Number(item.quantity) || 1;
-                    const uPrice = parseFloat(watch(priceNameFor(idx))) || 0;
-                    const lineTotal = qty * uPrice;
+          {/* Item-by-item pricing — two rows per item (details, then numbered pricing) */}
+          <div className="w-full space-y-3">
+            <h4 className="font-semibold text-sm text-slate-800 flex items-center gap-2">
+              <Package className="w-4 h-4 text-orange-600" />
+              List of Materials
+              <span className="font-normal text-xs text-slate-500">— {items.length} item(s), enter a unit price for each</span>
+            </h4>
 
-                    return (
-                      <tr key={idx} className="hover:bg-orange-50/20 transition-colors">
-                        <td className="px-4 py-4 align-middle">
-                          <div className="text-sm font-bold text-slate-800">{resolvedItemName}</div>
-                        </td>
-                        <td className="px-4 py-4 align-middle">
-                          <div className="text-sm text-slate-600 leading-relaxed max-w-xs break-words">
-                            {item.itemDescription || item.description || item.typeOfProduct || item.model || 'N/A'}
-                          </div>
-                        </td>
-                        <td className="px-4 py-4 align-middle text-center">
-                          <div className="text-sm font-semibold text-slate-700">{qty}</div>
-                        </td>
-                        <td className="px-4 py-4 align-middle text-center">
-                          <div className="text-sm font-semibold text-slate-700 uppercase">{item.quantityUnit || 'pcs'}</div>
-                        </td>
-                        <td className="px-4 py-4 align-middle">
-                          <div className="text-sm text-slate-600">{item.brand || 'Any'}</div>
-                        </td>
-                        <td className="px-4 py-4 align-middle text-right">
-                          <Input
-                            type="number"
-                            step="0.01"
-                            min="0"
-                            placeholder="0.00"
-                            className="h-9 border-slate-200 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-all font-medium bg-white text-right w-full"
-                            {...register(priceNameFor(idx), { required: true })}
-                          />
-                        </td>
-                        <td className="px-4 py-4 align-middle text-right">
-                          <div className="text-sm font-bold text-slate-800">₹ {fmt(lineTotal)}</div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+            {items.map((item, idx) => {
+              const catObj = localMainProduct?.categoryId || localMainProduct?.category;
+              const resolvedItemName = item.itemName || item.subCategoryName || catObj?.subCategories?.find(s => s._id === item.subCategoryId || s._id === item.subCategoryId?.toString())?.name || 'Item ' + (idx + 1);
+              const qty = Number(item.quantity) || 1;
+              const unit = item.quantityUnit || 'pcs';
+              const uPrice = parseFloat(watch(priceNameFor(idx))) || 0;
+              const lineTotal = qty * uPrice;
+
+              return (
+                <div key={idx} className="border border-orange-100 rounded-lg overflow-hidden bg-white">
+                  {/* Row 1 — item details */}
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 bg-slate-50 px-4 py-3 border-b border-slate-100">
+                    <div className="col-span-2 sm:col-span-1">
+                      <p className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Item Name</p>
+                      <p className="text-sm font-bold text-slate-800 break-words">{resolvedItemName}</p>
+                    </div>
+                    <div className="col-span-2 sm:col-span-1">
+                      <p className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Description / Specs</p>
+                      <p className="text-sm text-slate-600 break-words">{item.itemDescription || item.description || item.typeOfProduct || item.model || 'N/A'}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Qty</p>
+                      <p className="text-sm font-semibold text-slate-700">{qty}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Units</p>
+                      <p className="text-sm font-semibold text-slate-700 uppercase">{unit}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Brand</p>
+                      <p className="text-sm text-slate-600 break-words">{item.brand || 'Any'}</p>
+                    </div>
+                  </div>
+
+                  {/* Row 2 — numbered pricing line */}
+                  <div className="flex items-start gap-3 px-4 py-3">
+                    <span className="mt-6 shrink-0 w-6 h-6 rounded-full bg-orange-100 text-orange-600 text-xs font-bold flex items-center justify-center">{idx + 1}</span>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 flex-1">
+                      <div>
+                        <Label className="mb-1 text-xs text-slate-500 block">Price / Unit (₹)</Label>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          placeholder="0.00"
+                          className="h-9 border-slate-200 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-all font-medium bg-white text-right w-full"
+                          {...register(priceNameFor(idx), { required: true })}
+                        />
+                      </div>
+                      <div>
+                        <Label className="mb-1 text-xs text-slate-500 block">Units</Label>
+                        <div className="h-9 flex items-center px-3 rounded-md bg-slate-50 border border-slate-200 text-sm font-semibold text-slate-700">{qty}</div>
+                      </div>
+                      <div>
+                        <Label className="mb-1 text-xs text-slate-500 block">Units Type</Label>
+                        <div className="h-9 flex items-center px-3 rounded-md bg-slate-50 border border-slate-200 text-sm font-semibold text-slate-700 uppercase">{unit}</div>
+                      </div>
+                      <div>
+                        <Label className="mb-1 text-xs text-slate-500 block">Total (₹)</Label>
+                        <div className="h-9 flex items-center justify-end px-3 rounded-md bg-orange-50 border border-orange-100 text-sm font-bold text-slate-800">₹ {fmt(lineTotal)}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
 
           {/* Grand Total — product only */}
