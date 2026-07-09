@@ -940,7 +940,6 @@ const ProductOverview = () => {
         freightTerms: '',
         location: '',
         paymentTerms: '',
-        priceBasis: '',
         sellerType: '',
       });
     }
@@ -964,7 +963,6 @@ const ProductOverview = () => {
           budgetQuation: bidOverviewRes ? bidOverviewRes?.budgetQuation : '',
           earliestDeliveryDate: bidOverviewRes ? bidOverviewRes?.earliestDeliveryDate : undefined,
           sellerType: bidOverviewRes ? bidOverviewRes?.sellerType : 'trader_wholesaler',
-          priceBasis: bidOverviewRes ? bidOverviewRes?.priceBasis : 'per_unit',
           taxes: bidOverviewRes ? bidOverviewRes?.taxes : 'inclusive_gst',
           location: bidOverviewRes ? bidOverviewRes?.location : userProfile.address || '',
           freightTerms: bidOverviewRes ? bidOverviewRes?.freightTerms : 'ex_works',

@@ -15,9 +15,7 @@ import FirstVisitWelcome from './FirstVisitWelcome';
  *   1. Hero              — light, pain-first headline + category carousel
  *   2. ProofStrip        — live numbers + activity ticker (self-hides empty tiles)
  *   3. LiveSourcingBoard — actual live RFQs (proof of activity)
- *   4. B2BProductGrid    — category directory (browse mode)
- *   5. HowItWorks        — the closer for anyone still hesitating
- *   6. FirstVisitWelcome — soft onboarding for new visitors (once per browser)
+ *   4. FirstVisitWelcome — soft onboarding for new visitors (once per browser)
  */
 export default function LandingPage() {
   const triggerAuth = (roleType) => {
