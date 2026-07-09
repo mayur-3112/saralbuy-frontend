@@ -252,6 +252,184 @@ const SellerForm = ({
   soldProduct,
   watch,
 }) => {
+  const localMainProduct = bidOverviewRes ? bidOverviewRes?.product : productResponse?.mainProduct;
+  const isMulti = localMainProduct?.isMultiple;
+  const rawItems = localMainProduct?.items || [];
+  // Document-upload RFQ: no itemised list, seller quotes a single total + file.
+  const isDocFlow = (!!localMainProduct?.document || !!localMainProduct?.isUpload) && rawItems.length === 0;
+
+  let items = rawItems;
+  if (!isDocFlow && rawItems.length === 0 && localMainProduct) {
+    items = [{
+      itemName: localMainProduct.title || localMainProduct.productName,
+      itemDescription: localMainProduct.description,
+      quantity: localMainProduct.quantity,
+      quantityUnit: localMainProduct.quantityUnit,
+      brand: localMainProduct.brand || 'Any',
+      subCategoryId: localMainProduct.subCategoryId,
+      subCategoryName: localMainProduct.subCategoryName,
+      typeOfProduct: localMainProduct.typeOfProduct || localMainProduct.model,
+    }];
+  }
+  const isSingle = !isMulti || items.length <= 1;
+
+  const priceNameFor = idx => (isSingle ? 'unitPrice' : `items.${idx}.unitPrice`);
+
+  // Grand total is PRODUCT-ONLY: sum of qty × unit price. Taxes, freight and
+  // other terms are informational and never rolled into the quote value.
+  let grandTotal = 0;
+  if (isDocFlow) {
+    grandTotal = parseFloat(watch('totalQuoteValue')) || 0;
+  } else {
+    items.forEach((item, idx) => {
+      const uPrice = parseFloat(watch(priceNameFor(idx))) || 0;
+      const qty = Number(item.quantity) || 1;
+      grandTotal += uPrice * qty;
+    });
+  }
+  const fmt = n => n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  const SellerTypeField = (
+    <div className="w-full">
+      <Label className="mb-2 text-sm block">Seller Type</Label>
+      <Controller
+        name="sellerType"
+        control={control}
+        render={({ field }) => (
+          <Select onValueChange={field.onChange} value={field.value}>
+            <SelectTrigger className="w-full bg-white">
+              <SelectValue placeholder="Select Seller Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="manufacturer">Manufacturer</SelectItem>
+                <SelectItem value="trader_wholesaler">Trader / Wholesaler</SelectItem>
+                <SelectItem value="distributor">Distributor</SelectItem>
+                <SelectItem value="service_provider">Service Provider</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        )}
+      />
+    </div>
+  );
+
+  const PaymentTermsField = (
+    <div className="w-full">
+      <Label className="mb-2 text-sm block">Payment Terms</Label>
+      <Controller
+        name="paymentTerms"
+        control={control}
+        render={({ field }) => (
+          <Select onValueChange={field.onChange} value={field.value}>
+            <SelectTrigger className="w-full bg-white">
+              <SelectValue placeholder="Select Payment Terms" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="advance">Advance</SelectItem>
+                <SelectItem value="partial_advance">Partial Advance</SelectItem>
+                <SelectItem value="on_delivery">On Delivery</SelectItem>
+                <SelectItem value="credit">Credit (X days)</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        )}
+      />
+    </div>
+  );
+
+  const TaxesField = (
+    <div className="w-full">
+      <Label className="mb-2 text-sm block">Taxes</Label>
+      <Controller
+        name="taxes"
+        control={control}
+        render={({ field }) => (
+          <Select onValueChange={field.onChange} value={field.value}>
+            <SelectTrigger className="w-full bg-white">
+              <SelectValue placeholder="Select Taxes" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="18">18% GST</SelectItem>
+                <SelectItem value="12">12% GST</SelectItem>
+                <SelectItem value="5">5% GST</SelectItem>
+                <SelectItem value="0">Inclusive/Exempt</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        )}
+      />
+    </div>
+  );
+
+  const LocationField = (
+    <div className="w-full">
+      <Label htmlFor="location" className="mb-2 text-sm block">Supplier Location</Label>
+      <Input
+        type="text"
+        placeholder="Supplier Location"
+        className="bg-white w-full"
+        {...register('location')}
+      />
+    </div>
+  );
+
+  const FreightTermsField = (
+    <div className="w-full">
+      <Label className="mb-2 text-sm block">Freight Terms</Label>
+      <Controller
+        name="freightTerms"
+        control={control}
+        render={({ field }) => (
+          <Select onValueChange={field.onChange} value={field.value}>
+            <SelectTrigger className="w-full bg-white">
+              <SelectValue placeholder="Select Freight Terms" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="ex_works">Ex-Works</SelectItem>
+                <SelectItem value="fob">FOB</SelectItem>
+                <SelectItem value="delivered">Delivered (DAP / DDP)</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        )}
+      />
+    </div>
+  );
+
+  const DeliveryTimelineField = (
+    <div className="w-full">
+      <Label className="mb-2 text-sm block">Delivery Timeline</Label>
+      <Controller
+        control={control}
+        name="earliestDeliveryDate"
+        render={({ field }) => (
+          <DatePicker
+            disabledBeforeDate={new Date(new Date().getTime())}
+            date={field.value}
+            title="DD-MM-YYYY"
+            className="w-full"
+            setDate={val => field.onChange(val)}
+          />
+        )}
+      />
+    </div>
+  );
+
+  const BuyerNoteField = (
+    <div className="w-full">
+      <Label htmlFor="buyerNote" className="mb-2 text-sm block">Buyer Note</Label>
+      <Textarea
+        {...register('buyerNote')}
+        placeholder="Short message (hard limit: 300 characters)"
+        className="bg-white w-full min-h-[100px] resize-none"
+      />
+    </div>
+  );
+
   return (
     <form
       className="w-full bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-6 sm:p-8 space-y-6"
@@ -261,382 +439,144 @@ const SellerForm = ({
         Seller Quotation Details
       </h3>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
-        {/* {userProfile?._id && (
-          <>
-            <div className="w-full">
-              <Label htmlFor="firstName" className="mb-2 text-sm block">
-                First Name
-              </Label>
-              <Input
-                disabled
-                type="text"
-                placeholder="First Name"
-                id="firstName"
-                {...register('firstName')}
-                className="bg-white select-none w-full"
-              />
-            </div>
-
-            <div className="w-full">
-              <Label htmlFor="lastName" className="mb-2 text-sm block">
-                Last Name
-              </Label>
-              <Input
-                disabled
-                type="text"
-                placeholder="Last Name"
-                id="lastName"
-                {...register('lastName')}
-                className="bg-white select-none w-full"
-              />
-            </div>
-          </>
-        )} */}
-
-        {/* Seller Type */}
-        <div className="w-full">
-          <Label className="mb-2 text-sm block">Seller Type</Label>
-
-          <Controller
-            name="sellerType"
-            control={control}
-            render={({ field }) => (
-              <Select onValueChange={field.onChange} value={field.value}>
-                <SelectTrigger className="w-full bg-white">
-                  <SelectValue placeholder="Select Seller Type" />
-                </SelectTrigger>
-
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="manufacturer">Manufacturer</SelectItem>
-
-                    <SelectItem value="trader_wholesaler">Trader / Wholesaler</SelectItem>
-
-                    <SelectItem value="distributor">Distributor</SelectItem>
-
-                    <SelectItem value="service_provider">Service Provider</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            )}
-          />
-        </div>
-
-        {/* Item-by-Item Pricing & Totaler */}
-        {(() => {
-          const localMainProduct = bidOverviewRes ? bidOverviewRes?.product : productResponse?.mainProduct;
-          const isMulti = localMainProduct?.isMultiple;
-          let items = localMainProduct?.items;
-          
-          if (!items || items.length === 0) {
-            if (localMainProduct) {
-              items = [{
-                itemName: localMainProduct.title || localMainProduct.productName,
-                itemDescription: localMainProduct.description,
-                quantity: localMainProduct.quantity,
-                quantityUnit: localMainProduct.quantityUnit,
-                brand: localMainProduct.brand || 'Any',
-                subCategoryId: localMainProduct.subCategoryId,
-                subCategoryName: localMainProduct.subCategoryName,
-                typeOfProduct: localMainProduct.typeOfProduct || localMainProduct.model
-              }];
-            } else {
-              items = [];
-            }
-          }
-          
-          if (items.length > 0) {
-            return (
-              <div className="w-full sm:col-span-2 bg-white rounded-md border border-orange-100 overflow-hidden mb-2">
-                <div className="bg-orange-50/50 px-4 py-3 border-b border-orange-100 flex justify-between items-center">
-                  <div>
-                    <h4 className="font-semibold text-sm text-slate-800 flex items-center gap-2">
-                      <Package className="w-4 h-4 text-orange-600" />
-                      List of Materials
-                    </h4>
-                    <p className="text-xs text-slate-500 mt-0.5">{items.length} item(s) — price each item</p>
-                  </div>
-                  <a 
-                    href="/supplier-tools" 
-                    target="_blank"
-                    className="text-xs font-semibold text-orange-600 hover:text-orange-700 bg-orange-100 hover:bg-orange-200 px-3 py-1.5 rounded-full transition-colors flex items-center gap-1.5"
-                  >
-                    <Calculator className="w-3.5 h-3.5" />
-                    Margin Calculator
-                  </a>
-                </div>
-                {/* Table with fixed layout and larger min-width to enforce spacing at high zoom factors */}
-                <div className="w-full overflow-x-auto border border-slate-100 rounded-lg shadow-sm">
-                  <table className="w-full text-left border-collapse min-w-[850px] table-auto">
-                    <thead>
-                      <tr className="bg-slate-50 text-[11px] font-extrabold text-slate-500 uppercase tracking-wider border-b border-slate-100">
-                        <th className="px-4 py-3 min-w-[220px]">Item Name</th>
-                        <th className="px-4 py-3 min-w-[220px]">Description / Specs</th>
-                        <th className="px-4 py-3 text-center min-w-[90px]">Quantity</th>
-                        <th className="px-4 py-3 text-center min-w-[90px]">Units</th>
-                        <th className="px-4 py-3 min-w-[110px]">Brand</th>
-                        <th className="px-4 py-3 text-right min-w-[120px]">Unit Price (₹)</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                      {items.map((item, idx) => {
-                        const catObj = localMainProduct?.categoryId || localMainProduct?.category;
-                        const resolvedItemName = item.itemName || item.subCategoryName || catObj?.subCategories?.find(s => s._id === item.subCategoryId || s._id === item.subCategoryId?.toString())?.name || 'Item ' + (idx + 1);
-                        const isSingle = !isMulti || items.length <= 1;
-                        const priceRegisterName = isSingle ? 'unitPrice' : `items.${idx}.unitPrice`;
-
-                        return (
-                          <tr key={idx} className="hover:bg-orange-50/20 transition-colors">
-                            <td className="px-4 py-4 align-middle">
-                              <div className="text-sm font-bold text-slate-800">{resolvedItemName}</div>
-                            </td>
-                            <td className="px-4 py-4 align-middle">
-                              <div className="text-sm text-slate-600 leading-relaxed max-w-xs break-words">
-                                {item.itemDescription || item.description || item.typeOfProduct || item.model || 'N/A'}
-                              </div>
-                            </td>
-                            <td className="px-4 py-4 align-middle text-center">
-                              <div className="text-sm font-semibold text-slate-700">{item.quantity || 1}</div>
-                            </td>
-                            <td className="px-4 py-4 align-middle text-center">
-                              <div className="text-sm font-semibold text-slate-700 uppercase">{item.quantityUnit || 'pcs'}</div>
-                            </td>
-                            <td className="px-4 py-4 align-middle">
-                              <div className="text-sm text-slate-600">{item.brand || 'Any'}</div>
-                            </td>
-                            <td className="px-4 py-4 align-middle text-right">
-                              <Input
-                                type="number"
-                                step="0.01"
-                                min="0"
-                                placeholder="0.00"
-                                className="h-9 border-slate-200 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-all font-medium bg-white text-right w-full"
-                                {...register(priceRegisterName, { required: true })}
-                              />
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-
-                <div className="p-4 border-t border-slate-100 bg-slate-50">
-                  <div className="max-w-xs">
-                    <Label className="mb-1.5 text-xs text-slate-500">Total Freight Cost (₹)</Label>
-                    <Input type="number" step="0.01" min="0" placeholder="0.00" className="h-9 bg-white" {...register('freightCost')} />
-                  </div>
-                </div>
-              </div>
-            );
-          }
-          return null;
-        })()}
-
-        {/* Price Basis */}
-        <div className="w-full">
-          <Label className="mb-2 text-sm block">Price Basis</Label>
-
-          <Controller
-            name="priceBasis"
-            control={control}
-            render={({ field }) => (
-              <Select onValueChange={field.onChange} value={field.value}>
-                <SelectTrigger className="w-full bg-white">
-                  <SelectValue placeholder="Select Price Basis" />
-                </SelectTrigger>
-
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="per_unit">Per Unit</SelectItem>
-                    <SelectItem value="per_kg">Per Kg</SelectItem>
-                    <SelectItem value="per_lot">Per Lot</SelectItem>
-                    <SelectItem value="per_piece">Per Piece</SelectItem>
-                    <SelectItem value="per_service">Per Service</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            )}
-          />
-        </div>
-
-        {/* Taxes */}
-        <div className="w-full">
-          <Label className="mb-2 text-sm block">Taxes</Label>
-
-          <Controller
-            name="taxes"
-            control={control}
-            render={({ field }) => (
-              <Select onValueChange={field.onChange} value={field.value}>
-                <SelectTrigger className="w-full bg-white">
-                  <SelectValue placeholder="Select Taxes" />
-                </SelectTrigger>
-
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="18">18% GST</SelectItem>
-                    <SelectItem value="12">12% GST</SelectItem>
-                    <SelectItem value="5">5% GST</SelectItem>
-                    <SelectItem value="0">Inclusive/Exempt</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            )}
-          />
-        </div>
-
-        {/* Location */}
-        <div className="w-full">
-          <Label htmlFor="location" className="mb-2 text-sm block">
-            Location
-          </Label>
-
-          <Input
-            type="text"
-            placeholder="Location"
-            className="bg-white w-full"
-            {...register('location')}
-          />
-        </div>
-
-        {/* Delivery Timeline */}
-        <div className="w-full">
-          <Label className="mb-2 text-sm block">Delivery Timeline</Label>
-
-          <Controller
-            control={control}
-            name="earliestDeliveryDate"
-            render={({ field }) => (
-              <DatePicker
-                disabledBeforeDate={new Date(new Date().getTime())}
-                date={field.value}
-                title="DD-MM-YYYY"
-                className="w-full"
-                setDate={val => field.onChange(val)}
-              />
-            )}
-          />
-        </div>
-
-        {/* Freight Terms */}
-        <div className="w-full">
-          <Label className="mb-2 text-sm block">Freight Terms</Label>
-
-          <Controller
-            name="freightTerms"
-            control={control}
-            render={({ field }) => (
-              <Select onValueChange={field.onChange} value={field.value}>
-                <SelectTrigger className="w-full bg-white">
-                  <SelectValue placeholder="Select Freight Terms" />
-                </SelectTrigger>
-
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="ex_works">Ex-Works</SelectItem>
-                    <SelectItem value="fob">FOB</SelectItem>
-                    <SelectItem value="delivered">Delivered (DAP / DDP)</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            )}
-          />
-        </div>
-
-        {/* Payment Terms */}
-        <div className="w-full">
-          <Label className="mb-2 text-sm block">Payment Terms</Label>
-
-          <Controller
-            name="paymentTerms"
-            control={control}
-            render={({ field }) => (
-              <Select onValueChange={field.onChange} value={field.value}>
-                <SelectTrigger className="w-full bg-white">
-                  <SelectValue placeholder="Select Payment Terms" />
-                </SelectTrigger>
-
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="advance">Advance</SelectItem>
-
-                    <SelectItem value="partial_advance">Partial Advance</SelectItem>
-
-                    <SelectItem value="on_delivery">On Delivery</SelectItem>
-
-                    <SelectItem value="credit">Credit (X days)</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            )}
-          />
-        </div>
-
-        {/* Buyer Note */}
-        <div className="w-full col-span-1 sm:col-span-2">
-          <Label htmlFor="buyerNote" className="mb-2 text-sm block">
-            Buyer Note
-          </Label>
-
-          <Textarea
-            {...register('buyerNote')}
-            placeholder="Short message (hard limit: 300 characters)"
-            className="bg-white w-full min-h-[100px] resize-none"
-          />
-        </div>
+      {/* Row 1: Seller Type | Payment Terms */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {SellerTypeField}
+        {PaymentTermsField}
       </div>
 
-      {/* Live Totaler Panel */}
-      {(() => {
-        const isMulti = productResponse?.mainProduct?.isMultiple;
-        const items = productResponse?.mainProduct?.items || [];
-        const tRate = parseFloat(watch('taxes')) || 0;
-        
-        let subtotal = 0;
-        let totalFreight = 0;
-        
-        if (isMulti && items.length > 1) {
-          totalFreight = parseFloat(watch('freightCost')) || 0;
-          items.forEach((item, idx) => {
-            const uPrice = parseFloat(watch(`items.${idx}.unitPrice`)) || 0;
-            const qty = item.quantity || 1;
-            subtotal += uPrice * qty;
-          });
-        } else {
-          const uPrice = parseFloat(watch('unitPrice')) || 0;
-          totalFreight = parseFloat(watch('freightCost')) || 0;
-          const qty = productResponse?.mainProduct?.quantity || 1;
-          subtotal = uPrice * qty;
-        }
-        
-        const taxAmount = (subtotal + totalFreight) * (tRate/100);
-        const grandTotal = subtotal + totalFreight + taxAmount;
+      {isDocFlow ? (
+        <>
+          {/* Total Quote Value */}
+          <div className="w-full">
+            <Label className="mb-2 text-sm block">Total Quote Value (₹)</Label>
+            <Input
+              type="number"
+              step="0.01"
+              min="0"
+              placeholder="0.00"
+              className="bg-white w-full"
+              {...register('totalQuoteValue', { required: true })}
+            />
+          </div>
 
-        return (
-          <div className="mt-6 border-t border-slate-200 pt-4 pb-2">
-            <div className="flex flex-col gap-2 max-w-sm ml-auto text-sm">
-              <div className="flex justify-between text-slate-600">
-                <span>Subtotal:</span>
-                <span>₹ {subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-              </div>
-              <div className="flex justify-between text-slate-600">
-                <span>Freight:</span>
-                <span>₹ {totalFreight.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-              </div>
-              <div className="flex justify-between text-slate-600">
-                <span>Estimated Tax ({tRate}%):</span>
-                <span>₹ {taxAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-              </div>
-              <div className="flex justify-between font-bold text-lg text-slate-800 border-t pt-2 mt-1">
-                <span>Grand Total:</span>
-                <span className="text-orange-600">₹ {grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-              </div>
+          {/* Seller quotation document (pdf / excel) */}
+          <div className="w-full">
+            <Label className="mb-2 text-sm block">Upload Quotation Document (PDF or Excel)</Label>
+            <Input
+              type="file"
+              accept=".pdf,.xls,.xlsx,.csv,.doc,.docx"
+              className="bg-white w-full file:mr-3 file:rounded-md file:border-0 file:bg-orange-50 file:px-3 file:py-1.5 file:text-orange-700 file:font-semibold"
+              {...register('quoteDocument')}
+            />
+            <p className="text-xs text-slate-400 mt-1">Attach your priced quotation against the buyer's uploaded requirement.</p>
+          </div>
+        </>
+      ) : (
+        <>
+          {/* Item-by-item pricing */}
+          <div className="w-full bg-white rounded-md border border-orange-100 overflow-hidden">
+            <div className="bg-orange-50/50 px-4 py-3 border-b border-orange-100">
+              <h4 className="font-semibold text-sm text-slate-800 flex items-center gap-2">
+                <Package className="w-4 h-4 text-orange-600" />
+                List of Materials
+              </h4>
+              <p className="text-xs text-slate-500 mt-0.5">{items.length} item(s) — enter a unit price for each</p>
+            </div>
+            <div className="w-full overflow-x-auto border border-slate-100 rounded-lg shadow-sm">
+              <table className="w-full text-left border-collapse min-w-[920px] table-auto">
+                <thead>
+                  <tr className="bg-slate-50 text-[11px] font-extrabold text-slate-500 uppercase tracking-wider border-b border-slate-100">
+                    <th className="px-4 py-3 min-w-[200px]">Item Name</th>
+                    <th className="px-4 py-3 min-w-[200px]">Description / Specs</th>
+                    <th className="px-4 py-3 text-center min-w-[80px]">Qty</th>
+                    <th className="px-4 py-3 text-center min-w-[80px]">Unit</th>
+                    <th className="px-4 py-3 min-w-[100px]">Brand</th>
+                    <th className="px-4 py-3 text-right min-w-[120px]">Price / Unit (₹)</th>
+                    <th className="px-4 py-3 text-right min-w-[120px]">Total (₹)</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {items.map((item, idx) => {
+                    const catObj = localMainProduct?.categoryId || localMainProduct?.category;
+                    const resolvedItemName = item.itemName || item.subCategoryName || catObj?.subCategories?.find(s => s._id === item.subCategoryId || s._id === item.subCategoryId?.toString())?.name || 'Item ' + (idx + 1);
+                    const qty = Number(item.quantity) || 1;
+                    const uPrice = parseFloat(watch(priceNameFor(idx))) || 0;
+                    const lineTotal = qty * uPrice;
+
+                    return (
+                      <tr key={idx} className="hover:bg-orange-50/20 transition-colors">
+                        <td className="px-4 py-4 align-middle">
+                          <div className="text-sm font-bold text-slate-800">{resolvedItemName}</div>
+                        </td>
+                        <td className="px-4 py-4 align-middle">
+                          <div className="text-sm text-slate-600 leading-relaxed max-w-xs break-words">
+                            {item.itemDescription || item.description || item.typeOfProduct || item.model || 'N/A'}
+                          </div>
+                        </td>
+                        <td className="px-4 py-4 align-middle text-center">
+                          <div className="text-sm font-semibold text-slate-700">{qty}</div>
+                        </td>
+                        <td className="px-4 py-4 align-middle text-center">
+                          <div className="text-sm font-semibold text-slate-700 uppercase">{item.quantityUnit || 'pcs'}</div>
+                        </td>
+                        <td className="px-4 py-4 align-middle">
+                          <div className="text-sm text-slate-600">{item.brand || 'Any'}</div>
+                        </td>
+                        <td className="px-4 py-4 align-middle text-right">
+                          <Input
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            placeholder="0.00"
+                            className="h-9 border-slate-200 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-all font-medium bg-white text-right w-full"
+                            {...register(priceNameFor(idx), { required: true })}
+                          />
+                        </td>
+                        <td className="px-4 py-4 align-middle text-right">
+                          <div className="text-sm font-bold text-slate-800">₹ {fmt(lineTotal)}</div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           </div>
-        );
-      })()}
+
+          {/* Grand Total — product only */}
+          <div className="flex justify-end">
+            <div className="flex items-center justify-between gap-8 bg-orange-50 border border-orange-100 rounded-lg px-5 py-3 min-w-[260px]">
+              <span className="font-bold text-slate-800">Grand Total</span>
+              <span className="font-extrabold text-lg text-orange-600">₹ {fmt(grandTotal)}</span>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Taxes | Supplier Location */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {TaxesField}
+        {LocationField}
+      </div>
+
+      {/* Flow-specific ordering of Freight / Delivery */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {isDocFlow ? (
+          <>
+            {DeliveryTimelineField}
+            {FreightTermsField}
+          </>
+        ) : (
+          <>
+            {FreightTermsField}
+            {DeliveryTimelineField}
+          </>
+        )}
+      </div>
+
+      {/* Buyer Note */}
+      {BuyerNoteField}
 
       {/* Button */}
       <div className="flex justify-end pt-2">
@@ -736,10 +676,10 @@ const ProductOverview = () => {
       firstName: '',
       lastName: '',
       unitPrice: '',
-      freightCost: '',
+      totalQuoteValue: '',
+      quoteDocument: undefined,
       earliestDeliveryDate: undefined,
       sellerType: '',
-      priceBasis: '',
       taxes: '',
       location: '',
       freightTerms: '',
@@ -826,44 +766,79 @@ const ProductOverview = () => {
       return;
     }
 
-    const isMulti = productResponse?.mainProduct?.isMultiple || bidOverviewRes?.product?.isMultiple;
-    const items = productResponse?.mainProduct?.items || [];
-    const tRate = parseFloat(getValues('taxes')) || 0;
-    
-    let subtotal = 0;
-    let totalFreight = 0;
-    
-    if (isMulti && items.length > 1) {
-      totalFreight = parseFloat(getValues('freightCost')) || 0;
-      items.forEach((item, idx) => {
-        const formValues = getValues();
-        const uPrice = parseFloat(formValues.items?.[idx]?.unitPrice) || 0;
-        const qty = item.quantity || 1;
-        subtotal += uPrice * qty;
+    const mainP = productResponse?.mainProduct || bidOverviewRes?.product;
+    const rawItems = mainP?.items || [];
+    const isMulti = mainP?.isMultiple;
+    const isDocFlow = (!!mainP?.document || !!mainP?.isUpload) && rawItems.length === 0;
+
+    // Quote value is PRODUCT-ONLY: sum of qty × unit price (or the seller's
+    // stated total for document-upload RFQs). Taxes/freight are never added.
+    let budgetQuation = 0;
+    if (isDocFlow) {
+      budgetQuation = parseFloat(getValues('totalQuoteValue')) || 0;
+    } else if (isMulti && rawItems.length > 1) {
+      rawItems.forEach((item, idx) => {
+        const uPrice = parseFloat(getValues().items?.[idx]?.unitPrice) || 0;
+        const qty = Number(item.quantity) || 1;
+        budgetQuation += uPrice * qty;
       });
     } else {
       const uPrice = parseFloat(getValues('unitPrice')) || 0;
-      totalFreight = parseFloat(getValues('freightCost')) || 0;
-      const qty = productResponse?.mainProduct?.quantity || 1;
-      subtotal = uPrice * qty;
+      const qty = Number(mainP?.quantity) || 1;
+      budgetQuation = uPrice * qty;
     }
-    
-    const taxAmount = (subtotal + totalFreight) * (tRate/100);
-    const budgetQuation = subtotal + totalFreight + taxAmount;
 
-    let obj = {
-      ...getValues(),
+    if (!budgetQuation || budgetQuation <= 0) {
+      toast.error('Please enter a valid quote amount');
+      return;
+    }
+
+    const values = getValues();
+    const fileList = values.quoteDocument;
+    const file = fileList && fileList.length ? fileList[0] : null;
+
+    const baseFields = {
       budgetQuation,
       status: 'active',
+      sellerType: values.sellerType || '',
+      taxes: values.taxes || '',
+      location: values.location || '',
+      freightTerms: values.freightTerms || '',
+      paymentTerms: values.paymentTerms || '',
+      buyerNote: values.buyerNote || '',
       businessType,
-      ...(businessType === 'business' && { businessDets }),
     };
+    if (values.earliestDeliveryDate) {
+      baseFields.earliestDeliveryDate =
+        values.earliestDeliveryDate instanceof Date
+          ? values.earliestDeliveryDate.toISOString()
+          : values.earliestDeliveryDate;
+    }
+
+    let payload;
+    if (file) {
+      // Document-upload flow: multipart so the quotation file reaches the server.
+      payload = new FormData();
+      Object.entries(baseFields).forEach(([k, v]) => {
+        if (v !== undefined && v !== null) payload.append(k, v);
+      });
+      if (businessType === 'business' && businessDets) {
+        payload.append('businessDets', JSON.stringify(businessDets));
+      }
+      payload.append('quoteDocument', file);
+    } else {
+      payload = {
+        ...baseFields,
+        ...(businessType === 'business' && { businessDets }),
+      };
+    }
+
     if (!businessType) {
       toast.error('business is required !');
       setSellerVerification(true);
     }
     try {
-      await createBidFn(buyerId, productId, obj);
+      await createBidFn(buyerId, productId, payload);
     } catch (err) {
       console.log(err);
       toast.error('Failed to place Quote');
@@ -881,11 +856,19 @@ const ProductOverview = () => {
       toast.info('Please complete your profile first');
       return;
     }
-    const isMulti = productResponse?.mainProduct?.isMultiple || bidOverviewRes?.product?.isMultiple;
-    if (!isMulti && (!data.unitPrice || Number(data.unitPrice) <= 0)) {
+    const mainP = productResponse?.mainProduct || bidOverviewRes?.product;
+    const rawItems = mainP?.items || [];
+    const isMulti = mainP?.isMultiple;
+    const isDocFlow = (!!mainP?.document || !!mainP?.isUpload) && rawItems.length === 0;
+
+    if (isDocFlow) {
+      // Document-upload RFQ: seller quotes a single total instead of unit prices.
+      if (!getValues('totalQuoteValue') || Number(getValues('totalQuoteValue')) <= 0) {
+        return toast.error('Total Quote Value is required and must be positive');
+      }
+    } else if (!isMulti && (!data.unitPrice || Number(data.unitPrice) <= 0)) {
       return toast.error('Unit Price is required and must be positive');
-    }
-    if (isMulti && data.items) {
+    } else if (isMulti && data.items) {
       for (let i = 0; i < data.items.length; i++) {
         if (!data.items[i].unitPrice || Number(data.items[i].unitPrice) <= 0) {
           return toast.error(`Unit Price is required for Item ${i + 1}`);

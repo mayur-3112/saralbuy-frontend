@@ -150,6 +150,26 @@ const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails }) => {
                 className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm resize-none"
               />
             </Field>
+
+            {/* Seller-uploaded quotation document(s) */}
+            {resolveDocuments(quoteDetails?.quoteDocument).length > 0 && (
+              <Field className="col-span-2">
+                <Label>Quotation Document</Label>
+                <div className="flex flex-wrap gap-2">
+                  {resolveDocuments(quoteDetails?.quoteDocument).map((url, i) => (
+                    <a
+                      key={i}
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 border border-orange-200 text-orange-700 text-xs font-medium rounded-lg hover:bg-orange-100 transition-colors"
+                    >
+                      📄 Document {i + 1}
+                    </a>
+                  ))}
+                </div>
+              </Field>
+            )}
           </FieldGroup>
 
           {/* <DialogFooter>
