@@ -1618,7 +1618,7 @@ const ProductOverview = () => {
                   </SheetTrigger>
                 </div>
                 
-                <SheetContent side="right" className="w-full sm:!max-w-[600px] lg:!max-w-[45vw] lg:!w-[45vw] xl:!max-w-[40vw] xl:!w-[40vw] overflow-y-auto bg-slate-50 p-0 border-l-0 sm:border-l">
+                <SheetContent side="right" className="w-full sm:!max-w-[70vw] sm:!w-[70vw] lg:!max-w-[50vw] lg:!w-[50vw] overflow-y-auto bg-slate-50 p-0 border-l-0 sm:border-l">
                   <SheetHeader className="p-8 bg-white border-b border-slate-100 sticky top-0 z-10 shadow-sm">
                     <SheetTitle className="text-3xl font-extrabold text-slate-800">Submit Quotation</SheetTitle>
                   </SheetHeader>
