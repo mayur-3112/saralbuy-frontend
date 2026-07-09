@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { DatePicker } from '@/lib/DatePicker';
+import { resolveDocuments } from '@/utils/resolveDocuments';
 import { useFetch } from '@/hooks/useFetch';
 import productService from '@/services/product.service';
 import { useEffect, useRef, useState } from 'react';
@@ -1384,8 +1385,8 @@ const ProductOverview = () => {
                             <p className="text-xs text-slate-500 max-w-md leading-relaxed">
                               This buyer has uploaded a document containing the detailed bill of materials, quantities, and specifications for this requirement.
                             </p>
-                            <a 
-                              href={mp.document.split(',')[0]}
+                            <a
+                              href={resolveDocuments(mp.document)[0]}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs rounded-lg transition-colors cursor-pointer"
@@ -1465,8 +1466,7 @@ const ProductOverview = () => {
                   {/* Attachments Section */}
                   {(() => {
                     const mp = bidOverviewRes?.product || productResponse?.mainProduct;
-                    const docStr = mp?.document || '';
-                    const urls = docStr.split(',').map(url => url.trim()).filter(Boolean);
+                    const urls = resolveDocuments(mp?.document);
                     if (urls.length === 0) return null;
                     return (
                       <div className="pt-4 mt-4 border-t border-slate-100 space-y-3">

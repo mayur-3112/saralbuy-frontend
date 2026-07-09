@@ -15,6 +15,7 @@ import { Banknote, CalendarDays, Eye, MoveLeft } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import requirementService from '@/services/requirement.service';
+import { resolveDocuments } from '@/utils/resolveDocuments';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { CategoryFormSkeleton } from '@/const/CustomSkeletons';
@@ -595,11 +596,11 @@ const RequirementOverview = () => {
               )}
 
               {/* Documents uploaded with the requirement */}
-              {item.document && item.document.length > 0 && (
+              {resolveDocuments(item.document).length > 0 && (
                 <div className="mt-2">
                   <p className="text-sm font-semibold text-gray-700 mb-1.5">Uploaded Documents</p>
                   <div className="flex flex-wrap gap-2">
-                    {item.document.map((doc, dIdx) => (
+                    {resolveDocuments(item.document).map((doc, dIdx) => (
                       <a
                         key={dIdx}
                         href={doc}
