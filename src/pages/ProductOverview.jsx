@@ -255,8 +255,9 @@ const SellerForm = ({
   const localMainProduct = bidOverviewRes ? bidOverviewRes?.product : productResponse?.mainProduct;
   const isMulti = localMainProduct?.isMultiple;
   const rawItems = localMainProduct?.items || [];
-  // Document-upload RFQ: no itemised list, seller quotes a single total + file.
-  const isDocFlow = (!!localMainProduct?.document || !!localMainProduct?.isUpload) && rawItems.length === 0;
+  // Document-upload RFQ: seller quotes a single total + file. Upload-mode RFQs
+  // are flagged isUpload even though they carry a placeholder item.
+  const isDocFlow = !!localMainProduct?.isUpload || (!!localMainProduct?.document && rawItems.length === 0);
 
   let items = rawItems;
   if (!isDocFlow && rawItems.length === 0 && localMainProduct) {
@@ -775,7 +776,7 @@ const ProductOverview = () => {
     const mainP = productResponse?.mainProduct || bidOverviewRes?.product;
     const rawItems = mainP?.items || [];
     const isMulti = mainP?.isMultiple;
-    const isDocFlow = (!!mainP?.document || !!mainP?.isUpload) && rawItems.length === 0;
+    const isDocFlow = !!mainP?.isUpload || (!!mainP?.document && rawItems.length === 0);
 
     // Quote value is PRODUCT-ONLY: sum of qty × unit price (or the seller's
     // stated total for document-upload RFQs). Taxes/freight are never added.
@@ -865,7 +866,7 @@ const ProductOverview = () => {
     const mainP = productResponse?.mainProduct || bidOverviewRes?.product;
     const rawItems = mainP?.items || [];
     const isMulti = mainP?.isMultiple;
-    const isDocFlow = (!!mainP?.document || !!mainP?.isUpload) && rawItems.length === 0;
+    const isDocFlow = !!mainP?.isUpload || (!!mainP?.document && rawItems.length === 0);
 
     if (isDocFlow) {
       // Document-upload RFQ: seller quotes a single total instead of unit prices.
@@ -1207,13 +1208,6 @@ const ProductOverview = () => {
                   )}
                 </div>
 
-                {mainProductData?.description && (
-                  <div className="mb-4 text-[14px] text-slate-600 leading-relaxed font-medium bg-orange-50/30 p-4 rounded-lg border border-orange-50 whitespace-pre-line">
-                    <strong className="text-slate-800 block mb-1">Description:</strong>
-                    {mainProductData.description}
-                  </div>
-                )}
-
                 {isMe && bidStats && bidStats.totalBids > 0 && (
                   <div className="bg-orange-50/80 border border-orange-200 rounded-lg p-4 mt-4 grid grid-cols-3 gap-2 text-center max-w-lg">
                     <div>
@@ -1365,7 +1359,9 @@ const ProductOverview = () => {
                   {(() => {
                     const mp = bidOverviewRes?.product || productResponse?.mainProduct;
                     const rawItems = mp?.items || [];
-                    if (rawItems.length === 0) {
+                    // Upload-mode RFQs carry only a placeholder item — show the
+                    // document instead of a misleading List of Materials.
+                    if (mp?.isUpload || rawItems.length === 0) {
                       if (mp?.isUpload || mp?.document) {
                         return (
                           <div className="mt-4 border border-orange-200 rounded-lg overflow-hidden bg-orange-50/30 p-5 shadow-xs flex flex-col items-center text-center space-y-3">
