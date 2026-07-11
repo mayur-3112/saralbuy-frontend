@@ -57,6 +57,12 @@ class BidService {
       .get(`/bid/compare/${productId}`)
       .then(res => res.data?.data || res.data);
   }
+  // SB-013: unified activity timeline for a requirement (buyer only)
+  async getRequirementTimeline(productId) {
+    return instance
+      .get(`/bid/timeline/${productId}`)
+      .then(res => res.data?.data || res.data);
+  }
   async deleteBid(productId) {
     return instance
       .delete(`/bid/delete-bid/${productId}`, {

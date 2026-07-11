@@ -266,6 +266,70 @@ const QuoteCompareDialog = ({ open, onOpenChange, productId }) => {
   );
 };
 
+// SB-013: activity timeline for the requirement
+const TIMELINE_ICONS = {
+  requirement_posted: '📝',
+  quote_placed: '💬',
+  shortlisted: '⭐',
+  accepted: '✅',
+  deal_proposed: '🤝',
+  deal_completed: '🎉',
+  deal_rejected: '❌',
+};
+
+const DealTimelineDialog = ({ open, onOpenChange, productId }) => {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!open || !productId) return;
+    setLoading(true);
+    bidService
+      .getRequirementTimeline(productId)
+      .then(data => setEvents(Array.isArray(data) ? data : []))
+      .catch(() => setEvents([]))
+      .finally(() => setLoading(false));
+  }, [open, productId]);
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-auto">
+        <DialogHeader>
+          <DialogTitle className="font-semibold">Deal Activity Timeline</DialogTitle>
+          <DialogDescription>Every step from posting to closure, logged in order.</DialogDescription>
+        </DialogHeader>
+        {loading ? (
+          <div className="py-10 text-center text-sm text-slate-500">Loading timeline…</div>
+        ) : events.length === 0 ? (
+          <div className="py-10 text-center text-sm text-slate-500">No activity yet.</div>
+        ) : (
+          <ol className="relative border-l border-slate-200 ml-3 mt-2 space-y-5">
+            {events.map((e, i) => (
+              <li key={i} className="ml-5">
+                <span className="absolute -left-3 flex items-center justify-center w-6 h-6 bg-orange-50 rounded-full ring-4 ring-white text-sm">
+                  {TIMELINE_ICONS[e.type] || '•'}
+                </span>
+                <div className="flex flex-col">
+                  <span className="text-sm font-semibold text-slate-800">{e.label}</span>
+                  <span className="text-xs text-slate-400">{e.at ? new Date(e.at).toLocaleString('en-IN') : ''}</span>
+                  {e.amount ? <span className="text-xs text-orange-600 font-semibold">{currencyConvertor(e.amount)}</span> : null}
+                  {e.commissionAmount ? <span className="text-[11px] text-slate-500">Platform commission: {currencyConvertor(e.commissionAmount)}</span> : null}
+                  {e.agreedTerms && (e.agreedTerms.deliveryDate || e.agreedTerms.paymentTerms) ? (
+                    <span className="text-[11px] text-slate-500">
+                      {e.agreedTerms.deliveryDate ? `Delivery ${dateFormatter(e.agreedTerms.deliveryDate)}` : ''}
+                      {e.agreedTerms.paymentTerms ? ` · ${separateName(e.agreedTerms.paymentTerms)}` : ''}
+                    </span>
+                  ) : null}
+                </div>
+              </li>
+            ))}
+          </ol>
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 const RequirementOverview = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -287,6 +351,7 @@ const RequirementOverview = () => {
   const [openQuoteDetails, setOpenQuoteDetails] = useState(false);
   const [activeTab, setActiveTab] = useState('pending');
   const [showCompare, setShowCompare] = useState(false);
+  const [showTimeline, setShowTimeline] = useState(false);
 
   let intervalRef = useRef(null);
 
@@ -592,6 +657,11 @@ const RequirementOverview = () => {
         onOpenChange={setShowCompare}
         productId={currentProduct?.product?._id}
       />
+      <DealTimelineDialog
+        open={showTimeline}
+        onOpenChange={setShowTimeline}
+        productId={currentProduct?.product?._id}
+      />
       <div className="w-full max-w-7xl mx-auto space-y-4 px-3 sm:px-4 lg:px-6 py-4">
         {/* Breadcrumb */}
         <Breadcrumb className="hidden sm:block">
@@ -771,11 +841,18 @@ const RequirementOverview = () => {
             >
               Accepted
             </Button>
+            <Button
+              variant="outline"
+              onClick={() => setShowTimeline(true)}
+              className="ml-auto border-slate-300 text-slate-600 hover:bg-slate-100"
+            >
+              🕑 Timeline
+            </Button>
             {bidData.length > 1 && (
               <Button
                 variant="outline"
                 onClick={() => setShowCompare(true)}
-                className="ml-auto border-orange-300 text-orange-700 hover:bg-orange-100"
+                className="border-orange-300 text-orange-700 hover:bg-orange-100"
               >
                 ⚖ Compare Quotes
               </Button>
