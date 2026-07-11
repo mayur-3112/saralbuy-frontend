@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
-import { MoveLeft, MapPin, Calendar, Building2 } from 'lucide-react';
+import { MoveLeft, MapPin, Calendar, Building2, ShieldCheck, Phone, FileCheck2, Briefcase } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useFetch } from '@/hooks/useFetch';
 import userService from '@/services/user.service';
@@ -45,6 +45,20 @@ export default function UserProfile() {
     return loc.split(',')[0].trim();
   };
   const location = cityOnly(data.currentLocation) || cityOnly(data.address);
+  const roleLabel = data.accountRole === 'supplier' ? 'Supplier' : 'Buyer';
+
+  const chips = [
+    data.phone && { icon: Phone, label: 'Phone Verified' },
+    data.verificationStatus === 'verified' && { icon: ShieldCheck, label: 'GST Verified' },
+    (data.panDocumentUrl || data.pan) && data.verificationStatus === 'verified' && { icon: FileCheck2, label: 'PAN on file' },
+  ].filter(Boolean);
+
+  const tiles = [
+    { icon: Briefcase, label: 'Role', value: roleLabel },
+    location && { icon: MapPin, label: 'Location', value: location },
+    memberSince && { icon: Calendar, label: 'Member since', value: memberSince },
+    { icon: ShieldCheck, label: 'Verification', value: data.verificationStatus === 'verified' ? 'Verified' : 'Unverified' },
+  ].filter(Boolean);
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -78,6 +92,9 @@ export default function UserProfile() {
                       {fullName}
                     </h1>
                     <VerifiedBadge status={data.verificationStatus} size="md" />
+                    <span className="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                      {roleLabel}
+                    </span>
                   </div>
                   {data.businessName && (
                     <div className="flex items-center gap-1.5 text-sm text-slate-600 font-medium mt-1">
@@ -88,20 +105,29 @@ export default function UserProfile() {
                 </div>
               </div>
 
-              {/* Meta row */}
-              <div className="mt-5 pt-5 border-t border-slate-100 flex gap-6 flex-wrap text-sm">
-                {location && (
-                  <div className="flex items-center gap-1.5 text-slate-600">
-                    <MapPin className="w-4 h-4 text-slate-400" />
-                    <span className="font-medium">{location}</span>
+              {/* Trust chips */}
+              {chips.length > 0 && (
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {chips.map((c, i) => (
+                    <span key={i} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-700 text-xs font-semibold">
+                      <c.icon className="w-3.5 h-3.5" />
+                      {c.label}
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {/* Stat tiles */}
+              <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {tiles.map((t, i) => (
+                  <div key={i} className="rounded-xl border border-slate-100 bg-slate-50/60 p-3.5">
+                    <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                      <t.icon className="w-3.5 h-3.5" />
+                      {t.label}
+                    </div>
+                    <p className="mt-1 text-sm font-bold text-slate-800 capitalize">{t.value}</p>
                   </div>
-                )}
-                {memberSince && (
-                  <div className="flex items-center gap-1.5 text-slate-600">
-                    <Calendar className="w-4 h-4 text-slate-400" />
-                    <span className="font-medium">On SaralBuy since {memberSince}</span>
-                  </div>
-                )}
+                ))}
               </div>
 
               {/* Privacy notice — sets expectations */}

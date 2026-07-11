@@ -506,7 +506,7 @@ const RequirementOverview = () => {
       header: 'Action/View',
       cell: ({ row }) => {
         return (
-          <div className="flex  items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2">
             {/* SB-009: once shortlisted/accepted, chat becomes the finalisation channel */}
             {row.original.quoteStatus === 'shortlisted' || row.original.quoteStatus === 'accepted' ? (
               <Button
@@ -726,6 +726,7 @@ const RequirementOverview = () => {
                 <img
                   src={item.image || '/no-image.webp'}
                   alt={item.title || 'Product'}
+                  onError={e => { e.currentTarget.onerror = null; e.currentTarget.src = '/no-image.webp'; }}
                   className="object-contain h-full w-full rounded-lg mix-blend-darken"
                 />
 

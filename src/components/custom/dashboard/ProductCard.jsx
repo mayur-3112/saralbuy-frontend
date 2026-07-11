@@ -22,6 +22,7 @@ const ProductCard = ({ product: item }) => {
           <img
             src={item?.productId?.image || item?.image || '/no-image.webp'}
             alt={item?.productId?.title || item?.title || 'No Image'}
+            onError={e => { e.currentTarget.onerror = null; e.currentTarget.src = '/no-image.webp'; }}
             className="w-full h-full object-contain rounded-lg"
           />
         </div>
