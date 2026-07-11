@@ -143,11 +143,12 @@ const RequirementSlider = ({ product, target }) => {
             <Button
               onClick={() => handleNavigate(product)}
               size={'default'}
-              className="cursor-pointer text-xs  bc"
+              className="cursor-pointer text-xs bc"
+              title="View and manage quotes received on this requirement"
             >
-              Total Quotes:{' '}
-              <span className="font-bold">{product?.product?.totalBidCount || 0}</span>
-              <MoveRight className="w-5 h-5" />
+              View Quotes{' '}
+              <span className="font-bold">({product?.product?.totalBidCount || 0})</span>
+              <MoveRight className="w-4 h-4" />
             </Button>
           ) : target === 'drafts' ? (
             <></>

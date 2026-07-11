@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { dateFormatter } from '@/utils/dateFormatter';
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 import { Banknote, CalendarDays, Eye, MoveLeft, Truck, CreditCard, MapPin, Percent, Store, FileText, BadgeCheck } from 'lucide-react';
+import { toast } from 'sonner';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import requirementService from '@/services/requirement.service';
@@ -433,6 +434,10 @@ const RequirementOverview = () => {
   };
 
   const handleUpdateQuoteStatus = async (bidId, status) => {
+    if (!bidId) {
+      toast.error('Missing quote reference — please refresh and try again.');
+      return;
+    }
     try {
       await bidService.updateQuoteStatus(bidId, { quoteStatus: status });
       setBidData(prev => prev.map(bid => {
@@ -441,8 +446,10 @@ const RequirementOverview = () => {
         }
         return bid;
       }));
+      toast.success(`Quote ${status}`);
     } catch (error) {
       console.error('Error updating quote status', error);
+      toast.error(error?.response?.data?.message || 'Failed to update quote status');
     }
   };
 
