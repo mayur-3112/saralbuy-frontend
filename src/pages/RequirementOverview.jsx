@@ -401,7 +401,7 @@ const RequirementOverview = () => {
             bid_buy:
               `${seller.seller?.firstName || ''} ${seller.seller?.lastName || ''}`.trim() ||
               'Anonymous Seller',
-            bid_amount: currencyConvertor(seller.budgetAmount)
+            bid_amount: seller.budgetAmount
               ? currencyConvertor(seller.budgetAmount)
               : 'N/A',
             chat_message: seller.message || 'Interested in your requirement',
@@ -411,7 +411,9 @@ const RequirementOverview = () => {
             location: seller.seller?.currentLocation || seller.seller?.address,
             status: seller.seller?.status,
             quoteStatus: seller.quoteStatus || 'pending',
-            bidId: seller._id,
+            // Real bid id lives on `bidId`; `_id` is the sellers[] subdocument id.
+            // Using the subdoc id made shortlist/accept 404 silently (static buttons).
+            bidId: seller.bidId || seller._id,
           }));
 
           setBidData(transformedBids);
@@ -546,31 +548,52 @@ const RequirementOverview = () => {
             
             {!hasAccepted && row.original.quoteStatus === 'pending' && (
               <>
-                <Button 
-                  size="sm" 
-                  variant="outline" 
+                <Button
+                  size="sm"
+                  variant="outline"
                   className="text-orange-600 border-orange-600 hover:bg-orange-50"
                   onClick={() => handleUpdateQuoteStatus(row.original.bidId, 'shortlisted')}
                 >
                   Shortlist
                 </Button>
-                <Button 
-                  size="sm" 
+                <Button
+                  size="sm"
                   className="bg-green-600 text-white hover:bg-green-700"
                   onClick={() => handleUpdateQuoteStatus(row.original.bidId, 'accepted')}
                 >
                   Accept
                 </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="text-red-600 border-red-300 hover:bg-red-50"
+                  onClick={() => handleUpdateQuoteStatus(row.original.bidId, 'rejected')}
+                >
+                  Reject
+                </Button>
               </>
             )}
             {!hasAccepted && row.original.quoteStatus === 'shortlisted' && (
-              <Button 
-                size="sm" 
-                className="bg-green-600 text-white hover:bg-green-700"
-                onClick={() => handleUpdateQuoteStatus(row.original.bidId, 'accepted')}
-              >
-                Accept
-              </Button>
+              <>
+                <Button
+                  size="sm"
+                  className="bg-green-600 text-white hover:bg-green-700"
+                  onClick={() => handleUpdateQuoteStatus(row.original.bidId, 'accepted')}
+                >
+                  Accept
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="text-red-600 border-red-300 hover:bg-red-50"
+                  onClick={() => handleUpdateQuoteStatus(row.original.bidId, 'rejected')}
+                >
+                  Reject
+                </Button>
+              </>
+            )}
+            {row.original.quoteStatus === 'rejected' && (
+              <Badge className="bg-red-100 text-red-700 hover:bg-red-100 rounded-full px-3">Rejected</Badge>
             )}
             {row.original.quoteStatus === 'accepted' && (
               <Badge className="bg-green-100 text-green-700 hover:bg-green-100 rounded-full px-3">Accepted</Badge>

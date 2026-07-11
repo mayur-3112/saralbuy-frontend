@@ -67,6 +67,21 @@ export default function LiveSourcingBoard({ onOpenAuth }) {
     return matchesSearch && matchesCategory && matchesLocation && matchesExpiry;
   });
 
+  // "Live now" must count only ACTIVE (non-expired) RFQs, not every row.
+  const isReqExpired = req => {
+    const s = req.bidExpiryDate || req.timeline || req.bidActiveDuration;
+    if (s && isNaN(Number(s))) return new Date(s).getTime() < Date.now();
+    if (s && !isNaN(Number(s))) {
+      return new Date(new Date(req.createdAt || Date.now()).getTime() + Number(s) * 86400000).getTime() < Date.now();
+    }
+    if (req.createdAt) {
+      const days = Number(req.bidActiveDuration || '1');
+      return new Date(new Date(req.createdAt).getTime() + days * 86400000).getTime() < Date.now();
+    }
+    return false;
+  };
+  const liveCount = requirements.filter(r => !isReqExpired(r)).length;
+
   const categories = Array.from(new Set(requirements.map(r => r.categoryId?.categoryName).filter(Boolean)));
 
   return (
@@ -80,7 +95,7 @@ export default function LiveSourcingBoard({ onOpenAuth }) {
               <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-600" />
             </span>
             <span className="text-sm font-black text-emerald-700">
-              {requirements.length > 0 ? `${requirements.length} live now` : 'Live board'}
+              {liveCount > 0 ? `${liveCount} live now` : 'Live board'}
             </span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-tight">
@@ -96,7 +111,7 @@ export default function LiveSourcingBoard({ onOpenAuth }) {
             onClick={() => navigate('/product-listing')}
             className="group inline-flex items-center gap-1.5 text-base font-bold text-orange-700 hover:text-orange-800"
           >
-            View all {requirements.length}
+            View all {liveCount}
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </button>
         )}
