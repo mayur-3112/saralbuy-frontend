@@ -863,7 +863,7 @@ const RequirementOverview = () => {
               data={bidData.filter(bid => activeTab === 'pending' ? bid.quoteStatus === 'pending' : activeTab === 'shortlisted' ? bid.quoteStatus === 'shortlisted' : activeTab === 'accepted' ? bid.quoteStatus === 'accepted' : true)}
               columns={columns}
               filters={false}
-              title={`Quote Recevied`}
+              title={`Quotes Received`}
               target="requirementOverview"
               colorPalette="blue"
               itemStateMessage="No quotes received yet"
