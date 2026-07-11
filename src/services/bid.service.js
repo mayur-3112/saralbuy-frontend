@@ -51,6 +51,12 @@ class BidService {
       .get(`/bid/get-bid-by-productId/${productId}`)
       .then(res => res.data?.data || res.data);
   }
+  // SB-008: all quotes on a requirement for side-by-side comparison (buyer only)
+  async getBidsForCompare(productId) {
+    return instance
+      .get(`/bid/compare/${productId}`)
+      .then(res => res.data?.data || res.data);
+  }
   async deleteBid(productId) {
     return instance
       .delete(`/bid/delete-bid/${productId}`, {

@@ -185,6 +185,87 @@ const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails }) => {
   );
 };
 
+// SB-008: side-by-side comparison of all quotes on a requirement
+const QuoteCompareDialog = ({ open, onOpenChange, productId }) => {
+  const [bids, setBids] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!open || !productId) return;
+    setLoading(true);
+    bidService
+      .getBidsForCompare(productId)
+      .then(data => setBids(Array.isArray(data) ? data : []))
+      .catch(() => setBids([]))
+      .finally(() => setLoading(false));
+  }, [open, productId]);
+
+  const lowest = bids.length ? Math.min(...bids.map(b => b.budgetQuation || Infinity)) : null;
+
+  const rows = [
+    { label: 'Quoted Price', render: b => (
+      <span className={b.budgetQuation === lowest ? 'font-extrabold text-green-600' : 'font-semibold text-slate-800'}>
+        {currencyConvertor(b.budgetQuation)}{b.budgetQuation === lowest ? ' ▼' : ''}
+      </span>
+    ) },
+    { label: 'Seller Type', render: b => separateName(b.sellerType) || '-' },
+    { label: 'Delivery', render: b => (b.earliestDeliveryDate ? dateFormatter(b.earliestDeliveryDate) : '-') },
+    { label: 'Payment Terms', render: b => separateName(b.paymentTerms) || '-' },
+    { label: 'Freight Terms', render: b => separateName(b.freightTerms) || '-' },
+    { label: 'Taxes', render: b => (b.taxes ? `${b.taxes}` : '-') },
+    { label: 'Location', render: b => b.location || b.sellerId?.currentLocation || b.sellerId?.address || '-' },
+    { label: 'Status', render: b => <span className="capitalize">{b.quoteStatus || 'pending'}</span> },
+    { label: 'Quote Doc', render: b => {
+      const docs = resolveDocuments(b.quoteDocument);
+      return docs.length ? (
+        <a href={docs[0]} target="_blank" rel="noopener noreferrer" className="text-orange-600 underline">View</a>
+      ) : '-';
+    } },
+  ];
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[92vw] lg:max-w-[80vw] max-h-[85vh] overflow-auto">
+        <DialogHeader>
+          <DialogTitle className="font-semibold">Compare Quotes</DialogTitle>
+          <DialogDescription>Side-by-side comparison of all quotes received. Lowest price is highlighted.</DialogDescription>
+        </DialogHeader>
+
+        {loading ? (
+          <div className="py-10 text-center text-sm text-slate-500">Loading quotes…</div>
+        ) : bids.length === 0 ? (
+          <div className="py-10 text-center text-sm text-slate-500">No quotes to compare yet.</div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse text-sm">
+              <thead>
+                <tr className="border-b border-slate-200">
+                  <th className="px-3 py-2 sticky left-0 bg-white z-10 text-xs font-bold uppercase text-slate-400">Attribute</th>
+                  {bids.map((b, i) => (
+                    <th key={i} className="px-3 py-2 min-w-[150px] font-bold text-slate-700">
+                      {`${b.sellerId?.firstName || 'Seller'} ${b.sellerId?.lastName || ''}`.trim()}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {rows.map((r, ri) => (
+                  <tr key={ri} className="hover:bg-slate-50/50">
+                    <td className="px-3 py-2.5 sticky left-0 bg-white z-10 text-xs font-semibold text-slate-500 uppercase tracking-wide">{r.label}</td>
+                    {bids.map((b, i) => (
+                      <td key={i} className="px-3 py-2.5 text-slate-700">{r.render(b)}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 const RequirementOverview = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -205,6 +286,7 @@ const RequirementOverview = () => {
   const [isSoldProduct, setIsSoldProduct] = useState(false);
   const [openQuoteDetails, setOpenQuoteDetails] = useState(false);
   const [activeTab, setActiveTab] = useState('pending');
+  const [showCompare, setShowCompare] = useState(false);
 
   let intervalRef = useRef(null);
 
@@ -358,15 +440,28 @@ const RequirementOverview = () => {
       cell: ({ row }) => {
         return (
           <div className="flex  items-center gap-3">
-            <Button
-              className="text-xs sm:text-sm cursor-pointer text-orange-600  px-0"
-              variant="link"
-              onClick={() =>
-                handleChatNavigate(row.original.sellerId, row.original.bid_buy, row.original.avtar)
-              }
-            >
-              Chat Now
-            </Button>
+            {/* SB-009: once shortlisted/accepted, chat becomes the finalisation channel */}
+            {row.original.quoteStatus === 'shortlisted' || row.original.quoteStatus === 'accepted' ? (
+              <Button
+                size="sm"
+                className="text-xs sm:text-sm cursor-pointer bg-orange-600 hover:bg-orange-700 text-white"
+                onClick={() =>
+                  handleChatNavigate(row.original.sellerId, row.original.bid_buy, row.original.avtar)
+                }
+              >
+                Finalize in Chat
+              </Button>
+            ) : (
+              <Button
+                className="text-xs sm:text-sm cursor-pointer text-orange-600  px-0"
+                variant="link"
+                onClick={() =>
+                  handleChatNavigate(row.original.sellerId, row.original.bid_buy, row.original.avtar)
+                }
+              >
+                Chat
+              </Button>
+            )}
 
             <div
               onClick={async () => {
@@ -491,6 +586,11 @@ const RequirementOverview = () => {
         open={openQuoteDetails}
         onOpenChange={setOpenQuoteDetails}
         quoteDetails={getBidByProductIdAndSellerIdData}
+      />
+      <QuoteCompareDialog
+        open={showCompare}
+        onOpenChange={setShowCompare}
+        productId={currentProduct?.product?._id}
       />
       <div className="w-full max-w-7xl mx-auto space-y-4 px-3 sm:px-4 lg:px-6 py-4">
         {/* Breadcrumb */}
@@ -649,28 +749,37 @@ const RequirementOverview = () => {
 
         {/* Table */}
         <div className="bg-orange-50 p-2 sm:p-4 rounded-xl overflow-hidden mt-4">
-          <div className="flex gap-2 mb-4">
-            <Button 
-              variant={activeTab === 'pending' ? 'default' : 'outline'} 
+          <div className="flex flex-wrap gap-2 mb-4 items-center">
+            <Button
+              variant={activeTab === 'pending' ? 'default' : 'outline'}
               onClick={() => setActiveTab('pending')}
               className={activeTab === 'pending' ? 'bg-orange-600 hover:bg-orange-700 text-white' : ''}
             >
               New (Pending)
             </Button>
-            <Button 
-              variant={activeTab === 'shortlisted' ? 'default' : 'outline'} 
+            <Button
+              variant={activeTab === 'shortlisted' ? 'default' : 'outline'}
               onClick={() => setActiveTab('shortlisted')}
               className={activeTab === 'shortlisted' ? 'bg-orange-600 hover:bg-orange-700 text-white' : ''}
             >
               Shortlisted
             </Button>
-            <Button 
-              variant={activeTab === 'accepted' ? 'default' : 'outline'} 
+            <Button
+              variant={activeTab === 'accepted' ? 'default' : 'outline'}
               onClick={() => setActiveTab('accepted')}
               className={activeTab === 'accepted' ? 'bg-orange-600 hover:bg-orange-700 text-white' : ''}
             >
               Accepted
             </Button>
+            {bidData.length > 1 && (
+              <Button
+                variant="outline"
+                onClick={() => setShowCompare(true)}
+                className="ml-auto border-orange-300 text-orange-700 hover:bg-orange-100"
+              >
+                ⚖ Compare Quotes
+              </Button>
+            )}
           </div>
           <div className="overflow-x-auto">
             <TableListing
