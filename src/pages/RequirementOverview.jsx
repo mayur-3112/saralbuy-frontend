@@ -11,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { dateFormatter } from '@/utils/dateFormatter';
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
-import { Banknote, CalendarDays, Eye, MoveLeft } from 'lucide-react';
+import { Banknote, CalendarDays, Eye, MoveLeft, Truck, CreditCard, MapPin, Percent, Store, FileText, BadgeCheck } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import requirementService from '@/services/requirement.service';
@@ -53,63 +53,100 @@ const STATUS_STYLES = {
   pending: 'bg-slate-100 text-slate-600',
 };
 
-const InfoRow = ({ label, value, mono, cap }) => (
-  <div>
-    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{label}</p>
-    <p className={`text-sm font-semibold text-slate-800 break-words ${mono ? 'font-mono' : ''} ${cap ? 'capitalize' : ''}`}>
-      {value || '—'}
-    </p>
-  </div>
-);
+const TermCard = ({ icon: Icon, label, value, mono, cap, accent = 'slate' }) => {
+  const accents = {
+    slate: 'bg-slate-100 text-slate-500',
+    orange: 'bg-orange-100 text-orange-600',
+    emerald: 'bg-emerald-100 text-emerald-600',
+    blue: 'bg-blue-100 text-blue-600',
+    violet: 'bg-violet-100 text-violet-600',
+  };
+  return (
+    <div className="flex items-start gap-3 rounded-xl border border-slate-100 bg-white p-3 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+      <span className={`shrink-0 w-8 h-8 rounded-lg flex items-center justify-center ${accents[accent]}`}>
+        <Icon className="w-4 h-4" />
+      </span>
+      <div className="min-w-0">
+        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{label}</p>
+        <p className={`text-sm font-semibold text-slate-800 break-words leading-tight mt-0.5 ${mono ? 'font-mono' : ''} ${cap ? 'capitalize' : ''}`}>
+          {value || '—'}
+        </p>
+      </div>
+    </div>
+  );
+};
 
 const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails }) => {
   const q = quoteDetails || {};
   const docs = resolveDocuments(q.quoteDocument);
   const statusKey = (q.status || q.quoteStatus || '').toLowerCase();
+  const sellerName = q.sellerId
+    ? `${q.sellerId.firstName || ''} ${q.sellerId.lastName || ''}`.trim()
+    : q.businessDets?.company_name || '';
+  const initials = (sellerName || 'S').split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md p-0 overflow-hidden gap-0">
-        <DialogHeader className="p-5 pb-4 border-b border-slate-100">
-          <DialogTitle className="font-bold text-lg text-slate-900">Seller Quote Details</DialogTitle>
-          <DialogDescription>A read-only summary of this seller's quotation.</DialogDescription>
+      <DialogContent className="sm:max-w-md p-0 overflow-hidden gap-0 border-none">
+        {/* Header band with seller identity + amount */}
+        <DialogHeader className="p-0 space-y-0 text-left">
+          <div className="bg-gradient-to-br from-slate-900 to-slate-800 px-5 pt-5 pb-6">
+            <DialogTitle className="text-white/60 text-[11px] font-bold uppercase tracking-widest">Seller Quotation</DialogTitle>
+            <DialogDescription className="sr-only">A read-only summary of this seller's quotation.</DialogDescription>
+            <div className="flex items-center gap-3 mt-2">
+              <span className="w-11 h-11 rounded-full bg-orange-500 text-white font-black flex items-center justify-center text-sm shrink-0">
+                {initials}
+              </span>
+              <div className="min-w-0">
+                <p className="text-white font-bold text-lg leading-tight truncate">{sellerName || 'Seller'}</p>
+                {q.businessType === 'business' && (
+                  <span className="inline-flex items-center gap-1 text-emerald-300 text-xs font-semibold mt-0.5">
+                    <BadgeCheck className="w-3.5 h-3.5" /> Business
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+          {/* Amount card overlapping the band */}
+          <div className="px-5 -mt-4">
+            <div className="rounded-xl bg-white border border-slate-100 shadow-sm px-4 py-3 flex items-center justify-between">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Quoted Price</p>
+                <p className="text-2xl font-black text-orange-600 leading-tight">
+                  {q.budgetQuation ? currencyConvertor(q.budgetQuation) : '—'}
+                </p>
+              </div>
+              {statusKey && (
+                <span className={`text-xs font-bold px-3 py-1 rounded-full capitalize ${STATUS_STYLES[statusKey] || 'bg-slate-100 text-slate-600'}`}>
+                  {q.status || q.quoteStatus}
+                </span>
+              )}
+            </div>
+          </div>
         </DialogHeader>
 
-        <div className="max-h-[70vh] overflow-y-auto">
-          {/* Amount hero */}
-          <div className="bg-gradient-to-r from-orange-50 to-orange-100/40 px-5 py-4 flex items-center justify-between">
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-wider text-orange-400">Quoted Price</p>
-              <p className="text-2xl font-black text-orange-700">{q.budgetQuation ? currencyConvertor(q.budgetQuation) : '—'}</p>
-            </div>
-            {statusKey && (
-              <span className={`text-xs font-bold px-3 py-1 rounded-full capitalize ${STATUS_STYLES[statusKey] || 'bg-slate-100 text-slate-600'}`}>
-                {q.status || q.quoteStatus}
-              </span>
-            )}
-          </div>
-
-          {/* Terms */}
-          <div className="p-5 grid grid-cols-2 gap-x-4 gap-y-4">
-            <InfoRow label="Seller Type" value={separateName(q.sellerType)} cap />
-            <InfoRow label="Taxes" value={q.taxes ? `${q.taxes}% GST` : null} />
-            <InfoRow label="Payment Terms" value={separateName(q.paymentTerms)} cap />
-            <InfoRow label="Freight Terms" value={separateName(q.freightTerms)} cap />
-            <InfoRow label="Delivery" value={q.earliestDeliveryDate ? dateFormatter(q.earliestDeliveryDate) : null} />
-            <InfoRow label="Location" value={q.location} cap />
+        <div className="max-h-[62vh] overflow-y-auto p-5 space-y-4">
+          {/* Term cards */}
+          <div className="grid grid-cols-2 gap-3">
+            <TermCard icon={Store} label="Seller Type" value={separateName(q.sellerType)} cap accent="violet" />
+            <TermCard icon={Percent} label="Taxes" value={q.taxes ? `${q.taxes}% GST` : null} accent="orange" />
+            <TermCard icon={CreditCard} label="Payment" value={separateName(q.paymentTerms)} cap accent="emerald" />
+            <TermCard icon={Truck} label="Freight" value={separateName(q.freightTerms)} cap accent="blue" />
+            <TermCard icon={CalendarDays} label="Delivery" value={q.earliestDeliveryDate ? dateFormatter(q.earliestDeliveryDate) : null} accent="orange" />
+            <TermCard icon={MapPin} label="Location" value={q.location} cap accent="slate" />
           </div>
 
           {/* Business */}
-          {q.businessType === 'business' && (
-            <div className="px-5 pb-5 grid grid-cols-2 gap-x-4 gap-y-4 border-t border-slate-100 pt-4">
-              <InfoRow label="Company Name" value={q.businessDets?.company_name} cap />
-              <InfoRow label="GST Number" value={q.businessDets?.gst_num} mono />
+          {q.businessType === 'business' && (q.businessDets?.company_name || q.businessDets?.gst_num) && (
+            <div className="grid grid-cols-2 gap-3">
+              <TermCard icon={Store} label="Company" value={q.businessDets?.company_name} cap accent="slate" />
+              <TermCard icon={BadgeCheck} label="GST Number" value={q.businessDets?.gst_num} mono accent="emerald" />
             </div>
           )}
 
           {/* Documents */}
           {docs.length > 0 && (
-            <div className="px-5 pb-4 border-t border-slate-100 pt-4">
+            <div>
               <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Quotation Document</p>
               <div className="flex flex-wrap gap-2">
                 {docs.map((url, i) => (
@@ -118,9 +155,9 @@ const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails }) => {
                     href={url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 border border-orange-200 text-orange-700 text-xs font-medium rounded-lg hover:bg-orange-100 transition-colors"
+                    className="inline-flex items-center gap-1.5 px-3 py-2 bg-orange-50 border border-orange-200 text-orange-700 text-xs font-semibold rounded-lg hover:bg-orange-100 transition-colors"
                   >
-                    📄 Document {i + 1}
+                    <FileText className="w-3.5 h-3.5" /> Document {i + 1}
                   </a>
                 ))}
               </div>
@@ -129,7 +166,7 @@ const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails }) => {
 
           {/* Note */}
           {q.buyerNote && q.buyerNote.trim() && q.buyerNote.trim() !== '-' && (
-            <div className="px-5 pb-5 border-t border-slate-100 pt-4">
+            <div>
               <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Seller's Note</p>
               <p className="text-sm text-slate-600 bg-slate-50 rounded-lg p-3 border border-slate-100 whitespace-pre-line">
                 {q.buyerNote}
