@@ -6,6 +6,7 @@ import { store } from './redux/store';
 import { Toaster } from 'sonner';
 import { TooltipProvider } from './components/ui/tooltip';
 import SocketProvider from './context/SocketProvider';
+import ErrorBoundary from './components/custom/ErrorBoundary';
 
 // Globally prevent mouse wheel from changing values on focused numeric inputs
 document.addEventListener('wheel', function(e) {
@@ -38,12 +39,14 @@ window.addEventListener('error', e => {
 });
 
 createRoot(document.getElementById('root')).render(
-  <Provider store={store}>
-    <SocketProvider>
-      <Toaster richColors />
-      <TooltipProvider>
-        <App />
-      </TooltipProvider>
-    </SocketProvider>
-  </Provider>
+  <ErrorBoundary>
+    <Provider store={store}>
+      <SocketProvider>
+        <Toaster richColors />
+        <TooltipProvider>
+          <App />
+        </TooltipProvider>
+      </SocketProvider>
+    </Provider>
+  </ErrorBoundary>
 );
