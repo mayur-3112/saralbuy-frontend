@@ -14,6 +14,29 @@ document.addEventListener('wheel', function(e) {
   }
 }, { passive: true });
 
+// After a new deploy, old lazy-loaded chunk hashes 404 for users who still have
+// the previous build open ("Failed to fetch dynamically imported module").
+// Auto-reload once to pull the fresh assets instead of showing a crash screen.
+const RELOAD_FLAG = 'chunk-reload-ts';
+function handleChunkError() {
+  const last = Number(sessionStorage.getItem(RELOAD_FLAG) || 0);
+  // Guard against reload loops: only reload if we haven't in the last 10s.
+  if (Date.now() - last > 10000) {
+    sessionStorage.setItem(RELOAD_FLAG, String(Date.now()));
+    window.location.reload();
+  }
+}
+window.addEventListener('vite:preloadError', e => {
+  e.preventDefault();
+  handleChunkError();
+});
+window.addEventListener('error', e => {
+  const msg = e?.message || '';
+  if (/dynamically imported module|Importing a module script failed|error loading dynamically imported/i.test(msg)) {
+    handleChunkError();
+  }
+});
+
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>
     <SocketProvider>
