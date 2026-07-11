@@ -337,6 +337,7 @@ const ChatArea = ({
   showApprovalPopup,
   setShowApprovalPopup,
   approvalLoading,
+  pendingDealTerms,
   onSendMessage,
   onCloseDeal,
   onSubmitRating,
@@ -492,9 +493,9 @@ const ChatArea = ({
     });
   };
 
-  const handleBudgetConfirm = amount => {
+  const handleBudgetConfirm = (amount, agreedTerms) => {
     setShowBudgetDialog(false);
-    onCloseDeal?.(amount);
+    onCloseDeal?.(amount, agreedTerms);
   };
 
   // ── Date separator helper ──────────────────
@@ -1055,6 +1056,7 @@ const ChatArea = ({
         partnerName={selectedContact?.name || 'Buyer'}
         onAction={onDealApproval}
         loading={approvalLoading}
+        terms={pendingDealTerms}
       />
     </>
   );
@@ -1118,6 +1120,7 @@ const Chatbot = () => {
   const [approvalLoading, setApprovalLoading] = useState(false);
   const [pendingDealId, setPendingDealId] = useState(null);
   const [pendingDealAmount, setPendingDealAmount] = useState(0);
+  const [pendingDealTerms, setPendingDealTerms] = useState(null);
   const [dealSellerRating, setDealSellerRating] = useState(0);
   const [showQuotePanel, setShowQuotePanel] = useState(false);
   const [quoteDetails, setQuoteDetails] = useState(null);
@@ -1202,11 +1205,12 @@ const Chatbot = () => {
   useEffect(() => {
     if (!socket) return;
 
-    const handlePendingDeal = ({ dealId, amount, roomId: dealRoomId }) => {
+    const handlePendingDeal = ({ dealId, amount, roomId: dealRoomId, agreedTerms }) => {
       // Only show popup if this deal belongs to the active chat room
       // OR store it so it shows when seller opens that room
       setPendingDealId(dealId);
       setPendingDealAmount(amount);
+      setPendingDealTerms(agreedTerms || null);
       setClosedDealId(dealId);
       setFinalBudget(amount);
       setWaitingSellerApproval(true);
@@ -1416,7 +1420,7 @@ const Chatbot = () => {
     });
   };
 
-  const handleCloseDeal = amount => {
+  const handleCloseDeal = (amount, agreedTerms) => {
     if (!selectedContact) return;
     setIsClosingDeal(true);
     // trigger the socket of seller Approval
@@ -1426,6 +1430,7 @@ const Chatbot = () => {
       sellerId: selectedContact.sellerId,
       productId: selectedContact.productId,
       amount,
+      agreedTerms: agreedTerms || {},
     });
   };
   const handleSubmitRating = (chatId, rating) => {
@@ -1525,6 +1530,7 @@ const Chatbot = () => {
                     showApprovalPopup={showApprovalPopup}
                     setShowApprovalPopup={setShowApprovalPopup}
                     approvalLoading={approvalLoading}
+                    pendingDealTerms={pendingDealTerms}
                     onSendMessage={handleSendMessage}
                     onCloseDeal={handleCloseDeal}
                     onSubmitRating={handleSubmitRating}

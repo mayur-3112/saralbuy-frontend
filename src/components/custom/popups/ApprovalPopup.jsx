@@ -2,8 +2,18 @@ import React from 'react';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '../../ui/dialog';
 import { Button } from '../../ui/button';
 
-const ApprovalPopup = ({ open, setOpen, dealId, budget, partnerName, onAction, loading }) => {
+const TERM_LABELS = {
+  paymentTerms: 'Payment',
+  freightTerms: 'Freight',
+};
+const prettify = v => String(v || '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+const ApprovalPopup = ({ open, setOpen, dealId, budget, partnerName, onAction, loading, terms }) => {
   const [agreed, setAgreed] = React.useState(false);
+
+  const hasTerms =
+    terms &&
+    (terms.quantity || terms.deliveryDate || terms.paymentTerms || terms.freightTerms || terms.notes);
 
   const handleAction = action => {
     if (action === 'accept' && !agreed) {
@@ -31,6 +41,25 @@ const ApprovalPopup = ({ open, setOpen, dealId, budget, partnerName, onAction, l
               <span className="font-semibold">{partnerName}</span> has requested to close the deal
               at <span className="font-bold text-orange-600">₹{budget}</span>.
             </DialogDescription>
+            {hasTerms && (
+              <div className="mt-2 rounded-lg border border-orange-100 bg-orange-50/40 p-3 text-left text-sm space-y-1">
+                <p className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Agreed Terms</p>
+                {terms.quantity ? (
+                  <div className="flex justify-between"><span className="text-slate-500">Quantity</span><span className="font-semibold text-slate-700">{terms.quantity}</span></div>
+                ) : null}
+                {terms.deliveryDate ? (
+                  <div className="flex justify-between"><span className="text-slate-500">Delivery</span><span className="font-semibold text-slate-700">{new Date(terms.deliveryDate).toLocaleDateString('en-IN')}</span></div>
+                ) : null}
+                {['paymentTerms', 'freightTerms'].map(k =>
+                  terms[k] ? (
+                    <div key={k} className="flex justify-between"><span className="text-slate-500">{TERM_LABELS[k]}</span><span className="font-semibold text-slate-700">{prettify(terms[k])}</span></div>
+                  ) : null
+                )}
+                {terms.notes ? (
+                  <div className="pt-1 text-slate-600"><span className="text-slate-500">Notes: </span>{terms.notes}</div>
+                ) : null}
+              </div>
+            )}
             <DialogDescription className="text-sm text-gray-500 text-center">
               Do you want to complete this deal or reject the request?
             </DialogDescription>
