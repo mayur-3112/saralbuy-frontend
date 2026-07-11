@@ -45,142 +45,99 @@ const separateName = name => {
   return parts.map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ');
 };
 
+const STATUS_STYLES = {
+  active: 'bg-green-100 text-green-700',
+  accepted: 'bg-green-100 text-green-700',
+  shortlisted: 'bg-orange-100 text-orange-700',
+  rejected: 'bg-red-100 text-red-700',
+  pending: 'bg-slate-100 text-slate-600',
+};
+
+const InfoRow = ({ label, value, mono, cap }) => (
+  <div>
+    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{label}</p>
+    <p className={`text-sm font-semibold text-slate-800 break-words ${mono ? 'font-mono' : ''} ${cap ? 'capitalize' : ''}`}>
+      {value || '—'}
+    </p>
+  </div>
+);
+
 const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails }) => {
+  const q = quoteDetails || {};
+  const docs = resolveDocuments(q.quoteDocument);
+  const statusKey = (q.status || q.quoteStatus || '').toLowerCase();
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <form>
-        <DialogContent className="sm:max-w-sm">
-          <DialogHeader>
-            <DialogTitle className={'font-semibold'}>Seller Quote Details</DialogTitle>
-            <DialogDescription>View the details of the seller's quote here.</DialogDescription>
-          </DialogHeader>
+      <DialogContent className="sm:max-w-md p-0 overflow-hidden gap-0">
+        <DialogHeader className="p-5 pb-4 border-b border-slate-100">
+          <DialogTitle className="font-bold text-lg text-slate-900">Seller Quote Details</DialogTitle>
+          <DialogDescription>A read-only summary of this seller's quotation.</DialogDescription>
+        </DialogHeader>
 
-          <FieldGroup className="grid grid-cols-1 sm:grid-cols-2  gap-2">
-            <Field>
-              <Label>Budget</Label>
-              <Input value={quoteDetails?.budgetQuation || '-'} readOnly />
-            </Field>
-
-            <Field>
-              <Label>Seller Type</Label>
-              <Input
-                value={separateName(quoteDetails?.sellerType) || '-'}
-                readOnly
-                className="capitalize"
-              />
-            </Field>
-
-            <Field>
-              <Label>Price Basis</Label>
-              <Input
-                value={separateName(quoteDetails?.priceBasis) || '-'}
-                readOnly
-                className="capitalize"
-              />
-            </Field>
-
-            <Field>
-              <Label>Taxes</Label>
-              <Input
-                value={separateName(quoteDetails?.taxes) || '-'}
-                readOnly
-                className="capitalize"
-              />
-            </Field>
-
-            <Field>
-              <Label>Location</Label>
-              <Input value={quoteDetails?.location || '-'} readOnly className="capitalize" />
-            </Field>
-
-            <Field>
-              <Label>Status</Label>
-              <Input value={quoteDetails?.status || '-'} className="capitalize" readOnly />
-            </Field>
-
-            <Field>
-              <Label>Freight Terms</Label>
-              <Input
-                value={separateName(quoteDetails?.freightTerms) || '-'}
-                readOnly
-                className="capitalize"
-              />
-            </Field>
-
-            <Field>
-              <Label>Payment Terms</Label>
-              <Input
-                value={separateName(quoteDetails?.paymentTerms) || '-'}
-                readOnly
-                className="capitalize"
-              />
-            </Field>
-
-            {/* Company Fields */}
-            {quoteDetails?.businessType === 'business' && (
-              <>
-                <Field>
-                  <Label>Company Name</Label>
-                  <Input
-                    value={quoteDetails?.businessDets?.company_name || '-'}
-                    readOnly
-                    className="capitalize"
-                  />
-                </Field>
-
-                <Field>
-                  <Label>GST Number</Label>
-                  <Input
-                    value={quoteDetails?.businessDets?.gst_num || '-'}
-                    readOnly
-                    className="capitalize"
-                  />
-                </Field>
-              </>
+        <div className="max-h-[70vh] overflow-y-auto">
+          {/* Amount hero */}
+          <div className="bg-gradient-to-r from-orange-50 to-orange-100/40 px-5 py-4 flex items-center justify-between">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-orange-400">Quoted Price</p>
+              <p className="text-2xl font-black text-orange-700">{q.budgetQuation ? currencyConvertor(q.budgetQuation) : '—'}</p>
+            </div>
+            {statusKey && (
+              <span className={`text-xs font-bold px-3 py-1 rounded-full capitalize ${STATUS_STYLES[statusKey] || 'bg-slate-100 text-slate-600'}`}>
+                {q.status || q.quoteStatus}
+              </span>
             )}
+          </div>
 
-            {/* Description Bottom Full Width */}
-            <Field className="col-span-2">
-              <Label>Description</Label>
+          {/* Terms */}
+          <div className="p-5 grid grid-cols-2 gap-x-4 gap-y-4">
+            <InfoRow label="Seller Type" value={separateName(q.sellerType)} cap />
+            <InfoRow label="Taxes" value={q.taxes ? `${q.taxes}% GST` : null} />
+            <InfoRow label="Payment Terms" value={separateName(q.paymentTerms)} cap />
+            <InfoRow label="Freight Terms" value={separateName(q.freightTerms)} cap />
+            <InfoRow label="Delivery" value={q.earliestDeliveryDate ? dateFormatter(q.earliestDeliveryDate) : null} />
+            <InfoRow label="Location" value={q.location} cap />
+          </div>
 
-              <textarea
-                value={quoteDetails?.buyerNote || '-'}
-                readOnly
-                rows={4}
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm resize-none"
-              />
-            </Field>
+          {/* Business */}
+          {q.businessType === 'business' && (
+            <div className="px-5 pb-5 grid grid-cols-2 gap-x-4 gap-y-4 border-t border-slate-100 pt-4">
+              <InfoRow label="Company Name" value={q.businessDets?.company_name} cap />
+              <InfoRow label="GST Number" value={q.businessDets?.gst_num} mono />
+            </div>
+          )}
 
-            {/* Seller-uploaded quotation document(s) */}
-            {resolveDocuments(quoteDetails?.quoteDocument).length > 0 && (
-              <Field className="col-span-2">
-                <Label>Quotation Document</Label>
-                <div className="flex flex-wrap gap-2">
-                  {resolveDocuments(quoteDetails?.quoteDocument).map((url, i) => (
-                    <a
-                      key={i}
-                      href={url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 border border-orange-200 text-orange-700 text-xs font-medium rounded-lg hover:bg-orange-100 transition-colors"
-                    >
-                      📄 Document {i + 1}
-                    </a>
-                  ))}
-                </div>
-              </Field>
-            )}
-          </FieldGroup>
+          {/* Documents */}
+          {docs.length > 0 && (
+            <div className="px-5 pb-4 border-t border-slate-100 pt-4">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Quotation Document</p>
+              <div className="flex flex-wrap gap-2">
+                {docs.map((url, i) => (
+                  <a
+                    key={i}
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 border border-orange-200 text-orange-700 text-xs font-medium rounded-lg hover:bg-orange-100 transition-colors"
+                  >
+                    📄 Document {i + 1}
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
 
-          {/* <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
-
-            <Button type="submit">Save changes</Button>
-          </DialogFooter> */}
-        </DialogContent>
-      </form>
+          {/* Note */}
+          {q.buyerNote && q.buyerNote.trim() && q.buyerNote.trim() !== '-' && (
+            <div className="px-5 pb-5 border-t border-slate-100 pt-4">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Seller's Note</p>
+              <p className="text-sm text-slate-600 bg-slate-50 rounded-lg p-3 border border-slate-100 whitespace-pre-line">
+                {q.buyerNote}
+              </p>
+            </div>
+          )}
+        </div>
+      </DialogContent>
     </Dialog>
   );
 };
