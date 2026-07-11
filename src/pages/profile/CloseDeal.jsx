@@ -376,49 +376,46 @@ const CloseDeal = () => {
 
   useEffect(() => {
     if (completedApproveData?.data) {
-      if (completedApproveData.data.length > 0) {
-        const formattedData = completedApproveData.data.map(item => ({
-          _id: item._id,
-          productId: item?.product?._id,
-          avatar: item?.product?.image,
-          date: dateFormatter(item?.createdAt),
-          finalized_with: mergeName(item?.buyer),
-          requirement: item?.product?.title,
-          your_budget: item?.product?.minimumBudget,
-          final_budget: currencyConvertor(item?.amount),
-          dealStatus:
-            item?.closedDealStatus === 'waiting_seller_approval' ||
-            item?.closedDealStatus === 'pending'
-              ? 'Waiting for seller approval'
-              : item?.closedDealStatus === 'rejected'
-                ? 'Rejected'
-                : 'Deal Closed',
-        }));
-        setCompleteRequirements(formattedData);
-      }
+      // Always reflect the latest result — including an empty list — so stale
+      // rows don't linger after switching tabs or when there are no deals.
+      const formattedData = (completedApproveData.data || []).map(item => ({
+        _id: item._id,
+        productId: item?.product?._id,
+        avatar: item?.product?.image,
+        date: dateFormatter(item?.createdAt),
+        finalized_with: mergeName(item?.buyer),
+        requirement: item?.product?.title,
+        your_budget: item?.product?.minimumBudget,
+        final_budget: currencyConvertor(item?.amount),
+        dealStatus:
+          item?.closedDealStatus === 'waiting_seller_approval' ||
+          item?.closedDealStatus === 'pending'
+            ? 'Waiting for seller approval'
+            : item?.closedDealStatus === 'rejected'
+              ? 'Rejected'
+              : 'Deal Closed',
+      }));
+      setCompleteRequirements(formattedData);
     }
     if (pendingApprovedData?.data) {
-      if (pendingApprovedData.data.length > 0) {
-        const formattedData = pendingApprovedData.data.map(item => ({
-          _id: item._id,
-          productId: item?.product?._id,
-          avatar: item?.product?.image,
-
-          date: dateFormatter(item?.closedAt),
-          product: item?.product?.title,
-          min_budget: item?.minBudget,
-          final_price: currencyConvertor(item?.amount),
-          seller: mergeName(item.seller),
-          dealStatus:
-            item?.closedDealStatus === 'waiting_seller_approval' ||
-            item?.closedDealStatus === 'pending'
-              ? 'Waiting for seller approval'
-              : item?.closedDealStatus === 'rejected'
-                ? 'Rejected'
-                : 'Deal Closed',
-        }));
-        setApprovedRequirements(formattedData);
-      }
+      const formattedData = (pendingApprovedData.data || []).map(item => ({
+        _id: item._id,
+        productId: item?.product?._id,
+        avatar: item?.product?.image,
+        date: dateFormatter(item?.closedAt),
+        product: item?.product?.title,
+        min_budget: item?.minBudget,
+        final_price: currencyConvertor(item?.amount),
+        seller: mergeName(item.seller),
+        dealStatus:
+          item?.closedDealStatus === 'waiting_seller_approval' ||
+          item?.closedDealStatus === 'pending'
+            ? 'Waiting for seller approval'
+            : item?.closedDealStatus === 'rejected'
+              ? 'Rejected'
+              : 'Deal Closed',
+      }));
+      setApprovedRequirements(formattedData);
     }
   }, [pendingApprovedData, completedApproveData]);
 
