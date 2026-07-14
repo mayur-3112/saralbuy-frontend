@@ -668,12 +668,12 @@ const RequirementOverview = () => {
         return;
       }
 
-      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const totalHours = Math.floor(diff / (1000 * 60 * 60));
+      const days = Math.floor(totalHours / 24);
+      const hours = totalHours % 24;
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
 
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-      setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
+      setTimeLeft(days > 0 ? `${days}d ${hours}h left` : `${hours}h ${minutes}m left`);
     };
 
     if (!isSoldProduct) {
@@ -788,64 +788,73 @@ const RequirementOverview = () => {
         {iterateData.map((item, idx) => (
           <div
             key={idx}
-            className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 bg-white rounded-xl border p-3 sm:p-4"
+            className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5"
           >
-            {/* Image */}
-            <div className="lg:col-span-4">
-              <div className="relative bg-gray-100 flex justify-center items-center rounded-lg p-4 h-52 sm:h-64 lg:h-56 overflow-hidden">
-                <img
-                  src={item.image || '/no-image.webp'}
-                  alt={item.title || 'Product'}
-                  onError={e => { e.currentTarget.onerror = null; e.currentTarget.src = '/no-image.webp'; }}
-                  className="object-contain h-full w-full rounded-lg mix-blend-darken"
-                />
-
+            {/* Image / RFQ panel */}
+            <div className="lg:col-span-3">
+              <div className="relative flex flex-col justify-center items-center rounded-xl h-44 lg:h-full min-h-[160px] overflow-hidden border border-orange-100 bg-gradient-to-br from-orange-50 to-orange-100/40">
+                {item.image ? (
+                  <img
+                    src={item.image}
+                    alt={item.title || 'Product'}
+                    onError={e => { e.currentTarget.style.display = 'none'; }}
+                    className="object-contain h-full w-full rounded-lg mix-blend-darken"
+                  />
+                ) : (
+                  <>
+                    <FileText className="w-10 h-10 text-orange-400" />
+                    <span className="text-[11px] font-bold text-orange-500 mt-2 uppercase tracking-widest">
+                      {item.document ? 'Document RFQ' : 'RFQ'}
+                    </span>
+                  </>
+                )}
                 {isSoldProduct && (
                   <img
                     src="/sold.png"
                     alt="Sold"
-                    className="absolute top-0 right-0 w-20 sm:w-24 lg:w-28"
+                    className="absolute top-0 right-0 w-20 sm:w-24"
                   />
                 )}
               </div>
             </div>
 
-            <div className="lg:col-span-8 space-y-3">
+            <div className="lg:col-span-9 space-y-3">
               {/* Top section */}
-              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-                <h2 className="text-xs sm:text-sm font-medium text-gray-600">
-                  Date: {dateFormatter(item.createdAt) || 'N/A'}
+              <div className="flex items-start justify-between gap-3">
+                <h2 className="text-xs sm:text-sm font-medium text-slate-400">
+                  Posted {dateFormatter(item.createdAt) || 'N/A'}
                 </h2>
 
-                <div className="self-start sm:self-auto">
+                <div className="self-start shrink-0">
                   {loading || !timeLeft ? (
-                    <Skeleton className="h-8 w-24 rounded-full" />
-                  ) : isSoldProduct ? (
-                    ''
-                  ) : (
-                    <Button
-                      variant="ghost"
-                      className="border rounded-full hover:bg-orange-700 hover:text-white text-xs sm:text-sm bg-orange-700 text-white"
+                    <Skeleton className="h-7 w-24 rounded-full" />
+                  ) : isSoldProduct ? null : (
+                    <span
+                      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold ${
+                        timeLeft === 'Expired' ? 'bg-slate-200 text-slate-500' : 'bg-orange-600 text-white'
+                      }`}
                     >
-                      {timeLeft !== 'Expired' ? timeLeft : 'Expired'}
-                    </Button>
+                      {timeLeft !== 'Expired' && <CalendarDays className="w-3.5 h-3.5" />}
+                      {timeLeft}
+                    </span>
                   )}
                 </div>
               </div>
 
-              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold capitalize break-words">
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 capitalize break-words tracking-tight">
                 {item.title || item.itemName || item.subCategoryName || `Item ${idx + 1}`}
               </h2>
 
               <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-5 text-sm text-gray-600">
-                <div className="flex items-center gap-2 sm:pr-4 sm:border-r-2 py-1">
-                  <div className="flex gap-1 items-center">
-                    <Banknote className="w-4 h-4 sm:w-5 sm:h-5" />
-                    <span className="capitalize">Quantity:</span>
+                {item.quantity && (
+                  <div className="flex items-center gap-2 sm:pr-4 sm:border-r-2 py-1">
+                    <div className="flex gap-1 items-center">
+                      <Banknote className="w-4 h-4 sm:w-5 sm:h-5" />
+                      <span className="capitalize">Quantity:</span>
+                    </div>
+                    <span className="font-semibold">{item.quantity}</span>
                   </div>
-
-                  <span className="font-semibold">{item.quantity || 'N/A'}</span>
-                </div>
+                )}
 
                 <div className="flex items-center gap-2 sm:pr-4 sm:border-r-2 py-1">
                   <div className="flex gap-1 items-center">
