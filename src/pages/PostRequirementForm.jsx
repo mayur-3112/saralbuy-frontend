@@ -191,7 +191,7 @@ const PostRequirementForm = () => {
 
       if (res.data.statusCode === 200 || res.data.statusCode === 201) {
         toast.success('Requirement posted successfully!');
-        navigate('/');
+        navigate('/account/requirements');
       } else {
         toast.error(res.data.message || 'Failed to post requirement.');
       }

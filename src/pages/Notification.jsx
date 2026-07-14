@@ -1,5 +1,6 @@
 // Notification.tsx - Complete with infinite scroll (FIXED)
 import { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ListFilter, Trash2, Handshake } from 'lucide-react';
 import AlertPopup from '@/components/custom/popups/AlertPopup';
@@ -12,6 +13,7 @@ import { NotificationSkeleton } from '@/const/CustomSkeletons';
 const PAGE_SIZE = 10;
 
 const Notification = () => {
+  const navigate = useNavigate();
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -103,7 +105,17 @@ const Notification = () => {
   };
 
   const handleView = notification => {
-    console.log('View notification:', notification);
+    const { type, metadata, productId, roomId } = notification;
+    const pid = productId?._id || productId || metadata?.productId;
+    // Deal/chat notifications → chat; quote notifications → the RFQ action page.
+    if (roomId || ['deal_request', 'deal_accepted', 'deal_rejected', 'chat_rating'].includes(type)) {
+      navigate('/chat');
+      return;
+    }
+    if (pid) {
+      navigate('/account/requirements-overview/' + pid);
+      return;
+    }
   };
 
   const getNotificationIcon = (type, title) => {
