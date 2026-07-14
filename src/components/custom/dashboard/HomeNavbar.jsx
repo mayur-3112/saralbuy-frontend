@@ -58,6 +58,7 @@ import { useChatState, useDispatchChat } from '@/redux/hooks/useChat';
 import userService from '@/services/user.service';
 import requirementService from '@/services/requirement.service';
 import { getNotifMeta } from '@/helper/notif.icons';
+import { ensureNotifyPermission, showBrowserNotification } from '@/utils/browserNotify';
 import { toast } from 'sonner';
 
 const menu = [
@@ -509,6 +510,9 @@ const HomeNavbar = () => {
       socket.emit(SOCKET_EVENTS.GET_USER_CHATS);
     };
 
+    // Ask for desktop-notification permission once the user is signed in.
+    ensureNotifyPermission();
+
     // ✅ off before on — every single one
     socket.off(SOCKET_EVENTS.USER_CHATS);
     socket.on(SOCKET_EVENTS.USER_CHATS, chats => {
@@ -533,11 +537,22 @@ const HomeNavbar = () => {
 
     socket.off(SOCKET_EVENTS.NOTIFICATION_NEW);
     socket.on(SOCKET_EVENTS.NOTIFICATION_NEW, notif => {
-      // Trigger a toast alert
+      // In-app toast
       toast.success(notif.title || 'New Notification', {
         description: notif.description || 'You have a new update.',
         duration: 5000,
       });
+      // Desktop/system notification — shows on screen even if the tab is in the
+      // background (e.g. buyer gets pinged the instant a supplier quotes).
+      showBrowserNotification(
+        notif.title || 'SaralBuy',
+        { body: notif.description || '', tag: notif._id },
+        () => {
+          if (notif.roomId) navigate('/chat');
+          else if (notif.metadata?.productId) navigate('/account/requirements');
+          else navigate('/account/notification');
+        }
+      );
       setNotifications(prev => {
         if (prev.some(n => n._id === notif._id)) return prev;
         return [notif, ...prev];
@@ -821,6 +836,7 @@ const HomeNavbar = () => {
               <Popover
                 open={showNotificationDropdown}
                 onOpenChange={open => {
+                  if (open) ensureNotifyPermission(); // user gesture — needed for Safari
                   setShowNotificationDropdown(open);
                   if (!open && notifications.some(n => !n.seen)) {
                     socket.emit(SOCKET_EVENTS.NOTIFICATION_MARK_ALL_READ);
