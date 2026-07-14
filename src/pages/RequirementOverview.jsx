@@ -614,12 +614,21 @@ const RequirementOverview = () => {
   ];
 
   useEffect(() => {
-    if (!requirementData?.createdAt || !requirementData?.product?.bidActiveDuration) return;
+    const product = requirementData?.product;
+    if (!requirementData?.createdAt || !product) return;
 
-    const createdAt = new Date(requirementData.createdAt).getTime();
-    const durationDays = Number(requirementData.product.bidActiveDuration);
-
-    const expiryTime = createdAt + durationDays * 24 * 60 * 60 * 1000;
+    // Prefer the explicit "Bid Valid Until" date the buyer set; only fall back
+    // to createdAt + bidActiveDuration (days) when no real date exists. Using
+    // the day-count alone wrongly expired RFQs that had a later validity date.
+    let expiryTime;
+    const expiryDateStr = product.bidExpiryDate;
+    if (expiryDateStr && isNaN(Number(expiryDateStr))) {
+      expiryTime = new Date(expiryDateStr).getTime();
+    } else {
+      const durationDays = Number(product.bidActiveDuration) || 1;
+      expiryTime = new Date(requirementData.createdAt).getTime() + durationDays * 24 * 60 * 60 * 1000;
+    }
+    if (!expiryTime || isNaN(expiryTime)) return;
 
     const updateTimer = () => {
       const now = Date.now();
