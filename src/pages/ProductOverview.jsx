@@ -1206,37 +1206,6 @@ const ProductOverview = () => {
                   )}
                 </div>
 
-                {isMe && bidStats && bidStats.totalBids > 0 && (
-                  <div className="bg-orange-50/80 border border-orange-200 rounded-lg p-4 mt-4 grid grid-cols-3 gap-2 text-center max-w-lg">
-                    <div>
-                      <span className="block text-xs text-gray-500 uppercase font-semibold">Lowest Quote</span>
-                      <span className="text-lg font-bold text-green-600">₹{bidStats.lowestQuote}</span>
-                    </div>
-                    <div className="border-x border-gray-200">
-                      <span className="block text-xs text-gray-500 uppercase font-semibold">Average Quote</span>
-                      <span className="text-lg font-bold text-orange-600">₹{bidStats.averageQuote}</span>
-                    </div>
-                    <div>
-                      <span className="block text-xs text-gray-500 uppercase font-semibold">Highest Quote</span>
-                      <span className="text-lg font-bold text-red-600">₹{bidStats.highestQuote}</span>
-                    </div>
-                    
-                    {/* Buyer Trust Signal */}
-                    <div className="mt-3 flex items-center gap-3">
-                      <div className="flex items-center gap-1 text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md border border-emerald-100">
-                        <ShieldCheck className="w-3.5 h-3.5" />
-                        Phone Verified
-                      </div>
-                      <div className="flex items-center gap-1 text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md border border-emerald-100">
-                        <ShieldCheck className="w-3.5 h-3.5" />
-                        GST Verified
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-
-
                 {soldProduct && dealSellerRating > 0 && (
                   <div className="flex items-center gap-0.5">
                     {[1, 2, 3, 4, 5].map(star => (
@@ -1602,9 +1571,11 @@ const ProductOverview = () => {
               </div>
               {/* Bottom Section: Quotation Form */}
               {/* Bottom Sticky Action Bar + Drawer for Quotation Form */}
-              <div className="pb-24"></div> {/* padding to ensure content isn't hidden by sticky bar */}
+              {/* Spacer so content clears the sticky bar AND the mobile bottom nav */}
+              <div className="pb-40 sm:pb-24"></div>
               <Sheet>
-                <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4 shadow-[0_-4px_20px_rgb(0,0,0,0.05)] flex justify-between items-center z-50 md:px-10 lg:px-20">
+                {/* On mobile the CTA sits ABOVE the bottom nav (bottom-16); flush on desktop */}
+                <div className="fixed bottom-16 sm:bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4 shadow-[0_-4px_20px_rgb(0,0,0,0.05)] flex justify-between items-center z-40 md:px-10 lg:px-20">
                   <div className="hidden sm:block">
                     <h3 className="font-bold text-slate-800 text-lg">Ready to place a quote?</h3>
                     <p className="text-sm text-slate-500">Provide your best price and win this requirement.</p>

@@ -211,10 +211,14 @@ const BidOverview = () => {
     };
   }, [bidRes?.createdAt, bidRes?.product?.bidActiveDuration]);
 
-  const Info = ({ label, value }) => (
-    <div className="flex gap-2">
-      <span className="text-gray-900 w-24 ">{label} :</span>
-      <span className="text-gray-600 font-medium truncate capitalize">{value || '—'}</span>
+  const Info = ({ label, value, mono, noCap }) => (
+    <div className="flex flex-col sm:flex-row sm:gap-2">
+      <span className="text-gray-900 sm:w-24 shrink-0">{label} :</span>
+      <span
+        className={`text-gray-600 font-medium break-words min-w-0 ${mono ? 'font-mono uppercase tracking-tight' : ''} ${noCap || mono ? '' : 'capitalize'}`}
+      >
+        {value || '—'}
+      </span>
     </div>
   );
 
@@ -468,7 +472,7 @@ const BidOverview = () => {
                         />
                       )}
                       {bidRes?.product?.paymentAndDelivery?.gstNumber && (
-                        <Info label="GST" value={bidRes?.product?.paymentAndDelivery?.gstNumber} />
+                        <Info label="GST" value={bidRes?.product?.paymentAndDelivery?.gstNumber} mono />
                       )}
                       {bidRes?.product?.paymentAndDelivery?.organizationAddress && (
                         <Info

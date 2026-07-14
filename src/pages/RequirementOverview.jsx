@@ -100,11 +100,16 @@ const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails }) => {
               </span>
               <div className="min-w-0">
                 <p className="text-white font-bold text-lg leading-tight truncate">{sellerName || 'Seller'}</p>
-                {q.businessType === 'business' && (
-                  <span className="inline-flex items-center gap-1 text-emerald-300 text-xs font-semibold mt-0.5">
-                    <BadgeCheck className="w-3.5 h-3.5" /> Business
-                  </span>
-                )}
+                <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                  {q.businessType === 'business' && (
+                    <span className="inline-flex items-center gap-1 text-emerald-300 text-xs font-semibold">
+                      <BadgeCheck className="w-3.5 h-3.5" /> Business
+                    </span>
+                  )}
+                  {q.createdAt && (
+                    <span className="text-white/50 text-xs">Quoted {dateFormatter(q.createdAt)}</span>
+                  )}
+                </div>
               </div>
             </div>
           </div>
