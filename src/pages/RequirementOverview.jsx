@@ -352,6 +352,7 @@ const RequirementOverview = () => {
   const [activeTab, setActiveTab] = useState('pending');
   const [showCompare, setShowCompare] = useState(false);
   const [showTimeline, setShowTimeline] = useState(false);
+  const [confirmModal, setConfirmModal] = useState(null); // { bidId, action, sellerName }
 
   let intervalRef = useRef(null);
 
@@ -461,6 +462,11 @@ const RequirementOverview = () => {
   };
 
   const hasAccepted = bidData.some(bid => bid.quoteStatus === 'accepted');
+  const counts = {
+    pending: bidData.filter(b => b.quoteStatus === 'pending').length,
+    shortlisted: bidData.filter(b => b.quoteStatus === 'shortlisted').length,
+    accepted: bidData.filter(b => b.quoteStatus === 'accepted').length,
+  };
 
   const columns = [
     {
@@ -585,7 +591,7 @@ const RequirementOverview = () => {
                 <Button
                   size="sm"
                   className="bg-green-600 text-white hover:bg-green-700"
-                  onClick={() => handleUpdateQuoteStatus(row.original.bidId, 'accepted')}
+                  onClick={() => setConfirmModal({ bidId: row.original.bidId, action: 'accepted', sellerName: row.original.bid_buy })}
                 >
                   Accept
                 </Button>
@@ -593,7 +599,7 @@ const RequirementOverview = () => {
                   size="sm"
                   variant="outline"
                   className="text-red-600 border-red-300 hover:bg-red-50"
-                  onClick={() => handleUpdateQuoteStatus(row.original.bidId, 'rejected')}
+                  onClick={() => setConfirmModal({ bidId: row.original.bidId, action: 'rejected', sellerName: row.original.bid_buy })}
                 >
                   Reject
                 </Button>
@@ -604,7 +610,7 @@ const RequirementOverview = () => {
                 <Button
                   size="sm"
                   className="bg-green-600 text-white hover:bg-green-700"
-                  onClick={() => handleUpdateQuoteStatus(row.original.bidId, 'accepted')}
+                  onClick={() => setConfirmModal({ bidId: row.original.bidId, action: 'accepted', sellerName: row.original.bid_buy })}
                 >
                   Accept
                 </Button>
@@ -612,7 +618,7 @@ const RequirementOverview = () => {
                   size="sm"
                   variant="outline"
                   className="text-red-600 border-red-300 hover:bg-red-50"
-                  onClick={() => handleUpdateQuoteStatus(row.original.bidId, 'rejected')}
+                  onClick={() => setConfirmModal({ bidId: row.original.bidId, action: 'rejected', sellerName: row.original.bid_buy })}
                 >
                   Reject
                 </Button>
@@ -720,6 +726,35 @@ const RequirementOverview = () => {
         onOpenChange={setShowTimeline}
         productId={currentProduct?.product?._id}
       />
+
+      {/* Accept / Reject confirmation */}
+      <Dialog open={!!confirmModal} onOpenChange={open => !open && setConfirmModal(null)}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="font-bold">
+              {confirmModal?.action === 'accepted' ? 'Accept this quote?' : 'Reject this quote?'}
+            </DialogTitle>
+            <DialogDescription>
+              {confirmModal?.action === 'accepted'
+                ? `Accepting ${confirmModal?.sellerName || 'this seller'}'s quote will mark it as the winning quote and auto-reject the others. You can finalise terms in chat.`
+                : `This will reject ${confirmModal?.sellerName || 'this seller'}'s quote. This can't be undone.`}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end gap-2 pt-2">
+            <Button variant="outline" onClick={() => setConfirmModal(null)}>Cancel</Button>
+            <Button
+              className={confirmModal?.action === 'accepted' ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-red-600 hover:bg-red-700 text-white'}
+              onClick={() => {
+                if (confirmModal) handleUpdateQuoteStatus(confirmModal.bidId, confirmModal.action);
+                setConfirmModal(null);
+              }}
+            >
+              {confirmModal?.action === 'accepted' ? 'Yes, Accept' : 'Yes, Reject'}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <div className="w-full max-w-7xl mx-auto space-y-4 px-3 sm:px-4 lg:px-6 py-4">
         {/* Breadcrumb */}
         <Breadcrumb className="hidden sm:block">
@@ -896,56 +931,74 @@ const RequirementOverview = () => {
           </div>
         ))}
 
-        {/* Table */}
-        <div className="bg-orange-50 p-2 sm:p-4 rounded-xl overflow-hidden mt-4">
-          <div className="flex flex-wrap gap-2 mb-4 items-center">
-            <Button
-              variant={activeTab === 'pending' ? 'default' : 'outline'}
-              onClick={() => setActiveTab('pending')}
-              className={activeTab === 'pending' ? 'bg-orange-600 hover:bg-orange-700 text-white' : ''}
-            >
-              New (Pending)
-            </Button>
-            <Button
-              variant={activeTab === 'shortlisted' ? 'default' : 'outline'}
-              onClick={() => setActiveTab('shortlisted')}
-              className={activeTab === 'shortlisted' ? 'bg-orange-600 hover:bg-orange-700 text-white' : ''}
-            >
-              Shortlisted
-            </Button>
-            <Button
-              variant={activeTab === 'accepted' ? 'default' : 'outline'}
-              onClick={() => setActiveTab('accepted')}
-              className={activeTab === 'accepted' ? 'bg-orange-600 hover:bg-orange-700 text-white' : ''}
-            >
-              Accepted
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => setShowTimeline(true)}
-              className="ml-auto border-slate-300 text-slate-600 hover:bg-slate-100"
-            >
-              🕑 Timeline
-            </Button>
-            {bidData.length > 1 && (
+        {/* Quotes section */}
+        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden mt-4">
+          {/* Header: title + summary + tools */}
+          <div className="p-4 sm:p-5 border-b border-slate-100 flex flex-col lg:flex-row lg:items-center gap-4 justify-between">
+            <div>
+              <h3 className="text-lg font-black text-slate-900 tracking-tight">Quotes Received</h3>
+              <div className="flex items-center gap-4 mt-1.5 text-xs">
+                <span className="text-slate-500"><b className="text-slate-800">{bidData.length}</b> total</span>
+                <span className="text-slate-500"><b className="text-orange-600">{counts.pending}</b> new</span>
+                <span className="text-slate-500"><b className="text-amber-600">{counts.shortlisted}</b> shortlisted</span>
+                <span className="text-slate-500"><b className="text-green-600">{counts.accepted}</b> accepted</span>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2">
               <Button
                 variant="outline"
-                onClick={() => setShowCompare(true)}
-                className="border-orange-300 text-orange-700 hover:bg-orange-100"
+                size="sm"
+                onClick={() => setShowTimeline(true)}
+                className="border-slate-300 text-slate-600 hover:bg-slate-100"
               >
-                ⚖ Compare Quotes
+                🕑 Timeline
               </Button>
-            )}
+              {bidData.length > 1 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowCompare(true)}
+                  className="border-orange-300 text-orange-700 hover:bg-orange-100"
+                >
+                  ⚖ Compare Quotes
+                </Button>
+              )}
+            </div>
           </div>
-          <div className="overflow-x-auto">
+
+          {/* Segmented tabs with counts */}
+          <div className="px-4 sm:px-5 pt-4">
+            <div className="inline-flex bg-slate-100 rounded-lg p-1 gap-1">
+              {[
+                { key: 'pending', label: 'New', n: counts.pending },
+                { key: 'shortlisted', label: 'Shortlisted', n: counts.shortlisted },
+                { key: 'accepted', label: 'Accepted', n: counts.accepted },
+              ].map(t => (
+                <button
+                  key={t.key}
+                  onClick={() => setActiveTab(t.key)}
+                  className={`px-4 py-1.5 rounded-md text-sm font-semibold transition-colors flex items-center gap-1.5 ${
+                    activeTab === t.key ? 'bg-white text-orange-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+                  }`}
+                >
+                  {t.label}
+                  <span className={`text-[11px] font-bold px-1.5 rounded-full ${activeTab === t.key ? 'bg-orange-100 text-orange-600' : 'bg-slate-200 text-slate-500'}`}>
+                    {t.n}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="p-2 sm:p-4 overflow-x-auto">
             <TableListing
               data={bidData.filter(bid => activeTab === 'pending' ? bid.quoteStatus === 'pending' : activeTab === 'shortlisted' ? bid.quoteStatus === 'shortlisted' : activeTab === 'accepted' ? bid.quoteStatus === 'accepted' : true)}
               columns={columns}
               filters={false}
-              title={`Quotes Received`}
+              title={``}
               target="requirementOverview"
               colorPalette="blue"
-              itemStateMessage="No quotes received yet"
+              itemStateMessage="No quotes in this tab yet"
             />
           </div>
         </div>
