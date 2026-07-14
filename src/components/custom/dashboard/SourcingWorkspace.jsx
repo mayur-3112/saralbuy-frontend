@@ -49,7 +49,8 @@ export default function SourcingWorkspace({ user, userBidsCount, userDraftsCount
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         
         {/* KPI 1: Active Sourcing Leads */}
-        <div 
+        <div
+          onClick={() => navigate('/account/requirements')}
           className="group bg-white border border-slate-200 hover:border-orange-200 rounded-xl p-5 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-4 cursor-pointer relative overflow-hidden"
           style={{ background: 'linear-gradient(135deg, #ffffff 80%, #fff9f3 100%)' }}
         >
@@ -63,7 +64,8 @@ export default function SourcingWorkspace({ user, userBidsCount, userDraftsCount
         </div>
 
         {/* KPI 2: My Submitted Quotes */}
-        <div 
+        <div
+          onClick={() => navigate('/account/bid')}
           className="group bg-white border border-slate-200 hover:border-orange-200 rounded-xl p-5 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-4 cursor-pointer relative overflow-hidden"
           style={{ background: 'linear-gradient(135deg, #ffffff 80%, #f0f7ff 100%)' }}
         >
@@ -77,7 +79,8 @@ export default function SourcingWorkspace({ user, userBidsCount, userDraftsCount
         </div>
 
         {/* KPI 3: My Sourcing Drafts */}
-        <div 
+        <div
+          onClick={() => navigate('/account/requirements')}
           className="group bg-white border border-slate-200 hover:border-orange-200 rounded-xl p-5 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-4 cursor-pointer relative overflow-hidden"
           style={{ background: 'linear-gradient(135deg, #ffffff 80%, #fffbeb 100%)' }}
         >
@@ -91,7 +94,8 @@ export default function SourcingWorkspace({ user, userBidsCount, userDraftsCount
         </div>
 
         {/* KPI 4: Negotiation Rooms */}
-        <div 
+        <div
+          onClick={() => navigate('/chat')}
           className="group bg-white border border-slate-200 hover:border-orange-200 rounded-xl p-5 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-4 cursor-pointer relative overflow-hidden"
           style={{ background: 'linear-gradient(135deg, #ffffff 80%, #f0fdf4 100%)' }}
         >

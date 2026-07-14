@@ -410,6 +410,8 @@ const RequirementOverview = () => {
             sellerId: seller.seller?._id || seller._id || seller.userId,
             location: seller.seller?.currentLocation || seller.seller?.address,
             status: seller.seller?.status,
+            verified: seller.seller?.verificationStatus === 'verified',
+            company: seller.seller?.businessName || seller.seller?.organizationName || '',
             quoteStatus: seller.quoteStatus || 'pending',
             // Real bid id lives on `bidId`; `_id` is the sellers[] subdocument id.
             // Using the subdoc id made shortlist/accept 404 silently (static buttons).
@@ -498,10 +500,28 @@ const RequirementOverview = () => {
     {
       accessorKey: 'bid_buy',
       header: 'Seller',
+      cell: ({ row }) => (
+        <div className="flex flex-col">
+          <div className="flex items-center gap-1.5">
+            <span className="font-semibold text-slate-800">{row.original.bid_buy}</span>
+            {row.original.verified && (
+              <span title="Verified supplier" className="inline-flex items-center gap-0.5 text-emerald-600 text-[10px] font-bold bg-emerald-50 border border-emerald-100 px-1.5 py-0.5 rounded-full">
+                <BadgeCheck className="w-3 h-3" /> Verified
+              </span>
+            )}
+          </div>
+          {row.original.company && (
+            <span className="text-xs text-slate-400 truncate max-w-[160px]">{row.original.company}</span>
+          )}
+        </div>
+      ),
     },
     {
       accessorKey: 'bid_amount',
       header: 'Quoted Price',
+      cell: ({ row }) => (
+        <span className="font-bold text-slate-800">{row.original.bid_amount}</span>
+      ),
     },
     {
       accessorKey: 'location',
@@ -792,7 +812,7 @@ const RequirementOverview = () => {
                   <span className="font-semibold">{item.quantity || 'N/A'}</span>
                 </div>
 
-                <div className="flex items-center gap-2 py-1">
+                <div className="flex items-center gap-2 sm:pr-4 sm:border-r-2 py-1">
                   <div className="flex gap-1 items-center">
                     <CalendarDays className="w-4 h-4" />
                     <span className="capitalize">Delivery By:</span>
@@ -804,6 +824,26 @@ const RequirementOverview = () => {
                       : 'N/A'}
                   </span>
                 </div>
+
+                {item.paymentAndDelivery?.paymentMode && (
+                  <div className="flex items-center gap-2 sm:pr-4 sm:border-r-2 py-1">
+                    <div className="flex gap-1 items-center">
+                      <CreditCard className="w-4 h-4" />
+                      <span>Payment:</span>
+                    </div>
+                    <span className="font-semibold capitalize">{separateName(item.paymentAndDelivery.paymentMode)}</span>
+                  </div>
+                )}
+
+                {(item.categoryId?.categoryName || item.category?.categoryName) && (
+                  <div className="flex items-center gap-2 py-1">
+                    <div className="flex gap-1 items-center">
+                      <Store className="w-4 h-4" />
+                      <span>Category:</span>
+                    </div>
+                    <span className="font-semibold capitalize">{item.categoryId?.categoryName || item.category?.categoryName}</span>
+                  </div>
+                )}
               </div>
 
               {item.brand && (
