@@ -662,7 +662,7 @@ const RequirementOverview = () => {
           <p className="text-sm text-slate-600">
             This requirement's underlying product details could not be found. The item might have been deleted, or there was a data synchronization error during creation.
           </p>
-          <Button onClick={() => navigate(-1)} className="bg-orange-600 hover:bg-orange-700 text-white mt-2">
+          <Button onClick={() => navigate('/account/requirements')} className="bg-orange-600 hover:bg-orange-700 text-white mt-2">
             Go Back
           </Button>
         </div>
@@ -697,7 +697,7 @@ const RequirementOverview = () => {
           <BreadcrumbList>
             <BreadcrumbItem
               className="flex items-center gap-2 cursor-pointer"
-              onClick={() => navigate(-1)}
+              onClick={() => navigate('/account/requirements')}
             >
               <MoveLeft className="h-4 w-4" />
 
@@ -713,7 +713,7 @@ const RequirementOverview = () => {
           <Button
             variant="ghost"
             className="p-0 h-auto flex items-center gap-2"
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/account/requirements')}
           >
             <MoveLeft className="h-4 w-4" />
             <span className="text-sm font-medium">Requirement Detail's</span>
