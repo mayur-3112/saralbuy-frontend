@@ -137,7 +137,7 @@ const BidListing = () => {
               className="text-sm cursor-pointer text-orange-600 hover:text-orange-800 bg-orange-50/50 hover:bg-orange-100 h-8 px-3 rounded-md"
               variant={'ghost'}
               onClick={() => {
-                navigate('/bid-overview/' + row.original?._id);
+                navigate('/product-overview?bidId=' + row.original?._id);
               }}
             >
               View

@@ -1006,7 +1006,7 @@ const ProductOverview = () => {
   useEffect(() => {
     if (getBidByProductIdRes) {
       const { _id } = getBidByProductIdRes;
-      navigate('/bid-overview/' + _id);
+      navigate('/product-overview?bidId=' + _id);
     }
   }, [getBidByProductIdRes]);
 

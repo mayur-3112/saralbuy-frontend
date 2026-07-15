@@ -149,12 +149,11 @@ const ScrollablePagination = ({
                 navigate('/update-draft/' + item._id);
               } else {
                 // Requirement items are shaped { _id: requirementId, product: {…} }.
-                // The detail page queries the PRODUCT collection, so we must pass the
-                // nested product id — not the requirement id (was the "product not
-                // found" bug). Falls back to item._id if already flattened.
-                const prod = item?.productId || item?.product || item;
-                const pid = prod?._id || item._id;
-                navigate('/product-overview?productId=' + pid);
+                // A buyer viewing their OWN posted RFQ belongs on the rich
+                // RequirementOverview page (quotes, shortlist, chat) — ProductOverview
+                // is the seller's "place a quote" page and only shows a stub for the
+                // owner. item._id here IS the requirement id (see getMyRequirements).
+                navigate('/account/requirements-overview/' + item._id);
               }
             }}
             showOwnerActions={target === 'requirements'}

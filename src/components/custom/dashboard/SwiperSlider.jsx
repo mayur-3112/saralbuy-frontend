@@ -82,7 +82,7 @@ const SwiperSlider = ({ title, color, target, data }) => {
                     <div
                       className="text-sm cursor-pointer border rounded px-2 py-1 bg-gray-50"
                       onClick={() => {
-                        navigate('/bid-overview/' + item?._id);
+                        navigate('/product-overview?bidId=' + item?._id);
                       }}
                     >
                       <div className="flex gap-1 items-center">

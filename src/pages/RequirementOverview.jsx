@@ -349,10 +349,8 @@ const RequirementOverview = () => {
   const [timeLeft, setTimeLeft] = useState('');
   const [isSoldProduct, setIsSoldProduct] = useState(false);
   const [openQuoteDetails, setOpenQuoteDetails] = useState(false);
-  const [activeTab, setActiveTab] = useState('pending');
   const [showCompare, setShowCompare] = useState(false);
   const [showTimeline, setShowTimeline] = useState(false);
-  const [confirmModal, setConfirmModal] = useState(null); // { bidId, action, sellerName }
 
   let intervalRef = useRef(null);
 
@@ -461,7 +459,6 @@ const RequirementOverview = () => {
     }
   };
 
-  const hasAccepted = bidData.some(bid => bid.quoteStatus === 'accepted');
   const counts = {
     pending: bidData.filter(b => b.quoteStatus === 'pending').length,
     shortlisted: bidData.filter(b => b.quoteStatus === 'shortlisted').length,
@@ -581,32 +578,14 @@ const RequirementOverview = () => {
               </Button>
             )}
 
-            {!hasAccepted && row.original.quoteStatus === 'pending' && (
-              <>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className={`${actionBtnClass} text-orange-600 border-orange-600 hover:bg-orange-50`}
-                  onClick={() => handleUpdateQuoteStatus(row.original.bidId, 'shortlisted')}
-                >
-                  Shortlist
-                </Button>
-                <Button
-                  size="sm"
-                  className={`${actionBtnClass} bg-green-600 text-white hover:bg-green-700`}
-                  onClick={() => setConfirmModal({ bidId: row.original.bidId, sellerName: row.original.bid_buy })}
-                >
-                  Accept
-                </Button>
-              </>
-            )}
-            {!hasAccepted && row.original.quoteStatus === 'shortlisted' && (
+            {row.original.quoteStatus === 'pending' && (
               <Button
                 size="sm"
-                className={`${actionBtnClass} bg-green-600 text-white hover:bg-green-700`}
-                onClick={() => setConfirmModal({ bidId: row.original.bidId, sellerName: row.original.bid_buy })}
+                variant="outline"
+                className={`${actionBtnClass} text-orange-600 border-orange-600 hover:bg-orange-50`}
+                onClick={() => handleUpdateQuoteStatus(row.original.bidId, 'shortlisted')}
               >
-                Accept
+                Shortlist
               </Button>
             )}
             {row.original.quoteStatus === 'rejected' && (
@@ -711,32 +690,6 @@ const RequirementOverview = () => {
         onOpenChange={setShowTimeline}
         productId={currentProduct?.product?._id}
       />
-
-      {/* Accept confirmation — rejecting a quote isn't a buyer action here; a bid
-          simply stops being the chosen one when another is accepted. */}
-      <Dialog open={!!confirmModal} onOpenChange={open => !open && setConfirmModal(null)}>
-        <DialogContent className="sm:max-w-sm">
-          <DialogHeader>
-            <DialogTitle className="font-bold">Accept this quote?</DialogTitle>
-            <DialogDescription>
-              Accepting {confirmModal?.sellerName || 'this seller'}&apos;s quote will mark it as the
-              winning quote and auto-reject the others. You can finalise terms in chat.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex justify-end gap-2 pt-2">
-            <Button variant="outline" onClick={() => setConfirmModal(null)}>Cancel</Button>
-            <Button
-              className="bg-green-600 hover:bg-green-700 text-white"
-              onClick={() => {
-                if (confirmModal) handleUpdateQuoteStatus(confirmModal.bidId, 'accepted');
-                setConfirmModal(null);
-              }}
-            >
-              Yes, Accept
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
 
       <div className="w-full max-w-7xl mx-auto space-y-4 px-3 sm:px-4 lg:px-6 py-4">
         {/* Breadcrumb */}
@@ -958,39 +911,17 @@ const RequirementOverview = () => {
             </div>
           </div>
 
-          {/* Segmented tabs with counts */}
-          <div className="px-4 sm:px-5 pt-4">
-            <div className="inline-flex bg-slate-100 rounded-lg p-1 gap-1">
-              {[
-                { key: 'pending', label: 'New', n: counts.pending },
-                { key: 'shortlisted', label: 'Shortlisted', n: counts.shortlisted },
-                { key: 'accepted', label: 'Accepted', n: counts.accepted },
-              ].map(t => (
-                <button
-                  key={t.key}
-                  onClick={() => setActiveTab(t.key)}
-                  className={`px-4 py-1.5 rounded-md text-sm font-semibold transition-colors flex items-center gap-1.5 ${
-                    activeTab === t.key ? 'bg-white text-orange-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'
-                  }`}
-                >
-                  {t.label}
-                  <span className={`text-[11px] font-bold px-1.5 rounded-full ${activeTab === t.key ? 'bg-orange-100 text-orange-600' : 'bg-slate-200 text-slate-500'}`}>
-                    {t.n}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
+          {/* One list, every quote visible — shortlisting just marks a row in
+              place (badge below) instead of moving it to a separate tab. */}
           <div className="p-2 sm:p-4 overflow-x-auto">
             <TableListing
-              data={bidData.filter(bid => activeTab === 'pending' ? bid.quoteStatus === 'pending' : activeTab === 'shortlisted' ? bid.quoteStatus === 'shortlisted' : activeTab === 'accepted' ? bid.quoteStatus === 'accepted' : true)}
+              data={bidData}
               columns={columns}
               filters={false}
               title={``}
               target="requirementOverview"
               colorPalette="blue"
-              itemStateMessage="No quotes in this tab yet"
+              itemStateMessage="No quotes yet"
             />
           </div>
         </div>
