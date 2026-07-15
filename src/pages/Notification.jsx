@@ -250,16 +250,20 @@ const Notification = () => {
                   return (
                     <div key={_id} className={``}>
                       <div
-                        className={`p-4 grid ${bgClass} rounded-md space-y-2 border  relative group transition-all duration-200 `}
+                        onClick={() => handleView(notif)}
+                        className={`p-4 grid ${bgClass} rounded-md space-y-2 border relative group transition-all duration-200 cursor-pointer hover:border-orange-300`}
                       >
-                        {/* <Button
-                        variant="ghost"
-                        size="icon"
-                        className="absolute top-2 right-2 h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                        onClick={() => handleDeleteClick(_id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button> */}
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="absolute top-2 right-2 h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteClick(_id);
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
 
                         <div className="grid grid-cols-3 items-center gap-5">
                           <div className="text-md font-bold text-gray-800 capitalize col-span-2 flex items-center gap-2">
@@ -280,13 +284,9 @@ const Notification = () => {
                           <p className="text-sm font-medium text-gray-600 line-clamp-2 col-span-2">
                             {getDescriptionText(notif)}
                           </p>
-                          {/* <Button
-                          variant="link"
-                          className="text-sm text-gray-600 col-span-1 text-right underline cursor-pointer p-0 h-auto hover:text-gray-900"
-                          onClick={() => handleView(notif)}
-                        >
-                          View
-                        </Button> */}
+                          <span className="text-sm text-gray-600 col-span-1 text-right underline group-hover:text-gray-900">
+                            View
+                          </span>
                         </div>
                       </div>
                       <div className=" pt-2 mx-[0.5px]"></div>
