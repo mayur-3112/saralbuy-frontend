@@ -6,6 +6,7 @@ import { ListFilter, Trash2, Handshake } from 'lucide-react';
 import AlertPopup from '@/components/custom/popups/AlertPopup';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import notificationService from '@/services/notification.service';
+import requirementService from '@/services/requirement.service';
 import { getNotifMeta } from '@/helper/notif.icons';
 import { toast } from 'sonner';
 import { NotificationSkeleton } from '@/const/CustomSkeletons';
@@ -104,7 +105,7 @@ const Notification = () => {
     }
   };
 
-  const handleView = notification => {
+  const handleView = async notification => {
     const { type, metadata, productId, roomId } = notification;
     const pid = productId?._id || productId || metadata?.productId;
     // Deal/chat notifications → chat; quote notifications → the RFQ action page.
@@ -113,8 +114,17 @@ const Notification = () => {
       return;
     }
     if (pid) {
-      navigate('/account/requirements-overview/' + pid);
-      return;
+      // The route takes a REQUIREMENT id, but notifications only carry the
+      // PRODUCT id — resolve it first (same lookup HomeNavbar's dropdown
+      // already uses correctly). Navigating with the raw product id 404s,
+      // since requirements-overview looks it up in the Requirement collection.
+      try {
+        const requirementId = await requirementService.getRequirementId(pid);
+        if (!requirementId) throw new Error('not found');
+        navigate('/account/requirements-overview/' + requirementId);
+      } catch (err) {
+        toast.error('Could not find the requirement for this notification.');
+      }
     }
   };
 
