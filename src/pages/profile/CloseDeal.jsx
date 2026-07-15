@@ -171,6 +171,24 @@ const DealSurveyModal = ({ isOpen, onClose, dealId }) => {
 
 const CloseDeal = () => {
   const navigate = useNavigate();
+
+  // Closed-deal rows only carry productId (from the ClosedDeal collection, which
+  // has no requirementId field). Resolve it via the existing productId ->
+  // requirementId lookup so "View" opens the real RequirementOverview page
+  // instead of the broken ProductOverview stub for the owner.
+  const handleViewRequirement = async (productId) => {
+    if (!productId) {
+      toast.error('Missing product reference — please refresh and try again.');
+      return;
+    }
+    try {
+      const requirementId = await requirementService.getRequirementId(productId);
+      if (!requirementId) throw new Error('not found');
+      navigate('/account/requirements-overview/' + requirementId);
+    } catch (err) {
+      toast.error('Could not find the requirement for this deal.');
+    }
+  };
   const [surveyOpen, setSurveyOpen] = useState(false);
   const [surveyDealId, setSurveyDealId] = useState(null);
 
@@ -244,9 +262,7 @@ const CloseDeal = () => {
             <Button
               className="text-sm cursor-pointer text-gray-600 underline"
               variant={'link'}
-              onClick={() => {
-                navigate('/product-overview?productId=' + row.original?.productId);
-              }}
+              onClick={() => handleViewRequirement(row.original?.productId)}
             >
               View
             </Button>
@@ -334,9 +350,7 @@ const CloseDeal = () => {
             <Button
               className="text-sm cursor-pointer text-gray-600 underline"
               variant={'link'}
-              onClick={() => {
-                navigate('/product-overview?productId=' + row.original?.productId);
-              }}
+              onClick={() => handleViewRequirement(row.original?.productId)}
             >
               View
             </Button>
