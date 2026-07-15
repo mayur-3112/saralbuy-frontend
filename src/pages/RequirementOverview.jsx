@@ -537,13 +537,31 @@ const RequirementOverview = () => {
       accessorKey: 'action',
       header: 'Action/View',
       cell: ({ row }) => {
+        // All action buttons share one size/shape so the row reads as a clean set
+        // of equal-weight actions — View always comes first, Chat right after it.
+        const actionBtnClass = 'text-xs sm:text-sm px-3 h-8 cursor-pointer';
         return (
           <div className="flex flex-wrap items-center gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              className={`${actionBtnClass} text-orange-600 border-orange-600 hover:bg-orange-50`}
+              onClick={async () => {
+                if (getBidByProductIdAndSellerIdLoading) return;
+                const { productId, sellerId } = row.original;
+                setOpenQuoteDetails(true);
+                setGetBidByProductIdAndSellerIdData(null);
+                await getBidByProductIdAndSellerIdFn(productId, sellerId);
+              }}
+            >
+              <Eye className="w-4 h-4 mr-1.5" /> View
+            </Button>
+
             {/* SB-009: once shortlisted/accepted, chat becomes the finalisation channel */}
             {row.original.quoteStatus === 'shortlisted' || row.original.quoteStatus === 'accepted' ? (
               <Button
                 size="sm"
-                className="text-xs sm:text-sm cursor-pointer bg-orange-600 hover:bg-orange-700 text-white"
+                className={`${actionBtnClass} bg-orange-600 hover:bg-orange-700 text-white`}
                 onClick={() =>
                   handleChatNavigate(row.original.sellerId, row.original.bid_buy, row.original.avtar)
                 }
@@ -552,8 +570,9 @@ const RequirementOverview = () => {
               </Button>
             ) : (
               <Button
-                className="text-xs sm:text-sm cursor-pointer text-orange-600  px-0"
-                variant="link"
+                size="sm"
+                variant="outline"
+                className={`${actionBtnClass} text-orange-600 border-orange-600 hover:bg-orange-50`}
                 onClick={() =>
                   handleChatNavigate(row.original.sellerId, row.original.bid_buy, row.original.avtar)
                 }
@@ -562,67 +581,33 @@ const RequirementOverview = () => {
               </Button>
             )}
 
-            <div
-              onClick={async () => {
-                if (getBidByProductIdAndSellerIdLoading) return;
-                const { productId, sellerId } = row.original;
-                setOpenQuoteDetails(true);
-                setGetBidByProductIdAndSellerIdData(null);
-                await getBidByProductIdAndSellerIdFn(productId, sellerId);
-              }}
-              className=" bg-orange-100 text-orange-500 rounded-sm  p-1 cursor-pointer"
-            >
-              <TooltipComp
-                hoverChildren={<Eye className="w-5 h-5" />}
-                contentChildren={<p>View Quote</p>}
-              ></TooltipComp>
-            </div>
-            
             {!hasAccepted && row.original.quoteStatus === 'pending' && (
               <>
                 <Button
                   size="sm"
                   variant="outline"
-                  className="text-orange-600 border-orange-600 hover:bg-orange-50"
+                  className={`${actionBtnClass} text-orange-600 border-orange-600 hover:bg-orange-50`}
                   onClick={() => handleUpdateQuoteStatus(row.original.bidId, 'shortlisted')}
                 >
                   Shortlist
                 </Button>
                 <Button
                   size="sm"
-                  className="bg-green-600 text-white hover:bg-green-700"
-                  onClick={() => setConfirmModal({ bidId: row.original.bidId, action: 'accepted', sellerName: row.original.bid_buy })}
+                  className={`${actionBtnClass} bg-green-600 text-white hover:bg-green-700`}
+                  onClick={() => setConfirmModal({ bidId: row.original.bidId, sellerName: row.original.bid_buy })}
                 >
                   Accept
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="text-red-600 border-red-300 hover:bg-red-50"
-                  onClick={() => setConfirmModal({ bidId: row.original.bidId, action: 'rejected', sellerName: row.original.bid_buy })}
-                >
-                  Reject
                 </Button>
               </>
             )}
             {!hasAccepted && row.original.quoteStatus === 'shortlisted' && (
-              <>
-                <Button
-                  size="sm"
-                  className="bg-green-600 text-white hover:bg-green-700"
-                  onClick={() => setConfirmModal({ bidId: row.original.bidId, action: 'accepted', sellerName: row.original.bid_buy })}
-                >
-                  Accept
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="text-red-600 border-red-300 hover:bg-red-50"
-                  onClick={() => setConfirmModal({ bidId: row.original.bidId, action: 'rejected', sellerName: row.original.bid_buy })}
-                >
-                  Reject
-                </Button>
-              </>
+              <Button
+                size="sm"
+                className={`${actionBtnClass} bg-green-600 text-white hover:bg-green-700`}
+                onClick={() => setConfirmModal({ bidId: row.original.bidId, sellerName: row.original.bid_buy })}
+              >
+                Accept
+              </Button>
             )}
             {row.original.quoteStatus === 'rejected' && (
               <Badge className="bg-red-100 text-red-700 hover:bg-red-100 rounded-full px-3">Rejected</Badge>
@@ -727,29 +712,27 @@ const RequirementOverview = () => {
         productId={currentProduct?.product?._id}
       />
 
-      {/* Accept / Reject confirmation */}
+      {/* Accept confirmation — rejecting a quote isn't a buyer action here; a bid
+          simply stops being the chosen one when another is accepted. */}
       <Dialog open={!!confirmModal} onOpenChange={open => !open && setConfirmModal(null)}>
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
-            <DialogTitle className="font-bold">
-              {confirmModal?.action === 'accepted' ? 'Accept this quote?' : 'Reject this quote?'}
-            </DialogTitle>
+            <DialogTitle className="font-bold">Accept this quote?</DialogTitle>
             <DialogDescription>
-              {confirmModal?.action === 'accepted'
-                ? `Accepting ${confirmModal?.sellerName || 'this seller'}'s quote will mark it as the winning quote and auto-reject the others. You can finalise terms in chat.`
-                : `This will reject ${confirmModal?.sellerName || 'this seller'}'s quote. This can't be undone.`}
+              Accepting {confirmModal?.sellerName || 'this seller'}&apos;s quote will mark it as the
+              winning quote and auto-reject the others. You can finalise terms in chat.
             </DialogDescription>
           </DialogHeader>
           <div className="flex justify-end gap-2 pt-2">
             <Button variant="outline" onClick={() => setConfirmModal(null)}>Cancel</Button>
             <Button
-              className={confirmModal?.action === 'accepted' ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-red-600 hover:bg-red-700 text-white'}
+              className="bg-green-600 hover:bg-green-700 text-white"
               onClick={() => {
-                if (confirmModal) handleUpdateQuoteStatus(confirmModal.bidId, confirmModal.action);
+                if (confirmModal) handleUpdateQuoteStatus(confirmModal.bidId, 'accepted');
                 setConfirmModal(null);
               }}
             >
-              {confirmModal?.action === 'accepted' ? 'Yes, Accept' : 'Yes, Reject'}
+              Yes, Accept
             </Button>
           </div>
         </DialogContent>
