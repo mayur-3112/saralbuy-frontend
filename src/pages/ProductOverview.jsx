@@ -1010,6 +1010,29 @@ const ProductOverview = () => {
     }
   }, [getBidByProductIdRes]);
 
+  // The RFQ detail view above (spec, delivery, masked buyer) is shown
+  // identically to whoever opens this page — buyer or supplier. What differs
+  // is what happens at the "quote" moment: a buyer viewing their OWN
+  // requirement doesn't quote — they manage the quotes they've received, so
+  // they get routed to the real action page (RequirementOverview) instead of
+  // a form they can't submit. Resolves productId -> requirementId (same
+  // lookup already used for Notification/CloseDeal navigation this session).
+  const [resolvingRequirement, setResolvingRequirement] = useState(false);
+  const handleGoToActionPage = async () => {
+    const pid = bidOverviewRes ? bidOverviewRes?.product?._id : productResponse?.mainProduct?._id;
+    if (!pid) return;
+    setResolvingRequirement(true);
+    try {
+      const requirementId = await requirementService.getRequirementId(pid);
+      if (!requirementId) throw new Error('not found');
+      navigate('/account/requirements-overview/' + requirementId);
+    } catch (err) {
+      toast.error('Could not open your quotes for this requirement.');
+    } finally {
+      setResolvingRequirement(false);
+    }
+  };
+
   const isMergeQuote = productResponse?.mainProduct?.isMergeQuote;
   const soldProduct = bidOverviewRes
     ? bidOverviewRes?.product?.isSoldProduct
@@ -1256,13 +1279,6 @@ const ProductOverview = () => {
             </div>
 
             {/* Requirement + Form */}
-            <div className="mt-5">
-              {isMe && (
-                <sup className="italic text-gray-500 text-sm">
-                  Note: This product created by yourself you can't place the quote on this product.
-                </sup>
-              )}
-            </div>
             <div className="w-full flex flex-col gap-10 mt-8">
               {/* Top Section: Requirement Specifications */}
               <div className="w-full space-y-6">
@@ -1569,53 +1585,102 @@ const ProductOverview = () => {
                   </div>
                 </div>
               </div>
-              {/* Bottom Section: Quotation Form */}
-              {/* Bottom Sticky Action Bar + Drawer for Quotation Form */}
+              {/* Bottom Section: role-based action */}
               {/* Spacer so content clears the sticky bar AND the mobile bottom nav */}
               <div className="pb-40 sm:pb-24"></div>
-              <Sheet>
-                {/* On mobile the CTA sits ABOVE the bottom nav (bottom-16); flush on desktop */}
+
+              {isMe ? (
+                /* Buyer viewing their OWN requirement — they don't quote here,
+                   they manage the quotes they've received. Route them to the
+                   real action page instead of a form they can't submit. */
                 <div className="fixed bottom-16 sm:bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4 shadow-[0_-4px_20px_rgb(0,0,0,0.05)] flex justify-between items-center z-40 md:px-10 lg:px-20">
                   <div className="hidden sm:block">
-                    <h3 className="font-bold text-slate-800 text-lg">Ready to place a quote?</h3>
-                    <p className="text-sm text-slate-500">Provide your best price and win this requirement.</p>
+                    <h3 className="font-bold text-slate-800 text-lg">This is your requirement</h3>
+                    <p className="text-sm text-slate-500">Review, shortlist, and chat with the suppliers who've quoted.</p>
                   </div>
-                  <SheetTrigger asChild>
-                    <Button className="w-full sm:w-auto bg-orange-600 hover:bg-orange-700 text-white font-bold px-10 py-6 text-lg rounded-full shadow-lg transition-transform hover:scale-105">
-                      Place Quote Now
-                    </Button>
-                  </SheetTrigger>
+                  <Button
+                    onClick={handleGoToActionPage}
+                    disabled={resolvingRequirement}
+                    className="w-full sm:w-auto bg-orange-600 hover:bg-orange-700 text-white font-bold px-10 py-6 text-lg rounded-full shadow-lg transition-transform hover:scale-105"
+                  >
+                    {resolvingRequirement ? <Spinner className="w-5 h-5 animate-spin" /> : 'View & Manage Quotes'}
+                  </Button>
                 </div>
-                
-                <SheetContent side="right" className="w-full sm:!max-w-[70vw] sm:!w-[70vw] lg:!max-w-[50vw] lg:!w-[50vw] overflow-y-auto bg-slate-50 p-0 border-l-0 sm:border-l">
-                  <SheetHeader className="p-8 bg-white border-b border-slate-100 sticky top-0 z-10 shadow-sm">
-                    <SheetTitle className="text-3xl font-extrabold text-slate-800">Submit Quotation</SheetTitle>
-                  </SheetHeader>
-                  <div className="p-4 sm:p-8 lg:p-10 pb-24">
-                    {isMergeQuote ? (
-                      <MergeBidForm
-                        productResponse={productResponse}
-                        userProfile={userProfile}
-                        navigate={navigate}
-                      />
-                    ) : (
-                      <SellerForm
-                        handleSubmit={handleSubmit}
-                        onSubmit={onSubmit}
-                        register={register}
-                        control={control}
-                        userProfile={userProfile}
-                        bidOverviewRes={bidOverviewRes}
-                        productResponse={productResponse}
-                        createBidLoading={createBidLoading}
-                        updateUserBidDetsLoading={updateUserBidDetsLoading}
-                        soldProduct={soldProduct}
-                        watch={watch}
-                      />
-                    )}
+              ) : (
+                <Sheet>
+                  {/* On mobile the CTA sits ABOVE the bottom nav (bottom-16); flush on desktop */}
+                  <div className="fixed bottom-16 sm:bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4 shadow-[0_-4px_20px_rgb(0,0,0,0.05)] flex justify-between items-center z-40 md:px-10 lg:px-20">
+                    <div className="hidden sm:block">
+                      <h3 className="font-bold text-slate-800 text-lg">Ready to place a quote?</h3>
+                      <p className="text-sm text-slate-500">Provide your best price and win this requirement.</p>
+                    </div>
+                    <SheetTrigger asChild>
+                      <Button className="w-full sm:w-auto bg-orange-600 hover:bg-orange-700 text-white font-bold px-10 py-6 text-lg rounded-full shadow-lg transition-transform hover:scale-105">
+                        Place Quote Now
+                      </Button>
+                    </SheetTrigger>
                   </div>
-                </SheetContent>
-              </Sheet>
+
+                  <SheetContent side="right" className="w-full sm:!max-w-[70vw] sm:!w-[70vw] lg:!max-w-[50vw] lg:!w-[50vw] overflow-y-auto bg-slate-50 p-0 border-l-0 sm:border-l">
+                    <SheetHeader className="p-8 bg-white border-b border-slate-100 sticky top-0 z-10 shadow-sm">
+                      <SheetTitle className="text-3xl font-extrabold text-slate-800">Submit Quotation</SheetTitle>
+                    </SheetHeader>
+                    <div className="p-4 sm:p-8 lg:p-10 pb-24 space-y-6">
+                      {/* Competitive landscape — aggregate only. A supplier never sees
+                          who else quoted or their exact individual prices (that stays
+                          confidential between each seller and the buyer); they only
+                          see the shape of the market so they can price sensibly. */}
+                      {bidStats && bidStats.totalBids > 0 ? (
+                        <div className="bg-white rounded-2xl border border-slate-200 p-6">
+                          <h4 className="font-bold text-slate-800 text-sm uppercase tracking-wide mb-4">
+                            Quotes so far · {bidStats.totalBids} submitted
+                          </h4>
+                          <div className="grid grid-cols-3 gap-4 text-center">
+                            <div>
+                              <p className="text-xs text-slate-500 font-semibold mb-1">Lowest</p>
+                              <p className="text-lg font-black text-emerald-600">{currencyConvertor(bidStats.lowestQuote)}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-slate-500 font-semibold mb-1">Average</p>
+                              <p className="text-lg font-black text-slate-700">{currencyConvertor(bidStats.averageQuote)}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-slate-500 font-semibold mb-1">Highest</p>
+                              <p className="text-lg font-black text-slate-700">{currencyConvertor(bidStats.highestQuote)}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="bg-orange-50 border border-orange-100 rounded-2xl p-4 text-center">
+                          <p className="text-sm font-semibold text-orange-700">Be the first to quote on this requirement.</p>
+                        </div>
+                      )}
+
+                      {isMergeQuote ? (
+                        <MergeBidForm
+                          productResponse={productResponse}
+                          userProfile={userProfile}
+                          navigate={navigate}
+                        />
+                      ) : (
+                        <SellerForm
+                          handleSubmit={handleSubmit}
+                          onSubmit={onSubmit}
+                          register={register}
+                          control={control}
+                          userProfile={userProfile}
+                          bidOverviewRes={bidOverviewRes}
+                          productResponse={productResponse}
+                          createBidLoading={createBidLoading}
+                          updateUserBidDetsLoading={updateUserBidDetsLoading}
+                          soldProduct={soldProduct}
+                          watch={watch}
+                        />
+                      )}
+                    </div>
+                  </SheetContent>
+                </Sheet>
+              )}
             </div>
           </div>
         </div>
