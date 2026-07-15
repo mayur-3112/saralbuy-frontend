@@ -81,6 +81,11 @@ class BidService {
       .get(`/bid/get-bid-stats/${productId}`)
       .then(res => res.data?.data || res.data);
   }
+  async getBidActivity(productId) {
+    return instance
+      .get(`/bid/get-bid-activity/${productId}`)
+      .then(res => res.data?.data || res.data);
+  }
   async updateQuoteStatus(bidId, statusObj) {
     return instance
       .put(`/bid/update-quote-status/${bidId}`, statusObj)

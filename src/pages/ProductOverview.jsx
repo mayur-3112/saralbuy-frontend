@@ -650,9 +650,9 @@ const ProductOverview = () => {
     loading: createBidLoading,
   } = useFetch(bidService.createBid);
   const {
-    fn: getBidStatsFn,
-    data: bidStats,
-  } = useFetch(bidService.getBidStats);
+    fn: getBidActivityFn,
+    data: bidActivityRes,
+  } = useFetch(bidService.getBidActivity);
   const { fn: createRequirementFn } = useFetch(requirementService.createRequirement);
 
   const [open, setOpen] = useState(false);
@@ -708,7 +708,7 @@ const ProductOverview = () => {
         }
       } else {
         getProductById(productId);
-        getBidStatsFn(productId);
+        getBidActivityFn(productId);
       }
     } else if (bidId) {
       bidOverviewFn(bidId);
@@ -926,7 +926,7 @@ const ProductOverview = () => {
 
       toast.success('Quote created successfully');
       if (productId && !productId.startsWith('prod_mock_')) {
-        getBidStatsFn(productId);
+        getBidActivityFn(productId);
       }
       setSellerVerification(false);
       setBusinessType('');
@@ -1626,28 +1626,45 @@ const ProductOverview = () => {
                       <SheetTitle className="text-3xl font-extrabold text-slate-800">Submit Quotation</SheetTitle>
                     </SheetHeader>
                     <div className="p-4 sm:p-8 lg:p-10 pb-24 space-y-6">
-                      {/* Competitive landscape — aggregate only. A supplier never sees
-                          who else quoted or their exact individual prices (that stays
-                          confidential between each seller and the buyer); they only
-                          see the shape of the market so they can price sensibly. */}
-                      {bidStats && bidStats.totalBids > 0 ? (
+                      {/* Bid activity — anonymized. A supplier never sees WHO else
+                          quoted or their exact PRICE (that stays confidential
+                          between each seller and the buyer); they only see when
+                          quotes came in, roughly where from, and non-identifying
+                          quote metadata — enough to gauge the pace of interest
+                          without revealing anything competitive. */}
+                      {bidActivityRes?.activity?.length > 0 ? (
                         <div className="bg-white rounded-2xl border border-slate-200 p-6">
                           <h4 className="font-bold text-slate-800 text-sm uppercase tracking-wide mb-4">
-                            Quotes so far · {bidStats.totalBids} submitted
+                            Quote activity · {bidActivityRes.total} submitted
                           </h4>
-                          <div className="grid grid-cols-3 gap-4 text-center">
-                            <div>
-                              <p className="text-xs text-slate-500 font-semibold mb-1">Lowest</p>
-                              <p className="text-lg font-black text-emerald-600">{currencyConvertor(bidStats.lowestQuote)}</p>
-                            </div>
-                            <div>
-                              <p className="text-xs text-slate-500 font-semibold mb-1">Average</p>
-                              <p className="text-lg font-black text-slate-700">{currencyConvertor(bidStats.averageQuote)}</p>
-                            </div>
-                            <div>
-                              <p className="text-xs text-slate-500 font-semibold mb-1">Highest</p>
-                              <p className="text-lg font-black text-slate-700">{currencyConvertor(bidStats.highestQuote)}</p>
-                            </div>
+                          <div className="space-y-2 max-h-64 overflow-y-auto">
+                            {bidActivityRes.activity.map((a, idx) => (
+                              <div
+                                key={idx}
+                                className="flex items-center justify-between gap-3 text-sm border-b border-slate-100 last:border-0 py-2.5"
+                              >
+                                <div className="flex flex-col">
+                                  <span className="font-semibold text-slate-700">
+                                    {dateFormatter(a.createdAt, 'dd MMM, hh:mm a')}
+                                  </span>
+                                  <span className="text-xs text-slate-500">
+                                    {a.location || 'Location not specified'}
+                                  </span>
+                                </div>
+                                <div className="flex flex-col items-end text-right">
+                                  {a.earliestDeliveryDate && (
+                                    <span className="text-xs text-slate-500">
+                                      Delivery by {dateFormatter(a.earliestDeliveryDate)}
+                                    </span>
+                                  )}
+                                  {a.availableBrand && (
+                                    <span className="text-xs font-semibold text-slate-600">
+                                      {a.availableBrand}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
                           </div>
                         </div>
                       ) : (
