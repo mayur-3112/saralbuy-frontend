@@ -640,11 +640,6 @@ const ProductOverview = () => {
     loading: updateUserBidDetsLoading,
   } = useFetch(bidService.updateUserBidDets);
   const {
-    fn: getBidByProductIdFn,
-    data: getBidByProductIdRes,
-    loading: getBidByProductIdLoading,
-  } = useFetch(bidService.getbidByProductId);
-  const {
     fn: createBidFn,
     data: createBidRes,
     loading: createBidLoading,
@@ -995,21 +990,6 @@ const ProductOverview = () => {
     document.body.removeChild(link);
   };
 
-  const handleBidView = async productId => {
-    if (productId?.startsWith('prod_mock_')) {
-      toast.info('Quote viewing is disabled for demo mock products. Please create a real product to test quoting.');
-      return;
-    }
-    await getBidByProductIdFn(productId);
-  };
-
-  useEffect(() => {
-    if (getBidByProductIdRes) {
-      const { _id } = getBidByProductIdRes;
-      navigate('/product-overview?bidId=' + _id);
-    }
-  }, [getBidByProductIdRes]);
-
   // The RFQ detail view above (spec, delivery, masked buyer) is shown
   // identically to whoever opens this page — buyer or supplier. What differs
   // is what happens at the "quote" moment: a buyer viewing their OWN
@@ -1030,6 +1010,19 @@ const ProductOverview = () => {
       toast.error('Could not open your quotes for this requirement.');
     } finally {
       setResolvingRequirement(false);
+    }
+  };
+
+  // "Total Quote : N" — used to fetch and jump to a single (arbitrary, often
+  // unauthorized) bid's overview via bidId. Now routes the same way as the
+  // sticky bar below: the owner goes to their action page; anyone else opens
+  // the quote sheet, which shows the anonymized bid-activity list.
+  const [quoteSheetOpen, setQuoteSheetOpen] = useState(false);
+  const handleBidView = () => {
+    if (isMe) {
+      handleGoToActionPage();
+    } else {
+      setQuoteSheetOpen(true);
     }
   };
 
@@ -1250,18 +1243,11 @@ const ProductOverview = () => {
                   <div className="flex items-center gap-4 mt-5">
                     <Button
                       disabled={
-                        getBidByProductIdLoading ||
                         (bidOverviewRes
                           ? bidOverviewRes.product?.totalBidCount
                           : productResponse?.mainProduct?.totalBidCount) === 0
                       }
-                      onClick={() =>
-                        handleBidView(
-                          bidOverviewRes
-                            ? bidOverviewRes?.product?._id
-                            : productResponse?.mainProduct?._id
-                        )
-                      }
+                      onClick={handleBidView}
                       variant="outline"
                       className="min-w-32 text-sm border-gray-400 bg-transparent border-[2px] flex items-center gap-2 hover:bg-transparent cursor-pointer"
                     >
@@ -1607,7 +1593,7 @@ const ProductOverview = () => {
                   </Button>
                 </div>
               ) : (
-                <Sheet>
+                <Sheet open={quoteSheetOpen} onOpenChange={setQuoteSheetOpen}>
                   {/* On mobile the CTA sits ABOVE the bottom nav (bottom-16); flush on desktop */}
                   <div className="fixed bottom-16 sm:bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4 shadow-[0_-4px_20px_rgb(0,0,0,0.05)] flex justify-between items-center z-40 md:px-10 lg:px-20">
                     <div className="hidden sm:block">
