@@ -148,12 +148,13 @@ const ScrollablePagination = ({
                 // Draft items ARE product docs → item._id is the product id.
                 navigate('/update-draft/' + item._id);
               } else {
-                // Requirement items are shaped { _id: requirementId, product: {…} }.
-                // A buyer viewing their OWN posted RFQ belongs on the rich
-                // RequirementOverview page (quotes, shortlist, chat) — ProductOverview
-                // is the seller's "place a quote" page and only shows a stub for the
-                // owner. item._id here IS the requirement id (see getMyRequirements).
-                navigate('/account/requirements-overview/' + item._id);
+                // View RFQ always opens the universal Product Overview page first
+                // (same page a supplier lands on) — from there the "Total Quote" /
+                // sticky CTA routes the owner on to the action page (quotes,
+                // shortlist, chat) via ProductOverview's own isMe branching.
+                const prod = item?.productId || item?.product || item;
+                const pid = prod?._id || item._id;
+                navigate('/product-overview?productId=' + pid);
               }
             }}
             showOwnerActions={target === 'requirements'}
