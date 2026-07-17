@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ChevronLeft, Gavel, Package, Lock } from 'lucide-react';
 import { useFetch } from '@/hooks/useFetch';
@@ -6,6 +6,13 @@ import productService from '@/services/product.service';
 import bidService from '@/services/bid.service';
 import { dateFormatter } from '@/utils/dateFormatter';
 import { CategoryFormSkeleton } from '@/const/CustomSkeletons';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 
 // Bid history — the anonymized, table-style view every viewing supplier sees
 // for a requirement ("universal for supplier" per the eBay Bid History
@@ -15,6 +22,7 @@ import { CategoryFormSkeleton } from '@/const/CustomSkeletons';
 const BidHistory = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
+  const [priceInfoOpen, setPriceInfoOpen] = useState(false);
 
   const {
     fn: getProductById,
@@ -115,10 +123,14 @@ const BidHistory = () => {
                   <td className="px-5 py-4 text-slate-600">
                     {a.earliestDeliveryDate ? dateFormatter(a.earliestDeliveryDate) : '—'}
                   </td>
-                  <td className="px-5 py-4 text-slate-400">
-                    <span className="flex items-center gap-1.5">
+                  <td className="px-5 py-4">
+                    <button
+                      type="button"
+                      onClick={() => setPriceInfoOpen(true)}
+                      className="flex items-center gap-1.5 text-slate-400 hover:text-orange-600 transition-colors"
+                    >
                       <Lock className="w-3.5 h-3.5" /> Hidden
-                    </span>
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -130,6 +142,21 @@ const BidHistory = () => {
           <p className="text-sm font-semibold text-orange-700">No quotes have been submitted yet.</p>
         </div>
       )}
+
+      <Dialog open={priceInfoOpen} onOpenChange={setPriceInfoOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Lock className="w-4 h-4 text-orange-600" /> Why is the price hidden?
+            </DialogTitle>
+            <DialogDescription>
+              Quoted prices stay strictly between each supplier and the buyer. Showing
+              them to other suppliers would let them undercut each other's pricing —
+              so every bid amount stays confidential until the buyer closes a deal.
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
