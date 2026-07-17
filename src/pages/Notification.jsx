@@ -10,11 +10,13 @@ import requirementService from '@/services/requirement.service';
 import { getNotifMeta } from '@/helper/notif.icons';
 import { toast } from 'sonner';
 import { NotificationSkeleton } from '@/const/CustomSkeletons';
+import { useUserState } from '@/redux/hooks/useUser';
 
 const PAGE_SIZE = 10;
 
 const Notification = () => {
   const navigate = useNavigate();
+  const { user: userProfile } = useUserState();
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -113,10 +115,30 @@ const Notification = () => {
       navigate('/chat');
       return;
     }
-    // Seller-facing notifications (their quote got shortlisted/accepted/rejected)
-    // carry a bidId — route to that bid's own overview, NOT the buyer's action
-    // page. requirements-overview shows every seller's quotes on the requirement;
-    // a seller landing there would see other sellers' bid activity.
+    // Seller-facing "shortlisted"/"accepted" — the actionable next step is
+    // finalizing with the buyer (matches the "Finalize in Chat" CTA on the
+    // buyer's compare/quotes view), so open that chat directly rather than a
+    // read-only bid page the seller can't act from.
+    if (
+      ['shortlisted', 'accepted'].includes(metadata?.quoteStatus) &&
+      metadata?.buyerId &&
+      pid &&
+      userProfile?._id
+    ) {
+      navigate('/chat', {
+        state: {
+          buyerId: metadata.buyerId,
+          sellerId: userProfile._id,
+          productId: pid,
+          isBuyer: false,
+        },
+      });
+      return;
+    }
+    // Any other seller-facing notification carrying a bidId (e.g. rejected) —
+    // route to that bid's own read-only overview, NOT the buyer's action
+    // page. requirements-overview shows every seller's quotes on the
+    // requirement; a seller landing there would see other sellers' activity.
     if (metadata?.bidId) {
       navigate('/product-overview?bidId=' + metadata.bidId);
       return;

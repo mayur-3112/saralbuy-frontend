@@ -3,8 +3,10 @@ import {
   Bell,
   Box,
   CircleUserRound,
+  Compass,
   Gavel,
   Handshake,
+  HelpCircle,
   MapPin,
   Menu,
   MessageCircle,
@@ -63,6 +65,16 @@ const menu = [
     title: 'My Dashboard',
     url: '/dashboard',
     icon: <LayoutDashboard className="w-5 h-5" />,
+  },
+  {
+    title: 'Explore',
+    url: '/product-listing',
+    icon: <Compass className="w-5 h-5" />,
+  },
+  {
+    title: 'How It Works',
+    url: '/how-it-works',
+    icon: <HelpCircle className="w-5 h-5" />,
   },
   {
     title: 'Settings',
@@ -584,6 +596,25 @@ const HomeNavbar = () => {
                 />
               </Link>
 
+              {/* Explore / How It Works — visible top-bar links, not just
+                  buried in the hamburger menu. Hidden below xl to keep the
+                  search pill from getting squeezed on mid-size desktops. */}
+              <div className="hidden xl:flex items-center gap-4 pl-2">
+                <Link
+                  to="/product-listing"
+                  className="flex items-center gap-1.5 text-sm font-semibold text-slate-600 hover:text-orange-600 transition-colors whitespace-nowrap"
+                >
+                  <Compass className="w-4 h-4" />
+                  Explore
+                </Link>
+                <Link
+                  to="/how-it-works"
+                  className="flex items-center gap-1.5 text-sm font-semibold text-slate-600 hover:text-orange-600 transition-colors whitespace-nowrap"
+                >
+                  <HelpCircle className="w-4 h-4" />
+                  How It Works
+                </Link>
+              </div>
               </div>
 
             {/* Unified Search & Location Pill — the single site-wide search.
