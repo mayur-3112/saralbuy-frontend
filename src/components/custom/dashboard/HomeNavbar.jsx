@@ -580,39 +580,42 @@ const HomeNavbar = () => {
       <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-3">
         <div>
           {/* ── Desktop Nav ─────────────────────────────────────────────── */}
-          <nav className="hidden justify-between lg:flex items-center gap-2 xl:gap-4 w-full">
+          <nav className="hidden justify-between lg:flex items-center gap-2 xl:gap-3 w-full">
             {/* Logo + Navigation Links */}
-            <div className="flex items-center gap-3 xl:gap-5 shrink-0">
+            <div className="flex items-center gap-2 xl:gap-3 shrink-0">
               {/* Desktop Burger Menu Trigger */}
-              <div className="hidden lg:flex items-center ml-2">
+              <div className="hidden lg:flex items-center">
                 <Button variant="outline" size="icon" className="shrink-0 rounded-md border-0 bg-transparent hover:bg-slate-100" onClick={() => setOpenSheet(true)}>
                   <Menu className="size-6 text-slate-700" />
                 </Button>
               </div>
 
-              <Link to={'/'} className="flex items-center">
+              {/* Logo was scaled 150% (~effectively ~90px tall / 220px+ wide) —
+                  the single biggest space hog in this row. Dialed back to a
+                  still-prominent but sane size so Location/Category/Search
+                  actually have room to breathe. */}
+              <Link to={'/'} className="flex items-center shrink-0">
                 <img
                   src={SaralBuyLogo}
-                  className="h-12 md:h-16 w-auto object-contain mix-blend-darken dark:invert transform scale-150 ml-4 mr-2"
+                  className="h-10 md:h-11 w-auto object-contain mix-blend-darken dark:invert mr-1"
                   alt={'company logo'}
                 />
               </Link>
 
               {/* Explore / How It Works — visible top-bar links, not just
-                  buried in the hamburger menu. Held off until 2xl: turning
-                  these on at the same breakpoint Location/Category also grow
-                  wider squeezed the search box right back down. */}
-              <div className="hidden 2xl:flex items-center gap-4 pl-2">
+                  buried in the hamburger menu. Compact by design (small text,
+                  tight gap) so they don't crowd the search pill next to them. */}
+              <div className="hidden xl:flex items-center gap-3 pl-1 border-l border-slate-200 ml-1">
                 <Link
                   to="/product-listing"
-                  className="flex items-center gap-1.5 text-sm font-semibold text-slate-600 hover:text-orange-600 transition-colors whitespace-nowrap"
+                  className="flex items-center gap-1 text-sm font-semibold text-slate-600 hover:text-orange-600 transition-colors whitespace-nowrap"
                 >
                   <Compass className="w-4 h-4" />
                   Explore
                 </Link>
                 <Link
                   to="/how-it-works"
-                  className="flex items-center gap-1.5 text-sm font-semibold text-slate-600 hover:text-orange-600 transition-colors whitespace-nowrap"
+                  className="flex items-center gap-1 text-sm font-semibold text-slate-600 hover:text-orange-600 transition-colors whitespace-nowrap"
                 >
                   <HelpCircle className="w-4 h-4" />
                   How It Works
@@ -623,13 +626,14 @@ const HomeNavbar = () => {
             {/* Unified Search & Location Pill — the single site-wide search.
                 Shown on EVERY page including the landing page: the hero search
                 was removed, so hiding this on '/' left the homepage with no
-                search at all. */}
-            <div className="flex-1 max-w-3xl flex items-center bg-white rounded-full border border-slate-200 shadow-sm hover:shadow-md focus-within:shadow-md focus-within:border-orange-300 transition-all duration-300 overflow-visible mx-4">
-              {/* Location — narrower at lg so the search box (below) never
-                  gets squeezed to the point its own padding eats all its
-                  width, which used to leave the "Looking For..." field
-                  looking blank on mid-size desktop screens (~1024-1150px). */}
-              <div className="flex items-center relative group shrink-0 w-24 lg:w-32 xl:w-44 border-r border-slate-200 hover:bg-slate-50 rounded-l-full transition-colors">
+                search at all. Location/Category are fixed-small on purpose —
+                "Bengaluru" and "All Categories" both fit comfortably well
+                under 120px — so Search, the field people actually type into,
+                gets the lion's share of the pill instead of being an
+                afterthought squeezed into whatever's left over. */}
+            <div className="flex-1 max-w-3xl flex items-center bg-white rounded-full border border-slate-200 shadow-sm hover:shadow-md focus-within:shadow-md focus-within:border-orange-300 transition-all duration-300 overflow-visible mx-2 xl:mx-3">
+              {/* Location */}
+              <div className="flex items-center relative group shrink-0 w-[92px] lg:w-[110px] border-r border-slate-200 hover:bg-slate-50 rounded-l-full transition-colors">
                 <MapPin
                   onClick={getGeoLocation}
                   className="w-4 h-4 text-orange-500 absolute left-3 top-1/2 -translate-y-1/2 cursor-pointer hover:scale-110 transition-transform z-10"
@@ -648,7 +652,7 @@ const HomeNavbar = () => {
               <select
                 value={selectedSearchCategory}
                 onChange={e => setSelectedSearchCategory(e.target.value)}
-                className="bg-transparent border-r border-slate-200 text-slate-600 text-sm px-2 lg:px-3 hover:bg-slate-50 focus:outline-none cursor-pointer h-[42px] w-20 lg:w-28 xl:max-w-[140px] xl:w-auto truncate shrink-0 transition-colors"
+                className="bg-transparent border-r border-slate-200 text-slate-600 text-sm px-2 lg:px-3 hover:bg-slate-50 focus:outline-none cursor-pointer h-[42px] w-[104px] lg:w-[128px] truncate shrink-0 transition-colors"
               >
                 <option value="all">All Categories</option>
                 {filteredCategories?.map(cat => (
@@ -663,7 +667,7 @@ const HomeNavbar = () => {
                   no longer has to reserve dead space for it; the input keeps
                   a min-width floor so it can never shrink to an unusable
                   sliver. */}
-              <div className="relative flex-1 flex items-center h-[42px] min-w-[110px] group">
+              <div className="relative flex-1 flex items-center h-[42px] min-w-[140px] group">
                 <Input
                   type="text"
                   onInput={handleInputValue}
