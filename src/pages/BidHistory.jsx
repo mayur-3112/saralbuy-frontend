@@ -81,13 +81,18 @@ const BidHistory = () => {
         <div className="border border-slate-200 rounded-xl divide-y divide-slate-100 overflow-hidden">
           {bidActivityRes.activity.map((a, idx) => (
             <div key={idx} className="flex items-center justify-between gap-4 px-5 py-4">
-              <span className="font-semibold text-slate-800">{a.label}</span>
-              <span className="text-sm text-slate-500">{dateFormatter(a.createdAt, 'dd MMM, hh:mm a')}</span>
-              <span className="text-sm text-slate-500">
-                {a.earliestDeliveryDate
-                  ? 'Delivery by ' + dateFormatter(a.earliestDeliveryDate)
-                  : a.location || '—'}
-              </span>
+              <div>
+                <p className="font-semibold text-slate-800">{a.label}</p>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  {a.availableBrand ? a.availableBrand + ' offered' : 'Construction material quote'}
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-sm text-slate-600">{dateFormatter(a.createdAt, 'dd MMM, hh:mm a')}</p>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  {a.earliestDeliveryDate ? 'Deadline: ' + dateFormatter(a.earliestDeliveryDate) : 'Deadline: —'}
+                </p>
+              </div>
             </div>
           ))}
         </div>
