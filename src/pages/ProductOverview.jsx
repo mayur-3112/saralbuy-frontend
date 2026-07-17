@@ -1018,11 +1018,6 @@ const ProductOverview = () => {
   // bid-activity table — the reference the user asked to match), universal for
   // every viewing supplier rather than an in-page sheet.
   const [quoteSheetOpen, setQuoteSheetOpen] = useState(false);
-  // Reached only from Bid History's "Place a Quote" CTA (?openQuote=1) — this
-  // page no longer has a direct "Place Quote Now" trigger of its own.
-  useEffect(() => {
-    if (openQuote && !isMe) setQuoteSheetOpen(true);
-  }, [openQuote, isMe]);
   const handleBidView = () => {
     const pid = bidOverviewRes ? bidOverviewRes?.product?._id : productResponse?.mainProduct?._id;
     if (isMe) {
@@ -1039,6 +1034,12 @@ const ProductOverview = () => {
   const isMe = bidOverviewRes
     ? bidOverviewRes?.product?.userId?._id === userProfile?._id
     : productResponse?.mainProduct?.userId?._id === userProfile?._id;
+
+  // Reached only from Bid History's "Place a Quote" CTA (?openQuote=1) — this
+  // page no longer has a direct "Place Quote Now" trigger of its own.
+  useEffect(() => {
+    if (openQuote && !isMe) setQuoteSheetOpen(true);
+  }, [openQuote, isMe]);
 
   useEffect(() => {
     let product = bidOverviewRes ? bidOverviewRes?.product : productResponse?.mainProduct;
