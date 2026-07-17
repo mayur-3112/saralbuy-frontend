@@ -17,6 +17,7 @@ import Authentication from './components/custom/auth/Authenticate';
 import CreateProductForm from './pages/CreateProductForm';
 import ProductListing from './pages/ProductListing';
 import ProductOverview from './pages/ProductOverview';
+import BidHistory from './pages/BidHistory';
 import Profile from './pages/profile/Profile';
 import { AccountSettings } from './pages/profile/AccountSetting';
 import BidListing from './pages/profile/BidListing';
@@ -117,6 +118,7 @@ export const router = createBrowserRouter(
           <Route path="/update-product/:productId" element={<UpdateCreateProductForm />} />
           <Route path="/product-listing" element={<ProductListing />} />
           <Route path="/product-overview" element={<ProductOverview />} />
+          <Route path="/bid-history/:productId" element={<BidHistory />} />
           <Route path="/terms" element={<TermsAndPrivacy />} />
           <Route path="/privacy" element={<TermsAndPrivacy />} />
           <Route path="/how-it-works" element={<HowItWorks />} />

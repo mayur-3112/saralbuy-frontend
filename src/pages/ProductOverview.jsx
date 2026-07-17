@@ -1013,16 +1013,17 @@ const ProductOverview = () => {
     }
   };
 
-  // "Total Quote : N" — used to fetch and jump to a single (arbitrary, often
-  // unauthorized) bid's overview via bidId. Now routes the same way as the
-  // sticky bar below: the owner goes to their action page; anyone else opens
-  // the quote sheet, which shows the anonymized bid-activity list.
+  // "Total Quote : N" — the owner goes to their action page (same as the
+  // sticky bar); anyone else goes to the dedicated Bid History page (eBay-style
+  // bid-activity table — the reference the user asked to match), universal for
+  // every viewing supplier rather than an in-page sheet.
   const [quoteSheetOpen, setQuoteSheetOpen] = useState(false);
   const handleBidView = () => {
+    const pid = bidOverviewRes ? bidOverviewRes?.product?._id : productResponse?.mainProduct?._id;
     if (isMe) {
       handleGoToActionPage();
-    } else {
-      setQuoteSheetOpen(true);
+    } else if (pid) {
+      navigate('/bid-history/' + pid);
     }
   };
 
@@ -1612,51 +1613,20 @@ const ProductOverview = () => {
                       <SheetTitle className="text-3xl font-extrabold text-slate-800">Submit Quotation</SheetTitle>
                     </SheetHeader>
                     <div className="p-4 sm:p-8 lg:p-10 pb-24 space-y-6">
-                      {/* Bid activity — anonymized. A supplier never sees WHO else
-                          quoted or their exact PRICE (that stays confidential
-                          between each seller and the buyer); they only see when
-                          quotes came in, roughly where from, and non-identifying
-                          quote metadata — enough to gauge the pace of interest
-                          without revealing anything competitive. */}
-                      {bidActivityRes?.activity?.length > 0 ? (
-                        <div className="bg-white rounded-2xl border border-slate-200 p-6">
-                          <h4 className="font-bold text-slate-800 text-sm uppercase tracking-wide mb-4">
-                            Quote activity · {bidActivityRes.total} submitted
-                          </h4>
-                          <div className="space-y-2 max-h-64 overflow-y-auto">
-                            {bidActivityRes.activity.map((a, idx) => (
-                              <div
-                                key={idx}
-                                className="flex items-center justify-between gap-3 text-sm border-b border-slate-100 last:border-0 py-2.5"
-                              >
-                                <div className="flex flex-col">
-                                  <span className="font-semibold text-slate-700">
-                                    {dateFormatter(a.createdAt, 'dd MMM, hh:mm a')}
-                                  </span>
-                                  <span className="text-xs text-slate-500">
-                                    {a.location || 'Location not specified'}
-                                  </span>
-                                </div>
-                                <div className="flex flex-col items-end text-right">
-                                  {a.earliestDeliveryDate && (
-                                    <span className="text-xs text-slate-500">
-                                      Delivery by {dateFormatter(a.earliestDeliveryDate)}
-                                    </span>
-                                  )}
-                                  {a.availableBrand && (
-                                    <span className="text-xs font-semibold text-slate-600">
-                                      {a.availableBrand}
-                                    </span>
-                                  )}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="bg-orange-50 border border-orange-100 rounded-2xl p-4 text-center">
-                          <p className="text-sm font-semibold text-orange-700">Be the first to quote on this requirement.</p>
-                        </div>
+                      {bidActivityRes?.total > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const pid = bidOverviewRes ? bidOverviewRes?.product?._id : productResponse?.mainProduct?._id;
+                            if (pid) navigate('/bid-history/' + pid);
+                          }}
+                          className="w-full bg-white rounded-2xl border border-slate-200 p-4 flex items-center justify-between text-left hover:border-orange-300 transition-colors"
+                        >
+                          <span className="text-sm font-semibold text-slate-700">
+                            {bidActivityRes.total} quote{bidActivityRes.total > 1 ? 's' : ''} submitted so far
+                          </span>
+                          <span className="text-sm text-orange-600 font-bold underline">View bid history</span>
+                        </button>
                       )}
 
                       {isMergeQuote ? (
