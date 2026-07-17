@@ -6,8 +6,6 @@ import productService from '@/services/product.service';
 import bidService from '@/services/bid.service';
 import { dateFormatter } from '@/utils/dateFormatter';
 import { CategoryFormSkeleton } from '@/const/CustomSkeletons';
-import { Button } from '@/components/ui/button';
-import { useUserState } from '@/redux/hooks/useUser';
 
 // Bid history — the anonymized, table-style view every viewing supplier sees
 // for a requirement ("universal for supplier" per the eBay Bid History
@@ -17,7 +15,6 @@ import { useUserState } from '@/redux/hooks/useUser';
 const BidHistory = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
-  const { user: userProfile } = useUserState();
 
   const {
     fn: getProductById,
@@ -40,7 +37,6 @@ const BidHistory = () => {
   // getProductById returns [{ mainProduct }] (array), same as ProductOverview.
   const product = Array.isArray(productResponse) ? productResponse[0]?.mainProduct : productResponse?.mainProduct;
   const loading = productLoading || activityLoading;
-  const isMe = product?.userId?._id === userProfile?._id;
 
   if (loading && !product) {
     return (
@@ -59,19 +55,9 @@ const BidHistory = () => {
         <ChevronLeft className="w-4 h-4" /> Back to RFQ
       </button>
 
-      <div className="flex items-start justify-between gap-4 mb-6">
-        <div>
-          <h1 className="text-xl font-bold text-slate-800 mb-1">Bid History</h1>
-          <p className="text-sm text-slate-500">{product?.title || 'Requirement'}</p>
-        </div>
-        {!isMe && (
-          <Button
-            onClick={() => navigate('/product-overview?productId=' + productId + '&openQuote=1')}
-            className="bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-full shrink-0"
-          >
-            Place a Quote
-          </Button>
-        )}
+      <div className="mb-6">
+        <h1 className="text-xl font-bold text-slate-800 mb-1">Bid History</h1>
+        <p className="text-sm text-slate-500">{product?.title || 'Requirement'}</p>
       </div>
 
       <div className="flex flex-wrap gap-x-8 gap-y-2 bg-slate-50 border border-slate-200 rounded-xl px-5 py-4 mb-6">
