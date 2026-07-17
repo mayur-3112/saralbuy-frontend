@@ -85,33 +85,41 @@ const BidHistory = () => {
       </div>
 
       {bidActivityRes?.activity?.length > 0 ? (
-        <div className="border border-slate-200 rounded-xl divide-y divide-slate-100 overflow-hidden">
-          {bidActivityRes.activity.map((a, idx) => (
-            <div
-              key={idx}
-              className="flex items-center justify-between gap-4 px-5 py-4 hover:bg-slate-50 transition-colors"
-            >
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="w-9 h-9 rounded-full bg-orange-100 text-orange-700 font-bold text-sm flex items-center justify-center shrink-0">
-                  {(a.label || '?')[0]}
-                </div>
-                <div className="min-w-0">
-                  <p className="font-semibold text-slate-800 truncate">{a.label}</p>
-                  {a.availableBrand && (
-                    <p className="text-xs text-slate-500 mt-0.5 truncate">{a.availableBrand} offered</p>
-                  )}
-                </div>
-              </div>
-              <div className="text-right shrink-0">
-                <p className="text-sm text-slate-600">{dateFormatter(a.createdAt, 'dd MMM, hh:mm a')}</p>
-                {a.earliestDeliveryDate && (
-                  <p className="text-xs text-slate-500 mt-0.5">
-                    Deadline: {dateFormatter(a.earliestDeliveryDate)}
-                  </p>
-                )}
-              </div>
-            </div>
-          ))}
+        <div className="border border-slate-200 rounded-xl overflow-hidden overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
+                <th className="px-5 py-3 font-semibold">Supplier</th>
+                <th className="px-5 py-3 font-semibold">Bid Date &amp; Time</th>
+                <th className="px-5 py-3 font-semibold">Deadline</th>
+                <th className="px-5 py-3 font-semibold">Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              {bidActivityRes.activity.map((a, idx) => (
+                <tr key={idx} className="border-t border-slate-100 hover:bg-slate-50 transition-colors">
+                  <td className="px-5 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-orange-100 text-orange-700 font-bold text-xs flex items-center justify-center shrink-0">
+                        {(a.label || '?')[0]}
+                      </div>
+                      <div>
+                        <p className="font-semibold text-slate-800">{a.label}</p>
+                        {a.availableBrand && (
+                          <p className="text-xs text-slate-500">{a.availableBrand} offered</p>
+                        )}
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-5 py-4 text-slate-600">{dateFormatter(a.createdAt, 'dd MMM, hh:mm a')}</td>
+                  <td className="px-5 py-4 text-slate-600">
+                    {a.earliestDeliveryDate ? dateFormatter(a.earliestDeliveryDate) : '—'}
+                  </td>
+                  <td className="px-5 py-4 text-slate-400 italic">Confidential</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       ) : (
         <div className="bg-orange-50 border border-orange-100 rounded-2xl p-6 text-center">
