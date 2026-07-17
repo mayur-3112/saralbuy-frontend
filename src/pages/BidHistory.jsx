@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, Gavel, Package } from 'lucide-react';
 import { useFetch } from '@/hooks/useFetch';
 import productService from '@/services/product.service';
 import bidService from '@/services/bid.service';
@@ -55,9 +55,16 @@ const BidHistory = () => {
         <ChevronLeft className="w-4 h-4" /> Back to RFQ
       </button>
 
-      <div className="mb-6">
-        <h1 className="text-xl font-bold text-slate-800 mb-1">Bid History</h1>
-        <p className="text-sm text-slate-500">{product?.title || 'Requirement'}</p>
+      <div className="flex items-center gap-3 mb-6">
+        <div className="w-11 h-11 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center shrink-0">
+          <Gavel className="w-5 h-5 text-orange-600" />
+        </div>
+        <div>
+          <h1 className="text-xl font-bold text-slate-800">Bid History</h1>
+          <p className="text-sm text-slate-500 flex items-center gap-1">
+            <Package className="w-3.5 h-3.5" /> {product?.title || 'Requirement'}
+          </p>
+        </div>
       </div>
 
       <div className="flex flex-wrap gap-x-8 gap-y-2 bg-slate-50 border border-slate-200 rounded-xl px-5 py-4 mb-6">
@@ -80,18 +87,28 @@ const BidHistory = () => {
       {bidActivityRes?.activity?.length > 0 ? (
         <div className="border border-slate-200 rounded-xl divide-y divide-slate-100 overflow-hidden">
           {bidActivityRes.activity.map((a, idx) => (
-            <div key={idx} className="flex items-center justify-between gap-4 px-5 py-4">
-              <div>
-                <p className="font-semibold text-slate-800">{a.label}</p>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  {a.availableBrand ? a.availableBrand + ' offered' : 'Construction material quote'}
-                </p>
+            <div
+              key={idx}
+              className="flex items-center justify-between gap-4 px-5 py-4 hover:bg-slate-50 transition-colors"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-9 h-9 rounded-full bg-orange-100 text-orange-700 font-bold text-sm flex items-center justify-center shrink-0">
+                  {(a.label || '?')[0]}
+                </div>
+                <div className="min-w-0">
+                  <p className="font-semibold text-slate-800 truncate">{a.label}</p>
+                  {a.availableBrand && (
+                    <p className="text-xs text-slate-500 mt-0.5 truncate">{a.availableBrand} offered</p>
+                  )}
+                </div>
               </div>
-              <div className="text-right">
+              <div className="text-right shrink-0">
                 <p className="text-sm text-slate-600">{dateFormatter(a.createdAt, 'dd MMM, hh:mm a')}</p>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  {a.earliestDeliveryDate ? 'Deadline: ' + dateFormatter(a.earliestDeliveryDate) : 'Deadline: —'}
-                </p>
+                {a.earliestDeliveryDate && (
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Deadline: {dateFormatter(a.earliestDeliveryDate)}
+                  </p>
+                )}
               </div>
             </div>
           ))}
