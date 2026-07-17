@@ -113,11 +113,18 @@ const Notification = () => {
       navigate('/chat');
       return;
     }
+    // Seller-facing notifications (their quote got shortlisted/accepted/rejected)
+    // carry a bidId — route to that bid's own overview, NOT the buyer's action
+    // page. requirements-overview shows every seller's quotes on the requirement;
+    // a seller landing there would see other sellers' bid activity.
+    if (metadata?.bidId) {
+      navigate('/product-overview?bidId=' + metadata.bidId);
+      return;
+    }
     if (pid) {
-      // The route takes a REQUIREMENT id, but notifications only carry the
-      // PRODUCT id — resolve it first (same lookup HomeNavbar's dropdown
-      // already uses correctly). Navigating with the raw product id 404s,
-      // since requirements-overview looks it up in the Requirement collection.
+      // Buyer-facing (e.g. new_bid): the route takes a REQUIREMENT id, but
+      // notifications only carry the PRODUCT id — resolve it first (same
+      // lookup HomeNavbar's dropdown already uses correctly).
       try {
         const requirementId = await requirementService.getRequirementId(pid);
         if (!requirementId) throw new Error('not found');
@@ -261,40 +268,39 @@ const Notification = () => {
                     <div key={_id} className={``}>
                       <div
                         onClick={() => handleView(notif)}
-                        className={`p-4 grid ${bgClass} rounded-md space-y-2 border relative group transition-all duration-200 cursor-pointer hover:border-orange-300`}
+                        className={`p-4 ${bgClass} rounded-md space-y-2 border group transition-all duration-200 cursor-pointer hover:border-orange-300`}
                       >
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="absolute top-2 right-2 h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteClick(_id);
-                          }}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-
-                        <div className="grid grid-cols-3 items-center gap-5">
-                          <div className="text-md font-bold text-gray-800 capitalize col-span-2 flex items-center gap-2">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="text-md font-bold text-gray-800 capitalize flex items-center gap-2 min-w-0">
                             {Icon}
-                            <span className="break-words flex gap-2">
-                              {title}{' '}
-                              <div
-                                className={`${!seen ? 'w-2 h-2 rounded-full bg-orange-400' : ''}`}
-                              ></div>
+                            <span className="break-words flex items-center gap-2 min-w-0">
+                              <span className="truncate">{title}</span>
+                              {!seen && <span className="w-2 h-2 rounded-full bg-orange-400 shrink-0" />}
                             </span>
                           </div>
-                          <p className="text-sm text-orange-500 col-span-1 text-right">
-                            {formatDate(createdAt)}
-                          </p>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <p className="text-sm text-orange-500 whitespace-nowrap">
+                              {formatDate(createdAt)}
+                            </p>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteClick(_id);
+                              }}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </div>
 
-                        <div className="grid grid-cols-3 items-center gap-5">
-                          <p className="text-sm font-medium text-gray-600 line-clamp-2 col-span-2">
+                        <div className="flex items-center justify-between gap-5">
+                          <p className="text-sm font-medium text-gray-600 line-clamp-2">
                             {getDescriptionText(notif)}
                           </p>
-                          <span className="text-sm text-gray-600 col-span-1 text-right underline group-hover:text-gray-900">
+                          <span className="text-sm text-gray-600 text-right underline group-hover:text-gray-900 shrink-0">
                             View
                           </span>
                         </div>
