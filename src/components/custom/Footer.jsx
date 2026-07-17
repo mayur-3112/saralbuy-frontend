@@ -22,7 +22,7 @@ export default function Footer() {
           </p>
           <div className="flex flex-wrap gap-4 pt-1">
             <div className="text-xs font-semibold text-orange-700 bg-orange-50 border border-orange-200 px-3.5 py-1.5 rounded-full">
-              🚀 Audited Suppliers
+              🚀 Trusted Suppliers
             </div>
             <div className="text-xs font-semibold text-cyan-700 bg-cyan-50 border border-cyan-200 px-3.5 py-1.5 rounded-full">
               🔒 100% Secure Sourcing

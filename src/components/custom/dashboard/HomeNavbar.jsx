@@ -3,10 +3,8 @@ import {
   Bell,
   Box,
   CircleUserRound,
-  Compass,
   Gavel,
   Handshake,
-  HelpCircle,
   MapPin,
   Menu,
   MessageCircle,
@@ -22,7 +20,6 @@ import {
   XCircle,
   CuboidIcon,
   NotebookPen,
-  Calculator,
   LayoutDashboard,
 } from 'lucide-react';
 
@@ -66,26 +63,6 @@ const menu = [
     title: 'My Dashboard',
     url: '/dashboard',
     icon: <LayoutDashboard className="w-5 h-5" />,
-  },
-  {
-    title: 'Explore',
-    url: '/product-listing',
-    icon: <Compass className="w-5 h-5" />,
-  },
-  {
-    title: 'How It Works',
-    url: '/how-it-works',
-    icon: <HelpCircle className="w-5 h-5" />,
-  },
-  {
-    title: 'Supplier Tools',
-    url: '/supplier-tools',
-    icon: <Calculator className="w-5 h-5" />,
-  },
-  {
-    title: 'Buyer Tools',
-    url: '/buyer-tools',
-    icon: <Compass className="w-5 h-5" />,
   },
   {
     title: 'Settings',
@@ -167,12 +144,10 @@ const HomeNavbar = () => {
   });
 
   // Filter out legacy categories
-  const legacyNames = [
-    'Building Materials',
-    'Electrical & Lights',
-    'Plumbing & Sanitary',
-    'Paints & Waterproofing'
-  ];
+  // 'Plumbing & Sanitary' used to be in this list — it's a real, currently
+  // seeded category (backend_v2/scripts/categories.json), not a legacy dup,
+  // so excluding it silently hid it from the All Categories dropdown.
+  const legacyNames = ['Building Materials', 'Electrical & Lights', 'Paints & Waterproofing'];
   const filteredCategories = categories?.filter(cat => !legacyNames.includes(cat.categoryName));
 
   useEffect(() => {
@@ -1040,7 +1015,7 @@ const HomeNavbar = () => {
                 <select
                   value={selectedSearchCategory}
                   onChange={e => setSelectedSearchCategory(e.target.value)}
-                  className="bg-gray-50 border-r border-gray-300 text-gray-700 text-[10px] px-1.5 py-2 focus:outline-none cursor-pointer h-[32px] max-w-[80px] truncate shrink-0"
+                  className="bg-gray-50 border-r border-gray-300 text-gray-700 text-[11px] px-1.5 py-2 focus:outline-none cursor-pointer h-[32px] max-w-[110px] truncate shrink-0"
                 >
                   <option value="all">All</option>
                   {filteredCategories?.map(cat => (
@@ -1063,6 +1038,23 @@ const HomeNavbar = () => {
                 <SearchIcon className="absolute right-2 top-2 h-3.5 w-3.5 pointer-events-none opacity-50" />
                 <SearchDropdown id="mobile-search-dropdown" />
               </div>
+            </div>
+
+            {/* Mobile Location — was only reachable inside the hamburger sheet;
+                now visible on the persistent top bar like desktop's pill. */}
+            <div className="relative flex items-center mt-2 bg-white rounded-sm border border-gray-300 focus-within:ring-1 focus-within:ring-gray-900 focus-within:border-gray-900">
+              <MapPin
+                onClick={getGeoLocation}
+                className="w-3.5 h-3.5 text-orange-500 absolute left-2.5 top-1/2 -translate-y-1/2 cursor-pointer"
+                title="Detect my location"
+              />
+              <Input
+                placeholder="Location..."
+                className="pl-8 text-xs border-none shadow-none focus-visible:ring-0 h-[32px] w-full"
+                value={currentLocation}
+                onChange={handleLocationChange}
+                onKeyDown={handleLocationKeyDown}
+              />
             </div>
           </div>
         </div>

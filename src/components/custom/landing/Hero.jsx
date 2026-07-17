@@ -48,7 +48,7 @@ export default function Hero({ onOpenAuth }) {
   };
 
   const handleFindLeads = () => {
-    if (user) navigate('/dashboard');
+    if (user) navigate('/product-listing');
     else onOpenAuth('seller');
   };
 
@@ -81,12 +81,12 @@ export default function Hero({ onOpenAuth }) {
               Stop chasing suppliers.
               <br />
               <span className="bg-gradient-to-r from-orange-600 to-cyan-500 bg-clip-text text-transparent">
-                Post once, get quotes in hours.
+                Post once, get quotes in minutes.
               </span>
             </h1>
 
             <p className="text-slate-600 text-lg sm:text-xl leading-relaxed max-w-xl mt-6 font-medium">
-              SaralBuy broadcasts your requirements to audited suppliers across Karnataka.
+              SaralBuy broadcasts your requirements to trusted suppliers across Karnataka.
               <span className="block mt-2 font-bold text-slate-800">
                 Anonymous sourcing &bull; Competitive pricing &bull; Zero spam
               </span>
