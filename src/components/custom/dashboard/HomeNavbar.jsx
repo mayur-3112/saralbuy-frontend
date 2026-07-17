@@ -580,68 +580,304 @@ const HomeNavbar = () => {
       <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-3">
         <div>
           {/* ── Desktop Nav ─────────────────────────────────────────────── */}
-          <nav className="hidden justify-between lg:flex items-center gap-2 xl:gap-3 w-full">
-            {/* Logo + Navigation Links */}
-            <div className="flex items-center gap-2 xl:gap-3 shrink-0">
-              {/* Desktop Burger Menu Trigger */}
-              <div className="hidden lg:flex items-center">
-                <Button variant="outline" size="icon" className="shrink-0 rounded-md border-0 bg-transparent hover:bg-slate-100" onClick={() => setOpenSheet(true)}>
-                  <Menu className="size-6 text-slate-700" />
+          {/* Two rows instead of one crowded row: row 1 is branding/nav/
+              account actions, row 2 is the search pill on its own line with
+              nearly the full bar width — Location/Category/Search never have
+              to fight Explore/How It Works/icons/buttons for space again. */}
+          <nav className="hidden lg:flex flex-col gap-2.5 w-full">
+            <div className="flex justify-between items-center gap-2 xl:gap-3 w-full">
+              {/* Logo + Navigation Links */}
+              <div className="flex items-center gap-2 xl:gap-3 shrink-0">
+                {/* Desktop Burger Menu Trigger */}
+                <div className="hidden lg:flex items-center">
+                  <Button variant="outline" size="icon" className="shrink-0 rounded-md border-0 bg-transparent hover:bg-slate-100" onClick={() => setOpenSheet(true)}>
+                    <Menu className="size-6 text-slate-700" />
+                  </Button>
+                </div>
+
+                <Link to={'/'} className="flex items-center shrink-0">
+                  <img
+                    src={SaralBuyLogo}
+                    className="h-10 md:h-11 w-auto object-contain mix-blend-darken dark:invert mr-1"
+                    alt={'company logo'}
+                  />
+                </Link>
+
+                {/* Explore / How It Works — now visible from lg, since row 1
+                    no longer has to share space with the search pill. */}
+                <div className="hidden lg:flex items-center gap-3 pl-1 border-l border-slate-200 ml-1">
+                  <Link
+                    to="/product-listing"
+                    className="flex items-center gap-1 text-sm font-semibold text-slate-600 hover:text-orange-600 transition-colors whitespace-nowrap"
+                  >
+                    <Compass className="w-4 h-4" />
+                    Explore
+                  </Link>
+                  <Link
+                    to="/how-it-works"
+                    className="flex items-center gap-1 text-sm font-semibold text-slate-600 hover:text-orange-600 transition-colors whitespace-nowrap"
+                  >
+                    <HelpCircle className="w-4 h-4" />
+                    How It Works
+                  </Link>
+                </div>
+              </div>
+
+              {/* Right Side Actions */}
+              <div className="flex items-center gap-2 xl:gap-3 shrink-0">
+                {/* Icons Row */}
+                <div className="flex gap-3 items-center space-x-1">
+                {/* Messages Popover */}
+                {user && (
+                  <Popover open={showMessageDropdown} onOpenChange={setShowMessageDropdown}>
+                    <PopoverTrigger asChild>
+                      <div className="cursor-pointer relative p-2 rounded-full bg-slate-50 hover:bg-slate-100 transition-colors">
+                        <MessageSquareText className="w-5 h-5 text-slate-700" />
+                        {unreadChatsCount > 0 && (
+                          <Badge
+                            className="h-[18px] min-w-[18px] text-[10px] font-bold rounded-full px-1 py-0 flex items-center justify-center absolute -top-1 -right-1 shadow-sm bg-gradient-to-r from-red-500 to-rose-500 text-white border border-white"
+                            variant="destructive"
+                          >
+                            {unreadChatsCount}
+                          </Badge>
+                        )}
+                      </div>
+                    </PopoverTrigger>
+
+                    <PopoverContent className="mt-2 w-80 p-0 rounded-xl shadow-lg border border-gray-200 bg-white">
+                      {recentChats.filter(c => c.lastMessage).length === 0 ? (
+                        <p className="text-sm text-center text-gray-500 py-4">
+                          No active conversations
+                        </p>
+                      ) : (
+                        <>
+                          <div className="max-h-80 overflow-y-auto p-2 space-y-1">
+                            {recentChats
+                              .filter(c => c.lastMessage)
+                              .sort((a, b) => {
+                                const tA = a.lastMessage?.timestamp
+                                  ? new Date(a.lastMessage.timestamp).getTime()
+                                  : 0;
+                                const tB = b.lastMessage?.timestamp
+                                  ? new Date(b.lastMessage.timestamp).getTime()
+                                  : 0;
+                                return tB - tA;
+                              })
+                              .slice(0, 5)
+                              .map((chat, idx) => {
+                                const isBuyer = chat.buyerId === user?._id;
+                                const isSeller = chat.sellerId === user?._id;
+                                const unreadCount = isBuyer
+                                  ? chat.buyerUnreadCount
+                                  : isSeller
+                                    ? chat.sellerUnreadCount
+                                    : 0;
+                                const isUnread = unreadCount > 0;
+
+                                return (
+                                  <div
+                                    key={idx}
+                                    onClick={() => handleMessageClick(chat)}
+                                    className={`flex w-full items-center gap-3 p-2 rounded-lg cursor-pointer transition ${
+                                      isUnread
+                                        ? 'bg-orange-50 hover:bg-orange-100'
+                                        : 'hover:bg-gray-50'
+                                    }`}
+                                  >
+                                    {/* Avatar */}
+                                    <div className="bg-orange-500 p-2 rounded-full text-white flex items-center justify-center flex-shrink-0 relative">
+                                      <MessageCircle className="w-4 h-4" />
+                                      {isUnread && (
+                                        <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
+                                          <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500" />
+                                        </span>
+                                      )}
+                                      {/* Online dot placeholder — replace with real isUserOnline(id) */}
+                                      <span className="absolute -bottom-0.5 -right-0.5 flex h-3 w-3">
+                                        <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500 border-2 border-white" />
+                                      </span>
+                                    </div>
+
+                                    {/* Info */}
+                                    <div className="flex-1 min-w-0">
+                                      <p className="font-semibold text-gray-800 text-sm mb-1 flex justify-between">
+                                        <span>{chat.name || (isBuyer ? 'Seller' : 'Buyer')}</span>
+                                        {isUnread && (
+                                          <span className="text-xs bg-red-100 text-red-600 px-1.5 rounded-full">
+                                            {unreadCount}
+                                          </span>
+                                        )}
+                                      </p>
+                                      <div className="flex items-center justify-between gap-2">
+                                        <p
+                                          className={`text-sm flex-1 min-w-0 truncate ${isUnread ? 'font-medium text-gray-800' : 'text-gray-600'}`}
+                                        >
+                                          {chat.lastMessage?.message || 'Attachment'}
+                                        </p>
+                                        <span className="text-xs text-gray-400 flex-shrink-0 ml-2">
+                                          {chat.lastMessage?.timestamp
+                                            ? format(
+                                                new Date(chat.lastMessage.timestamp),
+                                                'hh:mm a'
+                                              ).toLowerCase()
+                                            : ''}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                          </div>
+
+                          {recentChats.filter(c => c.lastMessage).length > 5 && (
+                            <div className="border-t border-gray-200 p-2 ">
+                              <button
+                                onClick={() => {
+                                  setShowMessageDropdown(false);
+                                  navigate('/chat');
+                                }}
+                                className="w-full text-center text-sm font-medium cursor-pointer  text-orange-600 hover:text-orange-700 py-2 rounded-lg hover:bg-orange-50 transition-colors"
+                              >
+                                View All Chats
+                              </button>
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </PopoverContent>
+                  </Popover>
+                )}
+
+                {/* Notifications Popover */}
+                <Popover
+                  open={showNotificationDropdown}
+                  onOpenChange={open => {
+                    if (open) ensureNotifyPermission(); // user gesture — needed for Safari
+                    setShowNotificationDropdown(open);
+                    if (!open && notifications.some(n => !n.seen)) {
+                      socket.emit(SOCKET_EVENTS.NOTIFICATION_MARK_ALL_READ);
+                      setNotifications(prev => prev.map(n => ({ ...n, seen: true })));
+                    }
+                  }}
+                >
+                  <PopoverTrigger asChild>
+                    <div className="cursor-pointer relative p-2 rounded-full bg-slate-50 hover:bg-slate-100 transition-colors">
+                      <Bell className="w-5 h-5 text-slate-700" />
+                      {unseenCount > 0 && (
+                        <Badge
+                          className="h-[18px] min-w-[18px] text-[10px] font-bold rounded-full px-1 py-0 flex items-center justify-center absolute -top-1 -right-1 shadow-sm bg-gradient-to-r from-red-500 to-rose-500 text-white border border-white"
+                          variant="destructive"
+                        >
+                          {unseenCount}
+                        </Badge>
+                      )}
+                    </div>
+                  </PopoverTrigger>
+
+                  <PopoverContent className="mt-2 w-80 p-0 rounded-xl shadow-lg border border-gray-200 bg-white overflow-hidden">
+                    {notifications.length === 0 ? (
+                      <p className="text-sm text-center text-gray-500 py-4">No notifications</p>
+                    ) : (
+                      <>
+                        <div className="max-h-80 overflow-y-auto">
+                          {notifications.slice(0, 5).map(notif => {
+                            const { Icon, colorClass } = getNotifMeta(notif.type);
+                            return (
+                              <div
+                                key={notif._id}
+                                onClick={() => handleNotificationClick(notif)}
+                                className={`flex items-center gap-3 p-3 hover:bg-orange-50 cursor-pointer border-b last:border-b-0 ${
+                                  !notif.seen ? 'bg-orange-50/50' : ''
+                                }`}
+                              >
+                                <div
+                                  className={`${colorClass} p-2 rounded-full text-white flex-shrink-0`}
+                                >
+                                  <Icon className="w-4 h-4" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <p className="font-semibold text-sm truncate">{notif.title}</p>
+                                  <p className="text-xs text-gray-600 line-clamp-2">
+                                    {notif.description}
+                                  </p>
+                                  <span className="text-[10px] text-gray-400 mt-1 block">
+                                    {notif.createdAt
+                                      ? format(new Date(notif.createdAt), 'hh:mm a').toLowerCase()
+                                      : ''}
+                                  </span>
+                                </div>
+                                {!notif.seen && (
+                                  <div className="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0" />
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        {notifications.length > 5 && (
+                          <div className="border-t border-gray-200 p-2 bg-gray-50 ">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="w-full text-orange-600 hover:text-orange-700 hover:bg-orange-100 h-8 cursor-pointer"
+                              onClick={() => {
+                                setShowNotificationDropdown(false);
+                                navigate('/account/notification');
+                              }}
+                            >
+                              View All Notifications
+                            </Button>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </PopoverContent>
+                </Popover>
+
+                </div>
+
+                {/* Post a Requirement */}
+                <Button
+                  onClick={() => {
+                    navigate('/requirement');
+                    setOpenSheet(false);
+                  }}
+                  variant="default"
+                  size="sm"
+                  className="bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 hover:shadow-lg hover:shadow-orange-500/40 hover:-translate-y-0.5 active:scale-95 text-white font-bold px-4 xl:px-6 py-2 rounded-full transition-all duration-300 cursor-pointer text-sm border-0 group ring-2 ring-white/50 ring-offset-1 ring-offset-orange-50 whitespace-nowrap"
+                >
+                  Post Requirements
+                  <span className="ml-1 opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-1 group-hover:translate-x-1 transition-all duration-300">→</span>
+                </Button>
+
+                {/* Account button */}
+                <Button
+                  onClick={user ? handleProfileClick : () => window.dispatchEvent(new Event('session-expired'))}
+                  variant="outline"
+                  className="hidden lg:flex items-center gap-2 font-bold text-slate-700 border border-slate-200/60 hover:border-orange-300 hover:bg-orange-50 hover:text-orange-600 hover:shadow-md hover:-translate-y-0.5 px-3 xl:px-5 py-2.5 rounded-full cursor-pointer transition-all duration-300 shadow-sm bg-white/80 active:scale-95"
+                >
+                  <UserRound className="w-4 h-4" />
+                  <span className={user ? 'hidden xl:inline' : 'inline'}>{user ? 'My Account' : 'Login'}</span>
                 </Button>
               </div>
+            </div>
 
-              {/* Logo was scaled 150% (~effectively ~90px tall / 220px+ wide) —
-                  the single biggest space hog in this row. Dialed back to a
-                  still-prominent but sane size so Location/Category/Search
-                  actually have room to breathe. */}
-              <Link to={'/'} className="flex items-center shrink-0">
-                <img
-                  src={SaralBuyLogo}
-                  className="h-10 md:h-11 w-auto object-contain mix-blend-darken dark:invert mr-1"
-                  alt={'company logo'}
-                />
-              </Link>
-
-              {/* Explore / How It Works — visible top-bar links, not just
-                  buried in the hamburger menu. Compact by design (small text,
-                  tight gap) so they don't crowd the search pill next to them. */}
-              <div className="hidden xl:flex items-center gap-3 pl-1 border-l border-slate-200 ml-1">
-                <Link
-                  to="/product-listing"
-                  className="flex items-center gap-1 text-sm font-semibold text-slate-600 hover:text-orange-600 transition-colors whitespace-nowrap"
-                >
-                  <Compass className="w-4 h-4" />
-                  Explore
-                </Link>
-                <Link
-                  to="/how-it-works"
-                  className="flex items-center gap-1 text-sm font-semibold text-slate-600 hover:text-orange-600 transition-colors whitespace-nowrap"
-                >
-                  <HelpCircle className="w-4 h-4" />
-                  How It Works
-                </Link>
-              </div>
-              </div>
-
-            {/* Unified Search & Location Pill — the single site-wide search.
-                Shown on EVERY page including the landing page: the hero search
-                was removed, so hiding this on '/' left the homepage with no
-                search at all. Location/Category are fixed-small on purpose —
-                "Bengaluru" and "All Categories" both fit comfortably well
-                under 120px — so Search, the field people actually type into,
-                gets the lion's share of the pill instead of being an
-                afterthought squeezed into whatever's left over. */}
-            <div className="flex-1 max-w-3xl flex items-center bg-white rounded-full border border-slate-200 shadow-sm hover:shadow-md focus-within:shadow-md focus-within:border-orange-300 transition-all duration-300 overflow-visible mx-2 xl:mx-3">
+            {/* Row 2 — Unified Search & Location Pill, on its own line with
+                nearly the full bar width. Shown on EVERY page including the
+                landing page: the hero search was removed, so hiding this on
+                '/' left the homepage with no search at all. */}
+            <div className="w-full max-w-4xl mx-auto flex items-center bg-white rounded-full border border-slate-200 shadow-sm hover:shadow-md focus-within:shadow-md focus-within:border-orange-300 transition-all duration-300 overflow-visible">
               {/* Location */}
-              <div className="flex items-center relative group shrink-0 w-[92px] lg:w-[110px] border-r border-slate-200 hover:bg-slate-50 rounded-l-full transition-colors">
+              <div className="flex items-center relative group shrink-0 w-32 lg:w-40 border-r border-slate-200 hover:bg-slate-50 rounded-l-full transition-colors">
                 <MapPin
                   onClick={getGeoLocation}
-                  className="w-4 h-4 text-orange-500 absolute left-3 top-1/2 -translate-y-1/2 cursor-pointer hover:scale-110 transition-transform z-10"
+                  className="w-4 h-4 text-orange-500 absolute left-4 top-1/2 -translate-y-1/2 cursor-pointer hover:scale-110 transition-transform z-10"
                   title="Detect my location"
                 />
                 <Input
                   placeholder="Location..."
-                  className="bg-transparent pl-9 pr-2 text-sm border-0 shadow-none focus-visible:ring-0 h-[42px] w-full truncate cursor-pointer rounded-l-full"
+                  className="bg-transparent pl-10 pr-2 text-sm border-0 shadow-none focus-visible:ring-0 h-[42px] w-full truncate cursor-pointer rounded-l-full"
                   value={currentLocation}
                   onChange={handleLocationChange}
                   onKeyDown={handleLocationKeyDown}
@@ -652,7 +888,7 @@ const HomeNavbar = () => {
               <select
                 value={selectedSearchCategory}
                 onChange={e => setSelectedSearchCategory(e.target.value)}
-                className="bg-transparent border-r border-slate-200 text-slate-600 text-sm px-2 lg:px-3 hover:bg-slate-50 focus:outline-none cursor-pointer h-[42px] w-[104px] lg:w-[128px] truncate shrink-0 transition-colors"
+                className="bg-transparent border-r border-slate-200 text-slate-600 text-sm px-3 hover:bg-slate-50 focus:outline-none cursor-pointer h-[42px] max-w-[160px] truncate shrink-0 transition-colors"
               >
                 <option value="all">All Categories</option>
                 {filteredCategories?.map(cat => (
@@ -662,12 +898,8 @@ const HomeNavbar = () => {
                 ))}
               </select>
 
-              {/* Search — the icon is a real button in the flex row (not an
-                  absolutely-positioned overlay), so the input's own padding
-                  no longer has to reserve dead space for it; the input keeps
-                  a min-width floor so it can never shrink to an unusable
-                  sliver. */}
-              <div className="relative flex-1 flex items-center h-[42px] min-w-[140px] group">
+              {/* Search */}
+              <div className="relative flex-1 flex items-center h-[42px] group">
                 <Input
                   type="text"
                   onInput={handleInputValue}
@@ -730,250 +962,6 @@ const HomeNavbar = () => {
                 )}
               </div>
             </div>
-
-            {/* Right Side Actions */}
-            <div className="flex items-center gap-2 xl:gap-3 shrink-0">
-              {/* Icons Row */}
-              <div className="flex gap-3 items-center space-x-1">
-              {/* Messages Popover */}
-              {user && (
-                <Popover open={showMessageDropdown} onOpenChange={setShowMessageDropdown}>
-                  <PopoverTrigger asChild>
-                    <div className="cursor-pointer relative p-2 rounded-full bg-slate-50 hover:bg-slate-100 transition-colors">
-                      <MessageSquareText className="w-5 h-5 text-slate-700" />
-                      {unreadChatsCount > 0 && (
-                        <Badge
-                          className="h-[18px] min-w-[18px] text-[10px] font-bold rounded-full px-1 py-0 flex items-center justify-center absolute -top-1 -right-1 shadow-sm bg-gradient-to-r from-red-500 to-rose-500 text-white border border-white"
-                          variant="destructive"
-                        >
-                          {unreadChatsCount}
-                        </Badge>
-                      )}
-                    </div>
-                  </PopoverTrigger>
-
-                  <PopoverContent className="mt-2 w-80 p-0 rounded-xl shadow-lg border border-gray-200 bg-white">
-                    {recentChats.filter(c => c.lastMessage).length === 0 ? (
-                      <p className="text-sm text-center text-gray-500 py-4">
-                        No active conversations
-                      </p>
-                    ) : (
-                      <>
-                        <div className="max-h-80 overflow-y-auto p-2 space-y-1">
-                          {recentChats
-                            .filter(c => c.lastMessage)
-                            .sort((a, b) => {
-                              const tA = a.lastMessage?.timestamp
-                                ? new Date(a.lastMessage.timestamp).getTime()
-                                : 0;
-                              const tB = b.lastMessage?.timestamp
-                                ? new Date(b.lastMessage.timestamp).getTime()
-                                : 0;
-                              return tB - tA;
-                            })
-                            .slice(0, 5)
-                            .map((chat, idx) => {
-                              const isBuyer = chat.buyerId === user?._id;
-                              const isSeller = chat.sellerId === user?._id;
-                              const unreadCount = isBuyer
-                                ? chat.buyerUnreadCount
-                                : isSeller
-                                  ? chat.sellerUnreadCount
-                                  : 0;
-                              const isUnread = unreadCount > 0;
-
-                              return (
-                                <div
-                                  key={idx}
-                                  onClick={() => handleMessageClick(chat)}
-                                  className={`flex w-full items-center gap-3 p-2 rounded-lg cursor-pointer transition ${
-                                    isUnread
-                                      ? 'bg-orange-50 hover:bg-orange-100'
-                                      : 'hover:bg-gray-50'
-                                  }`}
-                                >
-                                  {/* Avatar */}
-                                  <div className="bg-orange-500 p-2 rounded-full text-white flex items-center justify-center flex-shrink-0 relative">
-                                    <MessageCircle className="w-4 h-4" />
-                                    {isUnread && (
-                                      <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
-                                        <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500" />
-                                      </span>
-                                    )}
-                                    {/* Online dot placeholder — replace with real isUserOnline(id) */}
-                                    <span className="absolute -bottom-0.5 -right-0.5 flex h-3 w-3">
-                                      <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500 border-2 border-white" />
-                                    </span>
-                                  </div>
-
-                                  {/* Info */}
-                                  <div className="flex-1 min-w-0">
-                                    <p className="font-semibold text-gray-800 text-sm mb-1 flex justify-between">
-                                      <span>{chat.name || (isBuyer ? 'Seller' : 'Buyer')}</span>
-                                      {isUnread && (
-                                        <span className="text-xs bg-red-100 text-red-600 px-1.5 rounded-full">
-                                          {unreadCount}
-                                        </span>
-                                      )}
-                                    </p>
-                                    <div className="flex items-center justify-between gap-2">
-                                      <p
-                                        className={`text-sm flex-1 min-w-0 truncate ${isUnread ? 'font-medium text-gray-800' : 'text-gray-600'}`}
-                                      >
-                                        {chat.lastMessage?.message || 'Attachment'}
-                                      </p>
-                                      <span className="text-xs text-gray-400 flex-shrink-0 ml-2">
-                                        {chat.lastMessage?.timestamp
-                                          ? format(
-                                              new Date(chat.lastMessage.timestamp),
-                                              'hh:mm a'
-                                            ).toLowerCase()
-                                          : ''}
-                                      </span>
-                                    </div>
-                                  </div>
-                                </div>
-                              );
-                            })}
-                        </div>
-
-                        {recentChats.filter(c => c.lastMessage).length > 5 && (
-                          <div className="border-t border-gray-200 p-2 ">
-                            <button
-                              onClick={() => {
-                                setShowMessageDropdown(false);
-                                navigate('/chat');
-                              }}
-                              className="w-full text-center text-sm font-medium cursor-pointer  text-orange-600 hover:text-orange-700 py-2 rounded-lg hover:bg-orange-50 transition-colors"
-                            >
-                              View All Chats
-                            </button>
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </PopoverContent>
-                </Popover>
-              )}
-
-              {/* Notifications Popover */}
-              <Popover
-                open={showNotificationDropdown}
-                onOpenChange={open => {
-                  if (open) ensureNotifyPermission(); // user gesture — needed for Safari
-                  setShowNotificationDropdown(open);
-                  if (!open && notifications.some(n => !n.seen)) {
-                    socket.emit(SOCKET_EVENTS.NOTIFICATION_MARK_ALL_READ);
-                    setNotifications(prev => prev.map(n => ({ ...n, seen: true })));
-                  }
-                }}
-              >
-                <PopoverTrigger asChild>
-                  <div className="cursor-pointer relative p-2 rounded-full bg-slate-50 hover:bg-slate-100 transition-colors">
-                    <Bell className="w-5 h-5 text-slate-700" />
-                    {unseenCount > 0 && (
-                      <Badge
-                        className="h-[18px] min-w-[18px] text-[10px] font-bold rounded-full px-1 py-0 flex items-center justify-center absolute -top-1 -right-1 shadow-sm bg-gradient-to-r from-red-500 to-rose-500 text-white border border-white"
-                        variant="destructive"
-                      >
-                        {unseenCount}
-                      </Badge>
-                    )}
-                  </div>
-                </PopoverTrigger>
-
-                <PopoverContent className="mt-2 w-80 p-0 rounded-xl shadow-lg border border-gray-200 bg-white overflow-hidden">
-                  {notifications.length === 0 ? (
-                    <p className="text-sm text-center text-gray-500 py-4">No notifications</p>
-                  ) : (
-                    <>
-                      <div className="max-h-80 overflow-y-auto">
-                        {notifications.slice(0, 5).map(notif => {
-                          const { Icon, colorClass } = getNotifMeta(notif.type);
-                          return (
-                            <div
-                              key={notif._id}
-                              onClick={() => handleNotificationClick(notif)}
-                              className={`flex items-center gap-3 p-3 hover:bg-orange-50 cursor-pointer border-b last:border-b-0 ${
-                                !notif.seen ? 'bg-orange-50/50' : ''
-                              }`}
-                            >
-                              <div
-                                className={`${colorClass} p-2 rounded-full text-white flex-shrink-0`}
-                              >
-                                <Icon className="w-4 h-4" />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <p className="font-semibold text-sm truncate">{notif.title}</p>
-                                <p className="text-xs text-gray-600 line-clamp-2">
-                                  {notif.description}
-                                </p>
-                                <span className="text-[10px] text-gray-400 mt-1 block">
-                                  {notif.createdAt
-                                    ? format(new Date(notif.createdAt), 'hh:mm a').toLowerCase()
-                                    : ''}
-                                </span>
-                              </div>
-                              {!notif.seen && (
-                                <div className="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0" />
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-
-                      {notifications.length > 5 && (
-                        <div className="border-t border-gray-200 p-2 bg-gray-50 ">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="w-full text-orange-600 hover:text-orange-700 hover:bg-orange-100 h-8 cursor-pointer"
-                            onClick={() => {
-                              setShowNotificationDropdown(false);
-                              navigate('/account/notification');
-                            }}
-                          >
-                            View All Notifications
-                          </Button>
-                        </div>
-                      )}
-                    </>
-                  )}
-                </PopoverContent>
-              </Popover>
-
-            </div>
-
-            {/* Post a Requirement */}
-            <Button
-              onClick={() => {
-                navigate('/requirement');
-                setOpenSheet(false);
-              }}
-              variant="default"
-              size="sm"
-              className="bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 hover:shadow-lg hover:shadow-orange-500/40 hover:-translate-y-0.5 active:scale-95 text-white font-bold px-4 xl:px-6 py-2 rounded-full transition-all duration-300 cursor-pointer text-sm border-0 group ring-2 ring-white/50 ring-offset-1 ring-offset-orange-50 whitespace-nowrap"
-            >
-              Post Requirements
-              <span className="ml-1 opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-1 group-hover:translate-x-1 transition-all duration-300">→</span>
-            </Button>
-
-            {/* Account button — icon-only until 2xl (label appears at 2xl,
-                same room constraint as Explore/How It Works above). Was
-                always showing "My Account" even when logged out — mobile's
-                hamburger already correctly showed "Login / Register" there,
-                desktop just never got the same conditional. */}
-            <Button
-              onClick={user ? handleProfileClick : () => window.dispatchEvent(new Event('session-expired'))}
-              variant="outline"
-              className="hidden lg:flex items-center gap-2 font-bold text-slate-700 border border-slate-200/60 hover:border-orange-300 hover:bg-orange-50 hover:text-orange-600 hover:shadow-md hover:-translate-y-0.5 px-3 2xl:px-5 py-2.5 rounded-full cursor-pointer transition-all duration-300 shadow-sm bg-white/80 active:scale-95"
-            >
-              <UserRound className="w-4 h-4" />
-              {/* "Login" is short enough to always show; "My Account" waits for 2xl. */}
-              <span className={user ? 'hidden 2xl:inline' : 'inline'}>{user ? 'My Account' : 'Login'}</span>
-            </Button>
-          </div>
           </nav>
 
           {/* ── Mobile Nav ──────────────────────────────────────────────── */}
