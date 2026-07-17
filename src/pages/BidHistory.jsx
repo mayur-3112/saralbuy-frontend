@@ -37,7 +37,8 @@ const BidHistory = () => {
     }
   }, [productId]);
 
-  const product = productResponse?.mainProduct;
+  // getProductById returns [{ mainProduct }] (array), same as ProductOverview.
+  const product = Array.isArray(productResponse) ? productResponse[0]?.mainProduct : productResponse?.mainProduct;
   const loading = productLoading || activityLoading;
   const isMe = product?.userId?._id === userProfile?._id;
 
