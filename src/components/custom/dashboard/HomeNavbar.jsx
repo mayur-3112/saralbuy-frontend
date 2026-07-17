@@ -364,17 +364,19 @@ const HomeNavbar = () => {
     setSearchText(value);
   };
 
+  const submitSearch = () => {
+    if (value.trim() === '') return;
+    setShowDropdown(false);
+    setProducts([]);
+    const categoryParam = selectedSearchCategory !== 'all' ? `&category=${selectedSearchCategory}` : '';
+    const locationParam = currentLocation ? `&location=${encodeURIComponent(currentLocation)}` : '';
+    navigate(`/product-listing?title=${encodeURIComponent(value)}${categoryParam}${locationParam}&key=enter`);
+    setSearchText('');
+    flush();
+  };
+
   const handleKeyPress = e => {
-    const key = e.key.toLowerCase();
-    if (key === 'enter' && value.trim() !== '') {
-      setShowDropdown(false);
-      setProducts([]);
-      const categoryParam = selectedSearchCategory !== 'all' ? `&category=${selectedSearchCategory}` : '';
-      const locationParam = currentLocation ? `&location=${encodeURIComponent(currentLocation)}` : '';
-      navigate(`/product-listing?title=${encodeURIComponent(value)}${categoryParam}${locationParam}&key=enter`);
-      setSearchText('');
-      flush();
-    }
+    if (e.key.toLowerCase() === 'enter') submitSearch();
   };
 
   // useEffect(() => {
@@ -597,9 +599,10 @@ const HomeNavbar = () => {
               </Link>
 
               {/* Explore / How It Works — visible top-bar links, not just
-                  buried in the hamburger menu. Hidden below xl to keep the
-                  search pill from getting squeezed on mid-size desktops. */}
-              <div className="hidden xl:flex items-center gap-4 pl-2">
+                  buried in the hamburger menu. Held off until 2xl: turning
+                  these on at the same breakpoint Location/Category also grow
+                  wider squeezed the search box right back down. */}
+              <div className="hidden 2xl:flex items-center gap-4 pl-2">
                 <Link
                   to="/product-listing"
                   className="flex items-center gap-1.5 text-sm font-semibold text-slate-600 hover:text-orange-600 transition-colors whitespace-nowrap"
@@ -622,16 +625,19 @@ const HomeNavbar = () => {
                 was removed, so hiding this on '/' left the homepage with no
                 search at all. */}
             <div className="flex-1 max-w-3xl flex items-center bg-white rounded-full border border-slate-200 shadow-sm hover:shadow-md focus-within:shadow-md focus-within:border-orange-300 transition-all duration-300 overflow-visible mx-4">
-              {/* Location */}
-              <div className="flex items-center relative group shrink-0 w-36 lg:w-48 border-r border-slate-200 hover:bg-slate-50 rounded-l-full transition-colors">
-                <MapPin 
+              {/* Location — narrower at lg so the search box (below) never
+                  gets squeezed to the point its own padding eats all its
+                  width, which used to leave the "Looking For..." field
+                  looking blank on mid-size desktop screens (~1024-1150px). */}
+              <div className="flex items-center relative group shrink-0 w-24 lg:w-32 xl:w-44 border-r border-slate-200 hover:bg-slate-50 rounded-l-full transition-colors">
+                <MapPin
                   onClick={getGeoLocation}
-                  className="w-4 h-4 text-orange-500 absolute left-4 top-1/2 -translate-y-1/2 cursor-pointer hover:scale-110 transition-transform z-10"
+                  className="w-4 h-4 text-orange-500 absolute left-3 top-1/2 -translate-y-1/2 cursor-pointer hover:scale-110 transition-transform z-10"
                   title="Detect my location"
                 />
                 <Input
                   placeholder="Location..."
-                  className="bg-transparent pl-10 pr-2 text-sm border-0 shadow-none focus-visible:ring-0 h-[42px] w-full truncate cursor-pointer rounded-l-full"
+                  className="bg-transparent pl-9 pr-2 text-sm border-0 shadow-none focus-visible:ring-0 h-[42px] w-full truncate cursor-pointer rounded-l-full"
                   value={currentLocation}
                   onChange={handleLocationChange}
                   onKeyDown={handleLocationKeyDown}
@@ -642,7 +648,7 @@ const HomeNavbar = () => {
               <select
                 value={selectedSearchCategory}
                 onChange={e => setSelectedSearchCategory(e.target.value)}
-                className="bg-transparent border-r border-slate-200 text-slate-600 text-sm px-3 hover:bg-slate-50 focus:outline-none cursor-pointer h-[42px] max-w-[140px] truncate shrink-0 transition-colors"
+                className="bg-transparent border-r border-slate-200 text-slate-600 text-sm px-2 lg:px-3 hover:bg-slate-50 focus:outline-none cursor-pointer h-[42px] w-20 lg:w-28 xl:max-w-[140px] xl:w-auto truncate shrink-0 transition-colors"
               >
                 <option value="all">All Categories</option>
                 {filteredCategories?.map(cat => (
@@ -652,19 +658,28 @@ const HomeNavbar = () => {
                 ))}
               </select>
 
-              {/* Search */}
-              <div className="relative flex-1 flex items-center h-[42px] group">
+              {/* Search — the icon is a real button in the flex row (not an
+                  absolutely-positioned overlay), so the input's own padding
+                  no longer has to reserve dead space for it; the input keeps
+                  a min-width floor so it can never shrink to an unusable
+                  sliver. */}
+              <div className="relative flex-1 flex items-center h-[42px] min-w-[110px] group">
                 <Input
                   type="text"
                   onInput={handleInputValue}
                   value={text}
                   onKeyPress={handleKeyPress}
                   placeholder="Looking For..."
-                  className="pl-3 pr-10 shadow-none border-0 focus-visible:ring-0 h-full w-full bg-transparent rounded-r-full"
+                  className="pl-3 pr-1 shadow-none border-0 focus-visible:ring-0 h-full w-full min-w-0 bg-transparent rounded-l-none"
                 />
-                <div className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 bg-orange-500 hover:bg-orange-600 rounded-full flex items-center justify-center cursor-pointer transition-colors shadow-sm shadow-orange-500/30">
+                <button
+                  type="button"
+                  onClick={submitSearch}
+                  aria-label="Search"
+                  className="mr-1.5 shrink-0 w-8 h-8 bg-orange-500 hover:bg-orange-600 rounded-full flex items-center justify-center cursor-pointer transition-colors shadow-sm shadow-orange-500/30"
+                >
                   <SearchIcon className="h-4 w-4 text-white" />
-                </div>
+                </button>
 
                 {/* Search Dropdown */}
                 {showDropdown && (
@@ -713,7 +728,7 @@ const HomeNavbar = () => {
             </div>
 
             {/* Right Side Actions */}
-            <div className="flex items-center gap-3 xl:gap-5 shrink-0">
+            <div className="flex items-center gap-2 xl:gap-3 shrink-0">
               {/* Icons Row */}
               <div className="flex gap-3 items-center space-x-1">
               {/* Messages Popover */}
@@ -934,20 +949,22 @@ const HomeNavbar = () => {
               }}
               variant="default"
               size="sm"
-              className="bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 hover:shadow-lg hover:shadow-orange-500/40 hover:-translate-y-0.5 active:scale-95 text-white font-bold px-6 py-2 rounded-full transition-all duration-300 cursor-pointer text-sm border-0 group ring-2 ring-white/50 ring-offset-1 ring-offset-orange-50"
+              className="bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 hover:shadow-lg hover:shadow-orange-500/40 hover:-translate-y-0.5 active:scale-95 text-white font-bold px-4 xl:px-6 py-2 rounded-full transition-all duration-300 cursor-pointer text-sm border-0 group ring-2 ring-white/50 ring-offset-1 ring-offset-orange-50 whitespace-nowrap"
             >
               Post Requirements
               <span className="ml-1 opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-1 group-hover:translate-x-1 transition-all duration-300">→</span>
             </Button>
 
-            {/* My Account Button */}
-            <Button 
-              onClick={handleProfileClick} 
-              variant="outline" 
-              className="hidden lg:flex items-center gap-2 font-bold text-slate-700 border border-slate-200/60 hover:border-orange-300 hover:bg-orange-50 hover:text-orange-600 hover:shadow-md hover:-translate-y-0.5 px-5 py-2.5 rounded-full cursor-pointer transition-all duration-300 shadow-sm bg-white/80 active:scale-95"
+            {/* My Account Button — icon-only until 2xl, where there's finally
+                room for the label too (this row is also where Explore/How It
+                Works compete for space, see above). */}
+            <Button
+              onClick={handleProfileClick}
+              variant="outline"
+              className="hidden lg:flex items-center gap-2 font-bold text-slate-700 border border-slate-200/60 hover:border-orange-300 hover:bg-orange-50 hover:text-orange-600 hover:shadow-md hover:-translate-y-0.5 px-3 2xl:px-5 py-2.5 rounded-full cursor-pointer transition-all duration-300 shadow-sm bg-white/80 active:scale-95"
             >
               <UserRound className="w-4 h-4" />
-              My Account
+              <span className="hidden 2xl:inline">My Account</span>
             </Button>
           </div>
           </nav>
