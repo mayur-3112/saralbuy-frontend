@@ -959,16 +959,19 @@ const HomeNavbar = () => {
               <span className="ml-1 opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-1 group-hover:translate-x-1 transition-all duration-300">→</span>
             </Button>
 
-            {/* My Account Button — icon-only until 2xl, where there's finally
-                room for the label too (this row is also where Explore/How It
-                Works compete for space, see above). */}
+            {/* Account button — icon-only until 2xl (label appears at 2xl,
+                same room constraint as Explore/How It Works above). Was
+                always showing "My Account" even when logged out — mobile's
+                hamburger already correctly showed "Login / Register" there,
+                desktop just never got the same conditional. */}
             <Button
-              onClick={handleProfileClick}
+              onClick={user ? handleProfileClick : () => window.dispatchEvent(new Event('session-expired'))}
               variant="outline"
               className="hidden lg:flex items-center gap-2 font-bold text-slate-700 border border-slate-200/60 hover:border-orange-300 hover:bg-orange-50 hover:text-orange-600 hover:shadow-md hover:-translate-y-0.5 px-3 2xl:px-5 py-2.5 rounded-full cursor-pointer transition-all duration-300 shadow-sm bg-white/80 active:scale-95"
             >
               <UserRound className="w-4 h-4" />
-              <span className="hidden 2xl:inline">My Account</span>
+              {/* "Login" is short enough to always show; "My Account" waits for 2xl. */}
+              <span className={user ? 'hidden 2xl:inline' : 'inline'}>{user ? 'My Account' : 'Login'}</span>
             </Button>
           </div>
           </nav>
