@@ -606,224 +606,6 @@ const HomeNavbar = () => {
               </div>
 
               <div className="flex items-center gap-4">
-                {/* Messages — always visible (was hidden entirely when
-                    logged out, unlike the bell icon next to it). Logged-out
-                    click opens login instead of an empty chat popover. */}
-                {!user && (
-                  <button
-                    type="button"
-                    onClick={() => window.dispatchEvent(new Event('session-expired'))}
-                    className="cursor-pointer relative p-2 rounded-full bg-slate-50 hover:bg-slate-100 transition-colors"
-                  >
-                    <MessageSquareText className="w-5 h-5 text-slate-700" />
-                  </button>
-                )}
-                {user && (
-                  <Popover open={showMessageDropdown} onOpenChange={setShowMessageDropdown}>
-                    <PopoverTrigger asChild>
-                      <div className="cursor-pointer relative p-2 rounded-full bg-slate-50 hover:bg-slate-100 transition-colors">
-                        <MessageSquareText className="w-5 h-5 text-slate-700" />
-                        {unreadChatsCount > 0 && (
-                          <Badge
-                            className="h-[18px] min-w-[18px] text-[10px] font-bold rounded-full px-1 py-0 flex items-center justify-center absolute -top-1 -right-1 shadow-sm bg-gradient-to-r from-red-500 to-rose-500 text-white border border-white"
-                            variant="destructive"
-                          >
-                            {unreadChatsCount}
-                          </Badge>
-                        )}
-                      </div>
-                    </PopoverTrigger>
-
-                    <PopoverContent className="mt-2 w-80 p-0 rounded-xl shadow-lg border border-gray-200 bg-white">
-                      {recentChats.filter(c => c.lastMessage).length === 0 ? (
-                        <p className="text-sm text-center text-gray-500 py-4">
-                          No active conversations
-                        </p>
-                      ) : (
-                        <>
-                          <div className="max-h-80 overflow-y-auto p-2 space-y-1">
-                            {recentChats
-                              .filter(c => c.lastMessage)
-                              .sort((a, b) => {
-                                const tA = a.lastMessage?.timestamp
-                                  ? new Date(a.lastMessage.timestamp).getTime()
-                                  : 0;
-                                const tB = b.lastMessage?.timestamp
-                                  ? new Date(b.lastMessage.timestamp).getTime()
-                                  : 0;
-                                return tB - tA;
-                              })
-                              .slice(0, 5)
-                              .map((chat, idx) => {
-                                const isBuyer = chat.buyerId === user?._id;
-                                const isSeller = chat.sellerId === user?._id;
-                                const unreadCount = isBuyer
-                                  ? chat.buyerUnreadCount
-                                  : isSeller
-                                    ? chat.sellerUnreadCount
-                                    : 0;
-                                const isUnread = unreadCount > 0;
-
-                                return (
-                                  <div
-                                    key={idx}
-                                    onClick={() => handleMessageClick(chat)}
-                                    className={`flex w-full items-center gap-3 p-2 rounded-lg cursor-pointer transition ${
-                                      isUnread
-                                        ? 'bg-orange-50 hover:bg-orange-100'
-                                        : 'hover:bg-gray-50'
-                                    }`}
-                                  >
-                                    {/* Avatar */}
-                                    <div className="bg-orange-500 p-2 rounded-full text-white flex items-center justify-center flex-shrink-0 relative">
-                                      <MessageCircle className="w-4 h-4" />
-                                      {isUnread && (
-                                        <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
-                                          <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500" />
-                                        </span>
-                                      )}
-                                      {/* Online dot placeholder — replace with real isUserOnline(id) */}
-                                      <span className="absolute -bottom-0.5 -right-0.5 flex h-3 w-3">
-                                        <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500 border-2 border-white" />
-                                      </span>
-                                    </div>
-
-                                    {/* Info */}
-                                    <div className="flex-1 min-w-0">
-                                      <p className="font-semibold text-gray-800 text-sm mb-1 flex justify-between">
-                                        <span>{chat.name || (isBuyer ? 'Seller' : 'Buyer')}</span>
-                                        {isUnread && (
-                                          <span className="text-xs bg-red-100 text-red-600 px-1.5 rounded-full">
-                                            {unreadCount}
-                                          </span>
-                                        )}
-                                      </p>
-                                      <div className="flex items-center justify-between gap-2">
-                                        <p
-                                          className={`text-sm flex-1 min-w-0 truncate ${isUnread ? 'font-medium text-gray-800' : 'text-gray-600'}`}
-                                        >
-                                          {chat.lastMessage?.message || 'Attachment'}
-                                        </p>
-                                        <span className="text-xs text-gray-400 flex-shrink-0 ml-2">
-                                          {chat.lastMessage?.timestamp
-                                            ? format(
-                                                new Date(chat.lastMessage.timestamp),
-                                                'hh:mm a'
-                                              ).toLowerCase()
-                                            : ''}
-                                        </span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                );
-                              })}
-                          </div>
-
-                          {recentChats.filter(c => c.lastMessage).length > 5 && (
-                            <div className="border-t border-gray-200 p-2 ">
-                              <button
-                                onClick={() => {
-                                  setShowMessageDropdown(false);
-                                  navigate('/chat');
-                                }}
-                                className="w-full text-center text-sm font-medium cursor-pointer  text-orange-600 hover:text-orange-700 py-2 rounded-lg hover:bg-orange-50 transition-colors"
-                              >
-                                View All Chats
-                              </button>
-                            </div>
-                          )}
-                        </>
-                      )}
-                    </PopoverContent>
-                  </Popover>
-                )}
-
-                {/* Notifications Popover */}
-                <Popover
-                  open={showNotificationDropdown}
-                  onOpenChange={open => {
-                    if (open) ensureNotifyPermission(); // user gesture — needed for Safari
-                    setShowNotificationDropdown(open);
-                    if (!open && notifications.some(n => !n.seen)) {
-                      socket.emit(SOCKET_EVENTS.NOTIFICATION_MARK_ALL_READ);
-                      setNotifications(prev => prev.map(n => ({ ...n, seen: true })));
-                    }
-                  }}
-                >
-                  <PopoverTrigger asChild>
-                    <div className="cursor-pointer relative p-2 rounded-full bg-slate-50 hover:bg-slate-100 transition-colors">
-                      <Bell className="w-5 h-5 text-slate-700" />
-                      {unseenCount > 0 && (
-                        <Badge
-                          className="h-[18px] min-w-[18px] text-[10px] font-bold rounded-full px-1 py-0 flex items-center justify-center absolute -top-1 -right-1 shadow-sm bg-gradient-to-r from-red-500 to-rose-500 text-white border border-white"
-                          variant="destructive"
-                        >
-                          {unseenCount}
-                        </Badge>
-                      )}
-                    </div>
-                  </PopoverTrigger>
-
-                  <PopoverContent className="mt-2 w-80 p-0 rounded-xl shadow-lg border border-gray-200 bg-white overflow-hidden">
-                    {notifications.length === 0 ? (
-                      <p className="text-sm text-center text-gray-500 py-4">No notifications</p>
-                    ) : (
-                      <>
-                        <div className="max-h-80 overflow-y-auto">
-                          {notifications.slice(0, 5).map(notif => {
-                            const { Icon, colorClass } = getNotifMeta(notif.type);
-                            return (
-                              <div
-                                key={notif._id}
-                                onClick={() => handleNotificationClick(notif)}
-                                className={`flex items-center gap-3 p-3 hover:bg-orange-50 cursor-pointer border-b last:border-b-0 ${
-                                  !notif.seen ? 'bg-orange-50/50' : ''
-                                }`}
-                              >
-                                <div
-                                  className={`${colorClass} p-2 rounded-full text-white flex-shrink-0`}
-                                >
-                                  <Icon className="w-4 h-4" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <p className="font-semibold text-sm truncate">{notif.title}</p>
-                                  <p className="text-xs text-gray-600 line-clamp-2">
-                                    {notif.description}
-                                  </p>
-                                  <span className="text-[10px] text-gray-400 mt-1 block">
-                                    {notif.createdAt
-                                      ? format(new Date(notif.createdAt), 'hh:mm a').toLowerCase()
-                                      : ''}
-                                  </span>
-                                </div>
-                                {!notif.seen && (
-                                  <div className="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0" />
-                                )}
-                              </div>
-                            );
-                          })}
-                        </div>
-
-                        {notifications.length > 5 && (
-                          <div className="border-t border-gray-200 p-2 bg-gray-50 ">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="w-full text-orange-600 hover:text-orange-700 hover:bg-orange-100 h-8 cursor-pointer"
-                              onClick={() => {
-                                setShowNotificationDropdown(false);
-                                navigate('/account/notification');
-                              }}
-                            >
-                              View All Notifications
-                            </Button>
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </PopoverContent>
-                </Popover>
 
                 {/* Account link — small text link at this tier, eBay-style
                     ("My eBay"). Was always "My Account" even logged out;
@@ -952,6 +734,228 @@ const HomeNavbar = () => {
                   </div>
                 )}
               </div>
+              </div>
+
+              {/* Messages + Notifications — same row as Post Requirements. */}
+              <div className="flex items-center gap-3 shrink-0">
+                  {/* Messages — always visible (was hidden entirely when
+                      logged out, unlike the bell icon next to it). Logged-out
+                      click opens login instead of an empty chat popover. */}
+                  {!user && (
+                    <button
+                      type="button"
+                      onClick={() => window.dispatchEvent(new Event('session-expired'))}
+                      className="cursor-pointer relative p-2 rounded-full bg-slate-50 hover:bg-slate-100 transition-colors"
+                    >
+                      <MessageSquareText className="w-5 h-5 text-slate-700" />
+                    </button>
+                  )}
+                  {user && (
+                    <Popover open={showMessageDropdown} onOpenChange={setShowMessageDropdown}>
+                      <PopoverTrigger asChild>
+                        <div className="cursor-pointer relative p-2 rounded-full bg-slate-50 hover:bg-slate-100 transition-colors">
+                          <MessageSquareText className="w-5 h-5 text-slate-700" />
+                          {unreadChatsCount > 0 && (
+                            <Badge
+                              className="h-[18px] min-w-[18px] text-[10px] font-bold rounded-full px-1 py-0 flex items-center justify-center absolute -top-1 -right-1 shadow-sm bg-gradient-to-r from-red-500 to-rose-500 text-white border border-white"
+                              variant="destructive"
+                            >
+                              {unreadChatsCount}
+                            </Badge>
+                          )}
+                        </div>
+                      </PopoverTrigger>
+  
+                      <PopoverContent className="mt-2 w-80 p-0 rounded-xl shadow-lg border border-gray-200 bg-white">
+                        {recentChats.filter(c => c.lastMessage).length === 0 ? (
+                          <p className="text-sm text-center text-gray-500 py-4">
+                            No active conversations
+                          </p>
+                        ) : (
+                          <>
+                            <div className="max-h-80 overflow-y-auto p-2 space-y-1">
+                              {recentChats
+                                .filter(c => c.lastMessage)
+                                .sort((a, b) => {
+                                  const tA = a.lastMessage?.timestamp
+                                    ? new Date(a.lastMessage.timestamp).getTime()
+                                    : 0;
+                                  const tB = b.lastMessage?.timestamp
+                                    ? new Date(b.lastMessage.timestamp).getTime()
+                                    : 0;
+                                  return tB - tA;
+                                })
+                                .slice(0, 5)
+                                .map((chat, idx) => {
+                                  const isBuyer = chat.buyerId === user?._id;
+                                  const isSeller = chat.sellerId === user?._id;
+                                  const unreadCount = isBuyer
+                                    ? chat.buyerUnreadCount
+                                    : isSeller
+                                      ? chat.sellerUnreadCount
+                                      : 0;
+                                  const isUnread = unreadCount > 0;
+  
+                                  return (
+                                    <div
+                                      key={idx}
+                                      onClick={() => handleMessageClick(chat)}
+                                      className={`flex w-full items-center gap-3 p-2 rounded-lg cursor-pointer transition ${
+                                        isUnread
+                                          ? 'bg-orange-50 hover:bg-orange-100'
+                                          : 'hover:bg-gray-50'
+                                      }`}
+                                    >
+                                      {/* Avatar */}
+                                      <div className="bg-orange-500 p-2 rounded-full text-white flex items-center justify-center flex-shrink-0 relative">
+                                        <MessageCircle className="w-4 h-4" />
+                                        {isUnread && (
+                                          <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
+                                            <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500" />
+                                          </span>
+                                        )}
+                                        {/* Online dot placeholder — replace with real isUserOnline(id) */}
+                                        <span className="absolute -bottom-0.5 -right-0.5 flex h-3 w-3">
+                                          <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500 border-2 border-white" />
+                                        </span>
+                                      </div>
+  
+                                      {/* Info */}
+                                      <div className="flex-1 min-w-0">
+                                        <p className="font-semibold text-gray-800 text-sm mb-1 flex justify-between">
+                                          <span>{chat.name || (isBuyer ? 'Seller' : 'Buyer')}</span>
+                                          {isUnread && (
+                                            <span className="text-xs bg-red-100 text-red-600 px-1.5 rounded-full">
+                                              {unreadCount}
+                                            </span>
+                                          )}
+                                        </p>
+                                        <div className="flex items-center justify-between gap-2">
+                                          <p
+                                            className={`text-sm flex-1 min-w-0 truncate ${isUnread ? 'font-medium text-gray-800' : 'text-gray-600'}`}
+                                          >
+                                            {chat.lastMessage?.message || 'Attachment'}
+                                          </p>
+                                          <span className="text-xs text-gray-400 flex-shrink-0 ml-2">
+                                            {chat.lastMessage?.timestamp
+                                              ? format(
+                                                  new Date(chat.lastMessage.timestamp),
+                                                  'hh:mm a'
+                                                ).toLowerCase()
+                                              : ''}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                            </div>
+  
+                            {recentChats.filter(c => c.lastMessage).length > 5 && (
+                              <div className="border-t border-gray-200 p-2 ">
+                                <button
+                                  onClick={() => {
+                                    setShowMessageDropdown(false);
+                                    navigate('/chat');
+                                  }}
+                                  className="w-full text-center text-sm font-medium cursor-pointer  text-orange-600 hover:text-orange-700 py-2 rounded-lg hover:bg-orange-50 transition-colors"
+                                >
+                                  View All Chats
+                                </button>
+                              </div>
+                            )}
+                          </>
+                        )}
+                      </PopoverContent>
+                    </Popover>
+                  )}
+  
+                  {/* Notifications Popover */}
+                  <Popover
+                    open={showNotificationDropdown}
+                    onOpenChange={open => {
+                      if (open) ensureNotifyPermission(); // user gesture — needed for Safari
+                      setShowNotificationDropdown(open);
+                      if (!open && notifications.some(n => !n.seen)) {
+                        socket.emit(SOCKET_EVENTS.NOTIFICATION_MARK_ALL_READ);
+                        setNotifications(prev => prev.map(n => ({ ...n, seen: true })));
+                      }
+                    }}
+                  >
+                    <PopoverTrigger asChild>
+                      <div className="cursor-pointer relative p-2 rounded-full bg-slate-50 hover:bg-slate-100 transition-colors">
+                        <Bell className="w-5 h-5 text-slate-700" />
+                        {unseenCount > 0 && (
+                          <Badge
+                            className="h-[18px] min-w-[18px] text-[10px] font-bold rounded-full px-1 py-0 flex items-center justify-center absolute -top-1 -right-1 shadow-sm bg-gradient-to-r from-red-500 to-rose-500 text-white border border-white"
+                            variant="destructive"
+                          >
+                            {unseenCount}
+                          </Badge>
+                        )}
+                      </div>
+                    </PopoverTrigger>
+  
+                    <PopoverContent className="mt-2 w-80 p-0 rounded-xl shadow-lg border border-gray-200 bg-white overflow-hidden">
+                      {notifications.length === 0 ? (
+                        <p className="text-sm text-center text-gray-500 py-4">No notifications</p>
+                      ) : (
+                        <>
+                          <div className="max-h-80 overflow-y-auto">
+                            {notifications.slice(0, 5).map(notif => {
+                              const { Icon, colorClass } = getNotifMeta(notif.type);
+                              return (
+                                <div
+                                  key={notif._id}
+                                  onClick={() => handleNotificationClick(notif)}
+                                  className={`flex items-center gap-3 p-3 hover:bg-orange-50 cursor-pointer border-b last:border-b-0 ${
+                                    !notif.seen ? 'bg-orange-50/50' : ''
+                                  }`}
+                                >
+                                  <div
+                                    className={`${colorClass} p-2 rounded-full text-white flex-shrink-0`}
+                                  >
+                                    <Icon className="w-4 h-4" />
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <p className="font-semibold text-sm truncate">{notif.title}</p>
+                                    <p className="text-xs text-gray-600 line-clamp-2">
+                                      {notif.description}
+                                    </p>
+                                    <span className="text-[10px] text-gray-400 mt-1 block">
+                                      {notif.createdAt
+                                        ? format(new Date(notif.createdAt), 'hh:mm a').toLowerCase()
+                                        : ''}
+                                    </span>
+                                  </div>
+                                  {!notif.seen && (
+                                    <div className="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0" />
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+  
+                          {notifications.length > 5 && (
+                            <div className="border-t border-gray-200 p-2 bg-gray-50 ">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="w-full text-orange-600 hover:text-orange-700 hover:bg-orange-100 h-8 cursor-pointer"
+                                onClick={() => {
+                                  setShowNotificationDropdown(false);
+                                  navigate('/account/notification');
+                                }}
+                              >
+                                View All Notifications
+                              </Button>
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </PopoverContent>
+                  </Popover>
               </div>
 
               {/* Post a Requirement — the standout CTA next to search. */}
