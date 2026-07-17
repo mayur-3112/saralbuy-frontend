@@ -45,7 +45,6 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from '@/components/ui/sheet';
 function otherBrandValue(obj) {
   if (obj?.brand === 'others' && obj.hasOwnProperty('brandName')) {
@@ -619,6 +618,7 @@ const ProductOverview = () => {
   const [searchParams] = useSearchParams();
   const productId = searchParams.get('productId');
   const bidId = searchParams.get('bidId');
+  const openQuote = searchParams.get('openQuote') === '1';
   const { user: userProfile } = useUserState();
   let intervalRef = useRef(null);
 
@@ -1018,6 +1018,11 @@ const ProductOverview = () => {
   // bid-activity table — the reference the user asked to match), universal for
   // every viewing supplier rather than an in-page sheet.
   const [quoteSheetOpen, setQuoteSheetOpen] = useState(false);
+  // Reached only from Bid History's "Place a Quote" CTA (?openQuote=1) — this
+  // page no longer has a direct "Place Quote Now" trigger of its own.
+  useEffect(() => {
+    if (openQuote && !isMe) setQuoteSheetOpen(true);
+  }, [openQuote, isMe]);
   const handleBidView = () => {
     const pid = bidOverviewRes ? bidOverviewRes?.product?._id : productResponse?.mainProduct?._id;
     if (isMe) {
@@ -1594,66 +1599,58 @@ const ProductOverview = () => {
                   </Button>
                 </div>
               ) : (
-                <Sheet open={quoteSheetOpen} onOpenChange={setQuoteSheetOpen}>
-                  {/* On mobile the CTA sits ABOVE the bottom nav (bottom-16); flush on desktop */}
-                  <div className="fixed bottom-16 sm:bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4 shadow-[0_-4px_20px_rgb(0,0,0,0.05)] flex justify-between items-center z-40 md:px-10 lg:px-20">
-                    <div className="hidden sm:block">
-                      <h3 className="font-bold text-slate-800 text-lg">Ready to place a quote?</h3>
-                      <p className="text-sm text-slate-500">Provide your best price and win this requirement.</p>
-                    </div>
-                    <SheetTrigger asChild>
-                      <Button className="w-full sm:w-auto bg-orange-600 hover:bg-orange-700 text-white font-bold px-10 py-6 text-lg rounded-full shadow-lg transition-transform hover:scale-105">
-                        Place Quote Now
-                      </Button>
-                    </SheetTrigger>
+                /* Supplier viewing someone else's requirement — always routes to
+                   the dedicated Bid History page (eBay-style, anonymized), not
+                   an in-page quote form. Placing a quote itself still uses this
+                   Sheet, but it's now reached FROM Bid History's "Place a Quote"
+                   CTA (?openQuote=1), never directly from this button. */
+                <div className="fixed bottom-16 sm:bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4 shadow-[0_-4px_20px_rgb(0,0,0,0.05)] flex justify-between items-center z-40 md:px-10 lg:px-20">
+                  <div className="hidden sm:block">
+                    <h3 className="font-bold text-slate-800 text-lg">Interested in this requirement?</h3>
+                    <p className="text-sm text-slate-500">See who's quoted so far and where you stand.</p>
                   </div>
-
-                  <SheetContent side="right" className="w-full sm:!max-w-[70vw] sm:!w-[70vw] lg:!max-w-[50vw] lg:!w-[50vw] overflow-y-auto bg-slate-50 p-0 border-l-0 sm:border-l">
-                    <SheetHeader className="p-8 bg-white border-b border-slate-100 sticky top-0 z-10 shadow-sm">
-                      <SheetTitle className="text-3xl font-extrabold text-slate-800">Submit Quotation</SheetTitle>
-                    </SheetHeader>
-                    <div className="p-4 sm:p-8 lg:p-10 pb-24 space-y-6">
-                      {bidActivityRes?.total > 0 && (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const pid = bidOverviewRes ? bidOverviewRes?.product?._id : productResponse?.mainProduct?._id;
-                            if (pid) navigate('/bid-history/' + pid);
-                          }}
-                          className="w-full bg-white rounded-2xl border border-slate-200 p-4 flex items-center justify-between text-left hover:border-orange-300 transition-colors"
-                        >
-                          <span className="text-sm font-semibold text-slate-700">
-                            {bidActivityRes.total} quote{bidActivityRes.total > 1 ? 's' : ''} submitted so far
-                          </span>
-                          <span className="text-sm text-orange-600 font-bold underline">View bid history</span>
-                        </button>
-                      )}
-
-                      {isMergeQuote ? (
-                        <MergeBidForm
-                          productResponse={productResponse}
-                          userProfile={userProfile}
-                          navigate={navigate}
-                        />
-                      ) : (
-                        <SellerForm
-                          handleSubmit={handleSubmit}
-                          onSubmit={onSubmit}
-                          register={register}
-                          control={control}
-                          userProfile={userProfile}
-                          bidOverviewRes={bidOverviewRes}
-                          productResponse={productResponse}
-                          createBidLoading={createBidLoading}
-                          updateUserBidDetsLoading={updateUserBidDetsLoading}
-                          soldProduct={soldProduct}
-                          watch={watch}
-                        />
-                      )}
-                    </div>
-                  </SheetContent>
-                </Sheet>
+                  <Button
+                    onClick={() => {
+                      const pid = bidOverviewRes ? bidOverviewRes?.product?._id : productResponse?.mainProduct?._id;
+                      if (pid) navigate('/bid-history/' + pid);
+                    }}
+                    className="w-full sm:w-auto bg-orange-600 hover:bg-orange-700 text-white font-bold px-10 py-6 text-lg rounded-full shadow-lg transition-transform hover:scale-105"
+                  >
+                    View Bid History
+                  </Button>
+                </div>
               )}
+
+              <Sheet open={quoteSheetOpen} onOpenChange={setQuoteSheetOpen}>
+                <SheetContent side="right" className="w-full sm:!max-w-[70vw] sm:!w-[70vw] lg:!max-w-[50vw] lg:!w-[50vw] overflow-y-auto bg-slate-50 p-0 border-l-0 sm:border-l">
+                  <SheetHeader className="p-8 bg-white border-b border-slate-100 sticky top-0 z-10 shadow-sm">
+                    <SheetTitle className="text-3xl font-extrabold text-slate-800">Submit Quotation</SheetTitle>
+                  </SheetHeader>
+                  <div className="p-4 sm:p-8 lg:p-10 pb-24 space-y-6">
+                    {isMergeQuote ? (
+                      <MergeBidForm
+                        productResponse={productResponse}
+                        userProfile={userProfile}
+                        navigate={navigate}
+                      />
+                    ) : (
+                      <SellerForm
+                        handleSubmit={handleSubmit}
+                        onSubmit={onSubmit}
+                        register={register}
+                        control={control}
+                        userProfile={userProfile}
+                        bidOverviewRes={bidOverviewRes}
+                        productResponse={productResponse}
+                        createBidLoading={createBidLoading}
+                        updateUserBidDetsLoading={updateUserBidDetsLoading}
+                        soldProduct={soldProduct}
+                        watch={watch}
+                      />
+                    )}
+                  </div>
+                </SheetContent>
+              </Sheet>
             </div>
           </div>
         </div>
