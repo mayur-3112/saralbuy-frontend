@@ -175,12 +175,12 @@ const Profile = () => {
               <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${roleBadgeColor}`}>
                 {roleBadge}
               </span>
-              {user?.accountRole === 'supplier' && user?.businessName && (
+              {user?.businessName && (
                 <span className="text-xs text-slate-500 truncate max-w-[120px]">
                   {user.businessName}
                 </span>
               )}
-              {user?.accountRole !== 'supplier' && user?.organizationName && (
+              {user?.organizationName && (
                 <span className="text-xs text-slate-500 truncate max-w-[120px]">
                   {user.organizationName}
                 </span>

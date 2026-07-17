@@ -58,8 +58,6 @@ export function AccountSettings() {
     },
   });
 
-  const selectedRole = watch('accountRole');
-
   useEffect(() => {
     if (logoutRes) {
       toast.success('You are Logged out');
@@ -113,15 +111,15 @@ export function AccountSettings() {
     formData.append('email', data.email);
     formData.append('address', data.address);
     formData.append('accountRole', data.accountRole);
-    
-    if (data.accountRole === 'supplier') {
-      formData.append('businessName', data.businessName || '');
-      formData.append('gstin', data.gstin || '');
-      formData.append('supplierCategories', data.supplierCategories || '');
-    } else {
-      formData.append('organizationName', data.organizationName || '');
-      formData.append('procurementRole', data.procurementRole || '');
-    }
+
+    // A single account can act as both buyer and supplier — save whichever
+    // of the two field-sets the user filled in, not just the one matching
+    // "Primary Account Role" (that field now only picks the default view/badge).
+    formData.append('businessName', data.businessName || '');
+    formData.append('gstin', data.gstin || '');
+    formData.append('supplierCategories', data.supplierCategories || '');
+    formData.append('organizationName', data.organizationName || '');
+    formData.append('procurementRole', data.procurementRole || '');
 
     if (fileDoc) {
       formData.append('document', fileDoc);
@@ -168,11 +166,17 @@ export function AccountSettings() {
         >
           <div className="space-y-4 p-3 sm:p-5 rounded-md">
             
-            {/* Account Role Segregation */}
+            {/* Account Role — a single account can act as both buyer and
+                supplier (post requirements AND place bids); this only picks
+                which badge/default view shows elsewhere, it no longer hides
+                the other role's fields below. */}
             <div className="mb-6">
               <Label className="text-gray-600 gap-0 text-sm mb-2 block">
                 Primary Account Role
               </Label>
+              <p className="text-xs text-slate-500 mb-2">
+                This just picks your default badge — fill in either or both sections below to act as both.
+              </p>
               <div className="flex bg-slate-100 rounded-lg p-1 w-full max-w-sm relative">
                 <label className="flex-1 cursor-pointer">
                   <input type="radio" value="buyer" {...register('accountRole')} className="peer sr-only" />
@@ -220,8 +224,28 @@ export function AccountSettings() {
               </div>
             </div>
 
-            {/* Role-Specific Fields */}
-            {selectedRole === 'supplier' ? (
+            {/* Buyer fields — always available, independent of Primary Account Role */}
+            <div className="space-y-2">
+              <Label className="text-gray-600 text-sm font-semibold">Buyer Details</Label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-md border border-slate-200">
+                <div className="space-y-2 w-full">
+                  <Label className="text-gray-600 text-sm" htmlFor="orgName">
+                    Organization Name
+                  </Label>
+                  <Input id="orgName" type="text" placeholder="e.g. BuildRight Projects" {...register('organizationName')} className="bg-white w-full" />
+                </div>
+                <div className="space-y-2 w-full">
+                  <Label className="text-gray-600 text-sm" htmlFor="procurementRole">
+                    Procurement Role
+                  </Label>
+                  <Input id="procurementRole" type="text" placeholder="e.g. Purchasing Manager" {...register('procurementRole')} className="bg-white w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* Supplier fields — always available, independent of Primary Account Role */}
+            <div className="space-y-2">
+              <Label className="text-gray-600 text-sm font-semibold">Supplier Details</Label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-orange-50/50 p-4 rounded-md border border-orange-100">
                 <div className="space-y-2 w-full sm:col-span-2">
                   <Label className="text-gray-600 text-sm" htmlFor="business">
@@ -242,22 +266,9 @@ export function AccountSettings() {
                   <Input id="supplierCategories" type="text" placeholder="e.g. Cement, Steel, Electrical" {...register('supplierCategories')} className="bg-white w-full" />
                 </div>
               </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-md border border-slate-200">
-                <div className="space-y-2 w-full">
-                  <Label className="text-gray-600 text-sm" htmlFor="orgName">
-                    Organization Name
-                  </Label>
-                  <Input id="orgName" type="text" placeholder="e.g. BuildRight Projects" {...register('organizationName')} className="bg-white w-full" />
-                </div>
-                <div className="space-y-2 w-full">
-                  <Label className="text-gray-600 text-sm" htmlFor="procurementRole">
-                    Procurement Role
-                  </Label>
-                  <Input id="procurementRole" type="text" placeholder="e.g. Purchasing Manager" {...register('procurementRole')} className="bg-white w-full" />
-                </div>
-              </div>
-            )}            {/* Email + Phone */}
+            </div>
+
+            {/* Email + Phone */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2 w-full">
                 <Label className="text-gray-600 gap-0 text-sm" htmlFor="email">
