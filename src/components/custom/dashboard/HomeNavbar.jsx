@@ -606,7 +606,18 @@ const HomeNavbar = () => {
               </div>
 
               <div className="flex items-center gap-4">
-                {/* Messages Popover */}
+                {/* Messages — always visible (was hidden entirely when
+                    logged out, unlike the bell icon next to it). Logged-out
+                    click opens login instead of an empty chat popover. */}
+                {!user && (
+                  <button
+                    type="button"
+                    onClick={() => window.dispatchEvent(new Event('session-expired'))}
+                    className="cursor-pointer relative p-2 rounded-full bg-slate-50 hover:bg-slate-100 transition-colors"
+                  >
+                    <MessageSquareText className="w-5 h-5 text-slate-700" />
+                  </button>
+                )}
                 {user && (
                   <Popover open={showMessageDropdown} onOpenChange={setShowMessageDropdown}>
                     <PopoverTrigger asChild>
