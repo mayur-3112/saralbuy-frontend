@@ -585,17 +585,24 @@ const HomeNavbar = () => {
               nearly the full bar width — Location/Category/Search never have
               to fight Explore/How It Works/icons/buttons for space again. */}
           <nav className="hidden lg:flex flex-col w-full">
-            {/* Tier 1 — thin utility bar: greeting left, account/message/
-                notification links right. Small text, low visual weight —
-                same idea as eBay's top strip (Hi <name>! ... Watchlist / My
-                eBay / bell / cart), just SaralBuy's equivalents. */}
+            {/* Row 1 — Explore / How It Works on the left, message/bell/
+                account on the right. */}
             <div className="flex items-center justify-between text-sm pb-2 mb-2 border-b border-slate-100">
-              <div className="flex items-center gap-1 text-slate-500">
-                {user?.firstName && (
-                  <span>
-                    Hi, <span className="font-semibold text-slate-700">{user.firstName}!</span>
-                  </span>
-                )}
+              <div className="flex items-center gap-5">
+                <Link
+                  to="/product-listing"
+                  className="flex items-center gap-1.5 font-semibold text-slate-600 hover:text-orange-600 transition-colors whitespace-nowrap"
+                >
+                  <Compass className="w-4 h-4" />
+                  Explore
+                </Link>
+                <Link
+                  to="/how-it-works"
+                  className="flex items-center gap-1.5 font-semibold text-slate-600 hover:text-orange-600 transition-colors whitespace-nowrap"
+                >
+                  <HelpCircle className="w-4 h-4" />
+                  How It Works
+                </Link>
               </div>
 
               <div className="flex items-center gap-4">
@@ -820,9 +827,8 @@ const HomeNavbar = () => {
               </div>
             </div>
 
-            {/* Tier 2 — the main row: logo, then the Location/Category/Search
-                bar (dominant, eBay-"Search for anything"-style), then Post
-                Requirements as the standout CTA next to it. */}
+            {/* Row 2 — hamburger, logo, then the Location/Category/Search
+                bar, then Post Requirements as the standout CTA next to it. */}
             <div className="flex items-center gap-3 xl:gap-4 w-full pb-2">
               <div className="hidden lg:flex items-center">
                 <Button variant="outline" size="icon" className="shrink-0 rounded-md border-0 bg-transparent hover:bg-slate-100" onClick={() => setOpenSheet(true)}>
@@ -950,24 +956,6 @@ const HomeNavbar = () => {
                 Post Requirements
                 <span className="ml-1 opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-1 group-hover:translate-x-1 transition-all duration-300">→</span>
               </Button>
-            </div>
-
-            {/* Tier 3 — thin nav-links row, eBay-category-strip-style. */}
-            <div className="flex items-center gap-5 text-sm pb-2 border-t border-slate-100 pt-2">
-              <Link
-                to="/product-listing"
-                className="flex items-center gap-1.5 font-semibold text-slate-600 hover:text-orange-600 transition-colors whitespace-nowrap"
-              >
-                <Compass className="w-4 h-4" />
-                Explore
-              </Link>
-              <Link
-                to="/how-it-works"
-                className="flex items-center gap-1.5 font-semibold text-slate-600 hover:text-orange-600 transition-colors whitespace-nowrap"
-              >
-                <HelpCircle className="w-4 h-4" />
-                How It Works
-              </Link>
             </div>
           </nav>
 
