@@ -584,49 +584,21 @@ const HomeNavbar = () => {
               account actions, row 2 is the search pill on its own line with
               nearly the full bar width — Location/Category/Search never have
               to fight Explore/How It Works/icons/buttons for space again. */}
-          <nav className="hidden lg:flex flex-col gap-2.5 w-full">
-            <div className="flex justify-between items-center gap-2 xl:gap-3 w-full">
-              {/* Logo + Navigation Links */}
-              <div className="flex items-center gap-2 xl:gap-3 shrink-0">
-                {/* Desktop Burger Menu Trigger */}
-                <div className="hidden lg:flex items-center">
-                  <Button variant="outline" size="icon" className="shrink-0 rounded-md border-0 bg-transparent hover:bg-slate-100" onClick={() => setOpenSheet(true)}>
-                    <Menu className="size-6 text-slate-700" />
-                  </Button>
-                </div>
-
-                <Link to={'/'} className="flex items-center shrink-0">
-                  <img
-                    src={SaralBuyLogo}
-                    className="h-10 md:h-11 w-auto object-contain mix-blend-darken dark:invert mr-1"
-                    alt={'company logo'}
-                  />
-                </Link>
-
-                {/* Explore / How It Works — now visible from lg, since row 1
-                    no longer has to share space with the search pill. */}
-                <div className="hidden lg:flex items-center gap-3 pl-1 border-l border-slate-200 ml-1">
-                  <Link
-                    to="/product-listing"
-                    className="flex items-center gap-1 text-sm font-semibold text-slate-600 hover:text-orange-600 transition-colors whitespace-nowrap"
-                  >
-                    <Compass className="w-4 h-4" />
-                    Explore
-                  </Link>
-                  <Link
-                    to="/how-it-works"
-                    className="flex items-center gap-1 text-sm font-semibold text-slate-600 hover:text-orange-600 transition-colors whitespace-nowrap"
-                  >
-                    <HelpCircle className="w-4 h-4" />
-                    How It Works
-                  </Link>
-                </div>
+          <nav className="hidden lg:flex flex-col w-full">
+            {/* Tier 1 — thin utility bar: greeting left, account/message/
+                notification links right. Small text, low visual weight —
+                same idea as eBay's top strip (Hi <name>! ... Watchlist / My
+                eBay / bell / cart), just SaralBuy's equivalents. */}
+            <div className="flex items-center justify-between text-sm pb-2 mb-2 border-b border-slate-100">
+              <div className="flex items-center gap-1 text-slate-500">
+                {user?.firstName && (
+                  <span>
+                    Hi, <span className="font-semibold text-slate-700">{user.firstName}!</span>
+                  </span>
+                )}
               </div>
 
-              {/* Right Side Actions */}
-              <div className="flex items-center gap-2 xl:gap-3 shrink-0">
-                {/* Icons Row */}
-                <div className="flex gap-3 items-center space-x-1">
+              <div className="flex items-center gap-4">
                 {/* Messages Popover */}
                 {user && (
                   <Popover open={showMessageDropdown} onOpenChange={setShowMessageDropdown}>
@@ -835,39 +807,41 @@ const HomeNavbar = () => {
                   </PopoverContent>
                 </Popover>
 
-                </div>
-
-                {/* Post a Requirement */}
-                <Button
-                  onClick={() => {
-                    navigate('/requirement');
-                    setOpenSheet(false);
-                  }}
-                  variant="default"
-                  size="sm"
-                  className="bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 hover:shadow-lg hover:shadow-orange-500/40 hover:-translate-y-0.5 active:scale-95 text-white font-bold px-4 xl:px-6 py-2 rounded-full transition-all duration-300 cursor-pointer text-sm border-0 group ring-2 ring-white/50 ring-offset-1 ring-offset-orange-50 whitespace-nowrap"
-                >
-                  Post Requirements
-                  <span className="ml-1 opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-1 group-hover:translate-x-1 transition-all duration-300">→</span>
-                </Button>
-
-                {/* Account button */}
-                <Button
+                {/* Account link — small text link at this tier, eBay-style
+                    ("My eBay"). Was always "My Account" even logged out;
+                    mobile already correctly showed "Login / Register" here. */}
+                <button
+                  type="button"
                   onClick={user ? handleProfileClick : () => window.dispatchEvent(new Event('session-expired'))}
-                  variant="outline"
-                  className="hidden lg:flex items-center gap-2 font-bold text-slate-700 border border-slate-200/60 hover:border-orange-300 hover:bg-orange-50 hover:text-orange-600 hover:shadow-md hover:-translate-y-0.5 px-3 xl:px-5 py-2.5 rounded-full cursor-pointer transition-all duration-300 shadow-sm bg-white/80 active:scale-95"
+                  className="font-semibold text-slate-600 hover:text-orange-600 transition-colors cursor-pointer whitespace-nowrap"
                 >
-                  <UserRound className="w-4 h-4" />
-                  <span className={user ? 'hidden xl:inline' : 'inline'}>{user ? 'My Account' : 'Login'}</span>
-                </Button>
+                  {user ? 'My Account' : 'Login'}
+                </button>
               </div>
             </div>
 
-            {/* Row 2 — Unified Search & Location Pill, on its own line with
-                nearly the full bar width. Shown on EVERY page including the
-                landing page: the hero search was removed, so hiding this on
-                '/' left the homepage with no search at all. */}
-            <div className="w-full max-w-4xl mx-auto flex items-center bg-white rounded-full border border-slate-200 shadow-sm hover:shadow-md focus-within:shadow-md focus-within:border-orange-300 transition-all duration-300 overflow-visible">
+            {/* Tier 2 — the main row: logo, then the Location/Category/Search
+                bar (dominant, eBay-"Search for anything"-style), then Post
+                Requirements as the standout CTA next to it. */}
+            <div className="flex items-center gap-3 xl:gap-4 w-full pb-2">
+              <div className="hidden lg:flex items-center">
+                <Button variant="outline" size="icon" className="shrink-0 rounded-md border-0 bg-transparent hover:bg-slate-100" onClick={() => setOpenSheet(true)}>
+                  <Menu className="size-6 text-slate-700" />
+                </Button>
+              </div>
+
+              <Link to={'/'} className="flex items-center shrink-0">
+                <img
+                  src={SaralBuyLogo}
+                  className="h-10 md:h-11 w-auto object-contain mix-blend-darken dark:invert mr-1"
+                  alt={'company logo'}
+                />
+              </Link>
+
+              {/* Unified Search & Location Pill. Shown on EVERY page including
+                  the landing page: the hero search was removed, so hiding
+                  this on '/' left the homepage with no search at all. */}
+              <div className="flex-1 max-w-3xl flex items-center bg-white rounded-full border border-slate-200 shadow-sm hover:shadow-md focus-within:shadow-md focus-within:border-orange-300 transition-all duration-300 overflow-visible">
               {/* Location */}
               <div className="flex items-center relative group shrink-0 w-32 lg:w-40 border-r border-slate-200 hover:bg-slate-50 rounded-l-full transition-colors">
                 <MapPin
@@ -961,6 +935,39 @@ const HomeNavbar = () => {
                   </div>
                 )}
               </div>
+              </div>
+
+              {/* Post a Requirement — the standout CTA next to search. */}
+              <Button
+                onClick={() => {
+                  navigate('/requirement');
+                  setOpenSheet(false);
+                }}
+                variant="default"
+                size="sm"
+                className="bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 hover:shadow-lg hover:shadow-orange-500/40 hover:-translate-y-0.5 active:scale-95 text-white font-bold px-4 xl:px-6 py-2.5 rounded-full transition-all duration-300 cursor-pointer text-sm border-0 group ring-2 ring-white/50 ring-offset-1 ring-offset-orange-50 whitespace-nowrap shrink-0"
+              >
+                Post Requirements
+                <span className="ml-1 opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-1 group-hover:translate-x-1 transition-all duration-300">→</span>
+              </Button>
+            </div>
+
+            {/* Tier 3 — thin nav-links row, eBay-category-strip-style. */}
+            <div className="flex items-center gap-5 text-sm pb-2 border-t border-slate-100 pt-2">
+              <Link
+                to="/product-listing"
+                className="flex items-center gap-1.5 font-semibold text-slate-600 hover:text-orange-600 transition-colors whitespace-nowrap"
+              >
+                <Compass className="w-4 h-4" />
+                Explore
+              </Link>
+              <Link
+                to="/how-it-works"
+                className="flex items-center gap-1.5 font-semibold text-slate-600 hover:text-orange-600 transition-colors whitespace-nowrap"
+              >
+                <HelpCircle className="w-4 h-4" />
+                How It Works
+              </Link>
             </div>
           </nav>
 
