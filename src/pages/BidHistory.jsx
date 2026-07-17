@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ChevronLeft, Gavel, Package } from 'lucide-react';
+import { ChevronLeft, Gavel, Package, Lock } from 'lucide-react';
 import { useFetch } from '@/hooks/useFetch';
 import productService from '@/services/product.service';
 import bidService from '@/services/bid.service';
@@ -115,7 +115,11 @@ const BidHistory = () => {
                   <td className="px-5 py-4 text-slate-600">
                     {a.earliestDeliveryDate ? dateFormatter(a.earliestDeliveryDate) : '—'}
                   </td>
-                  <td className="px-5 py-4 text-slate-400 italic">Confidential</td>
+                  <td className="px-5 py-4 text-slate-400">
+                    <span className="flex items-center gap-1.5">
+                      <Lock className="w-3.5 h-3.5" /> Hidden
+                    </span>
+                  </td>
                 </tr>
               ))}
             </tbody>
