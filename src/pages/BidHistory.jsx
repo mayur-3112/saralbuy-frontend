@@ -92,31 +92,18 @@ const BidHistory = () => {
       </div>
 
       {bidActivityRes?.activity?.length > 0 ? (
-        <div className="border border-slate-200 rounded-xl overflow-hidden">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
-                <th className="px-4 py-3 font-semibold">Supplier</th>
-                <th className="px-4 py-3 font-semibold">Location</th>
-                <th className="px-4 py-3 font-semibold">Bid Time</th>
-                <th className="px-4 py-3 font-semibold">Delivery By</th>
-                <th className="px-4 py-3 font-semibold">Brand</th>
-              </tr>
-            </thead>
-            <tbody>
-              {bidActivityRes.activity.map((a, idx) => (
-                <tr key={idx} className="border-t border-slate-100">
-                  <td className="px-4 py-3 font-semibold text-slate-700">{a.label}</td>
-                  <td className="px-4 py-3 text-slate-600">{a.location || '—'}</td>
-                  <td className="px-4 py-3 text-slate-600">{dateFormatter(a.createdAt, 'dd MMM, hh:mm a')}</td>
-                  <td className="px-4 py-3 text-slate-600">
-                    {a.earliestDeliveryDate ? dateFormatter(a.earliestDeliveryDate) : '—'}
-                  </td>
-                  <td className="px-4 py-3 text-slate-600">{a.availableBrand || '—'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="border border-slate-200 rounded-xl divide-y divide-slate-100 overflow-hidden">
+          {bidActivityRes.activity.map((a, idx) => (
+            <div key={idx} className="flex items-center justify-between gap-4 px-5 py-4">
+              <span className="font-semibold text-slate-800">{a.label}</span>
+              <span className="text-sm text-slate-500">{dateFormatter(a.createdAt, 'dd MMM, hh:mm a')}</span>
+              <span className="text-sm text-slate-500">
+                {a.earliestDeliveryDate
+                  ? 'Delivery by ' + dateFormatter(a.earliestDeliveryDate)
+                  : a.location || '—'}
+              </span>
+            </div>
+          ))}
         </div>
       ) : (
         <div className="bg-orange-50 border border-orange-100 rounded-2xl p-6 text-center">
