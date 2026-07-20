@@ -236,7 +236,7 @@ const PostRequirementForm = () => {
   };
 
   return (
-    <div className="w-full max-w-[1440px] mx-auto px-4 min-h-screen py-10 bg-slate-50">
+    <div className="w-full max-w-[1800px] mx-auto px-4 min-h-screen py-10 bg-slate-50">
       <div className="flex gap-4 items-center mb-8 pb-4 border-b border-slate-200">
         <div onClick={handleBackClick} className="cursor-pointer">
           <MoveLeft className="w-6 h-6 text-slate-600 hover:text-orange-600 transition-colors" />

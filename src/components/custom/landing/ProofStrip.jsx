@@ -103,7 +103,7 @@ export default function ProofStrip() {
 
   return (
     <section className="bg-slate-50 border-b border-slate-200">
-      <div className="max-w-[1440px] mx-auto px-4 py-10 sm:py-14">
+      <div className="max-w-[1800px] mx-auto px-4 py-10 sm:py-14">
         {/* Honest proof numbers — larger, more readable tiles */}
         {metrics.length > 0 && (
         <div className={`grid ${gridCols} gap-3 sm:gap-4`}>

@@ -1056,7 +1056,7 @@ const CreateProductForm = () => {
   return (
     <>
       <Authentication setOpen={setOpen} open={open} />
-      <div className="w-full max-w-[1440px] mx-auto p-4">
+      <div className="w-full max-w-[1800px] mx-auto p-4">
         <PlaceRequirementPopup
           buttonType={buttonType}
           loading={addProductLoading}

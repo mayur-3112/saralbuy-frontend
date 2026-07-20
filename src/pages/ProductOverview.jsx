@@ -1119,11 +1119,11 @@ const ProductOverview = () => {
   return (
     <>
       {bidOverLoading || productViewLoading ? (
-        <div className="max-w-[1440px] mx-auto p-4">
+        <div className="max-w-[1800px] mx-auto p-4">
           <CategoryFormSkeleton />
         </div>
       ) : (
-        <div className="w-full max-w-[1440px] mx-auto p-4 min-h-screen">
+        <div className="w-full max-w-[1800px] mx-auto p-4 min-h-screen">
           {<Authentication setOpen={setOpen} open={open} />}
           <SellerVerificationPopup
             businessDets={businessDets}

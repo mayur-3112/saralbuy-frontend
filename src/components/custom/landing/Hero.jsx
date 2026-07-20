@@ -64,7 +64,7 @@ export default function Hero({ onOpenAuth }) {
         style={{ background: 'radial-gradient(circle, rgba(6, 182, 212, 0.08), transparent 70%)' }}
       />
 
-      <div className="relative max-w-[1440px] mx-auto px-4 z-10">
+      <div className="relative max-w-[1800px] mx-auto px-4 z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">
           {/* ── Left: message + actions ─────────────────────────────── */}
           <div className="text-center lg:text-left flex flex-col items-center lg:items-start">

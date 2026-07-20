@@ -152,7 +152,7 @@ export default function Dashboard() {
   return (
     <main className="relative min-h-screen bg-orange-50/30 pb-16">
       <OnboardingTour />
-      <div className="w-full max-w-[1440px] mx-auto px-4">
+      <div className="w-full max-w-[1800px] mx-auto px-4">
 
         {/* Welcome header — warm and specific */}
         <div className="pt-8 pb-6">

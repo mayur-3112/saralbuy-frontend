@@ -100,7 +100,7 @@ const Profile = () => {
       : 'bg-slate-100 text-slate-600';
 
   return (
-    <div className="w-full max-w-[1440px] mx-auto py-4 sm:py-6 px-4">
+    <div className="w-full max-w-[1800px] mx-auto py-4 sm:py-6 px-4">
       {/* Breadcrumb — desktop only */}
       <Breadcrumb className="hidden sm:block mb-6">
         <BreadcrumbList>

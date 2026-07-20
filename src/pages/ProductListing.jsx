@@ -442,7 +442,7 @@ export default function ProductListing() {
         </Dialog>
 
         {/* Desktop */}
-        <main className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8">
+        <main className="mx-auto max-w-[1800px] px-4 sm:px-6 lg:px-8">
 
           {/* ── Explore Header & Search Terminal ── */}
           <div className="pt-8 pb-2">
