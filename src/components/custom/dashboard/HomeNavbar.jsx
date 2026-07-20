@@ -77,7 +77,7 @@ const menu = [
     icon: <HelpCircle className="w-5 h-5" />,
   },
   {
-    title: 'Settings',
+    title: 'Profile',
     url: '/account',
     icon: <CircleUserRound className="w-5 h-5" />,
   },

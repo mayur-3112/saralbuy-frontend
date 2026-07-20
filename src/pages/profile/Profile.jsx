@@ -43,7 +43,7 @@ const getTabIcon = value => {
 };
 
 const tags = [
-  { title: 'Settings',                  value: 'profile' },
+  { title: 'Profile',                   value: 'profile' },
   { title: 'Quotes Submitted',          value: 'your_biding' },
   { title: 'Requirements',              value: 'requirements' },
   { title: 'Closed Deals',              value: 'your_deal' },
