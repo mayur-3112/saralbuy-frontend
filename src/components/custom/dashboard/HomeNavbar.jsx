@@ -43,6 +43,7 @@ import { Badge } from '../../../components/ui/badge';
 import { format } from 'date-fns';
 import SaralBuyLogo from '/image/Logo/navbarLogo.png';
 import { Popover, PopoverContent, PopoverTrigger } from '../../../components/ui/popover';
+import { Avatar, AvatarFallback, AvatarImage } from '../../../components/ui/avatar';
 import { fallBackName } from '@/utils/fallBackName';
 import { mergeName } from '@/utils/mergerName';
 import productService from '@/services/product.service';
@@ -607,16 +608,36 @@ const HomeNavbar = () => {
 
               <div className="flex items-center gap-4">
 
-                {/* Account link — small text link at this tier, eBay-style
-                    ("My eBay"). Was always "My Account" even logged out;
-                    mobile already correctly showed "Login / Register" here. */}
-                <button
-                  type="button"
-                  onClick={user ? handleProfileClick : () => window.dispatchEvent(new Event('session-expired'))}
-                  className="font-semibold text-slate-600 hover:text-orange-600 transition-colors cursor-pointer whitespace-nowrap"
-                >
-                  {user ? 'My Account' : 'Login'}
-                </button>
+                {/* Account — greeting + initials avatar when logged in
+                    (stands out more than a plain "My Account" text link);
+                    plain "Login" text when not. Was always "My Account" even
+                    logged out; mobile already correctly showed
+                    "Login / Register" here. */}
+                {user ? (
+                  <button
+                    type="button"
+                    onClick={handleProfileClick}
+                    className="group flex items-center gap-2 pl-3 pr-1.5 py-1 rounded-full cursor-pointer hover:bg-orange-50 transition-colors duration-200"
+                  >
+                    <span className="font-medium text-slate-600 group-hover:text-orange-600 transition-colors whitespace-nowrap">
+                      Hi, <span className="font-bold text-slate-800 group-hover:text-orange-700">{user.firstName}</span>
+                    </span>
+                    <Avatar className="w-8 h-8 border-2 border-orange-200 group-hover:border-orange-400 shadow-sm transition-all duration-200 group-hover:scale-105">
+                      <AvatarImage src={user?.profileImage} className="object-cover" />
+                      <AvatarFallback className="text-xs font-bold bg-orange-100 text-orange-700">
+                        {fallBackName(mergeName(user))}
+                      </AvatarFallback>
+                    </Avatar>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => window.dispatchEvent(new Event('session-expired'))}
+                    className="font-semibold text-slate-600 hover:text-orange-600 transition-colors cursor-pointer whitespace-nowrap"
+                  >
+                    Login
+                  </button>
+                )}
               </div>
             </div>
 
