@@ -364,10 +364,14 @@ export function AccountSettings() {
         </form>
       </Card>
 
-      {/* Business verification (Aadhaar replacement — GSTIN/PAN) */}
-      <div className="mt-6">
-        <BusinessVerification />
-      </div>
+      {/* Business verification (Aadhaar replacement — GSTIN/PAN) — supplier
+          only. Buyers don't need verification; component/API are untouched,
+          just not rendered for the buyer view. */}
+      {selectedRole === 'supplier' && (
+        <div className="mt-6">
+          <BusinessVerification />
+        </div>
+      )}
     </div>
   );
 }
