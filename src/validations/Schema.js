@@ -62,6 +62,12 @@ export const ProfileSchema = z.object({
   gstin: z.string().optional(),
   supplierCategories: z.string().optional(),
   businessName: z.string().optional(),
+  // Supplier "Organisation Details" fields
+  roleInCompany: z.string().optional(),
+  website: z.string().optional(),
+  businessDescription: z.string().optional(),
+  accomplishments: z.string().optional(),
+  topProblemsSolved: z.string().optional(),
 });
 
 export const productOverviewBidSchema = z.object({

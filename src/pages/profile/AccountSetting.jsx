@@ -54,6 +54,11 @@ export function AccountSettings() {
       procurementRole: '',
       gstin: '',
       supplierCategories: '',
+      roleInCompany: '',
+      website: '',
+      businessDescription: '',
+      accomplishments: '',
+      topProblemsSolved: '',
     },
   });
 
@@ -86,6 +91,11 @@ export function AccountSettings() {
         procurementRole: user?.procurementRole || '',
         gstin: user?.gstin || '',
         supplierCategories: user?.supplierCategories || '',
+        roleInCompany: user?.roleInCompany || '',
+        website: user?.website || '',
+        businessDescription: user?.businessDescription || '',
+        accomplishments: user?.accomplishments || '',
+        topProblemsSolved: user?.topProblemsSolved || '',
       });
     }
   }, [user, reset]);
@@ -103,6 +113,10 @@ export function AccountSettings() {
 
     senitizeField(data.fullName, 'Full Name');
     senitizeField(data.email, 'Email');
+    if (data.accountRole === 'supplier') {
+      senitizeField(data.businessName, 'Organisation Name');
+      senitizeField(data.roleInCompany, 'Role in Company');
+    }
 
     // Backend still stores firstName/lastName separately — split the single
     // Full Name field the same way mergeName() joins them back for display.
@@ -124,6 +138,11 @@ export function AccountSettings() {
     formData.append('supplierCategories', data.supplierCategories || '');
     formData.append('organizationName', data.organizationName || '');
     formData.append('procurementRole', data.procurementRole || '');
+    formData.append('roleInCompany', data.roleInCompany || '');
+    formData.append('website', data.website || '');
+    formData.append('businessDescription', data.businessDescription || '');
+    formData.append('accomplishments', data.accomplishments || '');
+    formData.append('topProblemsSolved', data.topProblemsSolved || '');
 
     if (fileDoc) {
       formData.append('document', fileDoc);
@@ -306,25 +325,57 @@ export function AccountSettings() {
             {/* Supplier fields — shown only when Primary Account Role is Supplier */}
             {selectedRole === 'supplier' && (
             <div className="space-y-2">
-              <Label className="text-gray-600 text-sm font-semibold">Supplier Details</Label>
+              <Label className="text-gray-600 text-sm font-semibold">Organisation Details</Label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-orange-50/50 p-4 rounded-md border border-orange-100">
                 <div className="space-y-2 w-full sm:col-span-2">
                   <Label className="text-gray-600 text-sm" htmlFor="business">
-                    Registered Business Name
+                    Organisation Name
+                    <span className="text-red-500">*</span>
                   </Label>
                   <Input id="business" type="text" placeholder="e.g. Acme Corp Ltd." {...register('businessName')} className="bg-white w-full" />
                 </div>
                 <div className="space-y-2 w-full">
                   <Label className="text-gray-600 text-sm" htmlFor="gstin">
-                    GSTIN Number
+                    GST Number
                   </Label>
                   <Input id="gstin" type="text" placeholder="27XXXXX..." {...register('gstin')} className="bg-white w-full uppercase" />
                 </div>
                 <div className="space-y-2 w-full">
-                  <Label className="text-gray-600 text-sm" htmlFor="supplierCategories">
-                    Primary Categories Supplied
+                  <Label className="text-gray-600 text-sm" htmlFor="roleInCompany">
+                    Role in Company
+                    <span className="text-red-500">*</span>
                   </Label>
-                  <Input id="supplierCategories" type="text" placeholder="e.g. Cement, Steel, Electrical" {...register('supplierCategories')} className="bg-white w-full" />
+                  <Input id="roleInCompany" type="text" placeholder="e.g. Founder, Sales Manager" {...register('roleInCompany')} className="bg-white w-full" />
+                </div>
+                <div className="space-y-2 w-full sm:col-span-2">
+                  <Label className="text-gray-600 text-sm" htmlFor="website">
+                    Website <span className="text-slate-400 font-normal">(optional)</span>
+                  </Label>
+                  <Input id="website" type="text" placeholder="e.g. https://acmecorp.com" {...register('website')} className="bg-white w-full" />
+                </div>
+                <div className="space-y-2 w-full sm:col-span-2">
+                  <Label className="text-gray-600 text-sm" htmlFor="businessDescription">
+                    Business Description
+                  </Label>
+                  <Textarea id="businessDescription" placeholder="What does your business do?" {...register('businessDescription')} className="bg-white w-full min-h-20 resize-none" />
+                </div>
+                <div className="space-y-2 w-full sm:col-span-2">
+                  <Label className="text-gray-600 text-sm" htmlFor="accomplishments">
+                    Accomplishments
+                  </Label>
+                  <Textarea id="accomplishments" placeholder="Awards, certifications, notable projects..." {...register('accomplishments')} className="bg-white w-full min-h-20 resize-none" />
+                </div>
+                <div className="space-y-2 w-full sm:col-span-2">
+                  <Label className="text-gray-600 text-sm" htmlFor="supplierCategories">
+                    Top Products Supplied
+                  </Label>
+                  <Textarea id="supplierCategories" placeholder="e.g. Cement, Steel, Electrical" {...register('supplierCategories')} className="bg-white w-full min-h-20 resize-none" />
+                </div>
+                <div className="space-y-2 w-full sm:col-span-2">
+                  <Label className="text-gray-600 text-sm" htmlFor="topProblemsSolved">
+                    Top Problems Solved
+                  </Label>
+                  <Textarea id="topProblemsSolved" placeholder="What problems do you solve for buyers?" {...register('topProblemsSolved')} className="bg-white w-full min-h-20 resize-none" />
                 </div>
               </div>
             </div>
