@@ -90,6 +90,8 @@ export function AccountSettings() {
     }
   }, [user, reset]);
 
+  const selectedRole = watch('accountRole');
+
   function senitizeField(str, fieldName) {
     if (str.replace(/\s/g, '') === '') {
       return toast.error(fieldName + ' is required');
@@ -168,16 +170,15 @@ export function AccountSettings() {
         >
           <div className="space-y-4 p-3 sm:p-5 rounded-md">
             
-            {/* Account Role — a single account can act as both buyer and
-                supplier (post requirements AND place bids); this only picks
-                which badge/default view shows elsewhere, it no longer hides
-                the other role's fields below. */}
+            {/* Account Role — decides which section shows below. Backend
+                still allows any account to post requirements AND place bids
+                regardless of this value; it's purely a UI/display choice. */}
             <div className="mb-6">
               <Label className="text-gray-600 gap-0 text-sm mb-2 block">
                 Primary Account Role
               </Label>
               <p className="text-xs text-slate-500 mb-2">
-                This just picks your default badge — fill in either or both sections below to act as both.
+                Switch this to change which details section appears below.
               </p>
               <div className="flex bg-slate-100 rounded-lg p-1 w-full max-w-sm relative">
                 <label className="flex-1 cursor-pointer">
@@ -275,7 +276,8 @@ export function AccountSettings() {
               </div>
             </div>
 
-            {/* Buyer fields — always available, independent of Primary Account Role */}
+            {/* Buyer fields — shown only when Primary Account Role is Buyer */}
+            {selectedRole !== 'supplier' && (
             <div className="space-y-2">
               <Label className="text-gray-600 text-sm font-semibold">Buyer Details</Label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-md border border-slate-200">
@@ -291,10 +293,18 @@ export function AccountSettings() {
                   </Label>
                   <Input id="procurementRole" type="text" placeholder="e.g. Purchasing Manager" {...register('procurementRole')} className="bg-white w-full" />
                 </div>
+                <div className="space-y-2 w-full sm:col-span-2">
+                  <Label className="text-gray-600 text-sm" htmlFor="buyer-gstin">
+                    GST Number <span className="text-slate-400 font-normal">(if applicable)</span>
+                  </Label>
+                  <Input id="buyer-gstin" type="text" placeholder="27XXXXX... (optional)" {...register('gstin')} className="bg-white w-full uppercase" />
+                </div>
               </div>
             </div>
+            )}
 
-            {/* Supplier fields — always available, independent of Primary Account Role */}
+            {/* Supplier fields — shown only when Primary Account Role is Supplier */}
+            {selectedRole === 'supplier' && (
             <div className="space-y-2">
               <Label className="text-gray-600 text-sm font-semibold">Supplier Details</Label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-orange-50/50 p-4 rounded-md border border-orange-100">
@@ -318,6 +328,7 @@ export function AccountSettings() {
                 </div>
               </div>
             </div>
+            )}
           </div>
 
           {/* Buttons */}

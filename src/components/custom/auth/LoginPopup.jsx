@@ -24,12 +24,6 @@ const LoginPopup = ({ open, setOpen, setNumber, setOtpPopup, setSessionId }) => 
     }
   };
 
-  const [role, setRole] = useState(() => {
-    const savedRole = localStorage.getItem('auth_default_role');
-    localStorage.removeItem('auth_default_role'); // Clear it immediately
-    return savedRole === 'seller' || savedRole === 'supplier' ? 'supplier' : 'buyer';
-  });
-
   const handleSendOTP = async e => {
     e.preventDefault();
     if (mobileNumber.length !== 10) {
@@ -65,32 +59,15 @@ const LoginPopup = ({ open, setOpen, setNumber, setOtpPopup, setSessionId }) => 
               <img src={SaralBuyLogo} alt="Logo" className="w-full h-full object-contain" />
             </div>
 
-            {/* Role Segregation Tabs */}
-            <div className="flex bg-slate-100 rounded-lg p-1 w-full relative">
-              <button
-                type="button"
-                onClick={() => setRole('buyer')}
-                className={`flex-1 py-2 text-sm font-semibold transition-all duration-200 z-10 rounded-md ${role === 'buyer' ? 'text-orange-600 bg-white shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
-              >
-                As a Buyer
-              </button>
-              <button
-                type="button"
-                onClick={() => setRole('supplier')}
-                className={`flex-1 py-2 text-sm font-semibold transition-all duration-200 z-10 rounded-md ${role === 'supplier' ? 'text-orange-600 bg-white shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
-              >
-                As a Supplier
-              </button>
-            </div>
-
+            {/* Universal login — no buyer/supplier choice up front. A single
+                account can act as both (set up in Account Settings after
+                signing in), so asking here was a fork with no real purpose. */}
             <div className="space-y-2 text-center">
               <DialogTitle className="text-gray-800 text-2xl font-extrabold">
-                {role === 'buyer' ? 'Post & Compare Quotes' : 'Find Verified Leads'}
+                Welcome to SaralBuy
               </DialogTitle>
               <DialogTitle className="text-sm text-gray-500 font-medium">
-                {role === 'buyer' 
-                  ? 'Sign in to post requirements and compare competitive quotes instantly.'
-                  : 'Sign in to access verified leads and submit competitive quotes.'}
+                Sign in to post requirements, compare quotes, and find leads — all in one account.
               </DialogTitle>
             </div>
 
@@ -113,10 +90,8 @@ const LoginPopup = ({ open, setOpen, setNumber, setOtpPopup, setSessionId }) => 
                   onChange={(e) => setAccepted(e.target.checked)}
                 />
                 <label htmlFor="terms-checkbox" className="leading-tight">
-                  I accept the <a href="/terms" className="text-orange-600 underline hover:text-orange-700">Terms</a> & <a href="/privacy" className="text-orange-600 underline hover:text-orange-700">Privacy Policy</a>. 
-                  {role === 'supplier' 
-                    ? ' I acknowledge that SaralBuy is a connection platform and is not liable for transactions, material quality, or GST compliance.' 
-                    : ' I acknowledge SaralBuy does not guarantee supplier fulfillment or material quality.'}
+                  I accept the <a href="/terms" className="text-orange-600 underline hover:text-orange-700">Terms</a> & <a href="/privacy" className="text-orange-600 underline hover:text-orange-700">Privacy Policy</a>.
+                  {' '}I acknowledge SaralBuy is a connection platform and is not liable for transactions, material quality, fulfillment, or GST compliance.
                 </label>
               </div>
 
