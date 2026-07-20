@@ -578,7 +578,7 @@ const HomeNavbar = () => {
   }, [user?._id]);
   return (
     <section className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-2xl border-b border-slate-200/50 shadow-sm transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-3">
+      <div className="max-w-[1440px] mx-auto px-2 sm:px-4 lg:px-8 py-3">
         <div>
           {/* ── Desktop Nav ─────────────────────────────────────────────── */}
           {/* Two rows instead of one crowded row: row 1 is branding/nav/

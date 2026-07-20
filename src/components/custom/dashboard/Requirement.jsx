@@ -51,7 +51,7 @@ const Requirement = () => {
     };
   }, [window.innerWidth]);
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 min-h-screen relative">
+    <div className="w-full max-w-[1440px] mx-auto px-4 min-h-screen relative">
       {/* <Banner /> */}
 
       <div className="mt-10 mb-8 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">

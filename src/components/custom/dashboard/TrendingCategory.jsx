@@ -14,7 +14,7 @@ const TrendingCategory = ({ categories }) => {
     navigate(`/product-listing?category=${encodeURIComponent(categoryId)}&TOPTRENDING=true`);
   };
   return (
-    <div className="px-4 py-12 max-w-7xl mx-auto">
+    <div className="px-4 py-12 max-w-[1440px] mx-auto">
       <div className="flex items-center mb-6 pl-1">
         <p className="font-black text-2xl border-l-4 border-orange-600 pl-3 tracking-tight text-slate-900 uppercase">
           Trending Categories

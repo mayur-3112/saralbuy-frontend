@@ -1464,7 +1464,7 @@ const Chatbot = () => {
       {loading ? (
         <Loader />
       ) : (
-        <div className="w-full max-w-7xl mx-auto px-4 mb-5">
+        <div className="w-full max-w-[1440px] mx-auto px-4 mb-5">
           <div className="h-[calc(100vh-80px)] border border-slate-200 rounded-xl overflow-hidden sm:mt-4 shadow-sm">
             <div className="flex h-full gap-2">
               {/* Sidebar */}

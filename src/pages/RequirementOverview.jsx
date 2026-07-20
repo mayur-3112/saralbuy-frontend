@@ -691,7 +691,7 @@ const RequirementOverview = () => {
         productId={currentProduct?.product?._id}
       />
 
-      <div className="w-full max-w-7xl mx-auto space-y-4 px-3 sm:px-4 lg:px-6 py-4">
+      <div className="w-full max-w-[1440px] mx-auto space-y-4 px-3 sm:px-4 lg:px-6 py-4">
         {/* Breadcrumb */}
         <Breadcrumb className="hidden sm:block">
           <BreadcrumbList>

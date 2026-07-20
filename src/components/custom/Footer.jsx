@@ -5,7 +5,7 @@ export default function Footer() {
   const year = new Date().getFullYear();
   return (
     <footer className="bg-slate-50 text-slate-600 border-t border-slate-200">
-      <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-12">
+      <div className="max-w-[1440px] mx-auto px-6 py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-12">
         {/* Company block */}
         <div className="lg:col-span-6 space-y-5">
           <Link to="/" className="inline-block transition-transform hover:scale-105 duration-300">
@@ -57,7 +57,7 @@ export default function Footer() {
 
       {/* Bottom bar */}
       <div className="border-t border-slate-200 bg-white">
-        <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-semibold text-slate-500">
+        <div className="max-w-[1440px] mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-semibold text-slate-500">
           <div>© {year} SaralBuy. Serving builders, contractors & suppliers across Karnataka.</div>
           <div className="flex items-center gap-1">
             <span>Made with 💙 for construction professionals.</span>

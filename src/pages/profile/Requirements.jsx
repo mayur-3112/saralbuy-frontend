@@ -144,7 +144,7 @@ const Requirement = () => {
         }}
       />
 
-      <div className="w-full max-w-7xl mx-auto space-y-6">
+      <div className="w-full max-w-[1440px] mx-auto space-y-6">
         <div className="grid space-y-5 w-full">
           <div className="flex justify-between items-center font-semibold w-full mb-3">
             <p className="font-bold text-xl whitespace-nowrap tracking-tight text-gray-600">
