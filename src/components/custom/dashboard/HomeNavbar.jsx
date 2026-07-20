@@ -757,8 +757,12 @@ const HomeNavbar = () => {
               </div>
               </div>
 
-              {/* Messages + Notifications — same row as Post Requirements. */}
-              <div className="flex items-center gap-3 shrink-0">
+              {/* Messages + Notifications — same row as Post Requirements.
+                  ml-auto pushes this group (and Post Requirements right after
+                  it) to the true right edge, instead of them sitting right
+                  after wherever the search pill's own max-width cap stops it
+                  from growing further — which left a dead gap on wide screens. */}
+              <div className="flex items-center gap-3 shrink-0 ml-auto">
                   {/* Messages — always visible (was hidden entirely when
                       logged out, unlike the bell icon next to it). Logged-out
                       click opens login instead of an empty chat popover. */}
