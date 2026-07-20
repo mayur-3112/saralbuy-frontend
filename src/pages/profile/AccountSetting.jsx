@@ -115,7 +115,7 @@ export function AccountSettings() {
     senitizeField(data.email, 'Email');
     if (data.accountRole === 'supplier') {
       senitizeField(data.businessName, 'Organisation Name');
-      senitizeField(data.roleInCompany, 'Role in Company');
+      senitizeField(data.roleInCompany, 'Role in Organisation');
     }
 
     // Backend still stores firstName/lastName separately — split the single
@@ -342,7 +342,7 @@ export function AccountSettings() {
                 </div>
                 <div className="space-y-2 w-full">
                   <Label className="text-gray-600 text-sm" htmlFor="roleInCompany">
-                    Role in Company
+                    Role in Organisation
                     <span className="text-red-500">*</span>
                   </Label>
                   <Input id="roleInCompany" type="text" placeholder="e.g. Founder, Sales Manager" {...register('roleInCompany')} className="bg-white w-full" />

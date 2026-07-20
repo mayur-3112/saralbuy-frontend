@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
-import { BadgeCheck, Clock, XCircle, ShieldCheck, Loader2 } from 'lucide-react';
+import { Clock, XCircle, ShieldCheck, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import userService from '@/services/user.service';
 import { useFetch } from '@/hooks/useFetch';
@@ -25,19 +25,8 @@ const GSTIN_REGEX = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
 const PAN_REGEX = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
 
 function StatusBanner({ status, notes, submittedAt, decidedAt }) {
-  if (status === 'verified') {
-    return (
-      <div className="flex items-center gap-3 rounded-xl bg-emerald-50 border border-emerald-200 p-4">
-        <BadgeCheck className="w-6 h-6 text-emerald-600 shrink-0" />
-        <div>
-          <p className="font-black text-emerald-800 text-sm">You're a Verified Supplier</p>
-          <p className="text-xs text-emerald-700 mt-0.5">
-            Buyers see a green "Verified" badge next to your quotes. This builds trust and helps you win more deals.
-          </p>
-        </div>
-      </div>
-    );
-  }
+  // "Verified" banner removed — the green "Verified" quote badge elsewhere
+  // already tells a supplier they're verified; this box was redundant.
   if (status === 'pending') {
     return (
       <div className="flex items-center gap-3 rounded-xl bg-amber-50 border border-amber-200 p-4">
