@@ -72,14 +72,14 @@ const LoginPopup = ({ open, setOpen, setNumber, setOtpPopup, setSessionId }) => 
                 onClick={() => setRole('buyer')}
                 className={`flex-1 py-2 text-sm font-semibold transition-all duration-200 z-10 rounded-md ${role === 'buyer' ? 'text-orange-600 bg-white shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
               >
-                I am a Buyer
+                As a Buyer
               </button>
               <button
                 type="button"
                 onClick={() => setRole('supplier')}
                 className={`flex-1 py-2 text-sm font-semibold transition-all duration-200 z-10 rounded-md ${role === 'supplier' ? 'text-orange-600 bg-white shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
               >
-                I am a Supplier
+                As a Supplier
               </button>
             </div>
 

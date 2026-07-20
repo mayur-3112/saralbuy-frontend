@@ -181,13 +181,13 @@ export function AccountSettings() {
                 <label className="flex-1 cursor-pointer">
                   <input type="radio" value="buyer" {...register('accountRole')} className="peer sr-only" />
                   <div className="py-2 text-center text-sm font-semibold transition-all duration-200 rounded-md peer-checked:text-orange-600 peer-checked:bg-white peer-checked:shadow-sm text-slate-500 hover:text-slate-700">
-                    I am a Buyer
+                    As a Buyer
                   </div>
                 </label>
                 <label className="flex-1 cursor-pointer">
                   <input type="radio" value="supplier" {...register('accountRole')} className="peer sr-only" />
                   <div className="py-2 text-center text-sm font-semibold transition-all duration-200 rounded-md peer-checked:text-orange-600 peer-checked:bg-white peer-checked:shadow-sm text-slate-500 hover:text-slate-700">
-                    I am a Supplier
+                    As a Supplier
                   </div>
                 </label>
               </div>
