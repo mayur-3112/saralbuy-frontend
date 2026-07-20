@@ -19,7 +19,6 @@ import { toast } from 'sonner';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ProfileSchema } from '@/validations/Schema';
 import Authentication from '@/components/custom/auth/Authenticate';
-import BusinessVerification from '@/components/custom/profile/BusinessVerification';
 
 export function AccountSettings() {
   const [fileDoc, _] = useState(null);
@@ -415,14 +414,6 @@ export function AccountSettings() {
         </form>
       </Card>
 
-      {/* Business verification (Aadhaar replacement — GSTIN/PAN) — supplier
-          only. Buyers don't need verification; component/API are untouched,
-          just not rendered for the buyer view. */}
-      {selectedRole === 'supplier' && (
-        <div className="mt-6">
-          <BusinessVerification />
-        </div>
-      )}
     </div>
   );
 }
