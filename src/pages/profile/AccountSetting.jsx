@@ -45,8 +45,7 @@ export function AccountSettings() {
     resolver: zodResolver(ProfileSchema),
     defaultValues: {
       accountRole: 'buyer',
-      firstName: '',
-      lastName: '',
+      fullName: '',
       email: '',
       phone: '',
       address: '',
@@ -66,8 +65,7 @@ export function AccountSettings() {
 
       reset({
         phone: '',
-        firstName: '',
-        lastName: '',
+        fullName: '',
         email: '',
         address: '',
         businessName: '',
@@ -80,8 +78,7 @@ export function AccountSettings() {
       reset({
         accountRole: user?.accountRole || 'buyer',
         phone: user?.phone || '',
-        firstName: user?.firstName || '',
-        lastName: user?.lastName || '',
+        fullName: `${user?.firstName || ''} ${user?.lastName || ''}`.trim(),
         email: user?.email || '',
         address: user?.address || '',
         businessName: user?.businessName || '',
@@ -102,12 +99,17 @@ export function AccountSettings() {
   async function onSubmit(data) {
     const formData = new FormData();
 
-    senitizeField(data.firstName, 'First Name');
-    senitizeField(data.lastName, 'Last Name');
+    senitizeField(data.fullName, 'Full Name');
     senitizeField(data.email, 'Email');
 
-    formData.append('firstName', data.firstName);
-    formData.append('lastName', data.lastName);
+    // Backend still stores firstName/lastName separately — split the single
+    // Full Name field the same way mergeName() joins them back for display.
+    const nameParts = data.fullName.trim().split(/\s+/);
+    const firstName = nameParts[0] || '';
+    const lastName = nameParts.slice(1).join(' ');
+
+    formData.append('firstName', firstName);
+    formData.append('lastName', lastName);
     formData.append('email', data.email);
     formData.append('address', data.address);
     formData.append('accountRole', data.accountRole);
@@ -193,79 +195,19 @@ export function AccountSettings() {
               </div>
             </div>
 
-            {/* First + Last Name */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2 w-full">
-                <Label className="text-gray-600 gap-0 text-sm" htmlFor="first-name">
-                  First Name
-                  <span className="text-red-500">*</span>
-                </Label>
+            {/* Full Name */}
+            <div className="space-y-2 w-full">
+              <Label className="text-gray-600 gap-0 text-sm" htmlFor="full-name">
+                Full Name
+                <span className="text-red-500">*</span>
+              </Label>
 
-                <Input
-                  id="first-name"
-                  placeholder="Enter first name"
-                  className="bg-transparent w-full"
-                  {...register('firstName')}
-                />
-              </div>
-
-              <div className="space-y-2 w-full">
-                <Label className="text-gray-600 gap-0 text-sm" htmlFor="last-name">
-                  Last Name
-                  <span className="text-red-500">*</span>
-                </Label>
-
-                <Input
-                  id="last-name"
-                  placeholder="Enter last name"
-                  className="bg-transparent w-full"
-                  {...register('lastName')}
-                />
-              </div>
-            </div>
-
-            {/* Buyer fields — always available, independent of Primary Account Role */}
-            <div className="space-y-2">
-              <Label className="text-gray-600 text-sm font-semibold">Buyer Details</Label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-md border border-slate-200">
-                <div className="space-y-2 w-full">
-                  <Label className="text-gray-600 text-sm" htmlFor="orgName">
-                    Organization Name
-                  </Label>
-                  <Input id="orgName" type="text" placeholder="e.g. BuildRight Projects" {...register('organizationName')} className="bg-white w-full" />
-                </div>
-                <div className="space-y-2 w-full">
-                  <Label className="text-gray-600 text-sm" htmlFor="procurementRole">
-                    Procurement Role
-                  </Label>
-                  <Input id="procurementRole" type="text" placeholder="e.g. Purchasing Manager" {...register('procurementRole')} className="bg-white w-full" />
-                </div>
-              </div>
-            </div>
-
-            {/* Supplier fields — always available, independent of Primary Account Role */}
-            <div className="space-y-2">
-              <Label className="text-gray-600 text-sm font-semibold">Supplier Details</Label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-orange-50/50 p-4 rounded-md border border-orange-100">
-                <div className="space-y-2 w-full sm:col-span-2">
-                  <Label className="text-gray-600 text-sm" htmlFor="business">
-                    Registered Business Name
-                  </Label>
-                  <Input id="business" type="text" placeholder="e.g. Acme Corp Ltd." {...register('businessName')} className="bg-white w-full" />
-                </div>
-                <div className="space-y-2 w-full">
-                  <Label className="text-gray-600 text-sm" htmlFor="gstin">
-                    GSTIN Number
-                  </Label>
-                  <Input id="gstin" type="text" placeholder="27XXXXX..." {...register('gstin')} className="bg-white w-full uppercase" />
-                </div>
-                <div className="space-y-2 w-full">
-                  <Label className="text-gray-600 text-sm" htmlFor="supplierCategories">
-                    Primary Categories Supplied
-                  </Label>
-                  <Input id="supplierCategories" type="text" placeholder="e.g. Cement, Steel, Electrical" {...register('supplierCategories')} className="bg-white w-full" />
-                </div>
-              </div>
+              <Input
+                id="full-name"
+                placeholder="Enter full name"
+                className="bg-transparent w-full"
+                {...register('fullName')}
+              />
             </div>
 
             {/* Email + Phone */}
@@ -330,6 +272,50 @@ export function AccountSettings() {
                   placeholder="Enter address"
                   {...register('address')}
                 />
+              </div>
+            </div>
+
+            {/* Buyer fields — always available, independent of Primary Account Role */}
+            <div className="space-y-2">
+              <Label className="text-gray-600 text-sm font-semibold">Buyer Details</Label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-md border border-slate-200">
+                <div className="space-y-2 w-full">
+                  <Label className="text-gray-600 text-sm" htmlFor="orgName">
+                    Organization Name
+                  </Label>
+                  <Input id="orgName" type="text" placeholder="e.g. BuildRight Projects" {...register('organizationName')} className="bg-white w-full" />
+                </div>
+                <div className="space-y-2 w-full">
+                  <Label className="text-gray-600 text-sm" htmlFor="procurementRole">
+                    Procurement Role
+                  </Label>
+                  <Input id="procurementRole" type="text" placeholder="e.g. Purchasing Manager" {...register('procurementRole')} className="bg-white w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* Supplier fields — always available, independent of Primary Account Role */}
+            <div className="space-y-2">
+              <Label className="text-gray-600 text-sm font-semibold">Supplier Details</Label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-orange-50/50 p-4 rounded-md border border-orange-100">
+                <div className="space-y-2 w-full sm:col-span-2">
+                  <Label className="text-gray-600 text-sm" htmlFor="business">
+                    Registered Business Name
+                  </Label>
+                  <Input id="business" type="text" placeholder="e.g. Acme Corp Ltd." {...register('businessName')} className="bg-white w-full" />
+                </div>
+                <div className="space-y-2 w-full">
+                  <Label className="text-gray-600 text-sm" htmlFor="gstin">
+                    GSTIN Number
+                  </Label>
+                  <Input id="gstin" type="text" placeholder="27XXXXX..." {...register('gstin')} className="bg-white w-full uppercase" />
+                </div>
+                <div className="space-y-2 w-full">
+                  <Label className="text-gray-600 text-sm" htmlFor="supplierCategories">
+                    Primary Categories Supplied
+                  </Label>
+                  <Input id="supplierCategories" type="text" placeholder="e.g. Cement, Steel, Electrical" {...register('supplierCategories')} className="bg-white w-full" />
+                </div>
               </div>
             </div>
           </div>

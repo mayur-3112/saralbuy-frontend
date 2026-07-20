@@ -50,8 +50,9 @@ export const CategoryFormSchema = z.object({
 });
 
 export const ProfileSchema = z.object({
-  firstName: z.string().min(1, 'First Name is required'),
-  lastName: z.string().min(1, 'Last Name is required'),
+  // UI collects one Full Name field; split into firstName/lastName before
+  // submit so the backend contract (separate fields) is unchanged.
+  fullName: z.string().min(1, 'Full Name is required'),
   email: z.string().email('Invalid email'),
   phone: z.string().optional(),
   address: z.string().min(1, 'Address is required').min(3, 'Address is too short'),

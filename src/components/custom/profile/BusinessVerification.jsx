@@ -1,9 +1,9 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
-import { BadgeCheck, Clock, XCircle, ShieldCheck, Upload, FileText, X, Loader2 } from 'lucide-react';
+import { BadgeCheck, Clock, XCircle, ShieldCheck, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import userService from '@/services/user.service';
 import { useFetch } from '@/hooks/useFetch';
@@ -73,10 +73,6 @@ export default function BusinessVerification() {
   const [gstin, setGstin] = useState('');
   const [pan, setPan] = useState('');
   const [businessName, setBusinessName] = useState('');
-  const [gstinDoc, setGstinDoc] = useState(null);
-  const [panDoc, setPanDoc] = useState(null);
-  const gstinDocRef = useRef(null);
-  const panDocRef = useRef(null);
 
   const { fn: fetchStatusFn, data: statusData, loading: statusLoading } = useFetch(
     userService.getVerificationStatus
@@ -98,16 +94,6 @@ export default function BusinessVerification() {
 
   const status = statusData?.verificationStatus || 'unverified';
   const isLocked = status === 'verified' || status === 'pending';
-
-  const handleFile = (e, setter) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error('Document must be under 5MB');
-      return;
-    }
-    setter(file);
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -131,17 +117,11 @@ export default function BusinessVerification() {
     if (gstinTrim) fd.append('gstin', gstinTrim);
     if (panTrim) fd.append('pan', panTrim);
     if (businessName.trim()) fd.append('businessName', businessName.trim());
-    if (gstinDoc) fd.append('gstinDocument', gstinDoc);
-    if (panDoc) fd.append('panDocument', panDoc);
 
     const result = await submitFn(fd);
     if (result) {
       toast.success('Submitted — our team will review within one business day');
       fetchStatusFn();
-      setGstinDoc(null);
-      setPanDoc(null);
-      if (gstinDocRef.current) gstinDocRef.current.value = '';
-      if (panDocRef.current) panDocRef.current.value = '';
     }
   };
 
@@ -219,27 +199,6 @@ export default function BusinessVerification() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <DocSlot
-                label="GST Certificate"
-                accept=".pdf,.jpg,.jpeg,.png"
-                file={gstinDoc}
-                onFile={(e) => handleFile(e, setGstinDoc)}
-                onClear={() => { setGstinDoc(null); if (gstinDocRef.current) gstinDocRef.current.value = ''; }}
-                inputRef={gstinDocRef}
-                disabled={isLocked}
-              />
-              <DocSlot
-                label="PAN Card"
-                accept=".pdf,.jpg,.jpeg,.png"
-                file={panDoc}
-                onFile={(e) => handleFile(e, setPanDoc)}
-                onClear={() => { setPanDoc(null); if (panDocRef.current) panDocRef.current.value = ''; }}
-                inputRef={panDocRef}
-                disabled={isLocked}
-              />
-            </div>
-
             {!isLocked && (
               <Button
                 type="submit"
@@ -257,43 +216,5 @@ export default function BusinessVerification() {
         </>
       )}
     </Card>
-  );
-}
-
-function DocSlot({ label, accept, file, onFile, onClear, inputRef, disabled }) {
-  return (
-    <div>
-      <Label className="text-xs font-extrabold text-slate-700 uppercase tracking-wide">
-        {label} <span className="text-slate-400 font-medium normal-case">(optional)</span>
-      </Label>
-      {file ? (
-        <div className="mt-1 flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2">
-          <FileText className="w-4 h-4 text-emerald-600 shrink-0" />
-          <span className="text-xs font-bold text-emerald-800 truncate flex-1">{file.name}</span>
-          {!disabled && (
-            <button type="button" onClick={onClear} className="text-emerald-600 hover:text-emerald-900">
-              <X className="w-4 h-4" />
-            </button>
-          )}
-        </div>
-      ) : (
-        <label
-          className={`mt-1 flex items-center gap-2 rounded-lg border border-dashed border-slate-300 bg-slate-50 px-3 py-2 text-xs text-slate-500 ${
-            disabled ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer hover:border-orange-300 hover:bg-orange-50/40'
-          }`}
-        >
-          <Upload className="w-4 h-4" />
-          Upload PDF / image (max 5MB)
-          <input
-            type="file"
-            ref={inputRef}
-            accept={accept}
-            onChange={onFile}
-            disabled={disabled}
-            className="hidden"
-          />
-        </label>
-      )}
-    </div>
   );
 }
