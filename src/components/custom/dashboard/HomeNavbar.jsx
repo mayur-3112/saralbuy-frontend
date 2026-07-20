@@ -660,8 +660,13 @@ const HomeNavbar = () => {
 
               {/* Unified Search & Location Pill. Shown on EVERY page including
                   the landing page: the hero search was removed, so hiding
-                  this on '/' left the homepage with no search at all. */}
-              <div className="flex-1 max-w-3xl flex items-center bg-white rounded-full border border-slate-200 shadow-sm hover:shadow-md focus-within:shadow-md focus-within:border-orange-300 transition-all duration-300 overflow-visible">
+                  this on '/' left the homepage with no search at all.
+                  Centered in the row's available space (between logo and the
+                  icons/CTA group) rather than left-anchored right after the
+                  logo — it was hugging the left while empty space collected
+                  on the right, before ml-auto pushed the icons to the edge. */}
+              <div className="flex-1 flex justify-center min-w-0">
+              <div className="w-full max-w-3xl flex items-center bg-white rounded-full border border-slate-200 shadow-sm hover:shadow-md focus-within:shadow-md focus-within:border-orange-300 transition-all duration-300 overflow-visible">
               {/* Location */}
               <div className="flex items-center relative group shrink-0 w-32 lg:w-40 border-r border-slate-200 hover:bg-slate-50 rounded-l-full transition-colors">
                 <MapPin
@@ -754,6 +759,7 @@ const HomeNavbar = () => {
                     )}
                   </div>
                 )}
+              </div>
               </div>
               </div>
 
