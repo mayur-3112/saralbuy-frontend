@@ -8,7 +8,7 @@ const DyanmicHomeCard = ({ bg, item }) => {
   return (
     <div className={` px-8 sm:px-16 relative bg-no-repeat z-0 bg-cover  py-10  min-h-82 `}>
       <div className={`absolute inset-0 bg-${bg}-200/80 -z-[1]`}></div>
-      <div className="flex justify-between items-center max-w-[1800px] mx-auto px-4">
+      <div className="flex justify-between items-center max-w-[1600px] mx-auto px-4">
         <p
           className={`font-bold text-3xl  text-${bg || 'blue'}-700 border-l-5 border-${bg || 'blue'}-700 pl-3 tracking-tight capitalize`}
         >
@@ -21,7 +21,7 @@ const DyanmicHomeCard = ({ bg, item }) => {
      } */}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 mt-5 max-w-[1800px] mx-auto sm:px-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 mt-5 max-w-[1600px] mx-auto sm:px-4">
         {item?.products?.map(item => (
           <div
             key={item?._id}

@@ -1147,7 +1147,7 @@ const UpdateCreateProductForm = () => {
         createProductFn={handleSubmit}
       />
 
-      <div className="w-full max-w-[1800px] mx-auto p-4 min-h-screen">
+      <div className="w-full max-w-[1600px] mx-auto p-4 min-h-screen">
         {getDraftLoading ? (
           <CategoryFormSkeleton />
         ) : (

@@ -28,7 +28,7 @@ export default function LandingPage() {
       <Hero onOpenAuth={triggerAuth} />
       <ProofStrip />
 
-      <div className="max-w-[1800px] mx-auto px-4 py-12">
+      <div className="max-w-[1600px] mx-auto px-4 py-12">
         <main className="space-y-16">
           <LiveSourcingBoard onOpenAuth={triggerAuth} />
         </main>
