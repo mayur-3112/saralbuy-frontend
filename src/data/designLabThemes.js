@@ -3,11 +3,67 @@
 //   primary, primaryHover, secondary, accent,
 //   background, surface, card, header, sidebar, border, input,
 //   textPrimary, textSecondary, textInverse,
-//   link, success, warning, danger
+//   link, success, warning, danger,
+//   fontDisplay, fontBody  (font-family stacks — see FONT_PAIRS below)
 //
 // "production" is the real, live SaralBuy palette (orange-600 primary,
 // white surfaces, slate text) — it's the default and the only one that
 // matters until you explicitly promote something else.
+//
+// Fonts are system-stack pairings, not webfonts — no CDN dependency, no
+// FOUT/network request, works offline. Distinct pairing PER THEME
+// PERSONALITY (a premium theme gets a serif display face, an industrial
+// theme gets condensed, a tech/synthetic theme gets monospace display)
+// rather than every theme silently sharing one default sans stack.
+const FONT_PAIRS = {
+  sans: {
+    fontDisplay: '-apple-system, "Segoe UI", Helvetica, Arial, sans-serif',
+    fontBody: '-apple-system, "Segoe UI", Helvetica, Arial, sans-serif',
+  },
+  'serif-premium': {
+    fontDisplay: 'Georgia, "Times New Roman", serif',
+    fontBody: '-apple-system, "Segoe UI", Helvetica, Arial, sans-serif',
+  },
+  'condensed-industrial': {
+    fontDisplay: '"Arial Narrow", "Segoe UI Semibold", Arial, sans-serif',
+    fontBody: 'Arial, Helvetica, sans-serif',
+  },
+  'mono-technical': {
+    fontDisplay: 'ui-monospace, "SF Mono", "Cascadia Code", Consolas, monospace',
+    fontBody: '-apple-system, "Segoe UI", Helvetica, Arial, sans-serif',
+  },
+  'rounded-warm': {
+    fontDisplay: '"Segoe UI", Tahoma, system-ui, sans-serif',
+    fontBody: '"Segoe UI", Tahoma, system-ui, sans-serif',
+  },
+};
+
+// Which font pairing each theme personality uses. Anything not listed
+// falls back to 'sans' (production's own pairing).
+const FONT_MAP = {
+  'industrial-heritage': 'condensed-industrial',
+  'msme-warm': 'rounded-warm',
+  'corporate-network': 'serif-premium',
+  'luxury-black-gold': 'serif-premium',
+  'graphite-neon-blue': 'mono-technical',
+  'purple-tech': 'mono-technical',
+  cyberpunk: 'mono-technical',
+  'notion-inspired': 'serif-premium',
+  'beige-premium': 'serif-premium',
+  'orange-startup': 'rounded-warm',
+  'titanium-grey': 'condensed-industrial',
+  'electric-blue': 'mono-technical',
+  'black-lime': 'mono-technical',
+  'white-royal-blue': 'serif-premium',
+  synthwave: 'mono-technical',
+  'space-ui': 'mono-technical',
+  'metallic-ui': 'condensed-industrial',
+  holographic: 'mono-technical',
+  'luxury-marble': 'serif-premium',
+  'dark-glow': 'mono-technical',
+  'matte-vibrant-cta': 'rounded-warm',
+  aurora: 'mono-technical',
+};
 
 export const PRODUCTION_THEME = {
   key: 'production',
@@ -19,10 +75,14 @@ export const PRODUCTION_THEME = {
     border: '#e2e8f0', input: '#ffffff',
     textPrimary: '#0f172a', textSecondary: '#64748b', textInverse: '#ffffff',
     link: '#ea580c', success: '#059669', warning: '#d97706', danger: '#dc2626',
+    ...FONT_PAIRS.sans,
   },
 };
 
-const t = (key, name, mode, tokens) => ({ key, name, mode, tokens });
+const t = (key, name, mode, tokens) => ({
+  key, name, mode,
+  tokens: { ...tokens, ...FONT_PAIRS[FONT_MAP[key] || 'sans'] },
+});
 
 export const THEME_LIBRARY = [
   PRODUCTION_THEME,

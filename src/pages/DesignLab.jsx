@@ -162,7 +162,10 @@ function ThemePreviewPanel({ theme, PageComponent, pageLabel, isFavorite, isCand
           </button>
         </div>
       </div>
-      <div style={{ background: 'var(--dl-background)', color: 'var(--dl-textPrimary)' }} className="max-h-[80vh] overflow-y-auto">
+      <div
+        style={{ background: 'var(--dl-background)', color: 'var(--dl-textPrimary)', fontFamily: 'var(--dl-fontBody)' }}
+        className="max-h-[80vh] overflow-y-auto"
+      >
         <PageComponent />
       </div>
     </div>
@@ -181,7 +184,7 @@ function TopNav({ active = 'Explore' }) {
       <div className="flex items-center gap-6">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg" style={{ background: 'var(--dl-primary)' }} />
-          <span className="font-black text-sm" style={{ color: 'var(--dl-textPrimary)' }}>SaralBuy</span>
+          <span className="font-black text-sm" style={{ color: 'var(--dl-textPrimary)', fontFamily: 'var(--dl-fontDisplay)' }}>SaralBuy</span>
         </div>
         <div className="hidden sm:flex items-center gap-4 text-xs font-semibold" style={{ color: 'var(--dl-textSecondary)' }}>
           {['Explore', 'How It Works', 'Dashboard'].map(l => (
@@ -222,7 +225,7 @@ function MockLandingPage() {
             style={{ background: 'var(--dl-surface)', border: '1px solid var(--dl-border)', color: 'var(--dl-primary)' }}>
             Materials Procurement Exchange
           </div>
-          <h1 className="text-4xl font-black leading-tight mb-4" style={{ color: 'var(--dl-textPrimary)' }}>
+          <h1 className="text-4xl font-black leading-tight mb-4" style={{ color: 'var(--dl-textPrimary)', fontFamily: 'var(--dl-fontDisplay)' }}>
             Stop chasing suppliers.<br />
             <span style={{ color: 'var(--dl-primary)' }}>Post once, get quotes in minutes.</span>
           </h1>
@@ -261,7 +264,7 @@ function MockBuyerDashboard() {
       <div className="flex-1 min-w-0">
         <TopNav active="Dashboard" />
         <div className="p-6 space-y-5">
-          <h2 className="text-lg font-black">Welcome back, Ramesh</h2>
+          <h2 className="text-lg font-black" style={{ fontFamily: 'var(--dl-fontDisplay)' }}>Welcome back, Ramesh</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {[['Active RFQs', '12'], ['Quotes Received', '48'], ['Deals Closed', '7']].map(([l, v]) => (
               <div key={l} className="rounded-xl border p-4" style={cardStyle}>
@@ -297,7 +300,7 @@ function MockSupplierDashboard() {
         <TopNav active="Dashboard" />
         <div className="p-6 space-y-5">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-black">New leads near you</h2>
+            <h2 className="text-lg font-black" style={{ fontFamily: 'var(--dl-fontDisplay)' }}>New leads near you</h2>
             <span className="text-[10px] font-bold px-2.5 py-1 rounded-full" style={{ background: 'var(--dl-success)', color: 'var(--dl-textInverse)' }}>Verified Supplier</span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -336,7 +339,7 @@ function MockSupplierProfilePage() {
           <div className="px-6 pb-6 -mt-8">
             <div className="w-16 h-16 rounded-full border-4" style={{ background: 'var(--dl-accent)', borderColor: 'var(--dl-card)' }} />
             <div className="flex items-center gap-2 mt-3">
-              <h2 className="font-black text-lg">Acme Steel Co.</h2>
+              <h2 className="font-black text-lg" style={{ fontFamily: 'var(--dl-fontDisplay)' }}>Acme Steel Co.</h2>
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'var(--dl-success)', color: 'var(--dl-textInverse)' }}>Verified</span>
             </div>
             <p className="text-xs" style={{ color: 'var(--dl-textSecondary)' }}>Supplier · Vizianagaram</p>
@@ -436,7 +439,7 @@ function MockRFQPage() {
     <div>
       <TopNav />
       <div className="p-6">
-        <h2 className="text-lg font-black mb-1">TMT Bars Required — Compare Quotes</h2>
+        <h2 className="text-lg font-black mb-1" style={{ fontFamily: 'var(--dl-fontDisplay)' }}>TMT Bars Required — Compare Quotes</h2>
         <p className="text-xs mb-4" style={{ color: 'var(--dl-textSecondary)' }}>Side-by-side comparison. Lowest price highlighted.</p>
         <div className="rounded-xl border overflow-hidden" style={cardStyle}>
           <table className="w-full text-xs">
@@ -467,7 +470,7 @@ function MockSettingsPage() {
     <div className="flex">
       <SideNav items={['Profile', 'Quotes Submitted', 'Requirements', 'Closed Deals', 'Notifications']} />
       <div className="flex-1 p-6 max-w-xl">
-        <h2 className="text-lg font-black mb-4">Profile Details</h2>
+        <h2 className="text-lg font-black mb-4" style={{ fontFamily: 'var(--dl-fontDisplay)' }}>Profile Details</h2>
         <div className="rounded-xl border p-5 space-y-4" style={cardStyle}>
           <div>
             <p className="text-[10px] font-bold uppercase mb-1" style={{ color: 'var(--dl-textSecondary)' }}>Full Name</p>
