@@ -187,6 +187,7 @@ const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails }) => {
 
 // SB-008: side-by-side comparison of all quotes on a requirement
 const QuoteCompareDialog = ({ open, onOpenChange, productId }) => {
+  const navigate = useNavigate();
   const [bids, setBids] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -242,7 +243,11 @@ const QuoteCompareDialog = ({ open, onOpenChange, productId }) => {
                 <tr className="border-b border-slate-200">
                   <th className="px-3 py-2 sticky left-0 bg-white z-10 text-xs font-bold uppercase text-slate-400">Attribute</th>
                   {bids.map((b, i) => (
-                    <th key={i} className="px-3 py-2 min-w-[150px] font-bold text-slate-700">
+                    <th
+                      key={i}
+                      className="px-3 py-2 min-w-[150px] font-bold text-slate-700 hover:text-orange-600 hover:underline cursor-pointer"
+                      onClick={() => b.sellerId?._id && navigate('/user-profile/' + b.sellerId._id)}
+                    >
                       {`${b.sellerId?.firstName || 'Seller'} ${b.sellerId?.lastName || ''}`.trim()}
                     </th>
                   ))}
@@ -506,7 +511,12 @@ const RequirementOverview = () => {
       cell: ({ row }) => (
         <div className="flex flex-col">
           <div className="flex items-center gap-1.5">
-            <span className="font-semibold text-slate-800">{row.original.bid_buy}</span>
+            <span
+              className="font-semibold text-slate-800 hover:text-orange-600 hover:underline cursor-pointer"
+              onClick={() => row.original.sellerId && navigate('/user-profile/' + row.original.sellerId)}
+            >
+              {row.original.bid_buy}
+            </span>
             {row.original.verified && (
               <span title="Verified supplier" className="inline-flex items-center gap-0.5 text-emerald-600 text-[10px] font-bold bg-emerald-50 border border-emerald-100 px-1.5 py-0.5 rounded-full">
                 <BadgeCheck className="w-3 h-3" /> Verified
