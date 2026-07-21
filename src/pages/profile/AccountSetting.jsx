@@ -60,7 +60,7 @@ export function AccountSettings() {
       topProblemsSolved: '',
       industriesServed: '',
       certifications: '',
-      yearsInBusiness: '',
+      businessSince: '',
     },
   });
 
@@ -100,7 +100,7 @@ export function AccountSettings() {
         topProblemsSolved: user?.topProblemsSolved || '',
         industriesServed: user?.industriesServed || '',
         certifications: user?.certifications || '',
-        yearsInBusiness: user?.yearsInBusiness != null ? String(user.yearsInBusiness) : '',
+        businessSince: user?.businessSince != null ? String(user.businessSince) : '',
       });
     }
   }, [user, reset]);
@@ -150,7 +150,7 @@ export function AccountSettings() {
     formData.append('topProblemsSolved', data.topProblemsSolved || '');
     formData.append('industriesServed', data.industriesServed || '');
     formData.append('certifications', data.certifications || '');
-    formData.append('yearsInBusiness', data.yearsInBusiness || '');
+    formData.append('businessSince', data.businessSince || '');
 
     if (fileDoc) {
       formData.append('document', fileDoc);
@@ -362,10 +362,10 @@ export function AccountSettings() {
                   <Input id="website" type="text" placeholder="e.g. https://acmecorp.com" {...register('website')} className="bg-white w-full" />
                 </div>
                 <div className="space-y-2 w-full">
-                  <Label className="text-gray-600 text-sm" htmlFor="yearsInBusiness">
-                    Years in Business <span className="text-slate-400 font-normal">(optional)</span>
+                  <Label className="text-gray-600 text-sm" htmlFor="businessSince">
+                    Business Since <span className="text-slate-400 font-normal">(year, optional)</span>
                   </Label>
-                  <Input id="yearsInBusiness" type="number" min="0" placeholder="e.g. 12" {...register('yearsInBusiness')} className="bg-white w-full" />
+                  <Input id="businessSince" type="number" min="1900" max={new Date().getFullYear()} placeholder="e.g. 2012" {...register('businessSince')} className="bg-white w-full" />
                 </div>
                 <div className="space-y-2 w-full sm:col-span-2">
                   <Label className="text-gray-600 text-sm" htmlFor="businessDescription">

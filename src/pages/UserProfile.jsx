@@ -90,7 +90,11 @@ export default function UserProfile() {
   const overviewFacts = [
     companyName && { icon: Building2, label: 'Organisation', value: companyName },
     data.roleInCompany && { icon: Briefcase, label: 'Role in Organisation', value: data.roleInCompany },
-    data.yearsInBusiness != null && { icon: Clock, label: 'Years in Business', value: `${data.yearsInBusiness}+ yrs` },
+    data.businessSince != null && {
+      icon: Clock,
+      label: 'Years in Business',
+      value: `${new Date().getFullYear() - data.businessSince}+ yrs (since ${data.businessSince})`,
+    },
     data.website && {
       icon: Globe,
       label: 'Website',
@@ -117,7 +121,7 @@ export default function UserProfile() {
   const completionFields = [
     companyName, data.roleInCompany, data.website, data.businessDescription,
     data.supplierCategories, data.industriesServed, data.topProblemsSolved,
-    data.accomplishments, data.certifications, data.yearsInBusiness != null,
+    data.accomplishments, data.certifications, data.businessSince != null,
   ];
   const completionPct = isSupplier
     ? Math.round((completionFields.filter(Boolean).length / completionFields.length) * 100)

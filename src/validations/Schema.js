@@ -70,7 +70,7 @@ export const ProfileSchema = z.object({
   topProblemsSolved: z.string().optional(),
   industriesServed: z.string().optional(),
   certifications: z.string().optional(),
-  yearsInBusiness: z.string().optional(),
+  businessSince: z.string().optional(),
 });
 
 export const productOverviewBidSchema = z.object({
