@@ -68,6 +68,9 @@ export const ProfileSchema = z.object({
   businessDescription: z.string().optional(),
   accomplishments: z.string().optional(),
   topProblemsSolved: z.string().optional(),
+  industriesServed: z.string().optional(),
+  certifications: z.string().optional(),
+  yearsInBusiness: z.string().optional(),
 });
 
 export const productOverviewBidSchema = z.object({

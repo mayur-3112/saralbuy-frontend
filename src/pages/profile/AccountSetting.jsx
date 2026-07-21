@@ -58,6 +58,9 @@ export function AccountSettings() {
       businessDescription: '',
       accomplishments: '',
       topProblemsSolved: '',
+      industriesServed: '',
+      certifications: '',
+      yearsInBusiness: '',
     },
   });
 
@@ -95,6 +98,9 @@ export function AccountSettings() {
         businessDescription: user?.businessDescription || '',
         accomplishments: user?.accomplishments || '',
         topProblemsSolved: user?.topProblemsSolved || '',
+        industriesServed: user?.industriesServed || '',
+        certifications: user?.certifications || '',
+        yearsInBusiness: user?.yearsInBusiness != null ? String(user.yearsInBusiness) : '',
       });
     }
   }, [user, reset]);
@@ -142,6 +148,9 @@ export function AccountSettings() {
     formData.append('businessDescription', data.businessDescription || '');
     formData.append('accomplishments', data.accomplishments || '');
     formData.append('topProblemsSolved', data.topProblemsSolved || '');
+    formData.append('industriesServed', data.industriesServed || '');
+    formData.append('certifications', data.certifications || '');
+    formData.append('yearsInBusiness', data.yearsInBusiness || '');
 
     if (fileDoc) {
       formData.append('document', fileDoc);
@@ -346,11 +355,17 @@ export function AccountSettings() {
                   </Label>
                   <Input id="roleInCompany" type="text" placeholder="e.g. Founder, Sales Manager" {...register('roleInCompany')} className="bg-white w-full" />
                 </div>
-                <div className="space-y-2 w-full sm:col-span-2">
+                <div className="space-y-2 w-full">
                   <Label className="text-gray-600 text-sm" htmlFor="website">
                     Website <span className="text-slate-400 font-normal">(optional)</span>
                   </Label>
                   <Input id="website" type="text" placeholder="e.g. https://acmecorp.com" {...register('website')} className="bg-white w-full" />
+                </div>
+                <div className="space-y-2 w-full">
+                  <Label className="text-gray-600 text-sm" htmlFor="yearsInBusiness">
+                    Years in Business <span className="text-slate-400 font-normal">(optional)</span>
+                  </Label>
+                  <Input id="yearsInBusiness" type="number" min="0" placeholder="e.g. 12" {...register('yearsInBusiness')} className="bg-white w-full" />
                 </div>
                 <div className="space-y-2 w-full sm:col-span-2">
                   <Label className="text-gray-600 text-sm" htmlFor="businessDescription">
@@ -375,6 +390,18 @@ export function AccountSettings() {
                     Top Problems Solved
                   </Label>
                   <Textarea id="topProblemsSolved" placeholder="What problems do you solve for buyers?" {...register('topProblemsSolved')} className="bg-white w-full min-h-20 resize-none" />
+                </div>
+                <div className="space-y-2 w-full sm:col-span-2">
+                  <Label className="text-gray-600 text-sm" htmlFor="industriesServed">
+                    Industries Served <span className="text-slate-400 font-normal">(optional)</span>
+                  </Label>
+                  <Textarea id="industriesServed" placeholder="e.g. Construction, Real Estate, Manufacturing" {...register('industriesServed')} className="bg-white w-full min-h-20 resize-none" />
+                </div>
+                <div className="space-y-2 w-full sm:col-span-2">
+                  <Label className="text-gray-600 text-sm" htmlFor="certifications">
+                    Certifications <span className="text-slate-400 font-normal">(optional)</span>
+                  </Label>
+                  <Textarea id="certifications" placeholder="e.g. ISO 9001, BIS Certified" {...register('certifications')} className="bg-white w-full min-h-20 resize-none" />
                 </div>
               </div>
             </div>

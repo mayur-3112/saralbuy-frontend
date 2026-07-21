@@ -14,6 +14,9 @@ import {
   Package,
   Lightbulb,
   Award,
+  Factory,
+  BadgeCheck,
+  Clock,
 } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useFetch } from '@/hooks/useFetch';
@@ -87,6 +90,7 @@ export default function UserProfile() {
   const overviewFacts = [
     companyName && { icon: Building2, label: 'Organisation', value: companyName },
     data.roleInCompany && { icon: Briefcase, label: 'Role in Organisation', value: data.roleInCompany },
+    data.yearsInBusiness != null && { icon: Clock, label: 'Years in Business', value: `${data.yearsInBusiness}+ yrs` },
     data.website && {
       icon: Globe,
       label: 'Website',
@@ -99,12 +103,25 @@ export default function UserProfile() {
   // Details; each renders only if it has content.
   const sections = [
     { icon: FileText, title: 'About the Business', body: data.businessDescription },
-    { icon: Package, title: 'Top Products Supplied', body: data.supplierCategories },
+    { icon: Package, title: 'Products Supplied', body: data.supplierCategories },
+    { icon: Factory, title: 'Industries Served', body: data.industriesServed },
     { icon: Lightbulb, title: 'Problems We Solve', body: data.topProblemsSolved },
     { icon: Award, title: 'Accomplishments', body: data.accomplishments },
+    { icon: BadgeCheck, title: 'Certifications', body: data.certifications },
   ].filter(s => s.body && s.body.trim());
 
   const hasCompanyContent = isSupplier && (overviewFacts.length > 0 || sections.length > 0);
+
+  // Profile completion — a light trust signal, not a gate: how many of the
+  // storefront fields a supplier has actually filled in.
+  const completionFields = [
+    companyName, data.roleInCompany, data.website, data.businessDescription,
+    data.supplierCategories, data.industriesServed, data.topProblemsSolved,
+    data.accomplishments, data.certifications, data.yearsInBusiness != null,
+  ];
+  const completionPct = isSupplier
+    ? Math.round((completionFields.filter(Boolean).length / completionFields.length) * 100)
+    : null;
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -160,6 +177,19 @@ export default function UserProfile() {
                       {c.label}
                     </span>
                   ))}
+                </div>
+              )}
+
+              {/* Profile completion — supplier-only, a light trust signal */}
+              {isSupplier && completionPct != null && completionPct < 100 && (
+                <div className="mt-5">
+                  <div className="flex items-center justify-between text-[11px] font-bold text-slate-500 mb-1">
+                    <span>Profile completeness</span>
+                    <span>{completionPct}%</span>
+                  </div>
+                  <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                    <div className="h-full rounded-full bg-orange-500" style={{ width: `${completionPct}%` }} />
+                  </div>
                 </div>
               )}
 
