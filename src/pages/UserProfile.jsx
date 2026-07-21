@@ -1,6 +1,20 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
-import { MoveLeft, MapPin, Calendar, Building2, ShieldCheck, Phone, FileCheck2, Briefcase } from 'lucide-react';
+import {
+  MoveLeft,
+  MapPin,
+  Calendar,
+  Building2,
+  ShieldCheck,
+  Phone,
+  FileCheck2,
+  Briefcase,
+  Globe,
+  FileText,
+  Package,
+  Lightbulb,
+  Award,
+} from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useFetch } from '@/hooks/useFetch';
 import userService from '@/services/user.service';
@@ -11,19 +25,26 @@ import VerifiedBadge from '@/components/custom/VerifiedBadge';
 
 /**
  * UserProfile — the PUBLIC-FACING profile shown when another user clicks
- * a supplier or buyer's name.
+ * a supplier or buyer's name. Single shared component/route for every entry
+ * point (Chat, RequirementOverview's quotes table + Compare Quotes dialog,
+ * and any future one) — never duplicate this page, just link to
+ * `/user-profile/:userId` from wherever a name/avatar needs to be clickable.
  *
  * Old version showed email, phone, home address, and full personal fields
  * to anyone with a link — a direct violation of the platform's core
  * anonymity promise (contact details are only revealed once the buyer
- * commits to a deal). Reworked to show only what a stranger should see:
- * name, verification badge, business name (opt-in public), city, and
- * "member since" date. Contact details are not shown here; they get
- * revealed via CloseDeal when both sides agree.
+ * commits to a deal). Reworked to show only what a stranger should see.
+ * Contact details are not shown here; they get revealed via CloseDeal when
+ * both sides agree. Backend enforces this (getUserProfile strips
+ * email/phone/address for non-owners), not just the UI.
  *
- * Backend TODO: also strip email/phone/address at the API layer so this
- * privacy guarantee holds even if a client is tampered with. For now the
- * frontend simply doesn't render them.
+ * Redesigned from a stat-tile grid (told you THAT a supplier exists and is
+ * verified, nothing about what they do) into a company-page layout: hero,
+ * then conditionally-rendered sections built from the supplier's own
+ * Organisation Details fields (businessDescription, supplierCategories,
+ * topProblemsSolved, accomplishments, website). Sections a supplier hasn't
+ * filled in just don't render — no empty boxes — and if none of them exist
+ * at all, one clear empty-state message replaces the whole block.
  */
 export default function UserProfile() {
   const navigate = useNavigate();
@@ -45,7 +66,9 @@ export default function UserProfile() {
     return loc.split(',')[0].trim();
   };
   const location = cityOnly(data.currentLocation) || cityOnly(data.address);
-  const roleLabel = data.accountRole === 'supplier' ? 'Supplier' : 'Buyer';
+  const isSupplier = data.accountRole === 'supplier';
+  const roleLabel = isSupplier ? 'Supplier' : 'Buyer';
+  const companyName = data.businessName || data.organizationName;
 
   const chips = [
     data.phone && { icon: Phone, label: 'Phone Verified' },
@@ -59,6 +82,29 @@ export default function UserProfile() {
     memberSince && { icon: Calendar, label: 'Member since', value: memberSince },
     { icon: ShieldCheck, label: 'Verification', value: data.verificationStatus === 'verified' ? 'Verified' : 'Unverified' },
   ].filter(Boolean);
+
+  // Company Overview — org identity fields, only the ones actually present.
+  const overviewFacts = [
+    companyName && { icon: Building2, label: 'Organisation', value: companyName },
+    data.roleInCompany && { icon: Briefcase, label: 'Role in Organisation', value: data.roleInCompany },
+    data.website && {
+      icon: Globe,
+      label: 'Website',
+      value: data.website,
+      href: data.website.startsWith('http') ? data.website : `https://${data.website}`,
+    },
+  ].filter(Boolean);
+
+  // Company-page sections — a supplier fills these in via Organisation
+  // Details; each renders only if it has content.
+  const sections = [
+    { icon: FileText, title: 'About the Business', body: data.businessDescription },
+    { icon: Package, title: 'Top Products Supplied', body: data.supplierCategories },
+    { icon: Lightbulb, title: 'Problems We Solve', body: data.topProblemsSolved },
+    { icon: Award, title: 'Accomplishments', body: data.accomplishments },
+  ].filter(s => s.body && s.body.trim());
+
+  const hasCompanyContent = isSupplier && (overviewFacts.length > 0 || sections.length > 0);
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -96,10 +142,10 @@ export default function UserProfile() {
                       {roleLabel}
                     </span>
                   </div>
-                  {data.businessName && (
+                  {companyName && (
                     <div className="flex items-center gap-1.5 text-sm text-slate-600 font-medium mt-1">
                       <Building2 className="w-3.5 h-3.5" />
-                      {data.businessName}
+                      {companyName}
                     </div>
                   )}
                 </div>
@@ -142,6 +188,71 @@ export default function UserProfile() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Company page — supplier-only. Buyers don't fill in Organisation
+            Details, so there's nothing to show here for them. */}
+        {isSupplier && (
+          <div className="mt-6 space-y-4">
+            {!hasCompanyContent ? (
+              <Card>
+                <CardContent className="py-8 text-center">
+                  <Building2 className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+                  <p className="text-sm font-semibold text-slate-500">
+                    This supplier hasn't added company details yet.
+                  </p>
+                </CardContent>
+              </Card>
+            ) : (
+              <>
+                {overviewFacts.length > 0 && (
+                  <Card>
+                    <CardContent className="p-6 sm:p-7">
+                      <h2 className="text-sm font-black uppercase tracking-wide text-slate-400 mb-4">
+                        Company Overview
+                      </h2>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        {overviewFacts.map((f, i) => (
+                          <div key={i} className="flex items-start gap-2.5">
+                            <f.icon className="w-4 h-4 text-orange-500 mt-0.5 shrink-0" />
+                            <div className="min-w-0">
+                              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{f.label}</p>
+                              {f.href ? (
+                                <a
+                                  href={f.href}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-sm font-bold text-orange-600 hover:underline break-all"
+                                >
+                                  {f.value}
+                                </a>
+                              ) : (
+                                <p className="text-sm font-bold text-slate-800 break-words">{f.value}</p>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {sections.map((s, i) => (
+                  <Card key={i}>
+                    <CardContent className="p-6 sm:p-7">
+                      <h2 className="flex items-center gap-2 text-sm font-black uppercase tracking-wide text-slate-400 mb-3">
+                        <s.icon className="w-4 h-4 text-orange-500" />
+                        {s.title}
+                      </h2>
+                      <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">
+                        {s.body}
+                      </p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
