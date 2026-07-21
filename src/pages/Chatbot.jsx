@@ -674,9 +674,16 @@ const ChatArea = ({
                     ))}
                   </div>
                 ) : (
-                  <p className="text-xs text-slate-400 mt-0.5">
-                    {isOnline ? 'Online' : 'Offline'}
-                  </p>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <span
+                      className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                        isOnline ? 'bg-green-500' : 'bg-slate-300'
+                      }`}
+                    />
+                    <p className="text-xs text-slate-400 leading-none">
+                      {isOnline ? 'Online' : 'Offline'}
+                    </p>
+                  </div>
                 )}
               </div>
             </div>

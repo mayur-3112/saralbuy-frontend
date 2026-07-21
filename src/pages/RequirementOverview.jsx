@@ -11,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { dateFormatter } from '@/utils/dateFormatter';
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
-import { Banknote, CalendarDays, Eye, MoveLeft, Truck, CreditCard, MapPin, Percent, Store, FileText, BadgeCheck } from 'lucide-react';
+import { Banknote, CalendarDays, Eye, MoveLeft, Truck, CreditCard, MapPin, Percent, Store, FileText, BadgeCheck, UserRound } from 'lucide-react';
 import { toast } from 'sonner';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -517,6 +517,21 @@ const RequirementOverview = () => {
             >
               {row.original.bid_buy}
             </span>
+            {row.original.sellerId && (
+              <TooltipComp
+                hoverChildren={
+                  <button
+                    type="button"
+                    aria-label="View Profile"
+                    className="shrink-0 text-slate-400 hover:text-orange-600 cursor-pointer"
+                    onClick={() => navigate('/user-profile/' + row.original.sellerId)}
+                  >
+                    <UserRound className="w-3.5 h-3.5" />
+                  </button>
+                }
+                contentChildren="View Profile"
+              />
+            )}
             {row.original.verified && (
               <span title="Verified supplier" className="inline-flex items-center gap-0.5 text-emerald-600 text-[10px] font-bold bg-emerald-50 border border-emerald-100 px-1.5 py-0.5 rounded-full">
                 <BadgeCheck className="w-3 h-3" /> Verified
