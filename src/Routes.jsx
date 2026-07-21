@@ -34,6 +34,7 @@ import NoRouteFound from './pages/404';
 import Loader from './components/custom/Loader';
 import Notification from './pages/Notification';
 import UserProfile from './pages/UserProfile';
+import DesignLab from './pages/DesignLab';
 import TermsAndPrivacy from './pages/TermsAndPrivacy';
 import PolicyConsentPopup from './components/custom/popups/PolicyConsentPopup';
 import { useUserState } from './redux/hooks/useUser';
@@ -109,6 +110,11 @@ const RootLayout = () => {
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
+    <>
+    {/* Design Lab — deliberately OUTSIDE RootLayout so it never renders the
+        real HomeNavbar/Footer/MobileBottomNav around it. Not linked from any
+        nav; reachable only by typing the URL directly. */}
+    <Route path="/design-lab" element={<DesignLab />} />
     <Route element={<RootLayout />}>
       <Route path="/" element={<LandingPage />} />
           <Route path="/requirement" element={<Requirement />} />
@@ -145,5 +151,6 @@ export const router = createBrowserRouter(
           </Route>
           <Route path="*" element={<NoRouteFound />} />
     </Route>
+    </>
   )
 );
