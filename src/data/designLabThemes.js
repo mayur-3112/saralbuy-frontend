@@ -27,6 +27,38 @@ const t = (key, name, mode, tokens) => ({ key, name, mode, tokens });
 export const THEME_LIBRARY = [
   PRODUCTION_THEME,
 
+  // ── Brand-personality themes (see the Design System Exploration doc for
+  //    the full analysis behind each of these — persona fit, business
+  //    scoring, and why these four in particular were built out in full). ──
+  t('industrial-heritage', 'Manufacturing & Industrial', 'light', {
+    primary: '#c2410c', primaryHover: '#9a3412', secondary: '#334155', accent: '#f59e0b',
+    background: '#eeece7', surface: '#ffffff', card: '#ffffff', header: '#1c1917', sidebar: '#1c1917',
+    border: '#ddd8cf', input: '#ffffff',
+    textPrimary: '#1c1917', textSecondary: '#57534e', textInverse: '#ffffff',
+    link: '#c2410c', success: '#15803d', warning: '#b45309', danger: '#b91c1c',
+  }),
+  t('enterprise-procurement', 'Enterprise Procurement', 'light', {
+    primary: '#0f2a63', primaryHover: '#0a1d47', secondary: '#1d4ed8', accent: '#0ea5e9',
+    background: '#f1f5f9', surface: '#ffffff', card: '#ffffff', header: '#ffffff', sidebar: '#0f2a63',
+    border: '#dbe3ef', input: '#ffffff',
+    textPrimary: '#0f172a', textSecondary: '#475569', textInverse: '#ffffff',
+    link: '#1d4ed8', success: '#16a34a', warning: '#d97706', danger: '#dc2626',
+  }),
+  t('msme-warm', 'Indian MSME Marketplace', 'light', {
+    primary: '#c2410c', primaryHover: '#9a3412', secondary: '#0d9488', accent: '#fbbf24',
+    background: '#fffaf3', surface: '#ffffff', card: '#ffffff', header: '#ffffff', sidebar: '#ffffff',
+    border: '#f3e6d4', input: '#ffffff',
+    textPrimary: '#1f2937', textSecondary: '#6b6157', textInverse: '#ffffff',
+    link: '#c2410c', success: '#15803d', warning: '#b45309', danger: '#b91c1c',
+  }),
+  t('corporate-network', 'Premium Corporate Network', 'light', {
+    primary: '#8a6d3b', primaryHover: '#6f5730', secondary: '#2b2b2b', accent: '#c9a97e',
+    background: '#f5efe4', surface: '#fbf8f2', card: '#ffffff', header: '#f0e6d4', sidebar: '#f0e6d4',
+    border: '#e2d4bc', input: '#ffffff',
+    textPrimary: '#3d3223', textSecondary: '#7a6c53', textInverse: '#ffffff',
+    link: '#8a6d3b', success: '#5c8a3a', warning: '#c98a2c', danger: '#b3402f',
+  }),
+
   // ── Named business themes ──────────────────────────────────────────
   t('corporate-blue', 'Corporate Blue', 'light', {
     primary: '#1d4ed8', primaryHover: '#1e40af', secondary: '#0ea5e9', accent: '#3b82f6',
