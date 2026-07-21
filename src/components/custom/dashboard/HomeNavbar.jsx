@@ -608,6 +608,20 @@ const HomeNavbar = () => {
 
               <div className="flex items-center gap-4">
 
+                {/* Dashboard — grouped with the account section since both
+                    are "my stuff" entry points. Was only reachable via the
+                    hamburger menu before. Auth-gated route, so hide it
+                    entirely rather than show a link that 404s/redirects. */}
+                {user && (
+                  <Link
+                    to="/dashboard"
+                    className="flex items-center gap-1.5 font-semibold text-slate-600 hover:text-orange-600 transition-colors whitespace-nowrap"
+                  >
+                    <LayoutDashboard className="w-4 h-4" />
+                    Dashboard
+                  </Link>
+                )}
+
                 {/* Account — greeting + initials avatar when logged in
                     (stands out more than a plain "My Account" text link);
                     plain "Login" text when not. Was always "My Account" even
