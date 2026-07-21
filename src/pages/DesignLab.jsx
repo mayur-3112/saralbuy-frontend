@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { THEME_LIBRARY, findTheme } from '@/data/designLabThemes';
+import { THEME_LIBRARY, findTheme, FONT_PAIR_LIST } from '@/data/designLabThemes';
 
 /**
  * Design Lab / Theme Playground — isolated sandbox for testing full-page
@@ -47,9 +47,19 @@ export default function DesignLab() {
   const [favorites, setFavorites] = useState(() => loadSet(FAVORITES_KEY));
   const [candidates, setCandidates] = useState(() => loadSet(CANDIDATES_KEY));
   const [filter, setFilter] = useState('all');
+  // null = use each theme's own baked-in font pairing; otherwise a FONT_PAIR_LIST key
+  // that overrides fontDisplay/fontBody on top of whichever color theme is active.
+  const [fontOverrideKey, setFontOverrideKey] = useState(null);
 
-  const theme = useMemo(() => findTheme(themeKey), [themeKey]);
-  const compareTheme = compareKey ? findTheme(compareKey) : null;
+  const applyFontOverride = t => {
+    if (!fontOverrideKey) return t;
+    const override = FONT_PAIR_LIST.find(f => f.key === fontOverrideKey);
+    if (!override) return t;
+    return { ...t, tokens: { ...t.tokens, fontDisplay: override.fontDisplay, fontBody: override.fontBody } };
+  };
+
+  const theme = useMemo(() => applyFontOverride(findTheme(themeKey)), [themeKey, fontOverrideKey]);
+  const compareTheme = compareKey ? applyFontOverride(findTheme(compareKey)) : null;
   const activePage = PAGES.find(p => p.key === pageKey) || PAGES[0];
 
   const toggleFavorite = key => {
@@ -100,6 +110,22 @@ export default function DesignLab() {
             <button key={p.key} onClick={() => setPageKey(p.key)}
               className={`text-xs font-bold px-3 py-1.5 rounded-lg transition-colors ${pageKey === p.key ? 'bg-white text-black' : 'bg-white/5 text-white/70 hover:bg-white/15'}`}>
               {p.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Font selector — try any pairing independently of the color theme */}
+        <div className="max-w-[1600px] mx-auto mt-3 flex flex-wrap items-center gap-1.5">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-white/40 mr-1">Font:</span>
+          <button onClick={() => setFontOverrideKey(null)}
+            className={`text-xs font-bold px-3 py-1.5 rounded-lg transition-colors ${!fontOverrideKey ? 'bg-white text-black' : 'bg-white/5 text-white/70 hover:bg-white/15'}`}>
+            Theme default
+          </button>
+          {FONT_PAIR_LIST.map(f => (
+            <button key={f.key} onClick={() => setFontOverrideKey(f.key)}
+              style={{ fontFamily: f.fontDisplay }}
+              className={`text-xs font-bold px-3 py-1.5 rounded-lg transition-colors ${fontOverrideKey === f.key ? 'bg-white text-black' : 'bg-white/5 text-white/70 hover:bg-white/15'}`}>
+              {f.label}
             </button>
           ))}
         </div>

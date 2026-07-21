@@ -17,26 +17,53 @@
 // rather than every theme silently sharing one default sans stack.
 const FONT_PAIRS = {
   sans: {
+    label: 'Sans (Production default)',
     fontDisplay: '-apple-system, "Segoe UI", Helvetica, Arial, sans-serif',
     fontBody: '-apple-system, "Segoe UI", Helvetica, Arial, sans-serif',
   },
   'serif-premium': {
+    label: 'Serif Premium',
     fontDisplay: 'Georgia, "Times New Roman", serif',
     fontBody: '-apple-system, "Segoe UI", Helvetica, Arial, sans-serif',
   },
   'condensed-industrial': {
+    label: 'Condensed Industrial',
     fontDisplay: '"Arial Narrow", "Segoe UI Semibold", Arial, sans-serif',
     fontBody: 'Arial, Helvetica, sans-serif',
   },
   'mono-technical': {
+    label: 'Mono Technical',
     fontDisplay: 'ui-monospace, "SF Mono", "Cascadia Code", Consolas, monospace',
     fontBody: '-apple-system, "Segoe UI", Helvetica, Arial, sans-serif',
   },
   'rounded-warm': {
+    label: 'Rounded Warm',
     fontDisplay: '"Segoe UI", Tahoma, system-ui, sans-serif',
     fontBody: '"Segoe UI", Tahoma, system-ui, sans-serif',
   },
+  'geometric-grotesk': {
+    label: 'Geometric Grotesk',
+    fontDisplay: '"Century Gothic", "Segoe UI", sans-serif',
+    fontBody: '"Segoe UI", sans-serif',
+  },
+  'classic-editorial': {
+    label: 'Classic Editorial',
+    fontDisplay: '"Times New Roman", Times, serif',
+    fontBody: 'Georgia, "Times New Roman", serif',
+  },
+  'technical-slab': {
+    label: 'Technical Slab',
+    fontDisplay: '"Rockwell", "Courier New", serif',
+    fontBody: '"Segoe UI", Helvetica, sans-serif',
+  },
 };
+
+// Ordered list for the font picker UI — every pairing above, in a sensible
+// browsing order (safe default first, then character-forward options).
+export const FONT_PAIR_LIST = [
+  'sans', 'serif-premium', 'condensed-industrial', 'mono-technical',
+  'rounded-warm', 'geometric-grotesk', 'classic-editorial', 'technical-slab',
+].map(key => ({ key, ...FONT_PAIRS[key] }));
 
 // Which font pairing each theme personality uses. Anything not listed
 // falls back to 'sans' (production's own pairing).
