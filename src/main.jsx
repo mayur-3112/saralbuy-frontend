@@ -1,4 +1,5 @@
 import { createRoot } from 'react-dom/client';
+import './config/sentry.js';
 import './index.css';
 import { App } from './App';
 import { Provider } from 'react-redux';

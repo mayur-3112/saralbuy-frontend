@@ -1,4 +1,5 @@
 import React from 'react';
+import Sentry from '@/config/sentry.js';
 
 /**
  * App-wide error boundary. The app uses the component Router (not the data
@@ -16,7 +17,7 @@ class ErrorBoundary extends React.Component {
     return { hasError: true };
   }
 
-  componentDidCatch(error) {
+  componentDidCatch(error, errorInfo) {
     const msg = error?.message || '';
     if (/dynamically imported module|Importing a module script failed|error loading dynamically imported|chunk/i.test(msg)) {
       const last = Number(sessionStorage.getItem('chunk-reload-ts') || 0);
@@ -26,6 +27,8 @@ class ErrorBoundary extends React.Component {
       }
     }
     console.error('ErrorBoundary caught:', error);
+    // No-op if VITE_SENTRY_DSN isn't set — see src/config/sentry.js.
+    Sentry.captureException(error, { extra: { componentStack: errorInfo?.componentStack } });
   }
 
   handleReload = () => {
