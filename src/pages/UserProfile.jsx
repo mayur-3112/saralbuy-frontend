@@ -102,6 +102,11 @@ export default function UserProfile() {
       value: data.website,
       href: data.website.startsWith('http') ? data.website : `https://${data.website}`,
     },
+    // Business phone/store address are opt-in public fields a supplier fills
+    // in deliberately (separate from their private personal phone/address
+    // below, which stay gated behind a completed deal).
+    data.businessPhone && { icon: Phone, label: 'Business Phone', value: data.businessPhone },
+    data.storeAddress && { icon: MapPin, label: 'Store Address', value: data.storeAddress },
   ].filter(Boolean);
 
   // Company-page sections — a supplier fills these in via Organisation

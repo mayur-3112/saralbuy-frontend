@@ -61,6 +61,8 @@ export function AccountSettings() {
       industriesServed: '',
       certifications: '',
       businessSince: '',
+      businessPhone: '',
+      storeAddress: '',
     },
   });
 
@@ -101,6 +103,8 @@ export function AccountSettings() {
         industriesServed: user?.industriesServed || '',
         certifications: user?.certifications || '',
         businessSince: user?.businessSince != null ? String(user.businessSince) : '',
+        businessPhone: user?.businessPhone || '',
+        storeAddress: user?.storeAddress || '',
       });
     }
   }, [user, reset]);
@@ -151,6 +155,8 @@ export function AccountSettings() {
     formData.append('industriesServed', data.industriesServed || '');
     formData.append('certifications', data.certifications || '');
     formData.append('businessSince', data.businessSince || '');
+    formData.append('businessPhone', data.businessPhone || '');
+    formData.append('storeAddress', data.storeAddress || '');
 
     if (fileDoc) {
       formData.append('document', fileDoc);
@@ -366,6 +372,21 @@ export function AccountSettings() {
                     Business Since <span className="text-slate-400 font-normal">(year, optional)</span>
                   </Label>
                   <Input id="businessSince" type="number" min="1900" max={new Date().getFullYear()} placeholder="e.g. 2012" {...register('businessSince')} className="bg-white w-full" />
+                </div>
+                <div className="space-y-2 w-full">
+                  <Label className="text-gray-600 text-sm" htmlFor="businessPhone">
+                    Business Phone <span className="text-slate-400 font-normal">(public, optional)</span>
+                  </Label>
+                  <Input id="businessPhone" type="text" placeholder="e.g. 080-12345678" {...register('businessPhone')} className="bg-white w-full" />
+                </div>
+                <div className="space-y-2 w-full sm:col-span-2">
+                  <Label className="text-gray-600 text-sm" htmlFor="storeAddress">
+                    Store / Business Address <span className="text-slate-400 font-normal">(public, optional)</span>
+                  </Label>
+                  <Input id="storeAddress" type="text" placeholder="Shop/warehouse address buyers can visit or ship to" {...register('storeAddress')} className="bg-white w-full" />
+                  <p className="text-[11px] text-slate-400">
+                    Shown on your public profile to everyone — keep this separate from your personal home address, which stays private until a deal closes.
+                  </p>
                 </div>
                 <div className="space-y-2 w-full sm:col-span-2">
                   <Label className="text-gray-600 text-sm" htmlFor="businessDescription">
