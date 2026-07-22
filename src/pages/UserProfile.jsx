@@ -17,6 +17,7 @@ import {
   Factory,
   BadgeCheck,
   Clock,
+  Mail,
 } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useFetch } from '@/hooks/useFetch';
@@ -116,6 +117,16 @@ export default function UserProfile() {
 
   const hasCompanyContent = isSupplier && (overviewFacts.length > 0 || sections.length > 0);
 
+  // Contact details only ever arrive from the backend when a completed deal
+  // has already lifted anonymity between the viewer and this profile (or the
+  // viewer IS this profile) — `contactRevealed` just drives what we show,
+  // the actual gating is enforced server-side in getUserProfile.
+  const contactFacts = [
+    data.contactRevealed && data.phone && { icon: Phone, label: 'Phone', value: data.phone },
+    data.contactRevealed && data.email && { icon: Mail, label: 'Email', value: data.email },
+    data.contactRevealed && data.address && { icon: MapPin, label: 'Address', value: data.address },
+  ].filter(Boolean);
+
   // Profile completion — a light trust signal, not a gate: how many of the
   // storefront fields a supplier has actually filled in.
   const completionFields = [
@@ -210,10 +221,33 @@ export default function UserProfile() {
                 ))}
               </div>
 
+              {/* Contact Information — only ever populated when the backend has
+                  already lifted anonymity (deal completed, or viewing own profile) */}
+              {contactFacts.length > 0 && (
+                <div className="mt-6 pt-5 border-t border-slate-100">
+                  <h2 className="text-sm font-black uppercase tracking-wide text-slate-400 mb-3">
+                    Contact Information
+                  </h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {contactFacts.map((f, i) => (
+                      <div key={i} className="flex items-start gap-2.5">
+                        <f.icon className="w-4 h-4 text-orange-500 mt-0.5 shrink-0" />
+                        <div className="min-w-0">
+                          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{f.label}</p>
+                          <p className="text-sm font-bold text-slate-800 break-words">{f.value}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Privacy notice — sets expectations */}
               <div className="mt-6 pt-5 border-t border-slate-100">
                 <p className="text-xs text-slate-500 leading-relaxed">
-                  Contact details are shared privately with a buyer only when a deal is confirmed.
+                  {data.contactRevealed && !isOwner
+                    ? 'Contact details are shown above because a deal between you two has been confirmed.'
+                    : 'Contact details are shared privately with a buyer only when a deal is confirmed.'}
                   {data.verificationStatus === 'verified'
                     ? " This supplier's business (GSTIN/PAN) has been reviewed by our team."
                     : ' Ask this member to submit business verification if you want a Verified badge here.'}
