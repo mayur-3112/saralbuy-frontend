@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
+import Sentry from '@/config/sentry.js';
 export const useFetch = cb => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -22,6 +23,18 @@ export const useFetch = cb => {
         err.message ||
         err;
       console.log(message);
+      // Report genuine failures (no response at all — network/timeout — or
+      // a 5xx server error), not expected validation 400s (wrong OTP,
+      // duplicate email, etc.) — those aren't bugs, they're normal flow,
+      // and capturing them would drown real signal in Sentry.
+      const status = err?.response?.status;
+      if (!status || status >= 500) {
+        const requestId = err?.config?.headers?.['X-Request-Id'];
+        Sentry.withScope(scope => {
+          if (requestId) scope.setTag('request_id', requestId);
+          Sentry.captureException(err);
+        });
+      }
       if (message === 'Token not found') {
         // message = 'Session expired, please login again'
         window.dispatchEvent(new CustomEvent('session-expired'));

@@ -14,6 +14,16 @@ const instance = axios.create({
   timeout: 30000, // 30s — fail loudly instead of hanging forever
 });
 
+// Correlation ID generated per request, echoed back by the backend (see
+// backend_v2/src/middleware/requestId.middleware.js) so the same ID ties
+// together this API call, the backend's log line, and a Sentry event on
+// either side — the difference between "grep and hope" and "search by ID"
+// when tracing a specific failure.
+instance.interceptors.request.use(config => {
+  config.headers['X-Request-Id'] = crypto.randomUUID();
+  return config;
+});
+
 // Any of these 401 messages mean the session is no longer valid (missing,
 // invalid, or expired token) — prompt the user to re-authenticate.
 const SESSION_EXPIRED_MESSAGES = new Set([
