@@ -26,6 +26,7 @@ import { useEffect } from 'react';
 import { mergeName } from '@/utils/mergerName';
 import Loader from '@/components/custom/Loader';
 import VerifiedBadge from '@/components/custom/VerifiedBadge';
+import { useUserState } from '@/redux/hooks/useUser';
 
 /**
  * UserProfile — the PUBLIC-FACING profile shown when another user clicks
@@ -53,12 +54,18 @@ import VerifiedBadge from '@/components/custom/VerifiedBadge';
 export default function UserProfile() {
   const navigate = useNavigate();
   const { userId } = useParams();
+  const { user: currentUser } = useUserState();
   const { fn, data, loading } = useFetch(userService.getUserProfile);
 
   useEffect(() => { fn(userId); }, [userId]);
 
   if (loading) return <Loader />;
   if (!data) return null;
+
+  // `data.contactRevealed` already carries the backend's owner/deal-closed
+  // check (see getUserProfile), but the privacy-notice copy below also
+  // needs to know locally whether the viewer IS this profile.
+  const isOwner = currentUser?._id === data._id;
 
   const fullName = mergeName(data) || '—';
   const memberSince = data.createdAt
