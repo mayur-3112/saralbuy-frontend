@@ -14,8 +14,6 @@ import {
   Package,
   Lightbulb,
   Award,
-  Factory,
-  BadgeCheck,
   Clock,
   Mail,
 } from 'lucide-react';
@@ -121,10 +119,8 @@ export default function UserProfile() {
   const sections = [
     { icon: FileText, title: 'About the Business', body: data.businessDescription },
     { icon: Package, title: 'Products Supplied', body: data.supplierCategories },
-    { icon: Factory, title: 'Industries Served', body: data.industriesServed },
     { icon: Lightbulb, title: 'Problems We Solve', body: data.topProblemsSolved },
     { icon: Award, title: 'Accomplishments', body: data.accomplishments },
-    { icon: BadgeCheck, title: 'Certifications', body: data.certifications },
   ].filter(s => s.body && s.body.trim());
 
   const hasCompanyContent = isSupplier && (overviewFacts.length > 0 || sections.length > 0);
@@ -143,8 +139,8 @@ export default function UserProfile() {
   // storefront fields a supplier has actually filled in.
   const completionFields = [
     companyName, data.roleInCompany, data.website, data.businessDescription,
-    data.supplierCategories, data.industriesServed, data.topProblemsSolved,
-    data.accomplishments, data.certifications, data.businessSince != null,
+    data.supplierCategories, data.topProblemsSolved,
+    data.accomplishments, data.businessSince != null,
   ];
   const completionPct = isSupplier
     ? Math.round((completionFields.filter(Boolean).length / completionFields.length) * 100)
