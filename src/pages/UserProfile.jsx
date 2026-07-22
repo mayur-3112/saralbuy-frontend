@@ -156,15 +156,21 @@ export default function UserProfile() {
             {/* Top band — subtle accent */}
             <div className="h-16 bg-gradient-to-r from-slate-900 to-slate-800" />
 
-            <div className="px-6 sm:px-8 pb-6 sm:pb-8 -mt-10">
-              <div className="flex items-end gap-4 flex-wrap">
-                <Avatar className="h-20 w-20 border-4 border-white shadow-md">
+            <div className="px-6 sm:px-8 pb-6 sm:pb-8">
+              {/* Row is flush against the band (no shared negative margin) —
+                  only the avatar pulls itself up to overlap it. That way the
+                  name/badges can wrap to two lines (long names, verified
+                  badge, role pill) without ever being dragged into the band;
+                  previously the whole row shared one -mt-10, so a two-line
+                  wrap on a long name rendered half-hidden under the band. */}
+              <div className="flex items-start gap-4 flex-wrap">
+                <Avatar className="h-20 w-20 -mt-10 border-4 border-white shadow-md shrink-0">
                   <AvatarImage src={data.profileImage} alt={fullName} />
                   <AvatarFallback className="bg-orange-100 text-orange-700 font-black text-lg">
                     {fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'S'}
                   </AvatarFallback>
                 </Avatar>
-                <div className="flex-1 min-w-0 pb-1">
+                <div className="min-w-0 pt-1">
                   <div className="flex items-center gap-2 flex-wrap">
                     <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
                       {fullName}

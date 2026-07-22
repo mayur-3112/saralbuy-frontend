@@ -22,7 +22,6 @@ import { Badge } from '@/components/ui/badge';
 import { CategoryFormSkeleton } from '@/const/CustomSkeletons';
 import { currencyConvertor } from '@/utils/currencyConvertor';
 import bidService from '@/services/bid.service';
-import TooltipComp from '@/lib/TooltipComp';
 import { useFetch } from '@/hooks/useFetch';
 import {
   Dialog,
@@ -517,21 +516,6 @@ const RequirementOverview = () => {
             >
               {row.original.bid_buy}
             </span>
-            {row.original.sellerId && (
-              <TooltipComp
-                hoverChildren={
-                  <button
-                    type="button"
-                    aria-label="View Profile"
-                    className="shrink-0 text-slate-400 hover:text-orange-600 cursor-pointer"
-                    onClick={() => navigate('/user-profile/' + row.original.sellerId)}
-                  >
-                    <UserRound className="w-3.5 h-3.5" />
-                  </button>
-                }
-                contentChildren="View Profile"
-              />
-            )}
             {row.original.verified && (
               <span title="Verified supplier" className="inline-flex items-center gap-0.5 text-emerald-600 text-[10px] font-bold bg-emerald-50 border border-emerald-100 px-1.5 py-0.5 rounded-full">
                 <BadgeCheck className="w-3 h-3" /> Verified
@@ -578,6 +562,17 @@ const RequirementOverview = () => {
             >
               <Eye className="w-4 h-4 mr-1.5" /> View
             </Button>
+
+            {row.original.sellerId && (
+              <Button
+                size="sm"
+                variant="outline"
+                className={`${actionBtnClass} text-slate-600 border-slate-300 hover:bg-slate-50`}
+                onClick={() => navigate('/user-profile/' + row.original.sellerId)}
+              >
+                <UserRound className="w-4 h-4 mr-1.5" /> View Profile
+              </Button>
+            )}
 
             {/* SB-009: once shortlisted/accepted, chat becomes the finalisation channel */}
             {row.original.quoteStatus === 'shortlisted' || row.original.quoteStatus === 'accepted' ? (
