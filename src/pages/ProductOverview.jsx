@@ -48,7 +48,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 function otherBrandValue(obj) {
-  if (obj?.brand === 'others' && obj.hasOwnProperty('brandName')) {
+  if (obj?.brand === 'others' && Object.prototype.hasOwnProperty.call(obj, 'brandName')) {
     return obj.brandName;
   }
   return obj?.brand;
@@ -967,11 +967,6 @@ const ProductOverview = () => {
       }
     }
   }, [userProfile, reset, bidOverviewRes]);
-
-  useEffect(() => {
-    if (error === 'invalid product ID') {
-    }
-  }, []);
 
   useEffect(() => {
     for (let i = 0; i < Object.entries(errors).length; i++) {

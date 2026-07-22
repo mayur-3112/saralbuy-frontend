@@ -14,22 +14,22 @@ export const useFetch = cb => {
       setLoading(false);
       setError(null);
       return response;
-    } catch (error) {
-      console.log(error?.response || error);
-      error =
-        error?.response?.data?.message ||
-        error?.response?.data?.error?.message ||
-        error.message ||
-        error;
-      console.log(error);
-      if (error === 'Token not found') {
-        // error = 'Session expired, please login again'
+    } catch (err) {
+      console.log(err?.response || err);
+      const message =
+        err?.response?.data?.message ||
+        err?.response?.data?.error?.message ||
+        err.message ||
+        err;
+      console.log(message);
+      if (message === 'Token not found') {
+        // message = 'Session expired, please login again'
         window.dispatchEvent(new CustomEvent('session-expired'));
       }
-      if (error !== 'Token not found') {
-        toast.error(error);
+      if (message !== 'Token not found') {
+        toast.error(message);
       }
-      setError(error);
+      setError(message);
       setLoading(false);
       return null;
     } finally {

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import { useNavigate, useParams, useLocation, useBlocker } from 'react-router-dom';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -1180,7 +1180,7 @@ const UpdateCreateProductForm = () => {
                     }} className="mt-0 w-full sm:w-auto">Cancel</AlertDialogCancel>
                     <Button onClick={() => { 
                       setShowExitWarning(false); 
-                      handleSubmit(true, resolvedBidDuration).then(() => {
+                      handleSubmit(true, bidDuration).then(() => {
                         if (blocker.state === 'blocked') blocker.proceed();
                       });
                     }} className="w-full sm:w-auto bg-slate-900 text-white">

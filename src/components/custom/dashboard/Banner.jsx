@@ -54,7 +54,6 @@ const Banner = () => {
     if (data) {
       const response = data.banners.map(banner => ({
         image: banner.imageUrl,
-        linkUrl: banner.linkUrl,
         text: banner.title,
         buttonLabel: banner.buttonText,
         textClass: 'banner-text-1',

@@ -7,11 +7,11 @@ class UserService {
   async getUserProfile(userId) {
     return instance
       .get(`/user/user-profile`, {
-        params: { userId } ?? undefined,
+        params: { userId },
       })
       .then(res => res.data?.data || res.data);
   }
-  async profile(userId) {
+  async profile() {
     return instance.get(`/user/profile`).then(res => res.data?.data || res.data);
   }
   async logout() {

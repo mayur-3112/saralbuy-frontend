@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build --mode production",
-    "lint": "echo 'Linting bypassed for deployment'",
+    "lint": "eslint .",
     "preview": "vite preview",
     "format": "prettier --write .",
     "test:e2e": "playwright test"

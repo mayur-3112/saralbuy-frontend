@@ -129,6 +129,7 @@ const CategoryForm = ({
   const navigate = useNavigate();
   const productField = watch('productType');
   const paymentMode = watch('paymentAndDelivery.paymentMode');
+  const gstField = watch('gst_requirement');
   const genderValue = watch('gender');
   const fuelTypeValue = watch('fuelType');
   const colorValue = watch('color');
@@ -764,7 +765,7 @@ const CreateProductForm = () => {
   useEffect(() => {
     dispatachCategory();
   }, []);
-  const { categoryId: paramCategoryId, subCategoryId } = useParams();
+  const { categoryId, subCategoryId } = useParams();
   const [subCategroies, setSubCategoies] = useState([]);
   const { fn: getCatByIdFn, data: catByIdData } = useFetch(categoryService.getCategoriesById);
   const {
@@ -1097,7 +1098,7 @@ const CreateProductForm = () => {
                 }} className="mt-0 w-full sm:w-auto">Cancel</AlertDialogCancel>
                 <Button onClick={() => { 
                   setShowExitWarning(false); 
-                  handleSubmit(true, resolvedBidDuration).then(() => {
+                  handleSubmit(true, bidDuration).then(() => {
                     if (blocker.state === 'blocked') blocker.proceed();
                   });
                 }} className="w-full sm:w-auto bg-slate-900 text-white">
