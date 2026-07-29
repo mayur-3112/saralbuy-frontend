@@ -36,6 +36,9 @@ import Notification from './pages/Notification';
 import UserProfile from './pages/UserProfile';
 import DesignLab from './pages/DesignLab';
 import TermsAndPrivacy from './pages/TermsAndPrivacy';
+import TrustCenter from './pages/TrustCenter';
+import Sitemap from './pages/Sitemap';
+import AccessibilityStatement from './pages/AccessibilityStatement';
 import PolicyConsentPopup from './components/custom/popups/PolicyConsentPopup';
 import { useUserState } from './redux/hooks/useUser';
 import DiscussionChatbox from './components/custom/dashboard/DiscussionChatbox';
@@ -127,6 +130,9 @@ export const router = createBrowserRouter(
           <Route path="/bid-history/:productId" element={<BidHistory />} />
           <Route path="/terms" element={<TermsAndPrivacy />} />
           <Route path="/privacy" element={<TermsAndPrivacy />} />
+          <Route path="/trust-center" element={<TrustCenter />} />
+          <Route path="/sitemap" element={<Sitemap />} />
+          <Route path="/accessibility" element={<AccessibilityStatement />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/how-it-works/buyers" element={<Navigate to="/how-it-works?role=buyer" replace />} />
           <Route path="/how-it-works/suppliers" element={<Navigate to="/how-it-works?role=supplier" replace />} />
