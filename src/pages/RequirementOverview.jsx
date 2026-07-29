@@ -187,6 +187,7 @@ const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails }) => {
 // SB-008: side-by-side comparison of all quotes on a requirement
 const QuoteCompareDialog = ({ open, onOpenChange, productId }) => {
   const navigate = useNavigate();
+  const [product, setProduct] = useState(null);
   const [bids, setBids] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -195,12 +196,30 @@ const QuoteCompareDialog = ({ open, onOpenChange, productId }) => {
     setLoading(true);
     bidService
       .getBidsForCompare(productId)
-      .then(data => setBids(Array.isArray(data) ? data : []))
-      .catch(() => setBids([]))
+      .then(data => {
+        setProduct(data?.product || null);
+        setBids(Array.isArray(data?.bids) ? data.bids : []);
+      })
+      .catch(() => {
+        setProduct(null);
+        setBids([]);
+      })
       .finally(() => setLoading(false));
   }, [open, productId]);
 
   const lowest = bids.length ? Math.min(...bids.map(b => b.budgetQuation || Infinity)) : null;
+
+  // Item-level comparison: only meaningful for a real multi-material RFQ.
+  // Each requested material is its own row; each supplier's per-item quote
+  // line (bid.items[], added for RFQ item-level procurement) fills that
+  // supplier's column for that row — every row stays aligned to the
+  // original requested material, never to a supplier's own item ordering.
+  const requestedItems = product?.isMultiple ? (product?.items || []) : [];
+  const showItemComparison = requestedItems.length > 1;
+  const quoteLineFor = (bid, productItem) =>
+    (bid.items || []).find(
+      line => line.productItemId?.toString() === productItem._id?.toString()
+    );
 
   const rows = [
     { label: 'Quoted Price', render: b => (
@@ -236,6 +255,59 @@ const QuoteCompareDialog = ({ open, onOpenChange, productId }) => {
         ) : bids.length === 0 ? (
           <div className="py-10 text-center text-sm text-slate-500">No quotes to compare yet.</div>
         ) : (
+          <div className="space-y-6">
+            {/* Item-by-item comparison — each requested material as its own
+                row, aligned across every supplier's quote for that same
+                material. Only shown for a real multi-material RFQ; a
+                single-item RFQ has nothing to break down beyond the
+                Quoted Price row in the attribute table below. */}
+            {showItemComparison && (
+              <div>
+                <h4 className="text-xs font-bold uppercase tracking-wide text-slate-500 mb-2">Item-by-Item Comparison</h4>
+                <div className="overflow-x-auto border border-slate-200 rounded-lg">
+                  <table className="w-full text-left border-collapse text-sm">
+                    <thead>
+                      <tr className="border-b border-slate-200 bg-slate-50">
+                        <th className="px-3 py-2 sticky left-0 bg-slate-50 z-10 text-xs font-bold uppercase text-slate-400">Requested Item</th>
+                        {bids.map((b, i) => (
+                          <th key={i} className="px-3 py-2 min-w-[170px] font-bold text-slate-700">
+                            {`${b.sellerId?.firstName || 'Seller'} ${b.sellerId?.lastName || ''}`.trim()}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {requestedItems.map((item, ii) => (
+                        <tr key={ii} className="hover:bg-slate-50/50 align-top">
+                          <td className="px-3 py-2.5 sticky left-0 bg-white z-10 text-xs font-semibold text-slate-700">
+                            <div className="font-bold text-slate-800">{item.subCategoryName || item.typeOfProduct || `Item ${ii + 1}`}</div>
+                            <div className="text-slate-400 font-normal normal-case">{item.quantity} {item.quantityUnit}</div>
+                          </td>
+                          {bids.map((b, bi) => {
+                            const line = quoteLineFor(b, item);
+                            return (
+                              <td key={bi} className="px-3 py-2.5 text-slate-700">
+                                {line ? (
+                                  <div className="space-y-0.5">
+                                    <div className="font-semibold">{currencyConvertor(line.unitPrice)} / {item.quantityUnit}</div>
+                                    <div className="text-xs text-slate-500">{line.offeredBrand || 'Any brand'}</div>
+                                    <div className="text-xs capitalize text-slate-400">{(line.availability || 'in_stock').replace('_', ' ')}</div>
+                                    {line.remarks && <div className="text-xs text-slate-400 italic">"{line.remarks}"</div>}
+                                  </div>
+                                ) : (
+                                  <span className="text-slate-300">Not quoted</span>
+                                )}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-sm">
               <thead>
@@ -263,6 +335,7 @@ const QuoteCompareDialog = ({ open, onOpenChange, productId }) => {
                 ))}
               </tbody>
             </table>
+          </div>
           </div>
         )}
       </DialogContent>

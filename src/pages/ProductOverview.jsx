@@ -257,7 +257,13 @@ const SellerForm = ({
   const rawItems = localMainProduct?.items || [];
   // Document-upload RFQ: seller quotes a single total + file. Upload-mode RFQs
   // are flagged isUpload even though they carry a placeholder item.
-  const isDocFlow = !!localMainProduct?.isUpload || (!!localMainProduct?.document && rawItems.length === 0);
+  // A document existing (or isUpload being set) never suppresses a real
+  // structured items list on its own — only genuinely having zero items
+  // means there's nothing to quote per-line, so the seller quotes one
+  // total instead. Previously `isUpload` alone forced this branch even
+  // when items[] had real entries, hiding per-item pricing entirely for
+  // every upload-mode RFQ regardless of its actual content.
+  const isDocFlow = rawItems.length === 0 && !!localMainProduct?.document;
 
   let items = rawItems;
   if (!isDocFlow && rawItems.length === 0 && localMainProduct) {
@@ -546,6 +552,55 @@ const SellerForm = ({
                       </div>
                     </div>
                   </div>
+
+                  {/* Row 3 — per-item supplier response (only meaningful once
+                      there's more than one item; a single-item RFQ already
+                      has a brand field elsewhere and doesn't need this). */}
+                  {!isSingle && (
+                    <div className="flex items-start gap-3 px-4 pb-3">
+                      <span className="w-6 shrink-0" aria-hidden="true" />
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 flex-1">
+                        <div>
+                          <Label className="mb-1 text-xs text-slate-500 block">Offered Brand</Label>
+                          <Input
+                            type="text"
+                            placeholder="e.g., UltraTech"
+                            className="h-9 border-slate-200 bg-white w-full"
+                            {...register(`items.${idx}.offeredBrand`)}
+                          />
+                        </div>
+                        <div>
+                          <Label className="mb-1 text-xs text-slate-500 block">Availability</Label>
+                          <Controller
+                            name={`items.${idx}.availability`}
+                            control={control}
+                            defaultValue="in_stock"
+                            render={({ field }) => (
+                              <Select onValueChange={field.onChange} value={field.value || 'in_stock'}>
+                                <SelectTrigger className="h-9 w-full bg-white">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="in_stock">In Stock</SelectItem>
+                                  <SelectItem value="lead_time">Lead Time Required</SelectItem>
+                                  <SelectItem value="unavailable">Unavailable</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            )}
+                          />
+                        </div>
+                        <div>
+                          <Label className="mb-1 text-xs text-slate-500 block">Remarks</Label>
+                          <Input
+                            type="text"
+                            placeholder="Optional note for this item"
+                            className="h-9 border-slate-200 bg-white w-full"
+                            {...register(`items.${idx}.remarks`)}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -771,18 +826,42 @@ const ProductOverview = () => {
     const mainP = productResponse?.mainProduct || bidOverviewRes?.product;
     const rawItems = mainP?.items || [];
     const isMulti = mainP?.isMultiple;
-    const isDocFlow = !!mainP?.isUpload || (!!mainP?.document && rawItems.length === 0);
+    // See the matching comment in SellerForm — a document (or isUpload)
+    // alone must never suppress a real per-item breakdown.
+    const isDocFlow = rawItems.length === 0 && !!mainP?.document;
 
     // Quote value is PRODUCT-ONLY: sum of qty × unit price (or the seller's
     // stated total for document-upload RFQs). Taxes/freight are never added.
+    // This total is still computed here for the client-side sanity check
+    // below ("did the seller enter a real number") — it is NOT trusted as
+    // the source of truth once `items[]` is sent; the server recomputes it
+    // from the per-item unit prices against the real Product.items[]
+    // quantities, so a client-side bug or tampering here can't produce a
+    // mismatched total server-side.
     let budgetQuation = 0;
+    // Per-material quote lines — only meaningful for a real multi-item RFQ
+    // (isMulti && more than one actual item). A single-item or
+    // synthetic-single-item RFQ has no productItemId to attach a line to,
+    // so it keeps using the plain lump-sum budgetQuation fallback.
+    let quoteItems = null;
     if (isDocFlow) {
       budgetQuation = parseFloat(getValues('totalQuoteValue')) || 0;
     } else if (isMulti && rawItems.length > 1) {
+      quoteItems = [];
       rawItems.forEach((item, idx) => {
-        const uPrice = parseFloat(getValues().items?.[idx]?.unitPrice) || 0;
+        const itemValues = getValues().items?.[idx] || {};
+        const uPrice = parseFloat(itemValues.unitPrice) || 0;
         const qty = Number(item.quantity) || 1;
         budgetQuation += uPrice * qty;
+        if (item._id) {
+          quoteItems.push({
+            productItemId: item._id,
+            offeredBrand: itemValues.offeredBrand || '',
+            unitPrice: uPrice,
+            availability: itemValues.availability || 'in_stock',
+            remarks: itemValues.remarks || '',
+          });
+        }
       });
     } else {
       const uPrice = parseFloat(getValues('unitPrice')) || 0;
@@ -827,11 +906,15 @@ const ProductOverview = () => {
       if (businessType === 'business' && businessDets) {
         payload.append('businessDets', JSON.stringify(businessDets));
       }
+      if (quoteItems && quoteItems.length > 0) {
+        payload.append('items', JSON.stringify(quoteItems));
+      }
       payload.append('quoteDocument', file);
     } else {
       payload = {
         ...baseFields,
         ...(businessType === 'business' && { businessDets }),
+        ...(quoteItems && quoteItems.length > 0 && { items: quoteItems }),
       };
     }
 
@@ -861,7 +944,9 @@ const ProductOverview = () => {
     const mainP = productResponse?.mainProduct || bidOverviewRes?.product;
     const rawItems = mainP?.items || [];
     const isMulti = mainP?.isMultiple;
-    const isDocFlow = !!mainP?.isUpload || (!!mainP?.document && rawItems.length === 0);
+    // See the matching comment in SellerForm — a document (or isUpload)
+    // alone must never suppress a real per-item breakdown.
+    const isDocFlow = rawItems.length === 0 && !!mainP?.document;
 
     if (isDocFlow) {
       // Document-upload RFQ: seller quotes a single total instead of unit prices.
@@ -1320,32 +1405,21 @@ const ProductOverview = () => {
                     })()}
                   </div>
                   
-                  {/* Requested Items / List of Materials */}
+                  {/* Requested Items / List of Materials — the uploaded
+                      reference document (rendered unconditionally in the
+                      "Attached Reference Documents" section further below)
+                      is supporting documentation only. It must never
+                      replace this structured list; whenever real materials
+                      exist, show them, regardless of how the RFQ was
+                      created (typed in, or alongside an uploaded document). */}
                   {(() => {
                     const mp = bidOverviewRes?.product || productResponse?.mainProduct;
                     const rawItems = mp?.items || [];
-                    // Upload-mode RFQs carry only a placeholder item — show the
-                    // document instead of a misleading List of Materials.
-                    if (mp?.isUpload || rawItems.length === 0) {
-                      if (mp?.isUpload || mp?.document) {
-                        return (
-                          <div className="mt-4 border border-orange-200 rounded-lg overflow-hidden bg-orange-50/30 p-5 shadow-xs flex flex-col items-center text-center space-y-3">
-                            <span className="text-3xl">📄</span>
-                            <h4 className="font-extrabold text-slate-800 text-base">Reference Document Uploaded</h4>
-                            <p className="text-xs text-slate-500 max-w-md leading-relaxed">
-                              This buyer has uploaded a document containing the detailed bill of materials, quantities, and specifications for this requirement.
-                            </p>
-                            <a
-                              href={resolveDocuments(mp.document)[0]}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs rounded-lg transition-colors cursor-pointer"
-                            >
-                              Download/View Specifications Document
-                            </a>
-                          </div>
-                        );
-                      }
+                    if (rawItems.length === 0) {
+                      // Genuinely nothing structured to show (e.g. a bare
+                      // document-only submission with no items ever filled
+                      // in) — the reference-document section below still
+                      // covers the actual file.
                       return null;
                     }
                     return (
