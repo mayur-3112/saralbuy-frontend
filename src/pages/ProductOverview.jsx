@@ -808,10 +808,7 @@ const ProductOverview = () => {
         if (item._id) {
           quoteItems.push({
             productItemId: item._id,
-            offeredBrand: itemValues.offeredBrand || '',
             unitPrice: uPrice,
-            availability: itemValues.availability || 'in_stock',
-            remarks: itemValues.remarks || '',
           });
         }
       });
