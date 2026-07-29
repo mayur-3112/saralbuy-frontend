@@ -290,11 +290,11 @@ const PostRequirementForm = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      <form onSubmit={handleSubmit((data) => handleSave(data, false))} className="max-w-3xl mx-auto space-y-6">
+      <form onSubmit={handleSubmit((data) => handleSave(data, false))} className="max-w-5xl mx-auto space-y-5">
 
           {/* Section 1: Basic Information */}
-          <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-xs relative">
-            <div className="mb-4 pb-3 border-b border-slate-100">
+          <div className="p-5 bg-white border border-slate-200 rounded-xl shadow-xs relative">
+            <div className="mb-3 pb-2.5 border-b border-slate-100">
               <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
                 <span className="w-6 h-6 rounded-full bg-orange-100 text-orange-600 text-xs font-bold flex items-center justify-center">1</span>
                 Basic Information
@@ -302,10 +302,10 @@ const PostRequirementForm = () => {
               <p className="text-sm text-slate-500 mt-1 ml-8">Choose the category that best matches what you need, and give your requirement a clear title.</p>
             </div>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="sm:col-span-2">
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Title of Requirement*</label>
-                <Input placeholder="e.g., Procurement of Seamless Pipes and Tubes" {...register('title')} className="bg-slate-50/50 border-slate-200 focus-visible:ring-orange-500/20 font-medium" />
+                <Input placeholder="e.g., Procurement of Seamless Pipes and Tubes" {...register('title')} className="h-11 bg-slate-50/50 border-slate-200 focus-visible:ring-orange-500/20 font-semibold text-[15px]" />
               </div>
 
               <div>
@@ -315,7 +315,7 @@ const PostRequirementForm = () => {
                   control={control}
                   render={({ field: { onChange, value } }) => (
                     <Select value={value} onValueChange={(val) => { onChange(val); setValue('subCategoryId', ''); }} disabled={!!initialCat}>
-                      <SelectTrigger className="w-full bg-slate-50/50 border-slate-200 focus:ring-orange-500/20 font-medium">
+                      <SelectTrigger className="w-full h-11 bg-slate-50/50 border-slate-200 focus:ring-orange-500/20 font-semibold">
                         <SelectValue placeholder="Select Category" />
                       </SelectTrigger>
                       <SelectContent>
@@ -364,8 +364,8 @@ const PostRequirementForm = () => {
 
           {/* Section 2: Material Items List (single) OR File Upload (upload) */}
           {mode === 'upload' ? (
-            <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-xs">
-              <div className="mb-4 pb-3 border-b border-slate-100">
+            <div className="p-5 bg-white border border-slate-200 rounded-xl shadow-xs">
+              <div className="mb-3 pb-2.5 border-b border-slate-100">
                 <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
                   <span className="w-6 h-6 rounded-full bg-orange-100 text-orange-600 text-xs font-bold flex items-center justify-center">2</span>
                   Upload Your Document
@@ -401,8 +401,8 @@ const PostRequirementForm = () => {
               )}
             </div>
           ) : (
-            <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-xs">
-              <div className="mb-4 pb-3 border-b border-slate-100">
+            <div className="p-5 bg-white border border-slate-200 rounded-xl shadow-xs">
+              <div className="mb-3 pb-2.5 border-b border-slate-100">
                 <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
                   <span className="w-6 h-6 rounded-full bg-orange-100 text-orange-600 text-xs font-bold flex items-center justify-center">2</span>
                   List of Materials
@@ -410,50 +410,52 @@ const PostRequirementForm = () => {
                 <p className="text-sm text-slate-500 mt-1 ml-8">Add each item you need. Specify quantity, unit, and preferred brand so suppliers can quote accurately.</p>
               </div>
 
-              {/* Desktop Material Headers */}
-              <div className="hidden sm:grid grid-cols-12 gap-3 mb-2 px-2 text-[10px] font-black text-slate-400 uppercase tracking-wider">
-                <div className="col-span-3">Item Name</div>
-                <div className="col-span-2">Specs / Description</div>
-                <div className="col-span-2">Quantity</div>
-                <div className="col-span-2">Units</div>
-                <div className="col-span-2">Brand</div>
-                <div className="col-span-1 text-center">Action</div>
+              {/* Desktop Material Headers — column widths weighted by importance:
+                  Item Name and Specs (what a supplier actually quotes against)
+                  get the most room; Brand/Action are secondary. */}
+              <div className="hidden sm:grid grid-cols-12 gap-3 mb-2 px-2 text-[10px] font-black uppercase tracking-wider">
+                <div className="col-span-5 text-slate-500">Item Name</div>
+                <div className="col-span-3 text-slate-500">Specs / Description</div>
+                <div className="col-span-1 text-slate-400">Qty</div>
+                <div className="col-span-1 text-slate-400">Unit</div>
+                <div className="col-span-1 text-slate-400">Brand</div>
+                <div className="col-span-1 text-center text-slate-400">Action</div>
               </div>
 
               <div className="space-y-4">
                 {fields.map((item, index) => (
-                  <div key={item.id} className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center bg-white sm:bg-slate-50/30 p-4 sm:p-3 rounded-xl sm:rounded-lg border border-slate-200 sm:border-slate-200/60 shadow-sm sm:shadow-none hover:border-orange-400/40 transition-colors">
-                    <div className="sm:col-span-3">
+                  <div key={item.id} className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center bg-white sm:bg-slate-50/30 p-4 sm:p-2.5 rounded-xl sm:rounded-lg border border-slate-200 sm:border-slate-200/60 shadow-sm sm:shadow-none hover:border-orange-400/40 transition-colors">
+                    <div className="sm:col-span-5">
                       <label className="block sm:hidden text-xs font-semibold text-slate-400 mb-1">Item Name</label>
-                      <Input placeholder="e.g., Cement" {...register(`items.${index}.itemName`)} className="bg-white border-slate-200 font-medium text-sm" />
+                      <Input placeholder="e.g., Cement" {...register(`items.${index}.itemName`)} className="h-10 bg-white border-slate-200 font-semibold text-sm" />
                     </div>
 
-                    <div className="sm:col-span-2">
+                    <div className="sm:col-span-3">
                       <label className="block sm:hidden text-xs font-semibold text-slate-400 mb-1">Specs / Desc</label>
-                      <Input placeholder="e.g., Grade 53" {...register(`items.${index}.itemDescription`)} className="bg-white border-slate-200 font-medium text-sm" />
+                      <Input placeholder="e.g., Grade 53" {...register(`items.${index}.itemDescription`)} className="h-10 bg-white border-slate-200 font-medium text-sm" />
                     </div>
 
-                    <div className="sm:col-span-2">
+                    <div className="sm:col-span-1">
                       <label className="block sm:hidden text-xs font-semibold text-slate-400 mb-1">Quantity</label>
-                      <Input type="number" placeholder="Qty" {...register(`items.${index}.quantity`)} className="bg-white border-slate-200 font-medium text-sm" min="1" />
+                      <Input type="number" placeholder="Qty" {...register(`items.${index}.quantity`)} className="h-10 bg-white border-slate-200 font-medium text-sm" min="1" />
                     </div>
 
-                    <div className="sm:col-span-2">
-                      <label className="block sm:hidden text-xs font-semibold text-slate-400 mb-1">Units</label>
+                    <div className="sm:col-span-1">
+                      <label className="block sm:hidden text-xs font-semibold text-slate-400 mb-1">Unit</label>
                       <Input
                         list={`unit-options-${index}`}
-                        placeholder="e.g. pcs, kg, mtr"
+                        placeholder="pcs, kg…"
                         {...register(`items.${index}.quantityUnit`)}
-                        className="bg-white border-slate-200 font-medium text-sm"
+                        className="h-10 bg-white border-slate-200 font-medium text-sm"
                       />
                       <datalist id={`unit-options-${index}`}>
-                        {['pcs', 'ltr', 'kg', 'ft', 'mtr', 'tons', 'bags', 'set', 'rmt', 'sqft', 'nos', 'mt'].map(u => (
+                        {['kg', 'ton', 'bags', 'pcs', 'box', 'bundle', 'm', 'sq.ft', 'sq.m', 'litre', 'roll', 'truckload', 'set', 'nos', 'mt'].map(u => (
                           <option key={u} value={u} />
                         ))}
                       </datalist>
                     </div>
 
-                    <div className="sm:col-span-2">
+                    <div className="sm:col-span-1">
                       <label className="block sm:hidden text-xs font-semibold text-slate-400 mb-1">Brand</label>
                       <Controller
                         name={`items.${index}.brand`}
@@ -499,28 +501,45 @@ const PostRequirementForm = () => {
                     </div>
 
                     <div className="sm:col-span-1 flex justify-end sm:justify-center mt-2 sm:mt-0">
-                      <button type="button" onClick={() => remove(index)} disabled={fields.length <= 1} className={`p-1.5 rounded transition-colors ${fields.length <= 1 ? 'text-slate-200 cursor-not-allowed' : 'text-slate-400 hover:text-red-500 hover:bg-red-50'}`} title="Delete Item">
-                        <Trash2 className="w-4 h-4" />
+                      <button type="button" onClick={() => remove(index)} disabled={fields.length <= 1} className={`p-1.5 rounded transition-colors ${fields.length <= 1 ? 'text-slate-200 cursor-not-allowed' : 'text-slate-300 hover:text-red-500 hover:bg-red-50'}`} title="Delete Item">
+                        <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   </div>
                 ))}
               </div>
 
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => append({ itemName: '', itemDescription: '', quantity: '', quantityUnit: 'pcs', brand: 'Any' })}
-                className="mt-4 text-orange-600 hover:text-orange-700 hover:bg-orange-50 font-bold border border-dashed border-orange-200 text-xs px-4 py-2"
-              >
-                <Plus className="w-3.5 h-3.5 mr-1" /> Add Another Item
-              </Button>
+              <div className="mt-4 flex flex-wrap items-center gap-3">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => append({ itemName: '', itemDescription: '', quantity: '', quantityUnit: 'pcs', brand: 'Any' })}
+                  className="text-orange-600 hover:text-orange-700 hover:bg-orange-50 font-bold border border-dashed border-orange-200 text-xs px-4 py-2"
+                >
+                  <Plus className="w-3.5 h-3.5 mr-1" /> Add Another Material
+                </Button>
+
+                {/* Reserved for future workflows — visual placeholder only,
+                    intentionally disabled and non-functional today. */}
+                <div className="flex flex-wrap items-center gap-2 ml-auto">
+                  {['Upload BOQ', 'Import Excel', 'AI Material Extraction'].map(label => (
+                    <span
+                      key={label}
+                      aria-disabled="true"
+                      title="Coming soon"
+                      className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-400 bg-slate-50 border border-slate-200 rounded-full px-3 py-1.5 cursor-not-allowed select-none"
+                    >
+                      ✨ {label}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
 
           {/* Section 3: Reference Files & Notes */}
           <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-xs">
-            <div className="mb-4 pb-3 border-b border-slate-100">
+            <div className="mb-3 pb-2.5 border-b border-slate-100">
               <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
                 <span className="w-6 h-6 rounded-full bg-orange-100 text-orange-600 text-xs font-bold flex items-center justify-center">3</span>
                 {mode === 'upload' ? 'Additional Notes' : 'Reference Files & Notes'}
@@ -536,8 +555,8 @@ const PostRequirementForm = () => {
               {mode === 'single' && (
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Attachments (Max 2)</label>
-                  <div className="p-4 bg-slate-50/50 border border-dashed border-slate-200 rounded-lg text-center hover:bg-slate-50 transition-colors">
-                    <UploadCloud className="w-8 h-8 text-slate-400 mx-auto mb-1.5" />
+                  <div className="p-3 bg-slate-50/50 border border-dashed border-slate-200 rounded-lg text-center hover:bg-slate-50 transition-colors">
+                    <UploadCloud className="w-6 h-6 text-slate-400 mx-auto mb-1" />
                     <input
                       type="file"
                       id="file-upload"
@@ -577,7 +596,7 @@ const PostRequirementForm = () => {
 
           {/* Section 4: Timeline & Payment */}
           <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-xs">
-            <div className="mb-4 pb-3 border-b border-slate-100">
+            <div className="mb-3 pb-2.5 border-b border-slate-100">
               <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
                 <span className="w-6 h-6 rounded-full bg-orange-100 text-orange-600 text-xs font-bold flex items-center justify-center">4</span>
                 Timeline & Payment
