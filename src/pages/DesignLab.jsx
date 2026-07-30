@@ -370,7 +370,7 @@ function MockSupplierProfilePage() {
             </div>
             <p className="text-xs" style={{ color: 'var(--dl-textSecondary)' }}>Supplier · Vizianagaram</p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-5">
-              {[['Role', 'Supplier'], ['Location', 'Vizianagaram'], ['Member since', 'Jul 2026'], ['Verification', 'Verified']].map(([l, v]) => (
+              {[['Role', 'Supplier'], ['Location', 'Vizianagaram'], ['In Business since', 'Jul 2026'], ['Verification', 'Verified']].map(([l, v]) => (
                 <div key={l} className="rounded-lg p-3" style={{ background: 'var(--dl-surface)' }}>
                   <p className="text-[9px] font-bold uppercase" style={{ color: 'var(--dl-textSecondary)' }}>{l}</p>
                   <p className="text-xs font-bold mt-0.5">{v}</p>

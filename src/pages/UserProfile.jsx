@@ -88,7 +88,7 @@ export default function UserProfile() {
   const tiles = [
     { icon: Briefcase, label: 'Role', value: roleLabel },
     location && { icon: MapPin, label: 'Location', value: location },
-    memberSince && { icon: Calendar, label: 'Member since', value: memberSince },
+    memberSince && { icon: Calendar, label: 'In Business since', value: memberSince },
     { icon: ShieldCheck, label: 'Verification', value: data.verificationStatus === 'verified' ? 'Verified' : 'Unverified' },
   ].filter(Boolean);
 

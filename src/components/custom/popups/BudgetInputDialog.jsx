@@ -18,7 +18,6 @@ const PAYMENT_TERMS = [
   { value: 'advance', label: 'Advance' },
   { value: 'partial_advance', label: 'Partial Advance' },
   { value: 'on_delivery', label: 'On Delivery' },
-  { value: 'credit', label: 'Credit (X days)' },
 ];
 const FREIGHT_TERMS = [
   { value: '', label: 'Freight terms (optional)' },
