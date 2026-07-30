@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import { DatePicker } from '@/lib/DatePicker';
 import { resolveDocuments } from '@/utils/resolveDocuments';
 import { extractQuantityAndUnit, resolveItemQuantity } from '@/utils/parseMaterialText';
+import { formatGstPrice } from '@/utils/gstPriceFormat';
 import { useFetch } from '@/hooks/useFetch';
 import productService from '@/services/product.service';
 import { useEffect, useRef, useState } from 'react';
@@ -296,6 +297,9 @@ const SellerForm = ({
     });
   }
   const fmt = n => n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  // GST treatment must always be explicit on a quoted price -- never a
+  // raw number with no indication of whether GST is included or added.
+  const gstDisplay = formatGstPrice(grandTotal, watch('taxes'), watch('gstInclusive'));
 
   const SellerTypeField = (
     <div className="w-full">
@@ -347,7 +351,7 @@ const SellerForm = ({
   );
 
   const TaxesField = (
-    <div className="w-full">
+    <div className="w-full space-y-2">
       <Label className="mb-2 text-sm block">Taxes</Label>
       <Controller
         name="taxes"
@@ -362,10 +366,29 @@ const SellerForm = ({
                 <SelectItem value="18">18% GST</SelectItem>
                 <SelectItem value="12">12% GST</SelectItem>
                 <SelectItem value="5">5% GST</SelectItem>
-                <SelectItem value="0">Inclusive/Exempt</SelectItem>
+                <SelectItem value="0">No GST / Exempt</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
+        )}
+      />
+      {/* Whether the quoted price above already includes this GST rate,
+          or GST is added on top of it -- the price display everywhere
+          (comparison, bid history, etc.) depends on this being explicit,
+          never assumed. */}
+      <Controller
+        name="gstInclusive"
+        control={control}
+        render={({ field }) => (
+          <label className="flex items-center gap-2 text-xs text-slate-600 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={!!field.value}
+              onChange={e => field.onChange(e.target.checked)}
+              className="w-3.5 h-3.5 text-orange-600 border-slate-300 rounded focus:ring-orange-500 cursor-pointer"
+            />
+            My quoted price already includes GST
+          </label>
         )}
       />
     </div>
@@ -500,6 +523,12 @@ const SellerForm = ({
               className="bg-white w-full"
               {...register('totalQuoteValue', { required: true })}
             />
+            {gstDisplay.hasGst && (
+              <p className="text-xs text-slate-500 mt-1.5">
+                {gstDisplay.primary}
+                {gstDisplay.final && <> — Final Amount: <span className="font-bold text-slate-700">{gstDisplay.final}</span></>}
+              </p>
+            )}
           </div>
 
           {/* Seller quotation document (pdf / excel) */}
@@ -584,11 +613,16 @@ const SellerForm = ({
                         ? rawSpec
                         : '—';
                       const qty = resolveItemQuantity(item);
-                      // Never assume a unit -- show exactly what the buyer
-                      // specified (MT, Bags, Kg, Litres, ...), or blank if
-                      // truly unknown. Defaulting to "pcs" would silently
-                      // misrepresent the buyer's actual requirement.
-                      const unit = item.quantityUnit || parsedFromDesc?.unit || '';
+                      // The buyer's RFQ unit is the source of truth
+                      // throughout the quotation lifecycle. When Quantity
+                      // was left blank and the real qty+unit were typed
+                      // into the free-text field instead, quantityUnit is
+                      // just a leftover placeholder/default (e.g. "pcs")
+                      // -- the parsed unit from that same text must win,
+                      // or a supplier is shown the wrong unit to price
+                      // against (e.g. quoting per PCS when the buyer
+                      // actually asked for MT).
+                      const unit = parsedFromDesc ? parsedFromDesc.unit : (item.quantityUnit || '');
                       const uPrice = parseFloat(watch(priceNameFor(idx))) || 0;
                       const lineTotal = qty * uPrice;
 
@@ -632,7 +666,12 @@ const SellerForm = ({
           <div className="border border-orange-100 rounded-lg bg-orange-50/40 p-4 sm:p-5 space-y-4">
             <div className="flex items-center justify-between gap-4 flex-wrap">
               <span className="font-bold text-slate-800">Grand Total (product only)</span>
-              <span className="font-extrabold text-xl text-orange-600">₹ {fmt(grandTotal)}</span>
+              <div className="text-right">
+                <div className="font-extrabold text-xl text-orange-600">{gstDisplay.primary}</div>
+                {gstDisplay.final && (
+                  <div className="text-xs text-slate-500 mt-0.5">Final Amount: <span className="font-bold text-slate-700">{gstDisplay.final}</span></div>
+                )}
+              </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {TaxesField}
@@ -765,6 +804,7 @@ const ProductOverview = () => {
       earliestDeliveryDate: undefined,
       sellerType: '',
       taxes: '',
+      gstInclusive: false,
       location: '',
       freightTerms: '',
       paymentTerms: '',
@@ -908,6 +948,7 @@ const ProductOverview = () => {
       status: 'active',
       sellerType: values.sellerType || '',
       taxes: values.taxes || '',
+      gstInclusive: !!values.gstInclusive,
       location: values.location || '',
       freightTerms: values.freightTerms || '',
       paymentTerms: values.paymentTerms || '',
@@ -1480,7 +1521,13 @@ const ProductOverview = () => {
                               const parsed = !item.quantity ? extractQuantityAndUnit(rawDescription) : null;
                               const displayDescription = parsed ? parsed.cleanedText : (rawDescription || 'N/A');
                               const displayQuantity = item.quantity || parsed?.quantity || '';
-                              const displayUnit = item.quantityUnit || parsed?.unit || '';
+                              // The buyer's RFQ unit is the source of
+                              // truth -- when a qty+unit was recovered
+                              // from free text (only happens when
+                              // Quantity was left blank), that parsed
+                              // unit wins over a stale quantityUnit
+                              // placeholder (e.g. "pcs").
+                              const displayUnit = parsed ? parsed.unit : (item.quantityUnit || '');
                               return (
                               <tr key={idx} className="hover:bg-slate-50 transition-colors">
                                 <td className="px-5 py-4 text-sm font-bold text-gray-900">{resolvedName}</td>
