@@ -89,20 +89,36 @@ const PostRequirementForm = () => {
   const availableBrands = [...dynamicBrands, 'Any'];
   const gstField = watch('gstRequired');
 
-  const handleFileChange = (e) => {
-    if (e.target.files) {
-      const newFiles = Array.from(e.target.files);
-      if (selectedFiles.length + newFiles.length > 2) {
-        toast.error('You can only upload a maximum of 2 documents.');
-        return;
-      }
-      setSelectedFiles(prev => [...prev, ...newFiles].slice(0, 2));
+  const addFiles = (fileList) => {
+    if (!fileList || !fileList.length) return;
+    const newFiles = Array.from(fileList);
+    if (selectedFiles.length + newFiles.length > 2) {
+      toast.error('You can only upload a maximum of 2 documents.');
+      return;
     }
+    setSelectedFiles(prev => [...prev, ...newFiles].slice(0, 2));
   };
+
+  const handleFileChange = (e) => addFiles(e.target.files);
 
   const removeFile = (index) => {
     setSelectedFiles(prev => prev.filter((_, i) => i !== index));
     if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const [isDraggingOver, setIsDraggingOver] = useState(false);
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDraggingOver(true);
+  };
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDraggingOver(false);
+  };
+  const handleFileDrop = (e) => {
+    e.preventDefault();
+    setIsDraggingOver(false);
+    addFiles(e.dataTransfer.files);
   };
 
   const handleSave = async (data, isDraft = false) => {
@@ -372,7 +388,12 @@ const PostRequirementForm = () => {
                 </h3>
                 <p className="text-sm text-slate-500 mt-1 ml-8">Upload your BOQ, Excel sheet, or PDF. Suppliers will quote based on this document.</p>
               </div>
-              <div className="p-8 bg-slate-50 border-2 border-dashed border-slate-300 rounded-xl text-center hover:bg-slate-100 hover:border-orange-300 transition-colors">
+              <div
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleFileDrop}
+                className={`p-8 border-2 border-dashed rounded-xl text-center transition-colors ${isDraggingOver ? 'bg-orange-50 border-orange-400' : 'bg-slate-50 border-slate-300 hover:bg-slate-100 hover:border-orange-300'}`}
+              >
                 <UploadCloud className="w-12 h-12 text-slate-400 mx-auto mb-3" />
                 <p className="text-sm font-semibold text-slate-600 mb-1">Drag & drop or click to upload</p>
                 <p className="text-xs text-slate-400 mb-4">PDF, Excel, Word, CSV, JPG, PNG — max 2 files</p>
@@ -415,7 +436,7 @@ const PostRequirementForm = () => {
                   pixel width via minmax() and never compress below a usable size,
                   no matter how much Name/Specs would otherwise want to grow.
                   Name/Specs share the remaining space at roughly a 60:40 ratio. */}
-              <div className="hidden sm:grid gap-3 mb-2 px-2 text-[10px] font-black uppercase tracking-wider [grid-template-columns:2.4fr_1.6fr_minmax(90px,1fr)_minmax(120px,1fr)_minmax(160px,1fr)_44px]">
+              <div className="hidden sm:grid gap-3 mb-2 px-2 text-[10px] font-black uppercase tracking-wider [grid-template-columns:minmax(100px,0.8fr)_minmax(170px,1.7fr)_minmax(90px,0.7fr)_minmax(110px,0.9fr)_minmax(180px,1.8fr)_44px]">
                 <div className="text-slate-500">Item Name</div>
                 <div className="text-slate-500">Specs / Description</div>
                 <div className="text-slate-400">Qty</div>
@@ -426,7 +447,7 @@ const PostRequirementForm = () => {
 
               <div className="space-y-4">
                 {fields.map((item, index) => (
-                  <div key={item.id} className="grid grid-cols-1 gap-3 items-center bg-white sm:bg-slate-50/30 p-4 sm:p-2.5 rounded-xl sm:rounded-lg border border-slate-200 sm:border-slate-200/60 shadow-sm sm:shadow-none hover:border-orange-400/40 transition-colors sm:[grid-template-columns:2.4fr_1.6fr_minmax(90px,1fr)_minmax(120px,1fr)_minmax(160px,1fr)_44px]">
+                  <div key={item.id} className="grid grid-cols-1 gap-3 items-center bg-white sm:bg-slate-50/30 p-4 sm:p-2.5 rounded-xl sm:rounded-lg border border-slate-200 sm:border-slate-200/60 shadow-sm sm:shadow-none hover:border-orange-400/40 transition-colors sm:[grid-template-columns:minmax(100px,0.8fr)_minmax(170px,1.7fr)_minmax(90px,0.7fr)_minmax(110px,0.9fr)_minmax(180px,1.8fr)_44px]">
                     <div>
                       <label className="block sm:hidden text-xs font-semibold text-slate-400 mb-1">Item Name</label>
                       <Input placeholder="e.g., Cement" {...register(`items.${index}.itemName`)} className="h-10 bg-white border-slate-200 font-semibold text-sm" />
@@ -540,7 +561,12 @@ const PostRequirementForm = () => {
               {mode === 'single' && (
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Attachments (Max 2)</label>
-                  <div className="p-3 bg-slate-50/50 border border-dashed border-slate-200 rounded-lg text-center hover:bg-slate-50 transition-colors">
+                  <div
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleFileDrop}
+                    className={`p-3 border border-dashed rounded-lg text-center transition-colors ${isDraggingOver ? 'bg-orange-50 border-orange-400' : 'bg-slate-50/50 border-slate-200 hover:bg-slate-50'}`}
+                  >
                     <UploadCloud className="w-6 h-6 text-slate-400 mx-auto mb-1" />
                     <input
                       type="file"
@@ -625,7 +651,6 @@ const PostRequirementForm = () => {
                       <SelectContent>
                         <SelectItem value="cash">Cash</SelectItem>
                         <SelectItem value="bank or online">Banking or Online mode</SelectItem>
-                        <SelectItem value="credit">Credit terms</SelectItem>
                         <SelectItem value="any">Any</SelectItem>
                       </SelectContent>
                     </Select>
