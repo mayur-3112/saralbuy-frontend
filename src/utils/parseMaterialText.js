@@ -84,3 +84,43 @@ export function resolveItemQuantity(item) {
   );
   return parsed ? Number(parsed.quantity) || 1 : 1;
 }
+
+const normalizeWords = s =>
+  (s || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9.\s]/g, ' ')
+    .split(/\s+/)
+    .filter(Boolean);
+
+/**
+ * A Specification field must hold only technical detail distinct from the
+ * material name -- not a restatement of it. An exact-string match (old
+ * behaviour) only caught literal duplicates; it missed near-duplicates
+ * like Item Name "TMT Bars" vs Specification "TMT Reinforcement Bars",
+ * where 2 of the spec's 3 words are just the name repeated. This checks
+ * word overlap instead:
+ *   - If the majority of the spec's words already appear in the name
+ *     (>= 50%), the whole spec is treated as non-distinct -> ''.
+ *   - Otherwise, the individual overlapping words are stripped and the
+ *     real remainder is returned (e.g. "Kajaria Tiles 600x600 Double
+ *     Charged Vitrified" -> "600x600 Double Charged Vitrified" once
+ *     "Kajaria"/"Tiles" are removed).
+ * Returns '' when there's nothing distinct left -- callers render their
+ * own placeholder (e.g. an em dash) for that case.
+ */
+export function dedupeSpecification(itemName, rawSpec) {
+  if (!rawSpec) return '';
+  const nameWords = new Set(normalizeWords(itemName));
+  const specTokens = rawSpec.split(/\s+/).filter(Boolean);
+  const specWordsNormalized = normalizeWords(rawSpec);
+  if (specWordsNormalized.length === 0) return '';
+
+  const overlapCount = specWordsNormalized.filter(w => nameWords.has(w)).length;
+  if (overlapCount / specWordsNormalized.length >= 0.5) return '';
+
+  const remaining = specTokens.filter(tok => {
+    const norm = tok.toLowerCase().replace(/[^a-z0-9.]/g, '');
+    return !norm || !nameWords.has(norm);
+  });
+  return remaining.join(' ').trim();
+}

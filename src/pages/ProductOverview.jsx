@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { DatePicker } from '@/lib/DatePicker';
 import { resolveDocuments } from '@/utils/resolveDocuments';
-import { extractQuantityAndUnit, resolveItemQuantity } from '@/utils/parseMaterialText';
+import { extractQuantityAndUnit, resolveItemQuantity, dedupeSpecification } from '@/utils/parseMaterialText';
 import { formatGstPrice } from '@/utils/gstPriceFormat';
 import { useFetch } from '@/hooks/useFetch';
 import productService from '@/services/product.service';
@@ -606,12 +606,13 @@ const SellerForm = ({
                       const parsedFromDesc = !item.quantity ? extractQuantityAndUnit(rawDescription) : null;
                       const rawSpec = parsedFromDesc ? parsedFromDesc.cleanedText : rawDescription;
                       // Specification must hold technical spec only, never
-                      // a restatement of the item name (e.g. typeOfProduct
-                      // falling back to the same text as the name when no
-                      // real spec was ever entered separately).
-                      const specification = rawSpec && rawSpec.trim().toLowerCase() !== resolvedItemName.trim().toLowerCase()
-                        ? rawSpec
-                        : '—';
+                      // a restatement of the item name -- word-overlap
+                      // check, not just an exact-string match, since
+                      // typeOfProduct/model often near-duplicate the name
+                      // (e.g. Name "TMT Bars" / Spec "TMT Reinforcement
+                      // Bars" -- not identical strings, but 2 of 3 words
+                      // are just the name repeated).
+                      const specification = dedupeSpecification(resolvedItemName, rawSpec) || '—';
                       const qty = resolveItemQuantity(item);
                       // The buyer's RFQ unit is the source of truth
                       // throughout the quotation lifecycle. When Quantity
@@ -1519,7 +1520,11 @@ const ProductOverview = () => {
                               // the stored record, only fills in what's
                               // missing for this render.
                               const parsed = !item.quantity ? extractQuantityAndUnit(rawDescription) : null;
-                              const displayDescription = parsed ? parsed.cleanedText : (rawDescription || 'N/A');
+                              const cleanedDescription = parsed ? parsed.cleanedText : rawDescription;
+                              // Specification must never restatement the
+                              // Item Name -- word-overlap check, not an
+                              // exact-string match (see dedupeSpecification).
+                              const displayDescription = dedupeSpecification(resolvedName, cleanedDescription) || 'N/A';
                               const displayQuantity = item.quantity || parsed?.quantity || '';
                               // The buyer's RFQ unit is the source of
                               // truth -- when a qty+unit was recovered
