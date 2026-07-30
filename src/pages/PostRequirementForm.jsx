@@ -431,39 +431,47 @@ const PostRequirementForm = () => {
                 <p className="text-sm text-slate-500 mt-1 ml-8">Add each item you need. Specify quantity, unit, and preferred brand so suppliers can quote accurately.</p>
               </div>
 
-              {/* Desktop Material Headers — explicit column template (not a coarse
-                  12-col fraction split) so Qty/Unit/Brand get a guaranteed minimum
-                  pixel width via minmax() and never compress below a usable size,
-                  no matter how much Name/Specs would otherwise want to grow.
-                  Name/Specs share the remaining space at roughly a 60:40 ratio. */}
-              <div className="hidden sm:grid gap-3 mb-2 px-2 text-[10px] font-black uppercase tracking-wider [grid-template-columns:minmax(100px,0.8fr)_minmax(170px,1.7fr)_minmax(90px,0.7fr)_minmax(110px,0.9fr)_minmax(180px,1.8fr)_44px]">
-                <div className="text-slate-500">Item Name</div>
-                <div className="text-slate-500">Specs / Description</div>
-                <div className="text-slate-400">Qty</div>
-                <div className="text-slate-400">Unit</div>
-                <div className="text-slate-400">Brand</div>
-                <div className="text-center text-slate-400">Action</div>
+              {/* Desktop Material Headers — flexbox with per-field flex-grow/
+                  min-width, not a fixed grid-template ratio, so the row
+                  adapts naturally to available width. Brand and
+                  Specification (longer values) get flex-[2]; Item Name
+                  (short values) gets flex-1; Qty/Unit are fixed-but-roomy
+                  (w-20/w-28) so they stay compact without ever compressing
+                  below a usable size. */}
+              <div className="hidden sm:flex gap-3 mb-2 px-2 text-[10px] font-black uppercase tracking-wider">
+                <div className="text-slate-500 flex-1 min-w-[90px]">Item Name</div>
+                <div className="text-slate-500 flex-[2] min-w-[150px]">Specs / Description</div>
+                <div className="text-slate-400 w-20 shrink-0">Qty</div>
+                <div className="text-slate-400 w-28 shrink-0">Unit</div>
+                <div className="text-slate-400 flex-[2] min-w-[150px]">Brand</div>
+                <div className="text-center text-slate-400 w-11 shrink-0">Action</div>
               </div>
 
               <div className="space-y-4">
                 {fields.map((item, index) => (
-                  <div key={item.id} className="grid grid-cols-1 gap-3 items-center bg-white sm:bg-slate-50/30 p-4 sm:p-2.5 rounded-xl sm:rounded-lg border border-slate-200 sm:border-slate-200/60 shadow-sm sm:shadow-none hover:border-orange-400/40 transition-colors sm:[grid-template-columns:minmax(100px,0.8fr)_minmax(170px,1.7fr)_minmax(90px,0.7fr)_minmax(110px,0.9fr)_minmax(180px,1.8fr)_44px]">
-                    <div>
+                  <div key={item.id} className="flex flex-col sm:flex-row flex-wrap sm:flex-nowrap gap-3 items-start sm:items-center bg-white sm:bg-slate-50/30 p-4 sm:p-2.5 rounded-xl sm:rounded-lg border border-slate-200 sm:border-slate-200/60 shadow-sm sm:shadow-none hover:border-orange-400/40 transition-colors">
+                    {/* Priority order for horizontal space: Brand and
+                        Specification get the most room (longer values);
+                        Item Name gets less (short values); Qty/Unit stay
+                        compact but no longer cramped. flex-grow ratios
+                        (not fixed pixel/percentage columns) so this adapts
+                        naturally as the container resizes. */}
+                    <div className="w-full sm:w-auto sm:flex-1 sm:min-w-[90px]">
                       <label className="block sm:hidden text-xs font-semibold text-slate-400 mb-1">Item Name</label>
                       <Input placeholder="e.g., Cement" {...register(`items.${index}.itemName`)} className="h-10 bg-white border-slate-200 font-semibold text-sm" />
                     </div>
 
-                    <div>
+                    <div className="w-full sm:w-auto sm:flex-[2] sm:min-w-[150px]">
                       <label className="block sm:hidden text-xs font-semibold text-slate-400 mb-1">Specs / Desc</label>
                       <Input placeholder="e.g., Grade 53" {...register(`items.${index}.itemDescription`)} className="h-10 bg-white border-slate-200 font-medium text-sm" />
                     </div>
 
-                    <div>
+                    <div className="w-[calc(50%-0.375rem)] sm:w-20 sm:shrink-0">
                       <label className="block sm:hidden text-xs font-semibold text-slate-400 mb-1">Quantity</label>
                       <Input type="number" placeholder="Qty" {...register(`items.${index}.quantity`)} className="h-10 bg-white border-slate-200 font-medium text-sm" min="1" />
                     </div>
 
-                    <div>
+                    <div className="w-[calc(50%-0.375rem)] sm:w-28 sm:shrink-0">
                       <label className="block sm:hidden text-xs font-semibold text-slate-400 mb-1">Unit</label>
                       <Input
                         list={`unit-options-${index}`}
@@ -478,7 +486,7 @@ const PostRequirementForm = () => {
                       </datalist>
                     </div>
 
-                    <div>
+                    <div className="w-full sm:w-auto sm:flex-[2] sm:min-w-[150px]">
                       <label className="block sm:hidden text-xs font-semibold text-slate-400 mb-1">Brand</label>
                       <Controller
                         name={`items.${index}.brand`}
@@ -523,7 +531,7 @@ const PostRequirementForm = () => {
                       />
                     </div>
 
-                    <div className="flex justify-end sm:justify-center mt-2 sm:mt-0">
+                    <div className="w-full sm:w-11 sm:shrink-0 flex justify-end sm:justify-center mt-2 sm:mt-0">
                       <button type="button" onClick={() => remove(index)} disabled={fields.length <= 1} className={`p-1.5 rounded transition-colors ${fields.length <= 1 ? 'text-slate-200 cursor-not-allowed' : 'text-slate-300 hover:text-red-500 hover:bg-red-50'}`} title="Delete Item">
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
