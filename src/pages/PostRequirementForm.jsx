@@ -62,7 +62,7 @@ const PostRequirementForm = () => {
       categoryId: initialCat || '',
       subCategoryId: initialSub || '',
       items: [
-        { itemName: '', itemDescription: '', quantity: '', quantityUnit: 'pcs', brand: 'Any' }
+        { itemName: '', itemDescription: '', quantity: '', quantityUnit: '', brand: 'Any' }
       ],
       otherTerms: '',
       deliveryDate: undefined,
@@ -538,7 +538,7 @@ const PostRequirementForm = () => {
                             </div>
                           ) : (
                             <Select value={value} onValueChange={onChange}>
-                              <SelectTrigger className="bg-white border-slate-200 font-medium text-sm">
+                              <SelectTrigger className="w-full bg-white border-slate-200 font-medium text-sm">
                                 <SelectValue placeholder="Brand" />
                               </SelectTrigger>
                               <SelectContent>
@@ -567,7 +567,7 @@ const PostRequirementForm = () => {
               <Button
                 type="button"
                 variant="ghost"
-                onClick={() => append({ itemName: '', itemDescription: '', quantity: '', quantityUnit: 'pcs', brand: 'Any' })}
+                onClick={() => append({ itemName: '', itemDescription: '', quantity: '', quantityUnit: '', brand: 'Any' })}
                 className="mt-4 text-orange-600 hover:text-orange-700 hover:bg-orange-50 font-bold border border-dashed border-orange-200 text-xs px-4 py-2"
               >
                 <Plus className="w-3.5 h-3.5 mr-1" /> Add Another Material
