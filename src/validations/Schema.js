@@ -89,6 +89,7 @@ export const productOverviewBidSchema = z.object({
     }),
   sellerType: z.string().optional(),
   taxes: z.string().optional(), // We'll parse this as a percentage in the UI
+  gstInclusive: z.boolean().optional(),
   buyerNote: z.string().optional(),
   freightTerms: z.string().optional(),
   location: z.string().optional(),
