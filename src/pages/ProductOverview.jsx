@@ -436,6 +436,37 @@ const SellerForm = ({
     </div>
   );
 
+  // Quotation-document dropzone — same upload field (registered via RHF as
+  // `quoteDocument`, same accept/validation), just enhanced with drag & drop
+  // on top of the existing click-to-browse input. Dropped files are pushed
+  // into the same hidden input via a DataTransfer so RHF's own change
+  // handler fires exactly as it would for a manual file selection.
+  const quoteDocReg = register('quoteDocument');
+  const quoteDocInputRef = useRef(null);
+  const [isQuoteDocDragging, setIsQuoteDocDragging] = useState(false);
+  const quoteDocFile = watch('quoteDocument');
+  const quoteDocFileName =
+    quoteDocFile && quoteDocFile.length ? quoteDocFile[0]?.name : null;
+
+  const handleQuoteDocDragOver = e => {
+    e.preventDefault();
+    setIsQuoteDocDragging(true);
+  };
+  const handleQuoteDocDragLeave = e => {
+    e.preventDefault();
+    setIsQuoteDocDragging(false);
+  };
+  const handleQuoteDocDrop = e => {
+    e.preventDefault();
+    setIsQuoteDocDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (!file || !quoteDocInputRef.current) return;
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    quoteDocInputRef.current.files = dt.files;
+    quoteDocReg.onChange({ target: quoteDocInputRef.current });
+  };
+
   return (
     <form
       className="w-full bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-6 sm:p-8 space-y-6"
@@ -469,12 +500,29 @@ const SellerForm = ({
           {/* Seller quotation document (pdf / excel) */}
           <div className="w-full">
             <Label className="mb-2 text-sm block">Upload Quotation Document (PDF or Excel)</Label>
-            <Input
-              type="file"
-              accept=".pdf,.xls,.xlsx,.csv,.doc,.docx"
-              className="bg-white w-full file:mr-3 file:rounded-md file:border-0 file:bg-orange-50 file:px-3 file:py-1.5 file:text-orange-700 file:font-semibold"
-              {...register('quoteDocument')}
-            />
+            <div
+              onClick={() => quoteDocInputRef.current?.click()}
+              onDragOver={handleQuoteDocDragOver}
+              onDragLeave={handleQuoteDocDragLeave}
+              onDrop={handleQuoteDocDrop}
+              className={`p-4 border-2 border-dashed rounded-lg text-center cursor-pointer transition-colors ${isQuoteDocDragging ? 'bg-orange-50 border-orange-400' : 'bg-white border-slate-200 hover:bg-slate-50 hover:border-orange-300'}`}
+            >
+              <input
+                type="file"
+                accept=".pdf,.xls,.xlsx,.csv,.doc,.docx"
+                className="hidden"
+                name={quoteDocReg.name}
+                onBlur={quoteDocReg.onBlur}
+                onChange={quoteDocReg.onChange}
+                ref={el => {
+                  quoteDocReg.ref(el);
+                  quoteDocInputRef.current = el;
+                }}
+              />
+              <p className="text-sm font-medium text-slate-600">
+                {quoteDocFileName || 'Drag & drop your quotation file, or click to browse'}
+              </p>
+            </div>
             <p className="text-xs text-slate-400 mt-1">Attach your priced quotation against the buyer's uploaded requirement.</p>
           </div>
         </>

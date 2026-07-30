@@ -605,11 +605,22 @@ const CategoryForm = ({
               {/* Image upload */}
               <div
                 onClick={() => imageRef?.current?.click()}
+                onDragOver={e => e.preventDefault()}
+                onDrop={e => {
+                  e.preventDefault();
+                  const newImage = e.dataTransfer.files?.[0];
+                  if (!newImage) return;
+                  if (newImage.size > 2 * 1024 * 1024) {
+                    toast.info('Image size should not exceed 2MB');
+                    return;
+                  }
+                  setImage(newImage);
+                }}
                 className="border-2 border-dashed relative border-gray-300 rounded-lg flex bg-transparent flex-col items-center justify-center p-6 cursor-pointer h-32"
               >
                 <CloudUpload className="h-6 w-6 mb-2 text-gray-500" />
                 <span className="text-sm text-muted-foreground font-semibold">Upload Image</span>
-                <p className="text-xs text-gray-500">to upload your image (max 2 MB)</p>
+                <p className="text-xs text-gray-500">Drag & drop, or click to upload (max 2 MB)</p>
                 <input
                   type="file"
                   accept="image/*"
@@ -664,11 +675,26 @@ const CategoryForm = ({
               {/* Document upload */}
               <div
                 onClick={() => fileDocRef.current?.click()}
+                onDragOver={e => e.preventDefault()}
+                onDrop={e => {
+                  e.preventDefault();
+                  const newDocument = e.dataTransfer.files?.[0];
+                  if (!newDocument) return;
+                  if (newDocument.size === 0) {
+                    toast.error('Invalid Doc');
+                    return;
+                  }
+                  if (newDocument.size > 5 * 1024 * 1024) {
+                    toast.info('Document size should not exceed 5MB');
+                    return;
+                  }
+                  setFileDoc(newDocument);
+                }}
                 className="border-2 border-dashed relative border-gray-300 rounded-lg flex bg-transparent flex-col items-center justify-center p-6 cursor-pointer"
               >
                 <CloudUpload className="h-6 w-6 mb-2 text-gray-500" />
                 <span className="text-sm text-muted-foreground text-center">
-                  <span className="font-semibold">Browse From Device</span>
+                  <span className="font-semibold">Drag & drop, or Browse From Device</span>
                   <br />
                   <span className="text-xs">to upload your doc/pdf (max 5 MB)</span>
                 </span>
