@@ -426,12 +426,16 @@ const SellerForm = ({
     </div>
   );
 
+  // Single supplier-wide note, replacing the removed per-item Remarks
+  // column -- still the same `buyerNote` field/wire name (no backend
+  // change), just re-labeled since it now covers the whole quote rather
+  // than being buried per material row.
   const BuyerNoteField = (
     <div className="w-full">
-      <Label htmlFor="buyerNote" className="mb-2 text-sm block">Buyer Note</Label>
+      <Label htmlFor="buyerNote" className="mb-2 text-sm block">Supplier Note</Label>
       <Textarea
         {...register('buyerNote')}
-        placeholder="Short message (hard limit: 300 characters)"
+        placeholder="Any notes for the buyer about this quote (hard limit: 300 characters)"
         className="bg-white w-full min-h-[100px] resize-none"
       />
     </div>
@@ -558,7 +562,6 @@ const SellerForm = ({
                       <th className="px-3 py-2.5">Preferred Brand</th>
                       <th className="px-3 py-2.5 w-32">Price / Unit (₹)</th>
                       <th className="px-3 py-2.5 w-32">Offered Brand</th>
-                      <th className="px-3 py-2.5 w-40">Remarks</th>
                       <th className="px-3 py-2.5 text-right w-28">Line Total</th>
                     </tr>
                   </thead>
@@ -572,16 +575,27 @@ const SellerForm = ({
                       // trust a silently-defaulted qty of 1 for pricing
                       // when the real value is recoverable from the text.
                       const parsedFromDesc = !item.quantity ? extractQuantityAndUnit(rawDescription) : null;
-                      const description = parsedFromDesc ? parsedFromDesc.cleanedText : (rawDescription || 'N/A');
+                      const rawSpec = parsedFromDesc ? parsedFromDesc.cleanedText : rawDescription;
+                      // Specification must hold technical spec only, never
+                      // a restatement of the item name (e.g. typeOfProduct
+                      // falling back to the same text as the name when no
+                      // real spec was ever entered separately).
+                      const specification = rawSpec && rawSpec.trim().toLowerCase() !== resolvedItemName.trim().toLowerCase()
+                        ? rawSpec
+                        : '—';
                       const qty = resolveItemQuantity(item);
-                      const unit = item.quantityUnit || parsedFromDesc?.unit || 'pcs';
+                      // Never assume a unit -- show exactly what the buyer
+                      // specified (MT, Bags, Kg, Litres, ...), or blank if
+                      // truly unknown. Defaulting to "pcs" would silently
+                      // misrepresent the buyer's actual requirement.
+                      const unit = item.quantityUnit || parsedFromDesc?.unit || '';
                       const uPrice = parseFloat(watch(priceNameFor(idx))) || 0;
                       const lineTotal = qty * uPrice;
 
                       return (
                         <tr key={item._id || idx} className="align-top hover:bg-slate-50/60 transition-colors">
                           <td className="px-3 py-2.5 text-sm font-bold text-slate-800 max-w-[160px] break-words">{resolvedItemName}</td>
-                          <td className="px-3 py-2.5 text-sm text-slate-600 max-w-[200px] break-words">{description}</td>
+                          <td className="px-3 py-2.5 text-sm text-slate-600 max-w-[200px] break-words">{specification}</td>
                           <td className="px-3 py-2.5 text-sm font-semibold text-slate-700 text-right whitespace-nowrap">{qty}</td>
                           <td className="px-3 py-2.5 text-sm font-semibold text-slate-700 uppercase whitespace-nowrap">{unit}</td>
                           <td className="px-3 py-2.5 text-sm text-slate-600 max-w-[140px] break-words">{item.brand || 'Any'}</td>
@@ -601,14 +615,6 @@ const SellerForm = ({
                               placeholder="e.g., UltraTech"
                               className="h-9 border-slate-200 bg-white w-32"
                               {...register(`items.${idx}.offeredBrand`)}
-                            />
-                          </td>
-                          <td className="px-2 py-2">
-                            <Input
-                              type="text"
-                              placeholder="Optional note"
-                              className="h-9 border-slate-200 bg-white w-40"
-                              {...register(`items.${idx}.remarks`)}
                             />
                           </td>
                           <td className="px-3 py-2.5 text-sm font-bold text-orange-600 text-right whitespace-nowrap">₹ {fmt(lineTotal)}</td>
@@ -879,7 +885,6 @@ const ProductOverview = () => {
             productItemId: item._id,
             unitPrice: uPrice,
             offeredBrand: itemValues.offeredBrand || '',
-            remarks: itemValues.remarks || '',
           });
         }
       });
