@@ -565,7 +565,24 @@ const HomeNavbar = () => {
       socket.emit(SOCKET_EVENTS.GET_NOTIFICATIONS);
     }
 
+    // Presence heartbeat — the server's connect/disconnect lifecycle
+    // already covers a closed tab or dropped network, but a backgrounded
+    // tab can hold the socket open indefinitely. Only heartbeat while the
+    // tab is actually visible/active, so a minimized/backgrounded tab
+    // stops beating and the server's heartbeat sweep can correctly age it
+    // out to Offline, per the "browser is active" requirement.
+    const sendHeartbeat = () => {
+      if (document.visibilityState === 'visible' && socket.connected) {
+        socket.emit(SOCKET_EVENTS.HEARTBEAT);
+      }
+    };
+    sendHeartbeat();
+    const heartbeatInterval = setInterval(sendHeartbeat, 20_000);
+    document.addEventListener('visibilitychange', sendHeartbeat);
+
     return () => {
+      clearInterval(heartbeatInterval);
+      document.removeEventListener('visibilitychange', sendHeartbeat);
       socket.off(SOCKET_EVENTS.CONNECT);
       socket.off(SOCKET_EVENTS.DISCONNECT);
       socket.off(SOCKET_EVENTS.USER_CHATS);

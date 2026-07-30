@@ -48,6 +48,18 @@ const fmtDate = val => {
   const d = new Date(val);
   return isNaN(d) ? null : d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 };
+const formatLastSeen = val => {
+  if (!val) return 'Offline';
+  const d = new Date(val);
+  if (isNaN(d)) return 'Offline';
+  const diffMs = Date.now() - d.getTime();
+  const mins = Math.floor(diffMs / 60000);
+  if (mins < 1) return 'Last seen just now';
+  if (mins < 60) return `Last seen ${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `Last seen ${hours}h ago`;
+  return `Last seen ${d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}`;
+};
 
 // ─────────────────────────────────────────────
 // QuoteDetailsPanel — supplier proof card
@@ -681,7 +693,7 @@ const ChatArea = ({
                       }`}
                     />
                     <p className="text-xs text-slate-400 leading-none">
-                      {isOnline ? 'Online' : 'Offline'}
+                      {isOnline ? 'Online' : formatLastSeen(selectedContact?.lastSeenAt)}
                     </p>
                   </div>
                 )}
@@ -1252,6 +1264,7 @@ const Chatbot = () => {
         productId: searchParams.get('productId'),
         productName,
         isOnline: false,
+        lastSeenAt: userData.lastSeenAt || null,
         chatrating: 0,
         lastMessage: null,
         buyerUnreadCount: 0,
