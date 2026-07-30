@@ -17,6 +17,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import requirementService from '@/services/requirement.service';
 import { resolveDocuments } from '@/utils/resolveDocuments';
+import { extractQuantityAndUnit } from '@/utils/parseMaterialText';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { CategoryFormSkeleton } from '@/const/CustomSkeletons';
@@ -277,11 +278,20 @@ const QuoteCompareDialog = ({ open, onOpenChange, productId }) => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
-                      {requestedItems.map((item, ii) => (
+                      {requestedItems.map((item, ii) => {
+                        // Same fallback as ProductOverview's materials table:
+                        // some items have their real quantity/unit typed
+                        // into the description with Quantity left blank.
+                        const parsed = !item.quantity
+                          ? extractQuantityAndUnit(item.itemDescription || item.description || '')
+                          : null;
+                        const displayQty = item.quantity || parsed?.quantity || '';
+                        const displayUnit = item.quantityUnit || parsed?.unit || '';
+                        return (
                         <tr key={ii} className="hover:bg-slate-50/50 align-top">
                           <td className="px-3 py-2.5 sticky left-0 bg-white z-10 text-xs font-semibold text-slate-700">
                             <div className="font-bold text-slate-800">{item.subCategoryName || item.typeOfProduct || `Item ${ii + 1}`}</div>
-                            <div className="text-slate-400 font-normal normal-case">{item.quantity} {item.quantityUnit}</div>
+                            <div className="text-slate-400 font-normal normal-case">{displayQty} {displayUnit}</div>
                           </td>
                           {bids.map((b, bi) => {
                             const line = quoteLineFor(b, item);
@@ -289,7 +299,7 @@ const QuoteCompareDialog = ({ open, onOpenChange, productId }) => {
                               <td key={bi} className="px-3 py-2.5 text-slate-700">
                                 {line ? (
                                   <div className="space-y-0.5">
-                                    <div className="font-semibold">{currencyConvertor(line.unitPrice)} / {item.quantityUnit}</div>
+                                    <div className="font-semibold">{currencyConvertor(line.unitPrice)} / {displayUnit}</div>
                                     <div className="text-xs text-slate-500">{line.offeredBrand || 'Any brand'}</div>
                                     <div className="text-xs capitalize text-slate-400">{(line.availability || 'in_stock').replace('_', ' ')}</div>
                                     {line.remarks && <div className="text-xs text-slate-400 italic">"{line.remarks}"</div>}
@@ -301,7 +311,8 @@ const QuoteCompareDialog = ({ open, onOpenChange, productId }) => {
                             );
                           })}
                         </tr>
-                      ))}
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>

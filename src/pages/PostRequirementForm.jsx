@@ -29,6 +29,7 @@ import { useUserState } from '@/redux/hooks/useUser';
 import Authentication from '@/components/custom/auth/Authenticate';
 import { Spinner } from '@/components/ui/spinner';
 import instance from '@/helper/instance';
+import { extractQuantityAndUnit } from '@/utils/parseMaterialText';
 
 
 
@@ -463,7 +464,30 @@ const PostRequirementForm = () => {
 
                     <div className="w-full sm:w-auto sm:flex-[2] sm:min-w-[150px]">
                       <label className="block sm:hidden text-xs font-semibold text-slate-400 mb-1">Specs / Desc</label>
-                      <Input placeholder="e.g., Grade 53" {...register(`items.${index}.itemDescription`)} className="h-10 bg-white border-slate-200 font-medium text-sm" />
+                      <Input
+                        placeholder="e.g., Grade 53"
+                        {...register(`items.${index}.itemDescription`)}
+                        onBlur={e => {
+                          register(`items.${index}.itemDescription`).onBlur(e);
+                          // Best-effort: if the seller typed the real
+                          // quantity/unit straight into the spec text
+                          // (e.g. "Cement 50 bags") and hasn't touched the
+                          // dedicated fields yet, split it out. Never
+                          // overwrites a value the user already entered,
+                          // and everything stays fully editable after.
+                          const currentQty = watch(`items.${index}.quantity`);
+                          const currentUnit = watch(`items.${index}.quantityUnit`);
+                          if (!currentQty && (!currentUnit || currentUnit === 'pcs')) {
+                            const parsed = extractQuantityAndUnit(e.target.value);
+                            if (parsed) {
+                              setValue(`items.${index}.itemDescription`, parsed.cleanedText, { shouldDirty: true });
+                              setValue(`items.${index}.quantity`, parsed.quantity, { shouldDirty: true });
+                              setValue(`items.${index}.quantityUnit`, parsed.unit, { shouldDirty: true });
+                            }
+                          }
+                        }}
+                        className="h-10 bg-white border-slate-200 font-medium text-sm"
+                      />
                     </div>
 
                     <div className="w-[calc(50%-0.375rem)] sm:w-20 sm:shrink-0">

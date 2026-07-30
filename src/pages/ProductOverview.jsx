@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { DatePicker } from '@/lib/DatePicker';
 import { resolveDocuments } from '@/utils/resolveDocuments';
+import { extractQuantityAndUnit, resolveItemQuantity } from '@/utils/parseMaterialText';
 import { useFetch } from '@/hooks/useFetch';
 import productService from '@/services/product.service';
 import { useEffect, useRef, useState } from 'react';
@@ -290,7 +291,7 @@ const SellerForm = ({
   } else {
     items.forEach((item, idx) => {
       const uPrice = parseFloat(watch(priceNameFor(idx))) || 0;
-      const qty = Number(item.quantity) || 1;
+      const qty = resolveItemQuantity(item);
       grandTotal += uPrice * qty;
     });
   }
@@ -539,8 +540,16 @@ const SellerForm = ({
             {items.map((item, idx) => {
               const catObj = localMainProduct?.categoryId || localMainProduct?.category;
               const resolvedItemName = item.itemName || item.subCategoryName || catObj?.subCategories?.find(s => s._id === item.subCategoryId || s._id === item.subCategoryId?.toString())?.name || 'Item ' + (idx + 1);
-              const qty = Number(item.quantity) || 1;
-              const unit = item.quantityUnit || 'pcs';
+              const rawDescription = item.itemDescription || item.description || item.typeOfProduct || item.model || '';
+              // Same fallback as the buyer-facing materials table: some
+              // items have their real quantity/unit typed into the
+              // description with Quantity left blank. Never trust a
+              // silently-defaulted qty of 1 for pricing when the real
+              // value is recoverable from the description.
+              const parsedFromDesc = !item.quantity ? extractQuantityAndUnit(rawDescription) : null;
+              const description = parsedFromDesc ? parsedFromDesc.cleanedText : (rawDescription || 'N/A');
+              const qty = resolveItemQuantity(item);
+              const unit = item.quantityUnit || parsedFromDesc?.unit || 'pcs';
               const uPrice = parseFloat(watch(priceNameFor(idx))) || 0;
               const lineTotal = qty * uPrice;
 
@@ -554,7 +563,7 @@ const SellerForm = ({
                     </div>
                     <div className="col-span-2 sm:col-span-1">
                       <p className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Description / Specs</p>
-                      <p className="text-sm text-slate-600 break-words">{item.itemDescription || item.description || item.typeOfProduct || item.model || 'N/A'}</p>
+                      <p className="text-sm text-slate-600 break-words">{description}</p>
                     </div>
                     <div>
                       <p className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Qty</p>
@@ -850,7 +859,7 @@ const ProductOverview = () => {
       rawItems.forEach((item, idx) => {
         const itemValues = getValues().items?.[idx] || {};
         const uPrice = parseFloat(itemValues.unitPrice) || 0;
-        const qty = Number(item.quantity) || 1;
+        const qty = resolveItemQuantity(item);
         budgetQuation += uPrice * qty;
         if (item._id) {
           quoteItems.push({
@@ -1439,12 +1448,25 @@ const ProductOverview = () => {
                             {rawItems.map((item, idx) => {
                               const catObj = mp?.categoryId || mp?.category;
                               const resolvedName = item.itemName || item.subCategoryName || catObj?.subCategories?.find(s => s._id === item.subCategoryId || s._id === item.subCategoryId?.toString())?.name || 'Item ' + (idx + 1);
+                              const rawDescription = item.itemDescription || item.description || item.typeOfProduct || item.model || '';
+                              // Some materials were entered with the real
+                              // quantity/unit typed into the free-text
+                              // description instead of the dedicated
+                              // fields (e.g. "TMT Reinforcement Bars - 2
+                              // MT" with Quantity left blank). This is a
+                              // display-only fallback -- it never mutates
+                              // the stored record, only fills in what's
+                              // missing for this render.
+                              const parsed = !item.quantity ? extractQuantityAndUnit(rawDescription) : null;
+                              const displayDescription = parsed ? parsed.cleanedText : (rawDescription || 'N/A');
+                              const displayQuantity = item.quantity || parsed?.quantity || '';
+                              const displayUnit = item.quantityUnit || parsed?.unit || '';
                               return (
                               <tr key={idx} className="hover:bg-slate-50 transition-colors">
                                 <td className="px-5 py-4 text-sm font-bold text-gray-900">{resolvedName}</td>
-                                <td className="px-5 py-4 text-sm text-gray-600">{item.itemDescription || item.description || item.typeOfProduct || item.model || "N/A"}</td>
-                                <td className="px-5 py-4 text-sm font-black text-orange-600">{item.quantity}</td>
-                                <td className="px-5 py-4 text-sm font-bold text-gray-500 uppercase">{item.quantityUnit}</td>
+                                <td className="px-5 py-4 text-sm text-gray-600">{displayDescription}</td>
+                                <td className="px-5 py-4 text-sm font-black text-orange-600">{displayQuantity}</td>
+                                <td className="px-5 py-4 text-sm font-bold text-gray-500 uppercase">{displayUnit}</td>
                                 <td className="px-5 py-4 text-sm text-gray-600">{item.brand || "Any"}</td>
                               </tr>
                               );
