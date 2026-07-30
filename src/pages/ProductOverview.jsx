@@ -566,39 +566,71 @@ const SellerForm = ({
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 bg-white">
-                    {items.map((item, idx) => {
+                    {(() => {
                       const catObj = localMainProduct?.categoryId || localMainProduct?.category;
-                      const resolvedItemName = item.itemName || item.subCategoryName || catObj?.subCategories?.find(s => s._id === item.subCategoryId || s._id === item.subCategoryId?.toString())?.name || 'Item ' + (idx + 1);
-                      const rawDescription = item.itemDescription || item.description || item.typeOfProduct || item.model || '';
-                      // Some items have their real quantity/unit typed into
-                      // the description with Quantity left blank. Never
-                      // trust a silently-defaulted qty of 1 for pricing
-                      // when the real value is recoverable from the text.
-                      const parsedFromDesc = !item.quantity ? extractQuantityAndUnit(rawDescription) : null;
-                      const rawSpec = parsedFromDesc ? parsedFromDesc.cleanedText : rawDescription;
-                      // Specification must hold technical spec only, never
-                      // a restatement of the item name (e.g. typeOfProduct
-                      // falling back to the same text as the name when no
-                      // real spec was ever entered separately).
-                      const specification = rawSpec && rawSpec.trim().toLowerCase() !== resolvedItemName.trim().toLowerCase()
-                        ? rawSpec
-                        : '—';
-                      const qty = resolveItemQuantity(item);
-                      // Never assume a unit -- show exactly what the buyer
-                      // specified (MT, Bags, Kg, Litres, ...), or blank if
-                      // truly unknown. Defaulting to "pcs" would silently
-                      // misrepresent the buyer's actual requirement.
-                      const unit = item.quantityUnit || parsedFromDesc?.unit || '';
-                      const uPrice = parseFloat(watch(priceNameFor(idx))) || 0;
-                      const lineTotal = qty * uPrice;
+                      // Same read-only-column merge as the buyer-facing
+                      // materials table: several rows entered under the
+                      // same subcategory (only Qty differing) shouldn't
+                      // repeat identical Item Name/Specification/Preferred
+                      // Brand text in every row.
+                      const rows = items.map((item, idx) => {
+                        const resolvedItemName = item.itemName || item.subCategoryName || catObj?.subCategories?.find(s => s._id === item.subCategoryId || s._id === item.subCategoryId?.toString())?.name || 'Item ' + (idx + 1);
+                        const rawDescription = item.itemDescription || item.description || item.typeOfProduct || item.model || '';
+                        // Some items have their real quantity/unit typed into
+                        // the description with Quantity left blank. Never
+                        // trust a silently-defaulted qty of 1 for pricing
+                        // when the real value is recoverable from the text.
+                        const parsedFromDesc = !item.quantity ? extractQuantityAndUnit(rawDescription) : null;
+                        const rawSpec = parsedFromDesc ? parsedFromDesc.cleanedText : rawDescription;
+                        // Specification must hold technical spec only, never
+                        // a restatement of the item name (e.g. typeOfProduct
+                        // falling back to the same text as the name when no
+                        // real spec was ever entered separately).
+                        const specification = rawSpec && rawSpec.trim().toLowerCase() !== resolvedItemName.trim().toLowerCase()
+                          ? rawSpec
+                          : '—';
+                        const qty = resolveItemQuantity(item);
+                        // Never assume a unit -- show exactly what the buyer
+                        // specified (MT, Bags, Kg, Litres, ...), or blank if
+                        // truly unknown. When quantity was blank, the
+                        // dedicated quantityUnit field is just whatever
+                        // placeholder/default the buyer left behind (e.g.
+                        // "pcs") while the real unit was typed into the
+                        // free-text field -- that parsed unit must win, or a
+                        // seller can be shown "PCS" when the buyer actually
+                        // meant "MT" and price against the wrong basis.
+                        const unit = parsedFromDesc ? parsedFromDesc.unit : (item.quantityUnit || '');
+                        const uPrice = parseFloat(watch(priceNameFor(idx))) || 0;
+                        const lineTotal = qty * uPrice;
+                        const brand = item.brand || 'Any';
+                        return { idx, resolvedItemName, specification, qty, unit, uPrice, lineTotal, brand };
+                      });
+
+                      const sameGroup = (a, b) =>
+                        a && b && a.resolvedItemName === b.resolvedItemName &&
+                        a.specification === b.specification && a.brand === b.brand;
+
+                      return rows.map((row, i) => {
+                        const { idx, qty, unit, lineTotal } = row;
+                        const isGroupStart = i === 0 || !sameGroup(rows[i - 1], row);
+                        let groupSpan = 1;
+                        if (isGroupStart) {
+                          for (let j = i + 1; j < rows.length && sameGroup(rows[j], row); j++) groupSpan++;
+                        }
 
                       return (
-                        <tr key={item._id || idx} className="align-top hover:bg-slate-50/60 transition-colors">
-                          <td className="px-3 py-2.5 text-sm font-bold text-slate-800 max-w-[160px] break-words">{resolvedItemName}</td>
-                          <td className="px-3 py-2.5 text-sm text-slate-600 max-w-[200px] break-words">{specification}</td>
+                        <tr key={row.idx} className="align-top hover:bg-slate-50/60 transition-colors">
+                          {isGroupStart && (
+                            <>
+                              <td rowSpan={groupSpan} className="px-3 py-2.5 text-sm font-bold text-slate-800 max-w-[160px] break-words">{row.resolvedItemName}</td>
+                              <td rowSpan={groupSpan} className="px-3 py-2.5 text-sm text-slate-600 max-w-[200px] break-words">{row.specification}</td>
+                            </>
+                          )}
                           <td className="px-3 py-2.5 text-sm font-semibold text-slate-700 text-right whitespace-nowrap">{qty}</td>
                           <td className="px-3 py-2.5 text-sm font-semibold text-slate-700 uppercase whitespace-nowrap">{unit}</td>
-                          <td className="px-3 py-2.5 text-sm text-slate-600 max-w-[140px] break-words">{item.brand || 'Any'}</td>
+                          {isGroupStart && (
+                            <td rowSpan={groupSpan} className="px-3 py-2.5 text-sm text-slate-600 max-w-[140px] break-words">{row.brand}</td>
+                          )}
                           <td className="px-2 py-2">
                             <Input
                               type="number"
@@ -620,7 +652,8 @@ const SellerForm = ({
                           <td className="px-3 py-2.5 text-sm font-bold text-orange-600 text-right whitespace-nowrap">₹ {fmt(lineTotal)}</td>
                         </tr>
                       );
-                    })}
+                      });
+                    })()}
                   </tbody>
                 </table>
               </div>
@@ -1465,32 +1498,79 @@ const ProductOverview = () => {
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-gray-100 bg-white">
-                            {rawItems.map((item, idx) => {
+                            {(() => {
                               const catObj = mp?.categoryId || mp?.category;
-                              const resolvedName = item.itemName || item.subCategoryName || catObj?.subCategories?.find(s => s._id === item.subCategoryId || s._id === item.subCategoryId?.toString())?.name || 'Item ' + (idx + 1);
-                              const rawDescription = item.itemDescription || item.description || item.typeOfProduct || item.model || '';
-                              // Some materials were entered with the real
-                              // quantity/unit typed into the free-text
-                              // description instead of the dedicated
-                              // fields (e.g. "TMT Reinforcement Bars - 2
-                              // MT" with Quantity left blank). This is a
-                              // display-only fallback -- it never mutates
-                              // the stored record, only fills in what's
-                              // missing for this render.
-                              const parsed = !item.quantity ? extractQuantityAndUnit(rawDescription) : null;
-                              const displayDescription = parsed ? parsed.cleanedText : (rawDescription || 'N/A');
-                              const displayQuantity = item.quantity || parsed?.quantity || '';
-                              const displayUnit = item.quantityUnit || parsed?.unit || '';
-                              return (
-                              <tr key={idx} className="hover:bg-slate-50 transition-colors">
-                                <td className="px-5 py-4 text-sm font-bold text-gray-900">{resolvedName}</td>
-                                <td className="px-5 py-4 text-sm text-gray-600">{displayDescription}</td>
-                                <td className="px-5 py-4 text-sm font-black text-orange-600">{displayQuantity}</td>
-                                <td className="px-5 py-4 text-sm font-bold text-gray-500 uppercase">{displayUnit}</td>
-                                <td className="px-5 py-4 text-sm text-gray-600">{item.brand || "Any"}</td>
-                              </tr>
-                              );
-                            })}
+                              // Pre-compute every row's display values first,
+                              // then merge consecutive rows that share the
+                              // same Item Name + Description + Brand into one
+                              // spanned cell -- a materials list entered as
+                              // several quantity-only rows under the same
+                              // subcategory (e.g. "TMT Bars" x4, only Qty
+                              // differing) shouldn't repeat identical text
+                              // in every row.
+                              const rows = rawItems.map((item, idx) => {
+                                const resolvedName = item.itemName || item.subCategoryName || catObj?.subCategories?.find(s => s._id === item.subCategoryId || s._id === item.subCategoryId?.toString())?.name || 'Item ' + (idx + 1);
+                                const rawDescription = item.itemDescription || item.description || item.typeOfProduct || item.model || '';
+                                // Some materials were entered with the real
+                                // quantity/unit typed into the free-text
+                                // description instead of the dedicated
+                                // fields (e.g. "TMT Reinforcement Bars - 2
+                                // MT" with Quantity left blank). This is a
+                                // display-only fallback -- it never mutates
+                                // the stored record, only fills in what's
+                                // missing for this render.
+                                const parsed = !item.quantity ? extractQuantityAndUnit(rawDescription) : null;
+                                const displayDescription = parsed ? parsed.cleanedText : (rawDescription || 'N/A');
+                                const displayQuantity = item.quantity || parsed?.quantity || '';
+                                // A successful parse means Quantity was left
+                                // blank and the real qty+unit were typed
+                                // into the free-text field instead -- in
+                                // that case quantityUnit is whatever
+                                // placeholder/default was left behind
+                                // (e.g. "pcs") and must not be trusted over
+                                // the actually-parsed unit (e.g. "MT").
+                                const displayUnit = parsed ? parsed.unit : (item.quantityUnit || '');
+                                return {
+                                  key: idx,
+                                  resolvedName,
+                                  displayDescription,
+                                  displayQuantity,
+                                  displayUnit,
+                                  brand: item.brand || 'Any',
+                                };
+                              });
+
+                              const sameGroup = (a, b) =>
+                                a && b && a.resolvedName === b.resolvedName &&
+                                a.displayDescription === b.displayDescription &&
+                                a.brand === b.brand;
+
+                              return rows.map((row, i) => {
+                                const isGroupStart = i === 0 || !sameGroup(rows[i - 1], row);
+                                if (!isGroupStart) {
+                                  // Merged into the group-start row's
+                                  // rowSpan above -- only render the
+                                  // per-row (varying) cells.
+                                  return (
+                                    <tr key={row.key} className="hover:bg-slate-50 transition-colors">
+                                      <td className="px-5 py-4 text-sm font-black text-orange-600">{row.displayQuantity}</td>
+                                      <td className="px-5 py-4 text-sm font-bold text-gray-500 uppercase">{row.displayUnit}</td>
+                                    </tr>
+                                  );
+                                }
+                                let groupSpan = 1;
+                                for (let j = i + 1; j < rows.length && sameGroup(rows[j], row); j++) groupSpan++;
+                                return (
+                                  <tr key={row.key} className="hover:bg-slate-50 transition-colors">
+                                    <td rowSpan={groupSpan} className="px-5 py-4 text-sm font-bold text-gray-900 align-top">{row.resolvedName}</td>
+                                    <td rowSpan={groupSpan} className="px-5 py-4 text-sm text-gray-600 align-top">{row.displayDescription}</td>
+                                    <td className="px-5 py-4 text-sm font-black text-orange-600">{row.displayQuantity}</td>
+                                    <td className="px-5 py-4 text-sm font-bold text-gray-500 uppercase">{row.displayUnit}</td>
+                                    <td rowSpan={groupSpan} className="px-5 py-4 text-sm text-gray-600 align-top">{row.brand}</td>
+                                  </tr>
+                                );
+                              });
+                            })()}
                           </tbody>
                         </table>
                       </div>

@@ -281,12 +281,20 @@ const QuoteCompareDialog = ({ open, onOpenChange, productId }) => {
                       {requestedItems.map((item, ii) => {
                         // Same fallback as ProductOverview's materials table:
                         // some items have their real quantity/unit typed
-                        // into the description with Quantity left blank.
+                        // into a free-text field with Quantity left blank.
+                        // Product.items[] has no itemDescription/description
+                        // fields on the schema (Mongoose drops them on
+                        // save) -- typeOfProduct/model are the real fields
+                        // this text ends up in.
                         const parsed = !item.quantity
-                          ? extractQuantityAndUnit(item.itemDescription || item.description || '')
+                          ? extractQuantityAndUnit(item.itemDescription || item.description || item.typeOfProduct || item.model || '')
                           : null;
                         const displayQty = item.quantity || parsed?.quantity || '';
-                        const displayUnit = item.quantityUnit || parsed?.unit || '';
+                        // When quantity was blank, quantityUnit is just a
+                        // leftover placeholder/default -- the parsed unit
+                        // (from the same text quantity was recovered from)
+                        // must win over it.
+                        const displayUnit = parsed ? parsed.unit : (item.quantityUnit || '');
                         return (
                         <tr key={ii} className="hover:bg-slate-50/50 align-top">
                           <td className="px-3 py-2.5 sticky left-0 bg-white z-10 text-xs font-semibold text-slate-700">
