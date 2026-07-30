@@ -552,44 +552,6 @@ const SellerForm = ({
                     </div>
                   </div>
 
-                  {/* Row 3 — what the supplier is offering for this line
-                      (distinct from the buyer's requested Brand/Unit above):
-                      Offered Brand, the Unit the seller is quoting per
-                      (defaults to the requested unit but independently
-                      editable), and Remarks. */}
-                  <div className="flex items-start gap-3 px-4 pb-3">
-                    <span className="w-6 shrink-0" aria-hidden="true" />
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 flex-1">
-                      <div>
-                        <Label className="mb-1 text-xs text-slate-500 block">Offered Brand</Label>
-                        <Input
-                          type="text"
-                          placeholder="e.g., UltraTech"
-                          className="h-9 border-slate-200 bg-white w-full"
-                          {...register(`items.${idx}.offeredBrand`)}
-                        />
-                      </div>
-                      <div>
-                        <Label className="mb-1 text-xs text-slate-500 block">Unit</Label>
-                        <Input
-                          type="text"
-                          placeholder={unit}
-                          defaultValue={unit}
-                          className="h-9 border-slate-200 bg-white w-full"
-                          {...register(`items.${idx}.unit`)}
-                        />
-                      </div>
-                      <div>
-                        <Label className="mb-1 text-xs text-slate-500 block">Remarks</Label>
-                        <Input
-                          type="text"
-                          placeholder="Optional note for this item"
-                          className="h-9 border-slate-200 bg-white w-full"
-                          {...register(`items.${idx}.remarks`)}
-                        />
-                      </div>
-                    </div>
-                  </div>
                 </div>
               );
             })}
@@ -846,9 +808,6 @@ const ProductOverview = () => {
           quoteItems.push({
             productItemId: item._id,
             unitPrice: uPrice,
-            offeredBrand: itemValues.offeredBrand || '',
-            unit: itemValues.unit || item.quantityUnit || '',
-            remarks: itemValues.remarks || '',
           });
         }
       });

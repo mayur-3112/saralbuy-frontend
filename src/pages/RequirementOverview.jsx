@@ -289,7 +289,7 @@ const QuoteCompareDialog = ({ open, onOpenChange, productId }) => {
                               <td key={bi} className="px-3 py-2.5 text-slate-700">
                                 {line ? (
                                   <div className="space-y-0.5">
-                                    <div className="font-semibold">{currencyConvertor(line.unitPrice)} / {line.unit || item.quantityUnit}</div>
+                                    <div className="font-semibold">{currencyConvertor(line.unitPrice)} / {item.quantityUnit}</div>
                                     <div className="text-xs text-slate-500">{line.offeredBrand || 'Any brand'}</div>
                                     <div className="text-xs capitalize text-slate-400">{(line.availability || 'in_stock').replace('_', ' ')}</div>
                                     {line.remarks && <div className="text-xs text-slate-400 italic">"{line.remarks}"</div>}
