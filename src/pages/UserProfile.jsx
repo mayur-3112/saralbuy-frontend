@@ -66,9 +66,13 @@ export default function UserProfile() {
   const isOwner = currentUser?._id === data._id;
 
   const fullName = mergeName(data) || '—';
-  const memberSince = data.createdAt
-    ? new Date(data.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'short' })
-    : null;
+  // "In Business since" must reflect when the supplier started operating
+  // (User.businessSince, a plain year the user enters themselves), not
+  // when they joined SaralBuy (data.createdAt) -- the label previously
+  // said "Member since" bound to createdAt, which was correct for that
+  // label but becomes misleading once relabeled without changing the
+  // source field.
+  const inBusinessSince = data.businessSince != null ? String(data.businessSince) : null;
   const cityOnly = (loc) => {
     if (!loc) return null;
     // Return first token before comma — respect location privacy at city granularity
@@ -88,7 +92,7 @@ export default function UserProfile() {
   const tiles = [
     { icon: Briefcase, label: 'Role', value: roleLabel },
     location && { icon: MapPin, label: 'Location', value: location },
-    memberSince && { icon: Calendar, label: 'In Business since', value: memberSince },
+    inBusinessSince && { icon: Calendar, label: 'In Business since', value: inBusinessSince },
     { icon: ShieldCheck, label: 'Verification', value: data.verificationStatus === 'verified' ? 'Verified' : 'Unverified' },
   ].filter(Boolean);
 
