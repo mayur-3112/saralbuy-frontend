@@ -529,124 +529,137 @@ const SellerForm = ({
         </>
       ) : (
         <>
-          {/* Item-by-item pricing — two rows per item (details, then numbered pricing) */}
-          <div className="w-full space-y-3">
-            <h4 className="font-semibold text-sm text-slate-800 flex items-center gap-2">
+          {/* SECTION 1 + 2 — a single table, one row per material, instead
+              of a repeated quotation form per item. Scales to 100+ items:
+              no per-item form chrome, just one row and one register() call
+              per editable cell. Read-only columns (Item Name, Spec, Qty,
+              Unit, Preferred Brand) come straight from the buyer's RFQ and
+              are never editable here; Qty/Unit specifically are locked in
+              per the buyer's requirement, not the seller's input. Each row
+              is keyed by the item's real productItemId (item._id), never
+              by array position — matching what's actually submitted (see
+              handleCreteBid below, which keys quoteItems the same way). */}
+          <div className="w-full">
+            <h4 className="font-semibold text-sm text-slate-800 flex items-center gap-2 mb-3">
               <Package className="w-4 h-4 text-orange-600" />
               List of Materials
-              <span className="font-normal text-xs text-slate-500">— {items.length} item(s), enter a unit price for each</span>
+              <span className="font-normal text-xs text-slate-500">— {items.length} item(s), enter a price per unit for each</span>
             </h4>
 
-            {items.map((item, idx) => {
-              const catObj = localMainProduct?.categoryId || localMainProduct?.category;
-              const resolvedItemName = item.itemName || item.subCategoryName || catObj?.subCategories?.find(s => s._id === item.subCategoryId || s._id === item.subCategoryId?.toString())?.name || 'Item ' + (idx + 1);
-              const rawDescription = item.itemDescription || item.description || item.typeOfProduct || item.model || '';
-              // Same fallback as the buyer-facing materials table: some
-              // items have their real quantity/unit typed into the
-              // description with Quantity left blank. Never trust a
-              // silently-defaulted qty of 1 for pricing when the real
-              // value is recoverable from the description.
-              const parsedFromDesc = !item.quantity ? extractQuantityAndUnit(rawDescription) : null;
-              const description = parsedFromDesc ? parsedFromDesc.cleanedText : (rawDescription || 'N/A');
-              const qty = resolveItemQuantity(item);
-              const unit = item.quantityUnit || parsedFromDesc?.unit || 'pcs';
-              const uPrice = parseFloat(watch(priceNameFor(idx))) || 0;
-              const lineTotal = qty * uPrice;
+            <div className="border border-slate-200 rounded-lg overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse min-w-[900px]">
+                  <thead className="bg-slate-50 text-slate-500 text-[10px] font-black uppercase tracking-wider border-b border-slate-200">
+                    <tr>
+                      <th className="px-3 py-2.5">Item Name</th>
+                      <th className="px-3 py-2.5">Specification</th>
+                      <th className="px-3 py-2.5 text-right">Qty</th>
+                      <th className="px-3 py-2.5">Unit</th>
+                      <th className="px-3 py-2.5">Preferred Brand</th>
+                      <th className="px-3 py-2.5 w-32">Price / Unit (₹)</th>
+                      <th className="px-3 py-2.5 w-32">Offered Brand</th>
+                      <th className="px-3 py-2.5 w-40">Remarks</th>
+                      <th className="px-3 py-2.5 text-right w-28">Line Total</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 bg-white">
+                    {items.map((item, idx) => {
+                      const catObj = localMainProduct?.categoryId || localMainProduct?.category;
+                      const resolvedItemName = item.itemName || item.subCategoryName || catObj?.subCategories?.find(s => s._id === item.subCategoryId || s._id === item.subCategoryId?.toString())?.name || 'Item ' + (idx + 1);
+                      const rawDescription = item.itemDescription || item.description || item.typeOfProduct || item.model || '';
+                      // Some items have their real quantity/unit typed into
+                      // the description with Quantity left blank. Never
+                      // trust a silently-defaulted qty of 1 for pricing
+                      // when the real value is recoverable from the text.
+                      const parsedFromDesc = !item.quantity ? extractQuantityAndUnit(rawDescription) : null;
+                      const description = parsedFromDesc ? parsedFromDesc.cleanedText : (rawDescription || 'N/A');
+                      const qty = resolveItemQuantity(item);
+                      const unit = item.quantityUnit || parsedFromDesc?.unit || 'pcs';
+                      const uPrice = parseFloat(watch(priceNameFor(idx))) || 0;
+                      const lineTotal = qty * uPrice;
 
-              return (
-                <div key={idx} className="border border-orange-100 rounded-lg overflow-hidden bg-white">
-                  {/* Row 1 — item details */}
-                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 bg-slate-50 px-4 py-3 border-b border-slate-100">
-                    <div className="col-span-2 sm:col-span-1">
-                      <p className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Item Name</p>
-                      <p className="text-sm font-bold text-slate-800 break-words">{resolvedItemName}</p>
-                    </div>
-                    <div className="col-span-2 sm:col-span-1">
-                      <p className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Description / Specs</p>
-                      <p className="text-sm text-slate-600 break-words">{description}</p>
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Qty</p>
-                      <p className="text-sm font-semibold text-slate-700">{qty}</p>
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Units</p>
-                      <p className="text-sm font-semibold text-slate-700 uppercase">{unit}</p>
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Brand</p>
-                      <p className="text-sm text-slate-600 break-words">{item.brand || 'Any'}</p>
-                    </div>
-                  </div>
-
-                  {/* Row 2 — numbered pricing line */}
-                  <div className="flex items-start gap-3 px-4 py-3">
-                    <span className="mt-6 shrink-0 w-6 h-6 rounded-full bg-orange-100 text-orange-600 text-xs font-bold flex items-center justify-center">{idx + 1}</span>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 flex-1">
-                      <div>
-                        <Label className="mb-1 text-xs text-slate-500 block">Price / Unit (₹)</Label>
-                        <Input
-                          type="number"
-                          step="0.01"
-                          min="0"
-                          placeholder="0.00"
-                          className="h-9 border-slate-200 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-all font-medium bg-white text-right w-full"
-                          {...register(priceNameFor(idx), { required: true })}
-                        />
-                      </div>
-                      <div>
-                        <Label className="mb-1 text-xs text-slate-500 block">Units</Label>
-                        <div className="h-9 flex items-center px-3 rounded-md bg-slate-50 border border-slate-200 text-sm font-semibold text-slate-700">{qty}</div>
-                      </div>
-                      <div>
-                        <Label className="mb-1 text-xs text-slate-500 block">Units Type</Label>
-                        <div className="h-9 flex items-center px-3 rounded-md bg-slate-50 border border-slate-200 text-sm font-semibold text-slate-700 uppercase">{unit}</div>
-                      </div>
-                      <div>
-                        <Label className="mb-1 text-xs text-slate-500 block">Total (₹)</Label>
-                        <div className="h-9 flex items-center justify-end px-3 rounded-md bg-orange-50 border border-orange-100 text-sm font-bold text-slate-800">₹ {fmt(lineTotal)}</div>
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-              );
-            })}
+                      return (
+                        <tr key={item._id || idx} className="align-top hover:bg-slate-50/60 transition-colors">
+                          <td className="px-3 py-2.5 text-sm font-bold text-slate-800 max-w-[160px] break-words">{resolvedItemName}</td>
+                          <td className="px-3 py-2.5 text-sm text-slate-600 max-w-[200px] break-words">{description}</td>
+                          <td className="px-3 py-2.5 text-sm font-semibold text-slate-700 text-right whitespace-nowrap">{qty}</td>
+                          <td className="px-3 py-2.5 text-sm font-semibold text-slate-700 uppercase whitespace-nowrap">{unit}</td>
+                          <td className="px-3 py-2.5 text-sm text-slate-600 max-w-[140px] break-words">{item.brand || 'Any'}</td>
+                          <td className="px-2 py-2">
+                            <Input
+                              type="number"
+                              step="0.01"
+                              min="0"
+                              placeholder="0.00"
+                              className="h-9 border-slate-200 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-all font-medium bg-white text-right w-28"
+                              {...register(priceNameFor(idx), { required: true })}
+                            />
+                          </td>
+                          <td className="px-2 py-2">
+                            <Input
+                              type="text"
+                              placeholder="e.g., UltraTech"
+                              className="h-9 border-slate-200 bg-white w-32"
+                              {...register(`items.${idx}.offeredBrand`)}
+                            />
+                          </td>
+                          <td className="px-2 py-2">
+                            <Input
+                              type="text"
+                              placeholder="Optional note"
+                              className="h-9 border-slate-200 bg-white w-40"
+                              {...register(`items.${idx}.remarks`)}
+                            />
+                          </td>
+                          <td className="px-3 py-2.5 text-sm font-bold text-orange-600 text-right whitespace-nowrap">₹ {fmt(lineTotal)}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
 
-          {/* Grand Total — product only */}
-          <div className="flex justify-end">
-            <div className="flex items-center justify-between gap-8 bg-orange-50 border border-orange-100 rounded-lg px-5 py-3 min-w-[260px]">
-              <span className="font-bold text-slate-800">Grand Total</span>
-              <span className="font-extrabold text-lg text-orange-600">₹ {fmt(grandTotal)}</span>
+          {/* SECTION 3 — one summary block after the entire table (not
+              per-item), with the Grand Total called out prominently. */}
+          <div className="border border-orange-100 rounded-lg bg-orange-50/40 p-4 sm:p-5 space-y-4">
+            <div className="flex items-center justify-between gap-4 flex-wrap">
+              <span className="font-bold text-slate-800">Grand Total (product only)</span>
+              <span className="font-extrabold text-xl text-orange-600">₹ {fmt(grandTotal)}</span>
             </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {TaxesField}
+              {LocationField}
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {FreightTermsField}
+              {DeliveryTimelineField}
+            </div>
+            {BuyerNoteField}
           </div>
         </>
       )}
 
-      {/* Taxes | Supplier Location */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {TaxesField}
-        {LocationField}
-      </div>
+      {isDocFlow && (
+        <>
+          {/* Taxes | Supplier Location */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {TaxesField}
+            {LocationField}
+          </div>
 
-      {/* Flow-specific ordering of Freight / Delivery */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {isDocFlow ? (
-          <>
+          {/* Document-upload flow keeps Delivery before Freight, matching
+              the order the buyer's own document-upload form uses. */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {DeliveryTimelineField}
             {FreightTermsField}
-          </>
-        ) : (
-          <>
-            {FreightTermsField}
-            {DeliveryTimelineField}
-          </>
-        )}
-      </div>
+          </div>
 
-      {/* Buyer Note */}
-      {BuyerNoteField}
+          {/* Buyer Note */}
+          {BuyerNoteField}
+        </>
+      )}
 
       {/* Button */}
       <div className="flex justify-end pt-2">
@@ -865,6 +878,8 @@ const ProductOverview = () => {
           quoteItems.push({
             productItemId: item._id,
             unitPrice: uPrice,
+            offeredBrand: itemValues.offeredBrand || '',
+            remarks: itemValues.remarks || '',
           });
         }
       });
