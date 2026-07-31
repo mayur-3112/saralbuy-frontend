@@ -1011,14 +1011,6 @@ const RequirementOverview = () => {
                   </div>
                 </div>
               )}
-
-              {/* Additional Info — shown after documents */}
-              {item.description && (
-                <div className="mt-2 p-3 bg-gray-50 rounded-lg border border-gray-100">
-                  <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Additional Info</p>
-                  <p className="text-sm text-gray-600 leading-relaxed break-words">{item.description}</p>
-                </div>
-              )}
             </div>
           </div>
         ))}
