@@ -172,74 +172,6 @@ const MOCK_PRODUCTS = {
   }
 };
 
-const MergeBidForm = ({ productResponse, userProfile, navigate }) => {
-  const { user } = useUserState();
-  const [mergeFormState, setMergeFormState] = useState({ message: '' });
-
-  function handleSendMessage(e) {
-    e.preventDefault();
-    const currentProduct = productResponse?.mainProduct;
-    const sellerId = user._id;
-    const buyerId = currentProduct?.userId?._id;
-
-    if (currentProduct?.dealStatus === 'completed') {
-      toast.error('This product has already been sold');
-      return;
-    }
-
-    localStorage.setItem(
-      'chatIds',
-      JSON.stringify({
-        productId: currentProduct._id,
-        buyerId: buyerId,
-        sellerId: sellerId,
-      })
-    );
-
-    navigate('/chat', {
-      state: {
-        productId: currentProduct._id,
-        buyerId: buyerId,
-        sellerId: sellerId,
-        partnerName: mergeName(user),
-        partnerAvatar: user?.profileImage,
-        message: mergeFormState.message,
-      },
-    });
-  }
-
-  return (
-    <form
-      className="w-full bg-gray-200/80 rounded-lg p-6 space-y-4 my-auto h-fit"
-      onSubmit={handleSendMessage}
-    >
-      <h3 className="font-semibold text-orange-600">Merge Quote</h3>
-      <div className="w-full col-span-2">
-        <Label htmlFor="ab" className="mb-2 text-sm">
-          Note for Buyer
-        </Label>
-        <Textarea
-          value={mergeFormState.message}
-          onInput={e => setMergeFormState({ message: e.currentTarget.value })}
-          placeholder="Short message (hard limit: 300 characters)"
-          className="bg-white w-full min-h-32"
-        />
-      </div>
-      <Button
-        type="submit"
-        disabled={
-          productResponse?.mainProduct?.userId?._id === userProfile?._id ||
-          mergeFormState.message.trim().length < 2
-        }
-        variant={'ghost'}
-        className="w-32 float-end border text-xs bg-orange-700 transition-all ease-in-out duration-300 hover:bg-orange-600 text-white hover:text-white cursor-pointer"
-      >
-        Chat Now
-      </Button>
-    </form>
-  );
-};
-
 const SellerForm = ({
   handleSubmit,
   onSubmit,
@@ -1752,27 +1684,24 @@ const ProductOverview = () => {
                         </button>
                       )}
 
-                      {isMergeQuote ? (
-                        <MergeBidForm
-                          productResponse={productResponse}
-                          userProfile={userProfile}
-                          navigate={navigate}
-                        />
-                      ) : (
-                        <SellerForm
-                          handleSubmit={handleSubmit}
-                          onSubmit={onSubmit}
-                          register={register}
-                          control={control}
-                          userProfile={userProfile}
-                          bidOverviewRes={bidOverviewRes}
-                          productResponse={productResponse}
-                          createBidLoading={createBidLoading}
-                          updateUserBidDetsLoading={updateUserBidDetsLoading}
-                          soldProduct={soldProduct}
-                          watch={watch}
-                        />
-                      )}
+                      {/* Sellers always use the normal quote form. The old
+                          "Merge Quote / Chat Now" seller-initiated-chat box
+                          was removed -- chat is buyer-initiated only, and
+                          the backend rejects seller-started chats, so that
+                          box was a dead button. */}
+                      <SellerForm
+                        handleSubmit={handleSubmit}
+                        onSubmit={onSubmit}
+                        register={register}
+                        control={control}
+                        userProfile={userProfile}
+                        bidOverviewRes={bidOverviewRes}
+                        productResponse={productResponse}
+                        createBidLoading={createBidLoading}
+                        updateUserBidDetsLoading={updateUserBidDetsLoading}
+                        soldProduct={soldProduct}
+                        watch={watch}
+                      />
                     </div>
                   </SheetContent>
                 </Sheet>
