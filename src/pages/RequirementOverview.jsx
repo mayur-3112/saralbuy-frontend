@@ -894,11 +894,6 @@ const RequirementOverview = () => {
                   <h2 className="text-xs sm:text-sm font-medium text-slate-400">
                     Posted {dateFormatter(item.createdAt) || 'N/A'}
                   </h2>
-                  {!item.image && item.document && (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-orange-100 text-orange-700">
-                      📄 Document RFQ
-                    </span>
-                  )}
                 </div>
 
                 <div className="self-start shrink-0">
