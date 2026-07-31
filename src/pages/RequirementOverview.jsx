@@ -105,16 +105,16 @@ const TermCard = ({ icon: Icon, label, value, mono, cap, accent = 'slate' }) => 
   );
 };
 
-const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails }) => {
-  const q = quoteDetails || {};
+const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails, requirementProduct }) => {
+  const q = (Array.isArray(quoteDetails) ? quoteDetails[0] : quoteDetails) || {};
   const docs = resolveDocuments(q.quoteDocument);
   const statusKey = (q.status || q.quoteStatus || '').toLowerCase();
   const sellerName = q.sellerId
-    ? `${q.sellerId.firstName || ''} ${q.sellerId.lastName || ''}`.trim()
+    ? typeof q.sellerId === 'object' ? `${q.sellerId.firstName || ''} ${q.sellerId.lastName || ''}`.trim() : ''
     : q.businessDets?.company_name || '';
   const initials = (sellerName || 'S').split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
 
-  const product = q.product || {};
+  const product = q.product || requirementProduct || {};
   const reqItems = product.items || [];
   const bidItems = q.items || [];
   const hasProductBreakdown = reqItems.length > 0 || bidItems.length > 0;
@@ -905,6 +905,7 @@ const RequirementOverview = () => {
         open={openQuoteDetails}
         onOpenChange={setOpenQuoteDetails}
         quoteDetails={getBidByProductIdAndSellerIdData}
+        requirementProduct={currentProduct?.product || requirementData?.product}
       />
       <QuoteCompareDialog
         open={showCompare}
