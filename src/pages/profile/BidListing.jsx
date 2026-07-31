@@ -16,7 +16,7 @@ import TooltipComp from '@/lib/TooltipComp';
 import { toast } from 'sonner';
 import { fallBackName } from '@/utils/fallBackName';
 import { mergeName } from '@/utils/mergerName';
-import { formatGstPrice } from '@/utils/gstPriceFormat';
+import { currencyConvertor } from '@/utils/currencyConvertor';
 
 const BidListing = () => {
   const [data, setData] = useState([]);
@@ -188,7 +188,7 @@ const BidListing = () => {
             ) || 'N/A',
           location: item.product?.paymentAndDelivery?.organizationAddress || 'N/A',
           min_budget: item?.product?.minimumBudget,
-          your_budget: formatGstPrice(item?.budgetQuation, item?.taxes, item?.gstInclusive).primary,
+          your_budget: currencyConvertor(item?.budgetQuation),
           status: item?.quoteStatus || 'pending',
         };
       });

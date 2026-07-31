@@ -12,7 +12,6 @@ import { Label } from '@/components/ui/label';
 import { DatePicker } from '@/lib/DatePicker';
 import { resolveDocuments } from '@/utils/resolveDocuments';
 import { extractQuantityAndUnit, resolveItemQuantity, dedupeSpecification } from '@/utils/parseMaterialText';
-import { formatGstPrice } from '@/utils/gstPriceFormat';
 import { useFetch } from '@/hooks/useFetch';
 import productService from '@/services/product.service';
 import { useEffect, useRef, useState } from 'react';
@@ -297,9 +296,6 @@ const SellerForm = ({
     });
   }
   const fmt = n => n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  // GST treatment must always be explicit on a quoted price -- never a
-  // raw number with no indication of whether GST is included or added.
-  const gstDisplay = formatGstPrice(grandTotal, watch('taxes'), watch('gstInclusive'));
 
   const SellerTypeField = (
     <div className="w-full">
@@ -351,7 +347,7 @@ const SellerForm = ({
   );
 
   const TaxesField = (
-    <div className="w-full space-y-2">
+    <div className="w-full">
       <Label className="mb-2 text-sm block">Taxes</Label>
       <Controller
         name="taxes"
@@ -366,29 +362,10 @@ const SellerForm = ({
                 <SelectItem value="18">18% GST</SelectItem>
                 <SelectItem value="12">12% GST</SelectItem>
                 <SelectItem value="5">5% GST</SelectItem>
-                <SelectItem value="0">No GST / Exempt</SelectItem>
+                <SelectItem value="0">Inclusive/Exempt</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
-        )}
-      />
-      {/* Whether the quoted price above already includes this GST rate,
-          or GST is added on top of it -- the price display everywhere
-          (comparison, bid history, etc.) depends on this being explicit,
-          never assumed. */}
-      <Controller
-        name="gstInclusive"
-        control={control}
-        render={({ field }) => (
-          <label className="flex items-center gap-2 text-xs text-slate-600 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={!!field.value}
-              onChange={e => field.onChange(e.target.checked)}
-              className="w-3.5 h-3.5 text-orange-600 border-slate-300 rounded focus:ring-orange-500 cursor-pointer"
-            />
-            My quoted price already includes GST
-          </label>
         )}
       />
     </div>
@@ -523,12 +500,6 @@ const SellerForm = ({
               className="bg-white w-full"
               {...register('totalQuoteValue', { required: true })}
             />
-            {gstDisplay.hasGst && (
-              <p className="text-xs text-slate-500 mt-1.5">
-                {gstDisplay.primary}
-                {gstDisplay.final && <> — Final Amount: <span className="font-bold text-slate-700">{gstDisplay.final}</span></>}
-              </p>
-            )}
           </div>
 
           {/* Seller quotation document (pdf / excel) */}
@@ -667,12 +638,7 @@ const SellerForm = ({
           <div className="border border-orange-100 rounded-lg bg-orange-50/40 p-4 sm:p-5 space-y-4">
             <div className="flex items-center justify-between gap-4 flex-wrap">
               <span className="font-bold text-slate-800">Grand Total (product only)</span>
-              <div className="text-right">
-                <div className="font-extrabold text-xl text-orange-600">{gstDisplay.primary}</div>
-                {gstDisplay.final && (
-                  <div className="text-xs text-slate-500 mt-0.5">Final Amount: <span className="font-bold text-slate-700">{gstDisplay.final}</span></div>
-                )}
-              </div>
+              <span className="font-extrabold text-xl text-orange-600">₹ {fmt(grandTotal)}</span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {TaxesField}
@@ -805,7 +771,6 @@ const ProductOverview = () => {
       earliestDeliveryDate: undefined,
       sellerType: '',
       taxes: '',
-      gstInclusive: false,
       location: '',
       freightTerms: '',
       paymentTerms: '',
@@ -949,7 +914,6 @@ const ProductOverview = () => {
       status: 'active',
       sellerType: values.sellerType || '',
       taxes: values.taxes || '',
-      gstInclusive: !!values.gstInclusive,
       location: values.location || '',
       freightTerms: values.freightTerms || '',
       paymentTerms: values.paymentTerms || '',

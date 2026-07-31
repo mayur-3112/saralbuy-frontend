@@ -39,7 +39,6 @@ import bucketService from '@/services/bucket.service';
 import bidService from '@/services/bid.service';
 import { formatSize } from '@/utils/sizeFormatter';
 import { currencyConvertor } from '@/utils/currencyConvertor';
-import { formatGstPrice } from '@/utils/gstPriceFormat';
 // ─────────────────────────────────────────────
 // helpers
 // ─────────────────────────────────────────────
@@ -92,8 +91,7 @@ const QuoteDetailsPanel = ({ quote, loading }) => {
       heading: 'Quote Summary',
       color: 'orange',
       rows: [
-        { label: 'Quoted Price', value: quote.budgetQuation ? formatGstPrice(quote.budgetQuation, quote.taxes, quote.gstInclusive).primary : null },
-        { label: 'Final Amount', value: quote.budgetQuation ? formatGstPrice(quote.budgetQuation, quote.taxes, quote.gstInclusive).final : null },
+        { label: 'Quoted Price', value: quote.budgetQuation ? `₹ ${Number(quote.budgetQuation).toLocaleString('en-IN')}` : null },
         { label: 'Brand Available', value: fmt(quote.availableBrand) },
         { label: 'Earliest Delivery', value: fmtDate(quote.earliestDeliveryDate) },
         { label: 'Location', value: fmt(quote.location) },
@@ -105,6 +103,7 @@ const QuoteDetailsPanel = ({ quote, loading }) => {
       rows: [
         { label: 'Seller Type', value: fmt(quote.sellerType) },
         { label: 'Price Basis', value: fmt(quote.priceBasis) },
+        { label: 'Taxes', value: fmt(quote.taxes) },
         { label: 'Freight Terms', value: fmt(quote.freightTerms) },
         { label: 'Payment Terms', value: fmt(quote.paymentTerms) },
       ],

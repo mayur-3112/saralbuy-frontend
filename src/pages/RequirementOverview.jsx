@@ -18,7 +18,6 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import requirementService from '@/services/requirement.service';
 import { resolveDocuments } from '@/utils/resolveDocuments';
 import { extractQuantityAndUnit } from '@/utils/parseMaterialText';
-import { formatGstPrice } from '@/utils/gstPriceFormat';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { CategoryFormSkeleton } from '@/const/CustomSkeletons';
@@ -119,19 +118,9 @@ const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails }) => {
             <div className="rounded-xl bg-white border border-slate-100 shadow-sm px-4 py-3 flex items-center justify-between">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Quoted Price</p>
-                {q.budgetQuation ? (() => {
-                  const gst = formatGstPrice(q.budgetQuation, q.taxes, q.gstInclusive);
-                  return (
-                    <>
-                      <p className="text-2xl font-black text-orange-600 leading-tight">{gst.primary}</p>
-                      {gst.final && (
-                        <p className="text-xs text-slate-500 mt-0.5">Final Amount: <span className="font-bold text-slate-700">{gst.final}</span></p>
-                      )}
-                    </>
-                  );
-                })() : (
-                  <p className="text-2xl font-black text-orange-600 leading-tight">—</p>
-                )}
+                <p className="text-2xl font-black text-orange-600 leading-tight">
+                  {q.budgetQuation ? currencyConvertor(q.budgetQuation) : '—'}
+                </p>
               </div>
               {statusKey && (
                 <span className={`text-xs font-bold px-3 py-1 rounded-full capitalize ${STATUS_STYLES[statusKey] || 'bg-slate-100 text-slate-600'}`}>
@@ -234,21 +223,16 @@ const QuoteCompareDialog = ({ open, onOpenChange, productId }) => {
     );
 
   const rows = [
-    { label: 'Quoted Price', render: b => {
-      const gst = formatGstPrice(b.budgetQuation, b.taxes, b.gstInclusive);
-      return (
-        <div>
-          <span className={b.budgetQuation === lowest ? 'font-extrabold text-green-600' : 'font-semibold text-slate-800'}>
-            {gst.primary}{b.budgetQuation === lowest ? ' ▼' : ''}
-          </span>
-          {gst.final && <div className="text-xs text-slate-500 font-normal">Final: {gst.final}</div>}
-        </div>
-      );
-    } },
+    { label: 'Quoted Price', render: b => (
+      <span className={b.budgetQuation === lowest ? 'font-extrabold text-green-600' : 'font-semibold text-slate-800'}>
+        {currencyConvertor(b.budgetQuation)}{b.budgetQuation === lowest ? ' ▼' : ''}
+      </span>
+    ) },
     { label: 'Seller Type', render: b => separateName(b.sellerType) || '-' },
     { label: 'Delivery', render: b => (b.earliestDeliveryDate ? dateFormatter(b.earliestDeliveryDate) : '-') },
     { label: 'Payment Terms', render: b => separateName(b.paymentTerms) || '-' },
     { label: 'Freight Terms', render: b => separateName(b.freightTerms) || '-' },
+    { label: 'Taxes', render: b => (b.taxes ? `${b.taxes}` : '-') },
     { label: 'Location', render: b => b.location || b.sellerId?.currentLocation || b.sellerId?.address || '-' },
     { label: 'Status', render: b => <span className="capitalize">{b.quoteStatus || 'pending'}</span> },
     { label: 'Quote Doc', render: b => {
