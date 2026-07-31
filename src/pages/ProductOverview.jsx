@@ -1266,6 +1266,22 @@ const ProductOverview = () => {
                   )}
                 </div>
 
+                {/* Description / Additional Information */}
+                {(() => {
+                  const desc = mainProductData?.description || productResponse?.mainProduct?.description || bidOverviewRes?.product?.description;
+                  if (!desc || !desc.trim()) return null;
+                  return (
+                    <div className="mt-4 mb-4 bg-orange-50/50 p-4 rounded-xl border border-orange-100">
+                      <span className="text-xs uppercase font-bold text-orange-600 tracking-wider block mb-1">
+                        Description / Additional Information
+                      </span>
+                      <p className="text-sm text-slate-700 leading-relaxed font-medium whitespace-pre-line">
+                        {desc}
+                      </p>
+                    </div>
+                  );
+                })()}
+
                 {soldProduct && dealSellerRating > 0 && (
                   <div className="flex items-center gap-0.5">
                     {[1, 2, 3, 4, 5].map(star => (
