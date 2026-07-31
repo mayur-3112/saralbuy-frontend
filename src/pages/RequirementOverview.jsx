@@ -864,42 +864,42 @@ const RequirementOverview = () => {
         {iterateData.map((item, idx) => (
           <div
             key={idx}
-            className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5"
+            className={`grid grid-cols-1 ${item.image ? 'lg:grid-cols-12' : ''} gap-4 lg:gap-6 bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5 relative`}
           >
-            {/* Image / RFQ panel */}
-            <div className="lg:col-span-3">
-              <div className="relative flex flex-col justify-center items-center rounded-xl h-44 lg:h-full min-h-[160px] overflow-hidden border border-orange-100 bg-gradient-to-br from-orange-50 to-orange-100/40">
-                {item.image ? (
+            {/* Image panel — rendered ONLY when a real product image exists */}
+            {item.image && (
+              <div className="lg:col-span-3">
+                <div className="relative flex flex-col justify-center items-center rounded-xl h-44 lg:h-full min-h-[160px] overflow-hidden border border-slate-100 bg-slate-50">
                   <img
                     src={item.image}
                     alt={item.title || 'Product'}
                     onError={e => { e.currentTarget.style.display = 'none'; }}
                     className="object-contain h-full w-full rounded-lg mix-blend-darken"
                   />
-                ) : (
-                  <>
-                    <FileText className="w-10 h-10 text-orange-400" />
-                    <span className="text-[11px] font-bold text-orange-500 mt-2 uppercase tracking-widest">
-                      {item.document ? 'Document RFQ' : 'RFQ'}
-                    </span>
-                  </>
-                )}
-                {isSoldProduct && (
-                  <img
-                    src="/sold.png"
-                    alt="Sold"
-                    className="absolute top-0 right-0 w-20 sm:w-24"
-                  />
-                )}
+                  {isSoldProduct && (
+                    <img
+                      src="/sold.png"
+                      alt="Sold"
+                      className="absolute top-0 right-0 w-20 sm:w-24"
+                    />
+                  )}
+                </div>
               </div>
-            </div>
+            )}
 
-            <div className="lg:col-span-9 space-y-3">
+            <div className={`${item.image ? 'lg:col-span-9' : 'col-span-12'} space-y-3`}>
               {/* Top section */}
               <div className="flex items-start justify-between gap-3">
-                <h2 className="text-xs sm:text-sm font-medium text-slate-400">
-                  Posted {dateFormatter(item.createdAt) || 'N/A'}
-                </h2>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h2 className="text-xs sm:text-sm font-medium text-slate-400">
+                    Posted {dateFormatter(item.createdAt) || 'N/A'}
+                  </h2>
+                  {!item.image && item.document && (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-orange-100 text-orange-700">
+                      📄 Document RFQ
+                    </span>
+                  )}
+                </div>
 
                 <div className="self-start shrink-0">
                   {loading || !timeLeft ? (
