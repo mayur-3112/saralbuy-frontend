@@ -242,10 +242,13 @@ const SellerForm = ({
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                <SelectItem value="manufacturer">Manufacturer</SelectItem>
+                <SelectItem value="manufacturer_oem">Manufacturer / OEM</SelectItem>
+                <SelectItem value="authorized_dealer_distributor">Authorized Dealer / Distributor</SelectItem>
                 <SelectItem value="trader_wholesaler">Trader / Wholesaler</SelectItem>
-                <SelectItem value="distributor">Distributor</SelectItem>
-                <SelectItem value="service_provider">Service Provider</SelectItem>
+                <SelectItem value="stockist_retailer">Stockist / Retailer</SelectItem>
+                <SelectItem value="importer">Importer</SelectItem>
+                <SelectItem value="cnf_agent">C&F Agent (Carrying & Forwarding)</SelectItem>
+                <SelectItem value="fabricator_job_worker">Fabricator / Job Worker</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -267,9 +270,15 @@ const SellerForm = ({
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                <SelectItem value="advance">Advance</SelectItem>
-                <SelectItem value="partial_advance">Partial Advance</SelectItem>
-                <SelectItem value="on_delivery">On Delivery</SelectItem>
+                <SelectItem value="advance_100">Advance (100%)</SelectItem>
+                <SelectItem value="part_advance_balance_delivery">Part Advance + Balance on Delivery</SelectItem>
+                <SelectItem value="on_delivery_cod">On Delivery / Cash on Delivery</SelectItem>
+                <SelectItem value="credit_7_days">Credit – 7 Days</SelectItem>
+                <SelectItem value="credit_15_days">Credit – 15 Days</SelectItem>
+                <SelectItem value="credit_30_days">Credit – 30 Days</SelectItem>
+                <SelectItem value="credit_45_days">Credit – 45 Days</SelectItem>
+                <SelectItem value="pdc">PDC (Post-Dated Cheque)</SelectItem>
+                <SelectItem value="bg_lc">Against Bank Guarantee / LC</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -291,10 +300,9 @@ const SellerForm = ({
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                <SelectItem value="18">18% GST</SelectItem>
-                <SelectItem value="12">12% GST</SelectItem>
-                <SelectItem value="5">5% GST</SelectItem>
-                <SelectItem value="0">Inclusive/Exempt</SelectItem>
+                <SelectItem value="inclusive_gst">Inclusive of GST</SelectItem>
+                <SelectItem value="exclusive_gst">Exclusive of GST (GST Extra as Applicable)</SelectItem>
+                <SelectItem value="exempt_gst">Exempt / Nil GST</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -328,9 +336,11 @@ const SellerForm = ({
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                <SelectItem value="ex_works">Ex-Works</SelectItem>
-                <SelectItem value="fob">FOB</SelectItem>
-                <SelectItem value="delivered">Delivered (DAP / DDP)</SelectItem>
+                <SelectItem value="ex_works">Ex-Works (Buyer Arranges Pickup)</SelectItem>
+                <SelectItem value="for_destination">FOR Destination (Delivered, Freight Paid by Seller)</SelectItem>
+                <SelectItem value="for_site">FOR Site (Delivered to Site)</SelectItem>
+                <SelectItem value="freight_extra_actuals">Freight Extra at Actuals</SelectItem>
+                <SelectItem value="to_pay">To-Pay (Buyer Pays Transporter on Delivery)</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>

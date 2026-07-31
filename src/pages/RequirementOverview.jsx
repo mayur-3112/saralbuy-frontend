@@ -39,8 +39,36 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import Loader from '@/components/custom/Loader';
 
+const LABEL_MAP = {
+  manufacturer_oem: 'Manufacturer / OEM',
+  authorized_dealer_distributor: 'Authorized Dealer / Distributor',
+  trader_wholesaler: 'Trader / Wholesaler',
+  stockist_retailer: 'Stockist / Retailer',
+  importer: 'Importer',
+  cnf_agent: 'C&F Agent (Carrying & Forwarding)',
+  fabricator_job_worker: 'Fabricator / Job Worker',
+  advance_100: 'Advance (100%)',
+  part_advance_balance_delivery: 'Part Advance + Balance on Delivery',
+  on_delivery_cod: 'On Delivery / Cash on Delivery',
+  credit_7_days: 'Credit – 7 Days',
+  credit_15_days: 'Credit – 15 Days',
+  credit_30_days: 'Credit – 30 Days',
+  credit_45_days: 'Credit – 45 Days',
+  pdc: 'PDC (Post-Dated Cheque)',
+  bg_lc: 'Against Bank Guarantee / LC',
+  inclusive_gst: 'Inclusive of GST',
+  exclusive_gst: 'Exclusive of GST (GST Extra)',
+  exempt_gst: 'Exempt / Nil GST',
+  ex_works: 'Ex-Works (Buyer Arranges Pickup)',
+  for_destination: 'FOR Destination (Freight Paid)',
+  for_site: 'FOR Site (Delivered to Site)',
+  freight_extra_actuals: 'Freight Extra at Actuals',
+  to_pay: 'To-Pay (Buyer Pays Transporter)',
+};
+
 const separateName = name => {
   if (!name) return '';
+  if (LABEL_MAP[name]) return LABEL_MAP[name];
   const parts = name.split('_');
   if (parts.length === 1) return name;
   return parts.map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ');
@@ -135,7 +163,7 @@ const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails }) => {
           {/* Term cards */}
           <div className="grid grid-cols-2 gap-3">
             <TermCard icon={Store} label="Seller Type" value={separateName(q.sellerType)} cap accent="violet" />
-            <TermCard icon={Percent} label="Taxes" value={q.taxes ? `${q.taxes}% GST` : null} accent="orange" />
+            <TermCard icon={Percent} label="Taxes" value={q.taxes ? separateName(q.taxes) : null} accent="orange" />
             <TermCard icon={CreditCard} label="Payment" value={separateName(q.paymentTerms)} cap accent="emerald" />
             <TermCard icon={Truck} label="Freight" value={separateName(q.freightTerms)} cap accent="blue" />
             <TermCard icon={CalendarDays} label="Delivery" value={q.earliestDeliveryDate ? dateFormatter(q.earliestDeliveryDate) : null} accent="orange" />
