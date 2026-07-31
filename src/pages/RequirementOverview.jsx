@@ -11,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { dateFormatter } from '@/utils/dateFormatter';
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
-import { Banknote, CalendarDays, Eye, MoveLeft, Truck, CreditCard, MapPin, Percent, Store, FileText, BadgeCheck, UserRound } from 'lucide-react';
+import { Banknote, CalendarDays, Eye, MoveLeft, Truck, CreditCard, MapPin, Percent, Store, FileText, BadgeCheck, UserRound, Package } from 'lucide-react';
 import { toast } from 'sonner';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
