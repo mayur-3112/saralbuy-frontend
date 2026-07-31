@@ -60,7 +60,7 @@ const chatSlice = createSlice({
       state.activeRoomId = action.payload;
     },
     setUserOnline: (state, action) => {
-      const { userId, isOnline } = action.payload;
+      const { userId, isOnline, lastSeenAt, status } = action.payload;
       if (isOnline) {
         if (!state.onlineUsers.includes(userId)) {
           state.onlineUsers.push(userId);
@@ -69,11 +69,16 @@ const chatSlice = createSlice({
         state.onlineUsers = state.onlineUsers.filter(id => id !== userId);
       }
 
-      // update status in UsersTab
+      // update presence and lastSeenAt across recent chat list
       state.recentChats = state.recentChats.map(chat => {
-        const partnerIsOnline =
-          chat.sellerId === userId || chat.buyerId === userId ? isOnline : chat.isOnline;
-        return { ...chat, isOnline: partnerIsOnline };
+        const isPartner = chat.sellerId === userId || chat.buyerId === userId;
+        if (!isPartner) return chat;
+        return {
+          ...chat,
+          isOnline: isOnline,
+          lastSeenAt: lastSeenAt !== undefined ? lastSeenAt : chat.lastSeenAt,
+          status: status || chat.status,
+        };
       });
     },
   },
