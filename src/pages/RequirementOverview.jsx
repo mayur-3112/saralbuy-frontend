@@ -893,13 +893,6 @@ const RequirementOverview = () => {
                 {item.title || item.itemName || item.subCategoryName || `Item ${idx + 1}`}
               </h2>
 
-              {item.description && item.description.trim() !== '' && (
-                <div className="bg-orange-50/50 p-3 rounded-lg border border-orange-100/80 text-sm text-slate-700 leading-relaxed font-medium whitespace-pre-line my-2">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-orange-600 block mb-0.5">Description / Additional Notes</span>
-                  {item.description}
-                </div>
-              )}
-
               <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-5 text-sm text-gray-600">
                 {item.quantity && (
                   <div className="flex items-center gap-2 sm:pr-4 sm:border-r-2 py-1">
@@ -960,6 +953,13 @@ const RequirementOverview = () => {
                   <span className="text-gray-600 capitalize">
                     {item.conditionOfProduct.replace('_', ' ')}
                   </span>
+                </div>
+              )}
+
+              {item.description && item.description.trim() !== '' && (
+                <div className="bg-orange-50/50 p-3 rounded-lg border border-orange-100/80 text-sm text-slate-700 leading-relaxed font-medium whitespace-pre-line my-2">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-orange-600 block mb-0.5">Other Terms & Additional Notes</span>
+                  {item.description}
                 </div>
               )}
 

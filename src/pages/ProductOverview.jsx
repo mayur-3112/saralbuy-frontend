@@ -1266,22 +1266,6 @@ const ProductOverview = () => {
                   )}
                 </div>
 
-                {/* Description / Additional Information */}
-                {(() => {
-                  const desc = mainProductData?.description || productResponse?.mainProduct?.description || bidOverviewRes?.product?.description;
-                  if (!desc || !desc.trim()) return null;
-                  return (
-                    <div className="mt-4 mb-4 bg-orange-50/50 p-4 rounded-xl border border-orange-100">
-                      <span className="text-xs uppercase font-bold text-orange-600 tracking-wider block mb-1">
-                        Description / Additional Information
-                      </span>
-                      <p className="text-sm text-slate-700 leading-relaxed font-medium whitespace-pre-line">
-                        {desc}
-                      </p>
-                    </div>
-                  );
-                })()}
-
                 {soldProduct && dealSellerRating > 0 && (
                   <div className="flex items-center gap-0.5">
                     {[1, 2, 3, 4, 5].map(star => (
@@ -1487,7 +1471,19 @@ const ProductOverview = () => {
                     )}
                   </div>
 
-                  {/* Additional Information block moved to the top */}
+                  {/* Other Terms & Additional Notes (matching Post RFQ form order) */}
+                  {(() => {
+                    const desc = mainProductData?.description || productResponse?.mainProduct?.description || bidOverviewRes?.product?.description;
+                    if (!desc || !desc.trim()) return null;
+                    return (
+                      <div className="pt-4 mt-4 border-t border-slate-100">
+                        <h4 className="font-semibold text-slate-800 mb-2">Other Terms & Additional Notes</h4>
+                        <p className="text-[15px] text-slate-600 leading-relaxed font-medium whitespace-pre-line bg-slate-50 p-4 rounded-xl border border-slate-100">
+                          {desc}
+                        </p>
+                      </div>
+                    );
+                  })()}
 
                   {/* Attachments Section */}
                   {(() => {
