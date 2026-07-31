@@ -109,18 +109,9 @@ const normalizeWords = s =>
  * own placeholder (e.g. an em dash) for that case.
  */
 export function dedupeSpecification(itemName, rawSpec) {
-  if (!rawSpec) return '';
-  const nameWords = new Set(normalizeWords(itemName));
-  const specTokens = rawSpec.split(/\s+/).filter(Boolean);
-  const specWordsNormalized = normalizeWords(rawSpec);
-  if (specWordsNormalized.length === 0) return '';
-
-  const overlapCount = specWordsNormalized.filter(w => nameWords.has(w)).length;
-  if (overlapCount / specWordsNormalized.length >= 0.5) return '';
-
-  const remaining = specTokens.filter(tok => {
-    const norm = tok.toLowerCase().replace(/[^a-z0-9.]/g, '');
-    return !norm || !nameWords.has(norm);
-  });
-  return remaining.join(' ').trim();
+  if (!rawSpec || typeof rawSpec !== 'string') return '';
+  const cleanItem = (itemName || '').trim().toLowerCase();
+  const cleanSpec = rawSpec.trim().toLowerCase();
+  if (!cleanSpec || cleanSpec === cleanItem) return '';
+  return rawSpec.trim();
 }
