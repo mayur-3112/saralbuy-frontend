@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ChevronLeft, Gavel, Package, Lock } from 'lucide-react';
+import { ChevronLeft, Gavel, Box, Lock } from 'lucide-react';
 import { useFetch } from '@/hooks/useFetch';
 import productService from '@/services/product.service';
 import bidService from '@/services/bid.service';
@@ -70,7 +70,7 @@ const BidHistory = () => {
         <div>
           <h1 className="text-xl font-bold text-slate-800">Bid History</h1>
           <p className="text-sm text-slate-500 flex items-center gap-1">
-            <Package className="w-3.5 h-3.5" /> {product?.title || 'Requirement'}
+            <Box className="w-3.5 h-3.5" /> {product?.title || 'Requirement'}
           </p>
         </div>
       </div>

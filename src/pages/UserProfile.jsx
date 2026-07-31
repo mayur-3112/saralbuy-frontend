@@ -11,7 +11,7 @@ import {
   Briefcase,
   Globe,
   FileText,
-  Package,
+  Box,
   Lightbulb,
   Award,
   Clock,
@@ -122,7 +122,7 @@ export default function UserProfile() {
   // Details; each renders only if it has content.
   const sections = [
     { icon: FileText, title: 'About the Business', body: data.businessDescription },
-    { icon: Package, title: 'Products Supplied', body: data.supplierCategories },
+    { icon: Box, title: 'Products Supplied', body: data.supplierCategories },
     { icon: Lightbulb, title: 'Problems We Solve', body: data.topProblemsSolved },
     { icon: Award, title: 'Accomplishments', body: data.accomplishments },
   ].filter(s => s.body && s.body.trim());

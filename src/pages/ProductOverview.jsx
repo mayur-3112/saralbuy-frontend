@@ -1,4 +1,4 @@
-import { Box, Home, Paperclip, Star, Package, ShieldCheck } from 'lucide-react';
+import { Box, Home, Paperclip, Star, ShieldCheck } from 'lucide-react';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -487,7 +487,7 @@ const SellerForm = ({
               handleCreteBid below, which keys quoteItems the same way). */}
           <div className="w-full">
             <h4 className="font-semibold text-sm text-slate-800 flex items-center gap-2 mb-3">
-              <Package className="w-4 h-4 text-orange-600" />
+              <Box className="w-4 h-4 text-orange-600" />
               List of Materials
               <span className="font-normal text-xs text-slate-500">— {items.length} item(s), enter a price per unit for each</span>
             </h4>

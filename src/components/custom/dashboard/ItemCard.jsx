@@ -1,4 +1,4 @@
-import { ChevronDown, Factory, Hexagon, Paintbrush, AppWindow, Droplet, Zap, Wrench, Package, Box } from 'lucide-react';
+import { ChevronDown, Factory, Hexagon, Paintbrush, AppWindow, Droplet, Zap, Wrench, Box } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,7 +13,7 @@ const getCategoryIcon = (categoryName) => {
   if (name.includes('glass')) return <AppWindow className="w-6 h-6 text-orange-500" />;
   if (name.includes('plywood') || name.includes('hardware')) return <Wrench className="w-6 h-6 text-orange-500" />;
   if (name.includes('tool')) return <Wrench className="w-6 h-6 text-orange-500" />;
-  if (name.includes('other')) return <Package className="w-6 h-6 text-orange-500" />;
+  if (name.includes('other')) return <Box className="w-6 h-6 text-orange-500" />;
   return <Box className="w-6 h-6 text-orange-500" />;
 };
 

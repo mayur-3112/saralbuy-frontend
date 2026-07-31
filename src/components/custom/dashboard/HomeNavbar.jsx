@@ -12,7 +12,6 @@ import {
   MessageCircle,
   MessageCircleMore,
   MessageSquareText,
-  Package,
   SearchIcon,
   ShoppingCart,
   Star,
