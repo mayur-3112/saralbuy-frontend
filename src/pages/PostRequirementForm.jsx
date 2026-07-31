@@ -177,7 +177,10 @@ const PostRequirementForm = () => {
         categoryId: data.categoryId,
         items: data.items.map(item => ({
           subCategoryId: data.subCategoryId,
-          typeOfProduct: item.itemDescription ? `${item.itemName} - ${item.itemDescription}` : item.itemName,
+          itemName: item.itemName,
+          itemDescription: item.itemDescription,
+          typeOfProduct: item.itemName,
+          model: item.itemDescription,
           quantity: item.quantity,
           quantityUnit: item.quantityUnit,
           brand: item.brand,

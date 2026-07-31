@@ -8,7 +8,7 @@ test.describe('Website Smoke Tests', () => {
     await page.goto('/');
     
     // Wait a moment for dynamic content to render
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     const body = page.locator('body');
     await expect(body).toBeVisible();
