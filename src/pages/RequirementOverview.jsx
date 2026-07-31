@@ -192,53 +192,81 @@ const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails, requirementProdu
                   <tbody className="divide-y divide-slate-100 text-xs">
                     {reqItems.length > 0 ? (
                       reqItems.map((item, idx) => {
-                        const resolvedName = item.itemName || item.subCategoryName || `Item ${idx + 1}`;
-                        const bidLine = bidItems.find(
-                          line => line.productItemId?.toString() === item._id?.toString()
-                        ) || bidItems[idx] || {};
-                        const qty = resolveItemQuantity(item);
-                        const unitPrice = parseFloat(bidLine.unitPrice) || 0;
-                        const lineTotal = unitPrice > 0 ? qty * unitPrice : 0;
-                        const rawSpec = item.itemDescription || item.description || item.typeOfProduct || item.model || '';
+                        const resolvedName =
+                          item.itemName ||
+                          item.subCategoryName ||
+                          item.typeOfProduct ||
+                          item.model ||
+                          (reqItems.length === 1 ? product.title : null) ||
+                          `Material ${idx + 1}`;
+
+                        const rawSpec =
+                          item.itemDescription ||
+                          item.description ||
+                          (item.typeOfProduct && item.typeOfProduct !== resolvedName ? item.typeOfProduct : '') ||
+                          (item.model && item.model !== resolvedName ? item.model : '');
                         const spec = dedupeSpecification(resolvedName, rawSpec);
+
+                        const bidLine =
+                          bidItems.find(
+                            line => line.productItemId?.toString() === item._id?.toString()
+                          ) ||
+                          bidItems[idx] ||
+                          {};
+
+                        const qty = resolveItemQuantity(item);
+                        const offeredBrand = bidLine.offeredBrand || q.availableBrand || item.brand || '—';
+
+                        let unitPrice = parseFloat(bidLine.unitPrice) || 0;
+                        let lineTotal = unitPrice > 0 ? qty * unitPrice : 0;
+
+                        if (!unitPrice && q.budgetQuation && reqItems.length === 1) {
+                          lineTotal = q.budgetQuation;
+                          unitPrice = qty > 0 ? q.budgetQuation / qty : q.budgetQuation;
+                        }
 
                         return (
                           <tr key={item._id || idx} className="hover:bg-slate-50/50">
                             <td className="px-3 py-2.5 font-bold text-slate-800">
                               {resolvedName}
                               {spec && (
-                                <span className="block text-[11px] font-normal text-slate-400 font-sans leading-tight">
+                                <span className="block text-[11px] font-normal text-slate-400 font-sans leading-tight mt-0.5">
                                   {spec}
                                 </span>
                               )}
                             </td>
                             <td className="px-3 py-2.5 font-semibold text-slate-700 text-right">{qty}</td>
                             <td className="px-3 py-2.5 font-semibold text-slate-700 uppercase">{item.quantityUnit || 'PCS'}</td>
-                            <td className="px-3 py-2.5 text-slate-600 font-medium">{bidLine.offeredBrand || '—'}</td>
+                            <td className="px-3 py-2.5 text-slate-600 font-medium">{offeredBrand}</td>
                             <td className="px-3 py-2.5 text-right font-semibold text-slate-700">
-                              {unitPrice > 0 ? currencyConvertor(unitPrice) : '—'}
+                              {unitPrice > 0 ? (unitPrice < 1 ? `₹${unitPrice.toFixed(4)}` : currencyConvertor(unitPrice)) : '—'}
                             </td>
                             <td className="px-3 py-2.5 text-right font-bold text-orange-600">
-                              {lineTotal > 0 ? currencyConvertor(lineTotal) : (unitPrice > 0 ? currencyConvertor(unitPrice) : '—')}
+                              {lineTotal > 0 ? currencyConvertor(lineTotal) : '—'}
                             </td>
                           </tr>
                         );
                       })
                     ) : (
-                      bidItems.map((bidLine, idx) => (
-                        <tr key={idx} className="hover:bg-slate-50/50">
-                          <td className="px-3 py-2.5 font-bold text-slate-800">Item {idx + 1}</td>
-                          <td className="px-3 py-2.5 font-semibold text-slate-700 text-right">1</td>
-                          <td className="px-3 py-2.5 font-semibold text-slate-700 uppercase">PCS</td>
-                          <td className="px-3 py-2.5 text-slate-600 font-medium">{bidLine.offeredBrand || '—'}</td>
-                          <td className="px-3 py-2.5 text-right font-semibold text-slate-700">
-                            {bidLine.unitPrice ? currencyConvertor(bidLine.unitPrice) : '—'}
-                          </td>
-                          <td className="px-3 py-2.5 text-right font-bold text-orange-600">
-                            {bidLine.unitPrice ? currencyConvertor(bidLine.unitPrice) : '—'}
-                          </td>
-                        </tr>
-                      ))
+                      bidItems.map((bidLine, idx) => {
+                        const unitPrice = parseFloat(bidLine.unitPrice) || (bidItems.length === 1 && q.budgetQuation ? q.budgetQuation : 0);
+                        const lineTotal = bidLine.unitPrice ? unitPrice : (bidItems.length === 1 && q.budgetQuation ? q.budgetQuation : 0);
+                        const brand = bidLine.offeredBrand || q.availableBrand || '—';
+                        return (
+                          <tr key={idx} className="hover:bg-slate-50/50">
+                            <td className="px-3 py-2.5 font-bold text-slate-800">Material {idx + 1}</td>
+                            <td className="px-3 py-2.5 font-semibold text-slate-700 text-right">1</td>
+                            <td className="px-3 py-2.5 font-semibold text-slate-700 uppercase">PCS</td>
+                            <td className="px-3 py-2.5 text-slate-600 font-medium">{brand}</td>
+                            <td className="px-3 py-2.5 text-right font-semibold text-slate-700">
+                              {unitPrice > 0 ? (unitPrice < 1 ? `₹${unitPrice.toFixed(4)}` : currencyConvertor(unitPrice)) : '—'}
+                            </td>
+                            <td className="px-3 py-2.5 text-right font-bold text-orange-600">
+                              {lineTotal > 0 ? currencyConvertor(lineTotal) : '—'}
+                            </td>
+                          </tr>
+                        );
+                      })
                     )}
                   </tbody>
                 </table>
