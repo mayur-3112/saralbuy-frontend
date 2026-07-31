@@ -119,6 +119,20 @@ const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails, requirementProdu
   const bidItems = q.items || [];
   const hasProductBreakdown = reqItems.length > 0 || bidItems.length > 0;
 
+  // Calculate overall quoted total (Qty * Unit Price) across all items
+  const calculatedOverallTotal = reqItems.length > 0
+    ? reqItems.reduce((sum, item, idx) => {
+        const bidLine = bidItems.find(l => l.productItemId?.toString() === item._id?.toString()) || bidItems[idx] || {};
+        const qVal = resolveItemQuantity(item) || 1;
+        const uPrice = parseFloat(bidLine.unitPrice) || q.budgetQuation || 0;
+        return sum + (qVal * uPrice);
+      }, 0)
+    : (q.budgetQuation || 0);
+
+  const overallTotalDisplay = calculatedOverallTotal > 0
+    ? calculatedOverallTotal
+    : (q.budgetQuation || 0);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-xl p-0 overflow-hidden gap-0 border-none">
@@ -152,7 +166,7 @@ const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails, requirementProdu
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Quoted Price</p>
                 <p className="text-2xl font-black text-orange-600 leading-tight">
-                  {q.budgetQuation ? currencyConvertor(q.budgetQuation) : '—'}
+                  {overallTotalDisplay ? currencyConvertor(overallTotalDisplay) : '—'}
                 </p>
               </div>
               {statusKey && (
@@ -213,9 +227,10 @@ const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails, requirementProdu
                           bidItems[idx] ||
                           {};
 
-                        const qty = resolveItemQuantity(item);
+                        const qty = resolveItemQuantity(item) || 1;
                         const offeredBrand = bidLine.offeredBrand || q.availableBrand || item.brand || '—';
-                        const priceVal = parseFloat(bidLine.unitPrice) || (reqItems.length === 1 && q.budgetQuation ? q.budgetQuation : 0);
+                        const unitPrice = parseFloat(bidLine.unitPrice) || q.budgetQuation || 0;
+                        const lineQuotedPrice = qty * unitPrice;
 
                         return (
                           <tr key={item._id || idx} className="hover:bg-slate-50/50">
@@ -231,14 +246,19 @@ const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails, requirementProdu
                             <td className="px-3 py-2.5 font-semibold text-slate-700 uppercase">{item.quantityUnit || 'PCS'}</td>
                             <td className="px-3 py-2.5 text-slate-600 font-medium">{offeredBrand}</td>
                             <td className="px-3 py-2.5 text-right font-bold text-orange-600">
-                              {priceVal > 0 ? currencyConvertor(priceVal) : '—'}
+                              {lineQuotedPrice > 0 ? currencyConvertor(lineQuotedPrice) : '—'}
+                              {unitPrice > 0 && (
+                                <span className="block text-[10px] font-normal text-slate-400 font-sans mt-0.5">
+                                  ({currencyConvertor(unitPrice)} / {item.quantityUnit || 'unit'})
+                                </span>
+                              )}
                             </td>
                           </tr>
                         );
                       })
                     ) : (
                       bidItems.map((bidLine, idx) => {
-                        const priceVal = parseFloat(bidLine.unitPrice) || (bidItems.length === 1 && q.budgetQuation ? q.budgetQuation : 0);
+                        const unitPrice = parseFloat(bidLine.unitPrice) || q.budgetQuation || 0;
                         const brand = bidLine.offeredBrand || q.availableBrand || '—';
                         return (
                           <tr key={idx} className="hover:bg-slate-50/50">
@@ -247,7 +267,7 @@ const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails, requirementProdu
                             <td className="px-3 py-2.5 font-semibold text-slate-700 uppercase">PCS</td>
                             <td className="px-3 py-2.5 text-slate-600 font-medium">{brand}</td>
                             <td className="px-3 py-2.5 text-right font-bold text-orange-600">
-                              {priceVal > 0 ? currencyConvertor(priceVal) : '—'}
+                              {unitPrice > 0 ? currencyConvertor(unitPrice) : '—'}
                             </td>
                           </tr>
                         );
