@@ -185,8 +185,7 @@ const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails, requirementProdu
                       <th className="px-3 py-2 text-right">Qty</th>
                       <th className="px-3 py-2">Unit</th>
                       <th className="px-3 py-2">Offered Brand</th>
-                      <th className="px-3 py-2 text-right">Price / Unit</th>
-                      <th className="px-3 py-2 text-right">Line Total</th>
+                      <th className="px-3 py-2 text-right">Quoted Price</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 text-xs">
@@ -216,14 +215,7 @@ const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails, requirementProdu
 
                         const qty = resolveItemQuantity(item);
                         const offeredBrand = bidLine.offeredBrand || q.availableBrand || item.brand || '—';
-
-                        let unitPrice = parseFloat(bidLine.unitPrice) || 0;
-                        let lineTotal = unitPrice > 0 ? qty * unitPrice : 0;
-
-                        if (!unitPrice && q.budgetQuation && reqItems.length === 1) {
-                          lineTotal = q.budgetQuation;
-                          unitPrice = qty > 0 ? q.budgetQuation / qty : q.budgetQuation;
-                        }
+                        const priceVal = parseFloat(bidLine.unitPrice) || (reqItems.length === 1 && q.budgetQuation ? q.budgetQuation : 0);
 
                         return (
                           <tr key={item._id || idx} className="hover:bg-slate-50/50">
@@ -238,19 +230,15 @@ const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails, requirementProdu
                             <td className="px-3 py-2.5 font-semibold text-slate-700 text-right">{qty}</td>
                             <td className="px-3 py-2.5 font-semibold text-slate-700 uppercase">{item.quantityUnit || 'PCS'}</td>
                             <td className="px-3 py-2.5 text-slate-600 font-medium">{offeredBrand}</td>
-                            <td className="px-3 py-2.5 text-right font-semibold text-slate-700">
-                              {unitPrice > 0 ? (unitPrice < 1 ? `₹${unitPrice.toFixed(4)}` : currencyConvertor(unitPrice)) : '—'}
-                            </td>
                             <td className="px-3 py-2.5 text-right font-bold text-orange-600">
-                              {lineTotal > 0 ? currencyConvertor(lineTotal) : '—'}
+                              {priceVal > 0 ? currencyConvertor(priceVal) : '—'}
                             </td>
                           </tr>
                         );
                       })
                     ) : (
                       bidItems.map((bidLine, idx) => {
-                        const unitPrice = parseFloat(bidLine.unitPrice) || (bidItems.length === 1 && q.budgetQuation ? q.budgetQuation : 0);
-                        const lineTotal = bidLine.unitPrice ? unitPrice : (bidItems.length === 1 && q.budgetQuation ? q.budgetQuation : 0);
+                        const priceVal = parseFloat(bidLine.unitPrice) || (bidItems.length === 1 && q.budgetQuation ? q.budgetQuation : 0);
                         const brand = bidLine.offeredBrand || q.availableBrand || '—';
                         return (
                           <tr key={idx} className="hover:bg-slate-50/50">
@@ -258,11 +246,8 @@ const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails, requirementProdu
                             <td className="px-3 py-2.5 font-semibold text-slate-700 text-right">1</td>
                             <td className="px-3 py-2.5 font-semibold text-slate-700 uppercase">PCS</td>
                             <td className="px-3 py-2.5 text-slate-600 font-medium">{brand}</td>
-                            <td className="px-3 py-2.5 text-right font-semibold text-slate-700">
-                              {unitPrice > 0 ? (unitPrice < 1 ? `₹${unitPrice.toFixed(4)}` : currencyConvertor(unitPrice)) : '—'}
-                            </td>
                             <td className="px-3 py-2.5 text-right font-bold text-orange-600">
-                              {lineTotal > 0 ? currencyConvertor(lineTotal) : '—'}
+                              {priceVal > 0 ? currencyConvertor(priceVal) : '—'}
                             </td>
                           </tr>
                         );
