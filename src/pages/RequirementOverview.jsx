@@ -17,7 +17,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import requirementService from '@/services/requirement.service';
 import { resolveDocuments } from '@/utils/resolveDocuments';
-import { extractQuantityAndUnit } from '@/utils/parseMaterialText';
+import { extractQuantityAndUnit, resolveItemQuantity, dedupeSpecification } from '@/utils/parseMaterialText';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { CategoryFormSkeleton } from '@/const/CustomSkeletons';
