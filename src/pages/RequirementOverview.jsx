@@ -11,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { dateFormatter } from '@/utils/dateFormatter';
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
-import { Banknote, CalendarDays, Eye, MoveLeft, Truck, CreditCard, MapPin, Percent, Store, FileText, BadgeCheck, UserRound, Package } from 'lucide-react';
+import { Banknote, CalendarDays, Eye, MoveLeft, Truck, CreditCard, MapPin, Percent, Store, FileText, BadgeCheck, UserRound } from 'lucide-react';
 import { toast } from 'sonner';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -170,7 +170,7 @@ const QuoteDetailsDialog = ({ open, onOpenChange, quoteDetails, requirementProdu
             <div className="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm">
               <div className="bg-slate-50 px-4 py-2.5 border-b border-slate-200 flex items-center justify-between">
                 <span className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-                  <Package className="w-3.5 h-3.5 text-orange-600" /> Material Price Breakdown
+                  <FileText className="w-3.5 h-3.5 text-orange-600" /> Material Price Breakdown
                 </span>
                 <span className="text-[11px] font-semibold text-slate-500">
                   {reqItems.length || bidItems.length} Material(s)
