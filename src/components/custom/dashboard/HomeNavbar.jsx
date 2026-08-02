@@ -22,6 +22,7 @@ import {
   CuboidIcon,
   NotebookPen,
   LayoutDashboard,
+  ChevronRight,
 } from 'lucide-react';
 
 import { Accordion, AccordionItem, AccordionTrigger } from '../../../components/ui/accordion';
