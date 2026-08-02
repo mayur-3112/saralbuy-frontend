@@ -81,7 +81,6 @@ export default function SearchResults() {
   const totalResultsCount =
     results.categories.length +
     results.suppliers.length +
-    results.products.length +
     results.rfqs.length +
     results.brands.length;
 
@@ -95,7 +94,6 @@ export default function SearchResults() {
     { key: 'all', label: 'All Results', count: totalResultsCount },
     { key: 'categories', label: 'Categories', count: results.categories.length },
     { key: 'suppliers', label: 'Suppliers', count: results.suppliers.length },
-    { key: 'products', label: 'Products', count: results.products.length },
     { key: 'rfqs', label: 'RFQs', count: results.rfqs.length },
     { key: 'brands', label: 'Brands', count: results.brands.length },
   ];
@@ -346,57 +344,7 @@ export default function SearchResults() {
               </section>
             )}
 
-            {/* 3. PRODUCTS SECTION */}
-            {(activeTab === 'all' || activeTab === 'products') && results.products.length > 0 && (
-              <section>
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-black text-slate-900 flex items-center gap-2">
-                    <Box className="w-5 h-5 text-orange-600" />
-                    Products ({results.products.length})
-                  </h2>
-                  {activeTab === 'all' && (
-                    <button
-                      onClick={() => handleTabChange('products')}
-                      className="text-xs font-bold text-orange-600 hover:underline flex items-center gap-1"
-                    >
-                      View all products <ChevronRight className="w-3.5 h-3.5" />
-                    </button>
-                  )}
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                  {results.products.map(p => (
-                    <Card
-                      key={p._id}
-                      className="p-4 bg-white border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all flex flex-col justify-between cursor-pointer group"
-                      onClick={() => navigate(`/product-listing?_id=${p._id}&title=${encodeURIComponent(p.title)}`)}
-                    >
-                      <div>
-                        <div className="aspect-video w-full bg-slate-50 rounded-xl overflow-hidden mb-3 border border-slate-100 flex items-center justify-center">
-                          <img
-                            src={p.image || '/no-image.webp'}
-                            alt={p.title}
-                            className="w-full h-full object-contain mix-blend-darken p-2"
-                          />
-                        </div>
-                        <h3 className="font-bold text-slate-900 text-sm line-clamp-1 group-hover:text-orange-600 transition-colors">
-                          {p.title}
-                        </h3>
-                        {p.brandName || p.brand ? (
-                          <span className="text-[11px] font-semibold text-slate-500 block mt-0.5">
-                            Brand: {p.brandName || p.brand}
-                          </span>
-                        ) : null}
-                      </div>
 
-                      <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                        <span className="font-bold text-orange-600">View Listing</span>
-                        <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-orange-600 transition-colors" />
-                      </div>
-                    </Card>
-                  ))}
-                </div>
-              </section>
-            )}
 
             {/* 4. CATEGORIES SECTION */}
             {(activeTab === 'all' || activeTab === 'categories') && results.categories.length > 0 && (

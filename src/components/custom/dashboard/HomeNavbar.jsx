@@ -421,35 +421,7 @@ const HomeNavbar = () => {
               </div>
             )}
 
-            {/* 3. Products Group */}
-            {universalResults.products.length > 0 && (
-              <div>
-                <p className="text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1 flex items-center gap-1">
-                  <Box className="w-3 h-3 text-slate-400" /> Products ({universalResults.products.length})
-                </p>
-                <div className="space-y-1">
-                  {universalResults.products.slice(0, 3).map(p => (
-                    <div
-                      key={p._id}
-                      className="p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors flex items-center gap-2"
-                      onClick={() => handleSearchSelect(p)}
-                    >
-                      <img
-                        className="w-8 h-8 object-contain rounded-md mix-blend-darken bg-slate-100 p-0.5 shrink-0"
-                        src={p.image || '/no-image.webp'}
-                        alt={p.title}
-                      />
-                      <div className="min-w-0 flex-1">
-                        <p className="text-xs font-semibold text-slate-800 truncate">{p.title}</p>
-                        {p.brandName || p.brand ? (
-                          <p className="text-[10px] text-slate-400 truncate">Brand: {p.brandName || p.brand}</p>
-                        ) : null}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+
 
             {/* 4. Categories Group */}
             {universalResults.categories.length > 0 && (
