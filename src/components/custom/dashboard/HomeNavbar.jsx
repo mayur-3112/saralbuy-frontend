@@ -39,6 +39,7 @@ import {
 import { Skeleton } from '../../../components/ui/skeleton';
 import { Link, useNavigate } from 'react-router-dom';
 import { Input } from '../../../components/ui/input';
+import VerifiedBadge from '../VerifiedBadge';
 import { Card } from '../../../components/ui/card';
 import { Badge } from '../../../components/ui/badge';
 import { format } from 'date-fns';
