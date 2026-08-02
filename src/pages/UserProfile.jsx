@@ -20,7 +20,8 @@ import {
 import { useNavigate, useParams } from 'react-router-dom';
 import { useFetch } from '@/hooks/useFetch';
 import userService from '@/services/user.service';
-import { useEffect } from 'react';
+import categoryService from '@/services/category.service';
+import { useEffect, useState } from 'react';
 import { mergeName } from '@/utils/mergerName';
 import Loader from '@/components/custom/Loader';
 import VerifiedBadge from '@/components/custom/VerifiedBadge';
@@ -216,7 +217,7 @@ export default function UserProfile() {
                       <span className="font-bold text-slate-400 uppercase tracking-wider">Primary Category:</span>
                       <span className="px-2.5 py-1 rounded-full bg-orange-100 border border-orange-200 text-orange-700 font-bold flex items-center gap-1.5">
                         <Building2 className="w-3.5 h-3.5 text-orange-600" />
-                        {typeof data.primaryCategoryId === 'object' ? data.primaryCategoryId.categoryName : data.primaryCategoryId}
+                        {resolveCategoryName(data.primaryCategoryId)}
                       </span>
                     </div>
                   )}
@@ -225,7 +226,7 @@ export default function UserProfile() {
                       <span className="font-bold text-slate-400 uppercase tracking-wider">Supplies Also:</span>
                       {data.secondaryCategoryIds.map((secCat, sIdx) => (
                         <span key={sIdx} className="px-2.5 py-0.5 rounded-full bg-white border border-slate-200 text-slate-700 font-medium">
-                          {typeof secCat === 'object' ? secCat.categoryName : secCat}
+                          {resolveCategoryName(secCat)}
                         </span>
                       ))}
                     </div>
