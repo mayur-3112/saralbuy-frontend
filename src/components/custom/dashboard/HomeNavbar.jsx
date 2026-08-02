@@ -23,6 +23,7 @@ import {
   NotebookPen,
   LayoutDashboard,
   ChevronRight,
+  Building2,
 } from 'lucide-react';
 
 import { Accordion, AccordionItem, AccordionTrigger } from '../../../components/ui/accordion';
