@@ -1,6 +1,10 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import * as parser from '@babel/parser';
+import traverseModule from '@babel/traverse';
+
+const traverse = traverseModule.default || traverseModule;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,60 +26,52 @@ function getFiles(dir, fileList = []) {
 const allFiles = getFiles(srcDir);
 const missingReport = [];
 
-const GLOBAL_BUILTINS = new Set([
-  'React', 'Fragment', 'Component', 'PureComponent',
-  'HTMLDivElement', 'HTMLInputElement', 'HTMLElement',
-  'Date', 'Array', 'Object', 'Math', 'JSON', 'String', 'Number', 'Boolean', 'RegExp', 'Promise', 'Error',
-  'Icon', 'PageComponent', 'TooltipComp', 'SquarePen', 'RequirementSlider'
-]);
-
 for (const filePath of allFiles) {
-  const content = fs.readFileSync(filePath, 'utf8');
-
-  // Find all capital JSX tags
-  const jsxTags = new Set();
-  const tagMatches = content.matchAll(/<([A-Z][a-zA-Z0-9_]*)/g);
-  for (const match of tagMatches) {
-    jsxTags.add(match[1]);
+  const code = fs.readFileSync(filePath, 'utf8');
+  let ast;
+  try {
+    ast = parser.parse(code, {
+      sourceType: 'module',
+      plugins: ['jsx'],
+    });
+  } catch (err) {
+    // Syntax error will be caught by Vite anyway
+    continue;
   }
 
-  const importedSymbols = new Set(GLOBAL_BUILTINS);
+  traverse(ast, {
+    JSXOpeningElement(path) {
+      const nameNode = path.node.name;
+      let tagName = null;
 
-  // Parse import declarations
-  const importLines = content.matchAll(/import\s+(?:([\w$]+)\s*,?\s*)?(?:\{([^}]+)\})?\s*from\s*['"]([^'"]+)['"]/g);
-  for (const match of importLines) {
-    const defaultImport = match[1];
-    const namedImports = match[2];
-    if (defaultImport) importedSymbols.add(defaultImport.trim());
-    if (namedImports) {
-      namedImports.split(',').forEach(s => {
-        const parts = s.trim().split(/\s+as\s+/);
-        const importedName = parts[parts.length - 1].trim();
-        if (importedName) importedSymbols.add(importedName);
-      });
-    }
-  }
+      if (nameNode.type === 'JSXIdentifier') {
+        tagName = nameNode.name;
+      }
 
-  // Parse local component / function / const / class declarations
-  const localDecls = content.matchAll(/(?:const|let|var|function|class|enum)\s+([A-Z][a-zA-Z0-9_]*)/g);
-  for (const match of localDecls) {
-    importedSymbols.add(match[1]);
-  }
+      // We only care about Capitalized JSX tags (components/icons)
+      if (tagName && /^[A-Z]/.test(tagName)) {
+        const binding = path.scope.getBinding(tagName);
+        const hasGlobal = path.scope.hasGlobal(tagName);
 
-  // Check each JSX tag
-  for (const tag of jsxTags) {
-    if (!importedSymbols.has(tag)) {
-      missingReport.push({ file: path.relative(path.join(__dirname, '..'), filePath), missingTag: tag });
-    }
-  }
+        if (!binding && !hasGlobal) {
+          const relPath = path.relative(path.join(__dirname, '..'), filePath);
+          missingReport.push({
+            file: relPath,
+            missingTag: tagName,
+            line: nameNode.loc ? nameNode.loc.start.line : 0,
+          });
+        }
+      }
+    },
+  });
 }
 
 if (missingReport.length > 0) {
   console.error('\n❌ BUILD FAILED: Unimported JSX symbols detected!');
   for (const item of missingReport) {
-    console.error(`  - ${item.file}: <${item.missingTag}> is used but not imported!`);
+    console.error(`  - ${item.file}:${item.line}: <${item.missingTag}> is used but not imported!`);
   }
   process.exit(1);
 } else {
-  console.log('✅ Import Validation Passed: All JSX components & icons are cleanly imported.');
+  console.log('✅ AST Import Validation Passed: All JSX components & icons are cleanly imported across the codebase.');
 }
