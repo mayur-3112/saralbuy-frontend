@@ -8,6 +8,14 @@ import { Button } from '@/components/ui/button';
 import { Building2, MapPin, ArrowRight, ShieldCheck, Store, ChevronRight } from 'lucide-react';
 import { mergeName } from '@/utils/mergerName';
 
+const resolveImageUrl = (img) => {
+  if (!img || typeof img !== 'string') return undefined;
+  if (img.startsWith('http://') || img.startsWith('https://') || img.startsWith('data:') || img.startsWith('/')) {
+    return img;
+  }
+  return undefined;
+};
+
 const SupplierShowcaseSection = () => {
   const navigate = useNavigate();
   const [suppliers, setSuppliers] = useState([]);
@@ -134,7 +142,7 @@ const SupplierShowcaseSection = () => {
                     {/* Header: Avatar, Name & Verification */}
                     <div className="flex items-start gap-3.5 mb-3.5">
                       <Avatar className="h-14 w-14 border-2 border-slate-700 group-hover:border-orange-500 shrink-0 rounded-full overflow-hidden bg-slate-700">
-                        <AvatarImage src={s.profileImage} alt={fullName} className="object-cover w-full h-full rounded-full" />
+                        <AvatarImage src={resolveImageUrl(s.profileImage)} alt={fullName} className="object-cover w-full h-full rounded-full" />
                         <AvatarFallback className="bg-orange-600 text-white font-black text-sm flex items-center justify-center w-full h-full">
                           {fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'S'}
                         </AvatarFallback>

@@ -75,6 +75,14 @@ export default function UserProfile() {
     return cat;
   };
 
+  const resolveImageUrl = (img) => {
+    if (!img || typeof img !== 'string') return undefined;
+    if (img.startsWith('http://') || img.startsWith('https://') || img.startsWith('data:') || img.startsWith('/')) {
+      return img;
+    }
+    return undefined;
+  };
+
   if (loading) return <Loader />;
   if (!data) return null;
 
@@ -196,7 +204,7 @@ export default function UserProfile() {
               <div className="flex items-start gap-4 flex-wrap">
                 <Avatar className="h-20 w-20 -mt-10 border-4 border-white shadow-md shrink-0 rounded-full overflow-hidden bg-slate-100">
                   <AvatarImage
-                    src={data.profileImage}
+                    src={resolveImageUrl(data.profileImage)}
                     alt={fullName}
                     className="object-cover w-full h-full rounded-full"
                   />
