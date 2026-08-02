@@ -40,8 +40,8 @@ for (const filePath of allFiles) {
   }
 
   traverse(ast, {
-    JSXOpeningElement(path) {
-      const nameNode = path.node.name;
+    JSXOpeningElement(nodePath) {
+      const nameNode = nodePath.node.name;
       let tagName = null;
 
       if (nameNode.type === 'JSXIdentifier') {
@@ -50,8 +50,8 @@ for (const filePath of allFiles) {
 
       // We only care about Capitalized JSX tags (components/icons)
       if (tagName && /^[A-Z]/.test(tagName)) {
-        const binding = path.scope.getBinding(tagName);
-        const hasGlobal = path.scope.hasGlobal(tagName);
+        const binding = nodePath.scope.getBinding(tagName);
+        const hasGlobal = nodePath.scope.hasGlobal(tagName);
 
         if (!binding && !hasGlobal) {
           const relPath = path.relative(path.join(__dirname, '..'), filePath);

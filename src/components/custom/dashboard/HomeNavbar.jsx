@@ -24,6 +24,7 @@ import {
   LayoutDashboard,
   ChevronRight,
   Building2,
+  Layers,
 } from 'lucide-react';
 
 import { Accordion, AccordionItem, AccordionTrigger } from '../../../components/ui/accordion';
