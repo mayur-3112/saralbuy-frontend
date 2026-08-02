@@ -1497,26 +1497,36 @@ const ProductOverview = () => {
                     const urls = resolveDocuments(mp?.document);
                     if (urls.length === 0) return null;
                     return (
-                      <div className="pt-4 mt-4 border-t border-slate-100 space-y-3">
-                        <div className="bg-orange-500 text-white rounded-xl p-4 sm:p-5 shadow-sm">
-                          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                            <div className="flex items-center gap-3">
-                              <span className="text-2xl">📄</span>
+                      <div className="pt-2 my-4">
+                        <div className="bg-gradient-to-br from-orange-600 via-amber-600 to-orange-500 text-white rounded-2xl p-6 sm:p-8 shadow-md border border-orange-400/30">
+                          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                            <div className="flex items-start sm:items-center gap-4">
+                              <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-3xl shrink-0 shadow-inner">
+                                📄
+                              </div>
                               <div>
-                                <h4 className="font-extrabold text-base leading-tight">Uploaded Requirement Document</h4>
-                                <p className="text-xs text-orange-100 mt-0.5">The buyer posted this requirement with an attached BOQ / document file.</p>
+                                <span className="inline-block px-3 py-0.5 rounded-full bg-white/20 text-white text-[11px] font-black uppercase tracking-wider mb-1.5">
+                                  Requirement Attachment
+                                </span>
+                                <h3 className="font-black text-xl sm:text-2xl text-white tracking-tight leading-tight">
+                                  Uploaded Requirement Document (BOQ)
+                                </h3>
+                                <p className="text-sm text-orange-100 mt-1 max-w-xl">
+                                  The buyer posted this requirement with an attached BOQ / document file. Click below to view or download the full document.
+                                </p>
                               </div>
                             </div>
-                            <div className="flex flex-wrap gap-2">
+                            <div className="flex flex-wrap items-center gap-3 w-full md:w-auto shrink-0">
                               {urls.map((url, idx) => (
                                 <a
                                   key={idx}
                                   href={url}
                                   target="_blank"
                                   rel="noreferrer"
-                                  className="inline-flex items-center gap-1.5 bg-white text-orange-600 hover:bg-orange-50 px-4 py-2 rounded-lg text-xs font-bold transition-colors shadow-sm shrink-0"
+                                  className="w-full sm:w-auto justify-center inline-flex items-center gap-2 bg-white text-orange-700 hover:bg-orange-50 px-6 py-3.5 rounded-xl text-sm font-extrabold transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 cursor-pointer"
                                 >
-                                  Open Document {idx + 1} ↗
+                                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+                                  View / Download Document {urls.length > 1 ? idx + 1 : ''} ↗
                                 </a>
                               ))}
                             </div>
