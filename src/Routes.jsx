@@ -42,6 +42,7 @@ import AccessibilityStatement from './pages/AccessibilityStatement';
 import PolicyConsentPopup from './components/custom/popups/PolicyConsentPopup';
 import { useUserState } from './redux/hooks/useUser';
 import DiscussionChatbox from './components/custom/dashboard/DiscussionChatbox';
+import LandingPage from './components/custom/landing/LandingPage';
 import SearchResults from './pages/SearchResults';
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Chatbot = lazy(() => import('./pages/Chatbot'));

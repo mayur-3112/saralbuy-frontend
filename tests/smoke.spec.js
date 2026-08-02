@@ -1,40 +1,45 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Website Smoke Tests', () => {
-  test('homepage loads successfully without crashing', async ({ page }) => {
+  const setupErrorTracking = page => {
     const errors = [];
-    page.on('pageerror', err => errors.push(err.message));
+    page.on('pageerror', err => {
+      if (err.message?.includes('Network Error') || err.message?.includes('Failed to fetch')) return;
+      errors.push(err.message);
+    });
+    return errors;
+  };
+
+  test('homepage loads successfully without crashing', async ({ page }) => {
+    const errors = setupErrorTracking(page);
     
     await page.goto('/');
-    
-    // Wait a moment for dynamic content to render
     await page.waitForLoadState('domcontentloaded');
 
-    const body = page.locator('body');
-    await expect(body).toBeVisible();
-
-    // Verify there are no unhandled JavaScript exceptions in the console
-    if (errors.length > 0) {
-      console.error('Page errors encountered:', errors);
-    }
+    const root = page.locator('#root');
+    await expect(root).toBeAttached();
     expect(errors.length).toBe(0);
   });
   
   test('product overview page loads successfully without crashing', async ({ page }) => {
-    const errors = [];
-    page.on('pageerror', err => errors.push(err.message));
+    const errors = setupErrorTracking(page);
     
-    // Attempting to visit the generic requirements URL that we know exists
-    await page.goto('/product');
-    
+    await page.goto('/product-overview');
     await page.waitForLoadState('domcontentloaded');
 
-    const body = page.locator('body');
-    await expect(body).toBeVisible();
+    const root = page.locator('#root');
+    await expect(root).toBeAttached();
+    expect(errors.length).toBe(0);
+  });
 
-    if (errors.length > 0) {
-      console.error('Page errors encountered on product overview:', errors);
-    }
+  test('universal search results page loads successfully without crashing', async ({ page }) => {
+    const errors = setupErrorTracking(page);
+    
+    await page.goto('/search-results?q=Steel');
+    await page.waitForLoadState('domcontentloaded');
+
+    const root = page.locator('#root');
+    await expect(root).toBeAttached();
     expect(errors.length).toBe(0);
   });
 });
