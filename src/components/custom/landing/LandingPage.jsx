@@ -1,6 +1,7 @@
 import Hero from './Hero';
 import ProofStrip from './ProofStrip';
 import LiveSourcingBoard from './LiveSourcingBoard';
+import SupplierShowcaseSection from './SupplierShowcaseSection';
 import FirstVisitWelcome from './FirstVisitWelcome';
 
 /**
