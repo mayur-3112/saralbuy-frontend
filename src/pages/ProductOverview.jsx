@@ -1380,11 +1380,15 @@ const ProductOverview = () => {
                   {(() => {
                     const mp = bidOverviewRes?.product || productResponse?.mainProduct;
                     const rawItems = mp?.items || [];
-                    if (rawItems.length === 0) {
-                      // Genuinely nothing structured to show (e.g. a bare
-                      // document-only submission with no items ever filled
-                      // in) — the reference-document section below still
-                      // covers the actual file.
+                    const hasRealItems = rawItems.length > 0 && rawItems.some(i => {
+                      const name = i.itemName || i.subCategoryName || i.typeOfProduct || i.model;
+                      const hasDetails = i.quantity || (i.itemDescription && i.itemDescription !== 'N/A') || (i.description && i.description !== 'N/A') || (i.brand && i.brand !== 'Any');
+                      return name && hasDetails;
+                    });
+                    const isDocFlow = !!mp?.document && (!hasRealItems || mp?.isUpload);
+
+                    if (rawItems.length === 0 || isDocFlow || !hasRealItems) {
+                      // Document-only submission or empty item placeholders — suppress the empty List of Materials box
                       return null;
                     }
                     return (
