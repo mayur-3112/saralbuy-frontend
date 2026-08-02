@@ -176,9 +176,13 @@ export default function UserProfile() {
                   previously the whole row shared one -mt-10, so a two-line
                   wrap on a long name rendered half-hidden under the band. */}
               <div className="flex items-start gap-4 flex-wrap">
-                <Avatar className="h-20 w-20 -mt-10 border-4 border-white shadow-md shrink-0">
-                  <AvatarImage src={data.profileImage} alt={fullName} />
-                  <AvatarFallback className="bg-orange-100 text-orange-700 font-black text-lg">
+                <Avatar className="h-20 w-20 -mt-10 border-4 border-white shadow-md shrink-0 rounded-full overflow-hidden bg-slate-100">
+                  <AvatarImage
+                    src={data.profileImage}
+                    alt={fullName}
+                    className="object-cover w-full h-full rounded-full"
+                  />
+                  <AvatarFallback className="bg-orange-100 text-orange-700 font-black text-lg flex items-center justify-center w-full h-full">
                     {fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'S'}
                   </AvatarFallback>
                 </Avatar>
@@ -198,8 +202,36 @@ export default function UserProfile() {
                       {companyName}
                     </div>
                   )}
+                  {data.supplierHeadline && (
+                    <p className="text-xs text-slate-500 mt-1 font-sans italic">{data.supplierHeadline}</p>
+                  )}
                 </div>
               </div>
+
+              {/* Primary & Additional Supply Category Badges */}
+              {isSupplier && (data.primaryCategoryId || (Array.isArray(data.secondaryCategoryIds) && data.secondaryCategoryIds.length > 0)) && (
+                <div className="mt-4 p-3 bg-slate-50 border border-slate-100 rounded-xl space-y-2">
+                  {data.primaryCategoryId && (
+                    <div className="flex items-center gap-2 flex-wrap text-xs">
+                      <span className="font-bold text-slate-400 uppercase tracking-wider">Primary Category:</span>
+                      <span className="px-2.5 py-1 rounded-full bg-orange-100 border border-orange-200 text-orange-700 font-bold flex items-center gap-1.5">
+                        <Building2 className="w-3.5 h-3.5 text-orange-600" />
+                        {typeof data.primaryCategoryId === 'object' ? data.primaryCategoryId.categoryName : data.primaryCategoryId}
+                      </span>
+                    </div>
+                  )}
+                  {Array.isArray(data.secondaryCategoryIds) && data.secondaryCategoryIds.length > 0 && (
+                    <div className="flex items-center gap-2 flex-wrap text-xs">
+                      <span className="font-bold text-slate-400 uppercase tracking-wider">Supplies Also:</span>
+                      {data.secondaryCategoryIds.map((secCat, sIdx) => (
+                        <span key={sIdx} className="px-2.5 py-0.5 rounded-full bg-white border border-slate-200 text-slate-700 font-medium">
+                          {typeof secCat === 'object' ? secCat.categoryName : secCat}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Trust chips */}
               {chips.length > 0 && (

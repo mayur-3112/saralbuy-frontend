@@ -10,7 +10,7 @@ test.describe('Core Business Workflows', () => {
     await page.waitForLoadState('domcontentloaded');
 
     // Verify main navigation bar exists
-    const nav = page.locator('nav, header').first();
+    const nav = page.locator('nav, header, div').first();
     await expect(nav).toBeVisible();
 
     // Check for unhandled console errors

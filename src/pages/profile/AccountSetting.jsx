@@ -13,6 +13,7 @@ import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import { useFetch } from '@/hooks/useFetch';
 import userService from '@/services/user.service';
+import categoryService from '@/services/category.service';
 import { useDispatchUser, useUserState } from '@/redux/hooks/useUser';
 import { Spinner } from '@/components/ui/spinner';
 import { toast } from 'sonner';
@@ -25,6 +26,15 @@ export function AccountSettings() {
   const { user } = useUserState();
   const { updateUserState } = useDispatchUser();
   const [open, setOpen] = useState(false);
+  const [categoriesList, setCategoriesList] = useState([]);
+  const [selectedSecCategories, setSelectedSecCategories] = useState([]);
+
+  useEffect(() => {
+    categoryService.getCategories().then(res => {
+      const list = Array.isArray(res) ? res : res?.categories || [];
+      setCategoriesList(list);
+    }).catch(err => console.error('Error fetching categories in AccountSettings', err));
+  }, []);
 
   const {
     fn: updateProfilefn,
@@ -40,6 +50,7 @@ export function AccountSettings() {
     register,
     reset,
     watch,
+    setValue,
   } = useForm({
     resolver: zodResolver(ProfileSchema),
     defaultValues: {
@@ -61,27 +72,19 @@ export function AccountSettings() {
       businessSince: '',
       businessPhone: '',
       storeAddress: '',
+      primaryCategoryId: '',
+      supplierHeadline: '',
     },
   });
 
   useEffect(() => {
-    if (logoutRes) {
-      toast.success('You are Logged out');
-
-      updateUserState(null);
-
-      reset({
-        phone: '',
-        fullName: '',
-        email: '',
-        address: '',
-        businessName: '',
-      });
-    }
-  }, [logoutRes]);
-
-  useEffect(() => {
     if (user) {
+      const primaryCatId = typeof user?.primaryCategoryId === 'object' ? user.primaryCategoryId._id : (user?.primaryCategoryId || '');
+      const secCatIds = Array.isArray(user?.secondaryCategoryIds)
+        ? user.secondaryCategoryIds.map(c => typeof c === 'object' ? c._id : c)
+        : [];
+      setSelectedSecCategories(secCatIds);
+
       reset({
         accountRole: user?.accountRole || 'buyer',
         phone: user?.phone || '',
@@ -101,6 +104,8 @@ export function AccountSettings() {
         businessSince: user?.businessSince != null ? String(user.businessSince) : '',
         businessPhone: user?.businessPhone || '',
         storeAddress: user?.storeAddress || '',
+        primaryCategoryId: primaryCatId,
+        supplierHeadline: user?.supplierHeadline || '',
       });
     }
   }, [user, reset]);
@@ -151,6 +156,9 @@ export function AccountSettings() {
     formData.append('businessSince', data.businessSince || '');
     formData.append('businessPhone', data.businessPhone || '');
     formData.append('storeAddress', data.storeAddress || '');
+    formData.append('primaryCategoryId', data.primaryCategoryId || '');
+    formData.append('secondaryCategoryIds', JSON.stringify(selectedSecCategories || []));
+    formData.append('supplierHeadline', data.supplierHeadline || '');
 
     if (fileDoc) {
       formData.append('document', fileDoc);
@@ -335,12 +343,78 @@ export function AccountSettings() {
             <div className="space-y-2">
               <Label className="text-gray-600 text-sm font-semibold">Organisation Details</Label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-orange-50/50 p-4 rounded-md border border-orange-100">
+                {/* Primary Category & Headline for Showcase Directory */}
+                <div className="space-y-2 w-full">
+                  <Label className="text-gray-700 text-sm font-bold" htmlFor="primaryCategoryId">
+                    Primary Dealing Category <span className="text-red-500">*</span>
+                  </Label>
+                  <select
+                    id="primaryCategoryId"
+                    {...register('primaryCategoryId')}
+                    className="w-full h-10 px-3 py-2 bg-white border border-slate-300 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-500 text-slate-800"
+                  >
+                    <option value="">-- Select Primary Category --</option>
+                    {categoriesList.map(cat => (
+                      <option key={cat._id} value={cat._id}>
+                        {cat.categoryName}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-[11px] text-slate-500">
+                    Your core supply category displayed on your Homepage showcase card.
+                  </p>
+                </div>
+
+                <div className="space-y-2 w-full">
+                  <Label className="text-gray-700 text-sm font-bold" htmlFor="supplierHeadline">
+                    Supplier Tagline / Headline
+                  </Label>
+                  <Input
+                    id="supplierHeadline"
+                    type="text"
+                    placeholder="e.g. Authorized Wholesale Distributor of TMT Steel Bars & Girders"
+                    {...register('supplierHeadline')}
+                    className="bg-white w-full"
+                  />
+                </div>
+
                 <div className="space-y-2 w-full sm:col-span-2">
-                  <Label className="text-gray-600 text-sm" htmlFor="business">
+                  <Label className="text-gray-700 text-sm font-bold" htmlFor="business">
                     Organisation Name
                     <span className="text-red-500">*</span>
                   </Label>
                   <Input id="business" type="text" placeholder="e.g. Acme Corp Ltd." {...register('businessName')} className="bg-white w-full" />
+                </div>
+
+                <div className="space-y-2 w-full sm:col-span-2">
+                  <Label className="text-gray-700 text-sm font-bold">
+                    Additional Supply Categories <span className="text-slate-400 font-normal">(select all categories you can supply)</span>
+                  </Label>
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    {categoriesList.map(cat => {
+                      const isSelected = selectedSecCategories.includes(cat._id);
+                      return (
+                        <button
+                          key={cat._id}
+                          type="button"
+                          onClick={() => {
+                            if (isSelected) {
+                              setSelectedSecCategories(prev => prev.filter(id => id !== cat._id));
+                            } else {
+                              setSelectedSecCategories(prev => [...prev, cat._id]);
+                            }
+                          }}
+                          className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer ${
+                            isSelected
+                              ? 'bg-orange-500 text-white border-orange-600 shadow-sm'
+                              : 'bg-white text-slate-700 border-slate-300 hover:border-orange-400'
+                          }`}
+                        >
+                          {isSelected ? '✓ ' : '+ '}{cat.categoryName}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
                 <div className="space-y-2 w-full">
                   <Label className="text-gray-600 text-sm" htmlFor="gstin">

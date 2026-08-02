@@ -71,6 +71,9 @@ export const ProfileSchema = z.object({
   businessSince: z.string().optional(),
   businessPhone: z.string().optional(),
   storeAddress: z.string().optional(),
+  primaryCategoryId: z.string().optional(),
+  secondaryCategoryIds: z.any().optional(),
+  supplierHeadline: z.string().optional(),
 });
 
 export const productOverviewBidSchema = z.object({

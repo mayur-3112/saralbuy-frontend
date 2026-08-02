@@ -29,6 +29,13 @@ class UserService {
       .get('/user/verification-status')
       .then(res => res.data?.data || res.data);
   }
+  async getShowcaseSuppliers(categoryId) {
+    return instance
+      .get('/user/showcase-suppliers', {
+        params: { categoryId: categoryId && categoryId !== 'all' ? categoryId : undefined },
+      })
+      .then(res => res.data?.data || res.data);
+  }
 }
 
 export default new UserService();
