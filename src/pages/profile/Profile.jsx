@@ -5,7 +5,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '../../components/ui/breadcrumb';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { Camera, House, Settings, FileText, Briefcase, Bell, ChevronRight } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { NavLink } from 'react-router-dom';
@@ -55,6 +55,10 @@ const Profile = () => {
   const { dispatchUser } = useDispatchUser();
   const { pathname } = useLocation();
   const navigate = useNavigate();
+
+  if (!user) {
+    return <Navigate to="/" replace />;
+  }
   const {
     fn: updateProfilefn,
     data: updateProfileRes,

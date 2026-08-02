@@ -42,4 +42,15 @@ test.describe('Website Smoke Tests', () => {
     await expect(root).toBeAttached();
     expect(errors.length).toBe(0);
   });
+
+  test('account page redirects unauthenticated user safely without crashing', async ({ page }) => {
+    const errors = setupErrorTracking(page);
+    
+    await page.goto('/account');
+    await page.waitForLoadState('domcontentloaded');
+
+    const root = page.locator('#root');
+    await expect(root).toBeAttached();
+    expect(errors.length).toBe(0);
+  });
 });

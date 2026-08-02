@@ -143,20 +143,19 @@ export const router = createBrowserRouter(
           <Route path="/faq" element={<FAQ />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/contact-us" element={<ContactUs />} />
-          {/*  account */}
-          <Route path="/account" element={<Profile />}>
-            <Route index element={<AccountSettings />} />
-            <Route path="bid" element={<BidListing />} />
-            <Route path="requirements" element={<Requirements />} />
-            <Route path="deal" element={<CloseDeal />} />
-            <Route path="notification" element={<Notification />} />
-            <Route path="requirements-overview/:requirementId" element={<RequirementOverview />} />
+          <Route element={<ProtectRoute />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/account" element={<Profile />}>
+              <Route index element={<AccountSettings />} />
+              <Route path="bid" element={<BidListing />} />
+              <Route path="requirements" element={<Requirements />} />
+              <Route path="deal" element={<CloseDeal />} />
+              <Route path="notification" element={<Notification />} />
+              <Route path="requirements-overview/:requirementId" element={<RequirementOverview />} />
+            </Route>
           </Route>
           <Route path="/chat" element={<Chatbot />} />
           <Route path="/user-profile/:userId" element={<UserProfile />} />
-          <Route element={<ProtectRoute />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-          </Route>
           <Route path="*" element={<NoRouteFound />} />
     </Route>
     </>
