@@ -348,17 +348,32 @@ export function AccountSettings() {
             {/* Supplier fields — shown only when Primary Account Role is Supplier */}
             {selectedRole === 'supplier' && (
             <div className="space-y-2">
-              <Label className="text-gray-600 text-sm font-semibold">Organisation Details</Label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-orange-50/50 p-4 rounded-md border border-orange-100">
-                {/* Primary Category & Headline for Showcase Directory */}
-                <div className="space-y-2 w-full">
-                  <Label className="text-gray-700 text-sm font-bold" htmlFor="primaryCategoryId">
+              <Label className="text-gray-700 text-sm font-bold tracking-tight">Organisation Details</Label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-orange-50/40 p-4 sm:p-5 rounded-xl border border-orange-200/60 shadow-xs">
+                
+                {/* 1. Organisation Name */}
+                <div className="space-y-1.5 w-full sm:col-span-2">
+                  <Label className="text-slate-800 text-xs font-bold uppercase tracking-wider" htmlFor="business">
+                    Organisation Name <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="business"
+                    type="text"
+                    placeholder="e.g. Acme Building Supplies Ltd."
+                    {...register('businessName')}
+                    className="bg-white h-10 sm:h-11 rounded-lg border-slate-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-slate-800 text-sm w-full"
+                  />
+                </div>
+
+                {/* 2. Primary Dealing Category */}
+                <div className="space-y-1.5 w-full">
+                  <Label className="text-slate-800 text-xs font-bold uppercase tracking-wider" htmlFor="primaryCategoryId">
                     Primary Dealing Category <span className="text-red-500">*</span>
                   </Label>
                   <select
                     id="primaryCategoryId"
                     {...register('primaryCategoryId')}
-                    className="w-full h-10 px-3 py-2 bg-white border border-slate-300 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-500 text-slate-800"
+                    className="w-full h-10 sm:h-11 px-3 bg-white border border-slate-300 rounded-lg text-sm font-medium focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-slate-800 shadow-xs"
                   >
                     <option value="">-- Select Primary Category --</option>
                     {categoriesList.map(cat => (
@@ -368,12 +383,13 @@ export function AccountSettings() {
                     ))}
                   </select>
                   <p className="text-[11px] text-slate-500">
-                    Your core supply category displayed on your Homepage showcase card.
+                    Core supply category displayed on your Homepage showcase card.
                   </p>
                 </div>
 
-                <div className="space-y-2 w-full">
-                  <Label className="text-gray-700 text-sm font-bold" htmlFor="supplierHeadline">
+                {/* 3. Supplier Tagline / Headline */}
+                <div className="space-y-1.5 w-full">
+                  <Label className="text-slate-800 text-xs font-bold uppercase tracking-wider" htmlFor="supplierHeadline">
                     Supplier Tagline / Headline
                   </Label>
                   <Input
@@ -381,21 +397,17 @@ export function AccountSettings() {
                     type="text"
                     placeholder="e.g. Authorized Wholesale Distributor of TMT Steel Bars & Girders"
                     {...register('supplierHeadline')}
-                    className="bg-white w-full"
+                    className="bg-white h-10 sm:h-11 rounded-lg border-slate-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-slate-800 text-sm w-full"
                   />
+                  <p className="text-[11px] text-slate-500">
+                    A brief headline summarizing your business specialization.
+                  </p>
                 </div>
 
-                <div className="space-y-2 w-full sm:col-span-2">
-                  <Label className="text-gray-700 text-sm font-bold" htmlFor="business">
-                    Organisation Name
-                    <span className="text-red-500">*</span>
-                  </Label>
-                  <Input id="business" type="text" placeholder="e.g. Acme Corp Ltd." {...register('businessName')} className="bg-white w-full" />
-                </div>
-
-                <div className="space-y-2 w-full sm:col-span-2">
-                  <Label className="text-gray-700 text-sm font-bold">
-                    Additional Supply Categories <span className="text-slate-400 font-normal">(select all categories you can supply)</span>
+                {/* 4. Additional Supply Categories */}
+                <div className="space-y-1.5 w-full sm:col-span-2">
+                  <Label className="text-slate-800 text-xs font-bold uppercase tracking-wider">
+                    Additional Supply Categories <span className="text-slate-400 font-normal lowercase">(select all categories you supply)</span>
                   </Label>
                   <div className="flex flex-wrap gap-2 pt-1">
                     {categoriesList.map(cat => {
@@ -413,8 +425,8 @@ export function AccountSettings() {
                           }}
                           className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer ${
                             isSelected
-                              ? 'bg-orange-500 text-white border-orange-600 shadow-sm'
-                              : 'bg-white text-slate-700 border-slate-300 hover:border-orange-400'
+                              ? 'bg-orange-600 text-white border-orange-600 shadow-xs'
+                              : 'bg-white text-slate-700 border-slate-300 hover:border-orange-400 hover:bg-orange-50/50'
                           }`}
                         >
                           {isSelected ? '✓ ' : '+ '}{cat.categoryName}
@@ -423,84 +435,137 @@ export function AccountSettings() {
                     })}
                   </div>
                 </div>
-                <div className="space-y-2 w-full">
-                  <Label className="text-gray-600 text-sm" htmlFor="gstin">
+
+                {/* 5. GST Number */}
+                <div className="space-y-1.5 w-full">
+                  <Label className="text-slate-800 text-xs font-bold uppercase tracking-wider" htmlFor="gstin">
                     GST Number
                   </Label>
-                  <Input id="gstin" type="text" placeholder="27XXXXX..." {...register('gstin')} className="bg-white w-full uppercase" />
+                  <Input
+                    id="gstin"
+                    type="text"
+                    placeholder="27XXXXX..."
+                    {...register('gstin')}
+                    className="bg-white h-10 sm:h-11 rounded-lg border-slate-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-slate-800 text-sm w-full uppercase"
+                  />
                 </div>
-                <div className="space-y-2 w-full">
-                  <Label className="text-gray-600 text-sm" htmlFor="roleInCompany">
-                    Role in Organisation
-                    <span className="text-red-500">*</span>
+
+                {/* 6. Role in Organisation */}
+                <div className="space-y-1.5 w-full">
+                  <Label className="text-slate-800 text-xs font-bold uppercase tracking-wider" htmlFor="roleInCompany">
+                    Role in Organisation <span className="text-red-500">*</span>
                   </Label>
-                  <Input id="roleInCompany" type="text" placeholder="e.g. Founder, Sales Manager" {...register('roleInCompany')} className="bg-white w-full" />
+                  <Input
+                    id="roleInCompany"
+                    type="text"
+                    placeholder="e.g. Founder, Sales Manager"
+                    {...register('roleInCompany')}
+                    className="bg-white h-10 sm:h-11 rounded-lg border-slate-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-slate-800 text-sm w-full"
+                  />
                 </div>
-                <div className="space-y-2 w-full">
-                  <Label className="text-gray-600 text-sm" htmlFor="website">
-                    Website <span className="text-slate-400 font-normal">(optional)</span>
+
+                {/* 7. Website */}
+                <div className="space-y-1.5 w-full">
+                  <Label className="text-slate-800 text-xs font-bold uppercase tracking-wider" htmlFor="website">
+                    Website <span className="text-slate-400 font-normal lowercase">(optional)</span>
                   </Label>
-                  <Input id="website" type="text" placeholder="e.g. https://acmecorp.com" {...register('website')} className="bg-white w-full" />
+                  <Input
+                    id="website"
+                    type="text"
+                    placeholder="e.g. https://acmecorp.com"
+                    {...register('website')}
+                    className="bg-white h-10 sm:h-11 rounded-lg border-slate-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-slate-800 text-sm w-full"
+                  />
                 </div>
-                <div className="space-y-2 w-full">
-                  <Label className="text-gray-600 text-sm" htmlFor="businessSince">
-                    Business Since <span className="text-slate-400 font-normal">(year, optional)</span>
+
+                {/* 8. Business Since */}
+                <div className="space-y-1.5 w-full">
+                  <Label className="text-slate-800 text-xs font-bold uppercase tracking-wider" htmlFor="businessSince">
+                    Business Since <span className="text-slate-400 font-normal lowercase">(year, optional)</span>
                   </Label>
-                  <Input id="businessSince" type="number" min="1900" max={new Date().getFullYear()} placeholder="e.g. 2012" {...register('businessSince')} className="bg-white w-full" />
+                  <Input
+                    id="businessSince"
+                    type="number"
+                    min="1900"
+                    max={new Date().getFullYear()}
+                    placeholder="e.g. 2012"
+                    {...register('businessSince')}
+                    className="bg-white h-10 sm:h-11 rounded-lg border-slate-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-slate-800 text-sm w-full"
+                  />
                 </div>
-                <div className="space-y-2 w-full">
-                  <Label className="text-gray-700 text-sm font-bold" htmlFor="topBrands">
-                    Top Brands You Deal In <span className="text-slate-400 font-normal">(comma separated)</span>
+
+                {/* 9. Top Brands */}
+                <div className="space-y-1.5 w-full sm:col-span-2">
+                  <Label className="text-slate-800 text-xs font-bold uppercase tracking-wider" htmlFor="topBrands">
+                    Top Brands You Deal In <span className="text-slate-400 font-normal lowercase">(comma separated)</span>
                   </Label>
                   <Input
                     id="topBrands"
                     type="text"
                     placeholder="e.g. Tata Tiscon, UltraTech, Polycab, Havells"
                     {...register('topBrands')}
-                    className="bg-white w-full"
+                    className="bg-white h-10 sm:h-11 rounded-lg border-slate-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-slate-800 text-sm w-full"
                   />
                   <p className="text-[11px] text-slate-500">
                     Brand names displayed on your showcase card — helps buyers find suppliers for specific brands.
                   </p>
                 </div>
-                <div className="space-y-2 w-full">
-                  <Label className="text-gray-600 text-sm" htmlFor="businessPhone">
-                    Business Phone <span className="text-slate-400 font-normal">(public, optional)</span>
+
+                {/* 10. Business Phone */}
+                <div className="space-y-1.5 w-full">
+                  <Label className="text-slate-800 text-xs font-bold uppercase tracking-wider" htmlFor="businessPhone">
+                    Business Phone <span className="text-slate-400 font-normal lowercase">(public, optional)</span>
                   </Label>
-                  <Input id="businessPhone" type="text" placeholder="e.g. 080-12345678" {...register('businessPhone')} className="bg-white w-full" />
+                  <Input
+                    id="businessPhone"
+                    type="text"
+                    placeholder="e.g. 080-12345678"
+                    {...register('businessPhone')}
+                    className="bg-white h-10 sm:h-11 rounded-lg border-slate-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-slate-800 text-sm w-full"
+                  />
                 </div>
-                <div className="space-y-2 w-full sm:col-span-2">
-                  <Label className="text-gray-600 text-sm" htmlFor="storeAddress">
-                    Store / Business Address <span className="text-slate-400 font-normal">(public, optional)</span>
+
+                {/* 11. Store Address */}
+                <div className="space-y-1.5 w-full sm:col-span-2">
+                  <Label className="text-slate-800 text-xs font-bold uppercase tracking-wider" htmlFor="storeAddress">
+                    Store / Business Address <span className="text-slate-400 font-normal lowercase">(public, optional)</span>
                   </Label>
-                  <Input id="storeAddress" type="text" placeholder="Shop/warehouse address buyers can visit or ship to" {...register('storeAddress')} className="bg-white w-full" />
+                  <Input
+                    id="storeAddress"
+                    type="text"
+                    placeholder="Shop/warehouse address buyers can visit or ship to"
+                    {...register('storeAddress')}
+                    className="bg-white h-10 sm:h-11 rounded-lg border-slate-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-slate-800 text-sm w-full"
+                  />
                   <p className="text-[11px] text-slate-400">
-                    Shown on your public profile to everyone — keep this separate from your personal home address, which stays private until a deal closes.
+                    Shown on your public profile — keep separate from your personal home address.
                   </p>
                 </div>
-                <div className="space-y-2 w-full sm:col-span-2">
-                  <Label className="text-gray-600 text-sm" htmlFor="businessDescription">
+
+                {/* 12. Textareas */}
+                <div className="space-y-1.5 w-full sm:col-span-2">
+                  <Label className="text-slate-800 text-xs font-bold uppercase tracking-wider" htmlFor="businessDescription">
                     Business Description
                   </Label>
-                  <Textarea id="businessDescription" placeholder="What does your business do?" {...register('businessDescription')} className="bg-white w-full min-h-20 resize-none" />
+                  <Textarea id="businessDescription" placeholder="What does your business do?" {...register('businessDescription')} className="bg-white w-full rounded-lg border-slate-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-slate-800 text-sm min-h-20 resize-none" />
                 </div>
-                <div className="space-y-2 w-full sm:col-span-2">
-                  <Label className="text-gray-600 text-sm" htmlFor="accomplishments">
+                <div className="space-y-1.5 w-full sm:col-span-2">
+                  <Label className="text-slate-800 text-xs font-bold uppercase tracking-wider" htmlFor="accomplishments">
                     Accomplishments
                   </Label>
-                  <Textarea id="accomplishments" placeholder="Awards, certifications, notable projects..." {...register('accomplishments')} className="bg-white w-full min-h-20 resize-none" />
+                  <Textarea id="accomplishments" placeholder="Awards, certifications, notable projects..." {...register('accomplishments')} className="bg-white w-full rounded-lg border-slate-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-slate-800 text-sm min-h-20 resize-none" />
                 </div>
-                <div className="space-y-2 w-full sm:col-span-2">
-                  <Label className="text-gray-600 text-sm" htmlFor="supplierCategories">
+                <div className="space-y-1.5 w-full sm:col-span-2">
+                  <Label className="text-slate-800 text-xs font-bold uppercase tracking-wider" htmlFor="supplierCategories">
                     Top Products Supplied
                   </Label>
-                  <Textarea id="supplierCategories" placeholder="e.g. Cement, Steel, Electrical" {...register('supplierCategories')} className="bg-white w-full min-h-20 resize-none" />
+                  <Textarea id="supplierCategories" placeholder="e.g. Cement, Steel, Electrical" {...register('supplierCategories')} className="bg-white w-full rounded-lg border-slate-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-slate-800 text-sm min-h-20 resize-none" />
                 </div>
-                <div className="space-y-2 w-full sm:col-span-2">
-                  <Label className="text-gray-600 text-sm" htmlFor="topProblemsSolved">
+                <div className="space-y-1.5 w-full sm:col-span-2">
+                  <Label className="text-slate-800 text-xs font-bold uppercase tracking-wider" htmlFor="topProblemsSolved">
                     Top Problems Solved
                   </Label>
-                  <Textarea id="topProblemsSolved" placeholder="What problems do you solve for buyers?" {...register('topProblemsSolved')} className="bg-white w-full min-h-20 resize-none" />
+                  <Textarea id="topProblemsSolved" placeholder="What problems do you solve for buyers?" {...register('topProblemsSolved')} className="bg-white w-full rounded-lg border-slate-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-slate-800 text-sm min-h-20 resize-none" />
                 </div>
               </div>
             </div>
