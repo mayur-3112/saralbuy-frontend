@@ -62,14 +62,14 @@ const SupplierShowcaseSection = () => {
               <Store className="w-3.5 h-3.5" /> Verified Supplier Directory
             </div>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
-              Onboarded Supplier Showcase
+              Trusted Supplier Directory
             </h2>
             <p className="text-slate-400 text-sm sm:text-base mt-1.5 max-w-2xl">
-              Discover verified B2B suppliers, manufacturers, and authorized distributors with pan-India supply capability.
+              Browse verified suppliers, manufacturers, and authorized distributors — ready to quote and deliver across India.
             </p>
           </div>
           <span className="text-xs font-semibold text-slate-400 bg-slate-800/80 border border-slate-700/60 px-3 py-1.5 rounded-full shrink-0 self-start md:self-auto">
-            Fair &amp; Unbiased Exposure
+            Equal Visibility for All Suppliers
           </span>
         </div>
 
