@@ -1249,18 +1249,19 @@ const Chatbot = () => {
     socket.emit(SOCKET_EVENTS.CHAT_USER, partnerIdToFetch);
 
     const handleChatUser = userData => {
+      if (!userData) return;
       // Use incomingRoomId from navbar if available, otherwise build it
       const roomId =
         incomingRoomId ||
-        [buyerId, userData._id, searchParams.get('productId')].filter(Boolean).join('_');
+        [buyerId, userData?._id, searchParams.get('productId')].filter(Boolean).join('_');
 
       const contactEntry = {
         roomId,
-        name: `${userData.firstName} ${userData.lastName}`.trim(),
-        avatar: userData.profileImage || '',
+        name: `${userData?.firstName || ''} ${userData?.lastName || ''}`.trim() || 'User',
+        avatar: userData?.profileImage || '',
         // ✅ Correctly assign buyerId/sellerId regardless of who's logged in
-        buyerId: isBuyerRole ? currentUserId : userData._id,
-        sellerId: isBuyerRole ? userData._id : currentUserId,
+        buyerId: isBuyerRole ? currentUserId : userData?._id,
+        sellerId: isBuyerRole ? userData?._id : currentUserId,
         productId: searchParams.get('productId'),
         productName,
         isOnline: false,

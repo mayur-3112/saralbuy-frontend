@@ -80,9 +80,11 @@ export function AccountSettings() {
 
   useEffect(() => {
     if (user) {
-      const primaryCatId = typeof user?.primaryCategoryId === 'object' ? user.primaryCategoryId._id : (user?.primaryCategoryId || '');
+      const primaryCatId = (user?.primaryCategoryId && typeof user.primaryCategoryId === 'object')
+        ? user.primaryCategoryId._id
+        : (user?.primaryCategoryId || '');
       const secCatIds = Array.isArray(user?.secondaryCategoryIds)
-        ? user.secondaryCategoryIds.map(c => typeof c === 'object' ? c._id : c)
+        ? user.secondaryCategoryIds.map(c => (c && typeof c === 'object') ? c._id : c).filter(Boolean)
         : [];
       setSelectedSecCategories(secCatIds);
 

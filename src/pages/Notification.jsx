@@ -128,7 +128,7 @@ const Notification = () => {
       navigate('/chat', {
         state: {
           buyerId: metadata.buyerId,
-          sellerId: userProfile._id,
+          sellerId: userProfile?._id,
           productId: pid,
           isBuyer: false,
         },
