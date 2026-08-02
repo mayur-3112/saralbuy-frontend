@@ -364,13 +364,22 @@ const HomeNavbar = () => {
     setSearchText(value);
   };
 
+  const [universalResults, setUniversalResults] = useState({
+    categories: [],
+    suppliers: [],
+    products: [],
+    rfqs: [],
+    brands: [],
+  });
+
   const submitSearch = () => {
     if (value.trim() === '') return;
     setShowDropdown(false);
     setProducts([]);
+    setUniversalResults({ categories: [], suppliers: [], products: [], rfqs: [], brands: [] });
     const categoryParam = selectedSearchCategory !== 'all' ? `&category=${selectedSearchCategory}` : '';
     const locationParam = currentLocation ? `&location=${encodeURIComponent(currentLocation)}` : '';
-    navigate(`/product-listing?title=${encodeURIComponent(value)}${categoryParam}${locationParam}&key=enter`);
+    navigate(`/search-results?q=${encodeURIComponent(value)}${categoryParam}${locationParam}`);
     setSearchText('');
     flush();
   };
@@ -379,38 +388,42 @@ const HomeNavbar = () => {
     if (e.key.toLowerCase() === 'enter') submitSearch();
   };
 
-  // useEffect(() => {
-  //   if (value.trim().length > 1) {
-  //     fn(value);
-  //     setShowDropdown(true);
-  //   } else {
-  //     setProducts([]);
-  //     setShowDropdown(false);
-  //   }
-  // }, [value]);
   useEffect(() => {
     if (value.trim().length > 1) {
       setIsSearchLoading(true);
-      setProducts([]);
       setShowDropdown(true);
-      fn(value, selectedSearchCategory);
+      userService
+        .getUniversalSearch({
+          q: value.trim(),
+          category: selectedSearchCategory,
+          location: currentLocation,
+          limit: 5,
+        })
+        .then(res => {
+          if (res) {
+            setUniversalResults({
+              categories: Array.isArray(res.categories) ? res.categories : [],
+              suppliers: Array.isArray(res.suppliers) ? res.suppliers : [],
+              products: Array.isArray(res.products) ? res.products : [],
+              rfqs: Array.isArray(res.rfqs) ? res.rfqs : [],
+              brands: Array.isArray(res.brands) ? res.brands : [],
+            });
+            setProducts(Array.isArray(res.products) ? res.products : []);
+          }
+        })
+        .catch(err => {
+          console.error('Universal Search Error:', err);
+        })
+        .finally(() => {
+          setIsSearchLoading(false);
+        });
     } else {
       setProducts([]);
+      setUniversalResults({ categories: [], suppliers: [], products: [], rfqs: [], brands: [] });
       setIsSearchLoading(false);
       setShowDropdown(false);
     }
-  }, [value, selectedSearchCategory]);
-
-  // useEffect(() => {
-  //   setProducts(data);
-  // }, [data]);
-
-  useEffect(() => {
-    if (data !== undefined) {
-      setProducts(data);
-      setIsSearchLoading(false);
-    }
-  }, [data]);
+  }, [value, selectedSearchCategory, currentLocation]);
   useEffect(() => {
     function handleOutsideClick(event) {
       if (showDropdown && productsRef.current) {
@@ -750,42 +763,152 @@ const HomeNavbar = () => {
                 {showDropdown && (
                   <div
                     ref={productsRef}
-                    className="absolute left-0 right-0 top-full mt-3 z-[99] max-h-[350px] overflow-y-auto bg-white rounded-xl shadow-xl border border-slate-100 p-2 space-y-2"
+                    className="absolute left-0 right-0 top-full mt-3 z-[99] max-h-[420px] overflow-y-auto bg-white rounded-xl shadow-xl border border-slate-100 p-3 space-y-3"
                   >
                     {isSearchLoading ? (
                       Array.from({ length: 3 }).map((_, i) => (
-                        <Skeleton key={i} className="h-20 rounded-xl w-full" />
-                      ))
-                    ) : products?.length > 0 ? (
-                      products.map(p => (
-                        <Card
-                          key={p._id}
-                          className="p-3 rounded-xl border border-slate-100 shadow-sm bg-white cursor-pointer hover:bg-orange-50 hover:border-orange-200 transition-all"
-                          onClick={() => {
-                            setShowDropdown(false);
-                            setProducts([]);
-                            setSearchText('');
-                            flush();
-                            navigate(
-                              `/product-listing?_id=${encodeURIComponent(p._id)}&title=${encodeURIComponent(p.title)}`
-                            );
-                          }}
-                        >
-                          <div className="flex gap-4 items-center">
-                            <img
-                              className="w-12 h-12 object-contain rounded-lg mix-blend-darken bg-slate-50 p-1"
-                              src={p.image || '/no-image.webp'}
-                              alt={p.title}
-                            />
-                            <div className="flex-1">
-                              <p className="text-sm font-bold text-slate-800 line-clamp-1">{p.title}</p>
-                              <p className="text-xs text-slate-500 line-clamp-1 mt-0.5">{p.description}</p>
-                            </div>
-                          </div>
-                        </Card>
+                        <Skeleton key={i} className="h-16 rounded-xl w-full" />
                       ))
                     ) : (
-                      <p className="text-sm text-slate-500 p-4 text-center">No results found.</p>
+                      universalResults.categories.length === 0 &&
+                      universalResults.suppliers.length === 0 &&
+                      universalResults.products.length === 0 &&
+                      universalResults.rfqs.length === 0 &&
+                      universalResults.brands.length === 0
+                    ) ? (
+                      <p className="text-xs text-slate-500 p-3 text-center">No results found for &ldquo;{text}&rdquo;</p>
+                    ) : (
+                      <div className="space-y-3">
+                        {/* 1. Suppliers Group */}
+                        {universalResults.suppliers.length > 0 && (
+                          <div>
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1 px-1">
+                              🏬 Suppliers ({universalResults.suppliers.length})
+                            </p>
+                            <div className="space-y-1">
+                              {universalResults.suppliers.slice(0, 3).map(s => {
+                                const sName = s.businessName || s.organizationName || `${s.firstName || ''} ${s.lastName || ''}`.trim();
+                                return (
+                                  <div
+                                    key={s._id}
+                                    className="p-2 rounded-lg hover:bg-orange-50 cursor-pointer flex items-center justify-between transition-colors group/item"
+                                    onClick={() => {
+                                      setShowDropdown(false);
+                                      setSearchText('');
+                                      navigate(`/user-profile/${s._id}`);
+                                    }}
+                                  >
+                                    <div className="flex items-center gap-2 min-w-0">
+                                      <Building2 className="w-4 h-4 text-orange-500 shrink-0" />
+                                      <span className="text-xs font-bold text-slate-800 truncate group-hover/item:text-orange-600">
+                                        {sName}
+                                      </span>
+                                    </div>
+                                    <VerifiedBadge status={s.verificationStatus} size="sm" />
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* 2. RFQs / Buyer Requirements */}
+                        {universalResults.rfqs.length > 0 && (
+                          <div>
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1 px-1">
+                              📋 RFQs ({universalResults.rfqs.length})
+                            </p>
+                            <div className="space-y-1">
+                              {universalResults.rfqs.slice(0, 3).map(rfq => (
+                                <div
+                                  key={rfq._id}
+                                  className="p-2 rounded-lg hover:bg-orange-50 cursor-pointer flex items-center justify-between transition-colors group/item"
+                                  onClick={() => {
+                                    setShowDropdown(false);
+                                    setSearchText('');
+                                    navigate(`/product-listing?_id=${rfq._id}&title=${encodeURIComponent(rfq.title)}`);
+                                  }}
+                                >
+                                  <div className="min-w-0 flex-1">
+                                    <p className="text-xs font-bold text-slate-800 truncate group-hover/item:text-orange-600">
+                                      {rfq.title}
+                                    </p>
+                                    {rfq.categoryId?.categoryName && (
+                                      <p className="text-[10px] text-slate-400 truncate">{rfq.categoryId.categoryName}</p>
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* 3. Products Group */}
+                        {universalResults.products.length > 0 && (
+                          <div>
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1 px-1">
+                              📦 Products ({universalResults.products.length})
+                            </p>
+                            <div className="space-y-1">
+                              {universalResults.products.slice(0, 3).map(p => (
+                                <div
+                                  key={p._id}
+                                  className="p-2 rounded-lg hover:bg-orange-50 cursor-pointer flex items-center gap-2 transition-colors group/item"
+                                  onClick={() => {
+                                    setShowDropdown(false);
+                                    setSearchText('');
+                                    navigate(`/product-listing?_id=${p._id}&title=${encodeURIComponent(p.title)}`);
+                                  }}
+                                >
+                                  <img
+                                    src={p.image || '/no-image.webp'}
+                                    alt={p.title}
+                                    className="w-8 h-8 object-contain rounded bg-slate-50 border p-0.5 shrink-0"
+                                  />
+                                  <div className="min-w-0 flex-1">
+                                    <p className="text-xs font-bold text-slate-800 truncate group-hover/item:text-orange-600">
+                                      {p.title}
+                                    </p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* 4. Categories Group */}
+                        {universalResults.categories.length > 0 && (
+                          <div>
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1 px-1">
+                              🏷️ Categories ({universalResults.categories.length})
+                            </p>
+                            <div className="flex flex-wrap gap-1">
+                              {universalResults.categories.slice(0, 4).map(c => (
+                                <button
+                                  key={c._id}
+                                  onClick={() => {
+                                    setShowDropdown(false);
+                                    setSearchText('');
+                                    navigate(`/product-listing?category=${c._id}`);
+                                  }}
+                                  className="px-2.5 py-1 rounded-md bg-slate-100 hover:bg-orange-100 text-slate-700 hover:text-orange-700 text-[11px] font-semibold transition-colors cursor-pointer"
+                                >
+                                  {c.categoryName}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Press enter prompt footer */}
+                        <div
+                          className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-orange-600 hover:underline cursor-pointer"
+                          onClick={submitSearch}
+                        >
+                          <span>See all results for &ldquo;{text}&rdquo;</span>
+                          <ChevronRight className="w-3.5 h-3.5" />
+                        </div>
+                      </div>
                     )}
                   </div>
                 )}

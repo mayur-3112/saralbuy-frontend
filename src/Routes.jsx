@@ -42,7 +42,7 @@ import AccessibilityStatement from './pages/AccessibilityStatement';
 import PolicyConsentPopup from './components/custom/popups/PolicyConsentPopup';
 import { useUserState } from './redux/hooks/useUser';
 import DiscussionChatbox from './components/custom/dashboard/DiscussionChatbox';
-import LandingPage from './components/custom/landing/LandingPage';
+import SearchResults from './pages/SearchResults';
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Chatbot = lazy(() => import('./pages/Chatbot'));
 const SupplierTools = lazy(() => import('./pages/SupplierTools'));
@@ -126,6 +126,7 @@ export const router = createBrowserRouter(
           <Route path="/update-draft/:productId" element={<UpdateCreateProductForm />} />
           <Route path="/update-product/:productId" element={<UpdateCreateProductForm />} />
           <Route path="/product-listing" element={<ProductListing />} />
+          <Route path="/search-results" element={<SearchResults />} />
           <Route path="/product-overview" element={<ProductOverview />} />
           <Route path="/bid-history/:productId" element={<BidHistory />} />
           <Route path="/terms" element={<TermsAndPrivacy />} />

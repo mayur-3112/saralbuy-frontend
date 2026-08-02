@@ -36,6 +36,18 @@ class UserService {
       })
       .then(res => res.data?.data || res.data);
   }
+  async getUniversalSearch({ q, category, location, limit = 10 }) {
+    return instance
+      .get('/search/universal', {
+        params: {
+          q,
+          category: category && category !== 'all' ? category : undefined,
+          location: location || undefined,
+          limit,
+        },
+      })
+      .then(res => res.data?.data || res.data);
+  }
 }
 
 export default new UserService();
