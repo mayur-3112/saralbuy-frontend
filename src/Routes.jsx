@@ -44,6 +44,8 @@ import { useUserState } from './redux/hooks/useUser';
 import DiscussionChatbox from './components/custom/dashboard/DiscussionChatbox';
 import LandingPage from './components/custom/landing/LandingPage';
 import SearchResults from './pages/SearchResults';
+import SupplierDirectory from './pages/SupplierDirectory';
+
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Chatbot = lazy(() => import('./pages/Chatbot'));
 const SupplierTools = lazy(() => import('./pages/SupplierTools'));
@@ -83,7 +85,6 @@ const ProfileCompletionEffect = () => {
   return null;
 };
 
-// const Profile = lazy(() => import("./pages/profile/Profile"));
 const RootLayout = () => {
   const [open, setOpen] = useState(false);
 
@@ -115,49 +116,48 @@ const RootLayout = () => {
 export const router = createBrowserRouter(
   createRoutesFromElements(
     <>
-    {/* Design Lab — deliberately OUTSIDE RootLayout so it never renders the
-        real HomeNavbar/Footer/MobileBottomNav around it. Not linked from any
-        nav; reachable only by typing the URL directly. */}
-    <Route path="/design-lab" element={<DesignLab />} />
-    <Route element={<RootLayout />}>
-      <Route path="/" element={<LandingPage />} />
-          <Route path="/requirement" element={<Requirement />} />
-          <Route path="/post-requirement" element={<PostRequirementForm />} />
-          <Route path="/category/:categoryId/:subCategoryId" element={<CreateProductForm />} />
-          <Route path="/update-draft/:productId" element={<UpdateCreateProductForm />} />
-          <Route path="/update-product/:productId" element={<UpdateCreateProductForm />} />
-          <Route path="/product-listing" element={<ProductListing />} />
-          <Route path="/search-results" element={<SearchResults />} />
-          <Route path="/product-overview" element={<ProductOverview />} />
-          <Route path="/bid-history/:productId" element={<BidHistory />} />
-          <Route path="/terms" element={<TermsAndPrivacy />} />
-          <Route path="/privacy" element={<TermsAndPrivacy />} />
-          <Route path="/trust-center" element={<TrustCenter />} />
-          <Route path="/sitemap" element={<Sitemap />} />
-          <Route path="/accessibility" element={<AccessibilityStatement />} />
-          <Route path="/how-it-works" element={<HowItWorks />} />
-          <Route path="/how-it-works/buyers" element={<Navigate to="/how-it-works?role=buyer" replace />} />
-          <Route path="/how-it-works/suppliers" element={<Navigate to="/how-it-works?role=supplier" replace />} />
-          <Route path="/supplier-tools" element={<SupplierTools />} />
-          <Route path="/buyer-tools" element={<BuyerTools />} />
-          <Route path="/faq" element={<FAQ />} />
-          <Route path="/about-us" element={<AboutUs />} />
-          <Route path="/contact-us" element={<ContactUs />} />
-          <Route element={<ProtectRoute />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/account" element={<Profile />}>
-              <Route index element={<AccountSettings />} />
-              <Route path="bid" element={<BidListing />} />
-              <Route path="requirements" element={<Requirements />} />
-              <Route path="deal" element={<CloseDeal />} />
-              <Route path="notification" element={<Notification />} />
-              <Route path="requirements-overview/:requirementId" element={<RequirementOverview />} />
-            </Route>
+      {/* Design Lab — deliberately OUTSIDE RootLayout */}
+      <Route path="/design-lab" element={<DesignLab />} />
+      <Route element={<RootLayout />}>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/requirement" element={<Requirement />} />
+        <Route path="/post-requirement" element={<PostRequirementForm />} />
+        <Route path="/category/:categoryId/:subCategoryId" element={<CreateProductForm />} />
+        <Route path="/update-draft/:productId" element={<UpdateCreateProductForm />} />
+        <Route path="/update-product/:productId" element={<UpdateCreateProductForm />} />
+        <Route path="/product-listing" element={<ProductListing />} />
+        <Route path="/search-results" element={<SearchResults />} />
+        <Route path="/suppliers" element={<SupplierDirectory />} />
+        <Route path="/product-overview" element={<ProductOverview />} />
+        <Route path="/bid-history/:productId" element={<BidHistory />} />
+        <Route path="/terms" element={<TermsAndPrivacy />} />
+        <Route path="/privacy" element={<TermsAndPrivacy />} />
+        <Route path="/trust-center" element={<TrustCenter />} />
+        <Route path="/sitemap" element={<Sitemap />} />
+        <Route path="/accessibility" element={<AccessibilityStatement />} />
+        <Route path="/how-it-works" element={<HowItWorks />} />
+        <Route path="/how-it-works/buyers" element={<Navigate to="/how-it-works?role=buyer" replace />} />
+        <Route path="/how-it-works/suppliers" element={<Navigate to="/how-it-works?role=supplier" replace />} />
+        <Route path="/supplier-tools" element={<SupplierTools />} />
+        <Route path="/buyer-tools" element={<BuyerTools />} />
+        <Route path="/faq" element={<FAQ />} />
+        <Route path="/about-us" element={<AboutUs />} />
+        <Route path="/contact-us" element={<ContactUs />} />
+        <Route element={<ProtectRoute />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/account" element={<Profile />}>
+            <Route index element={<AccountSettings />} />
+            <Route path="bid" element={<BidListing />} />
+            <Route path="requirements" element={<Requirements />} />
+            <Route path="deal" element={<CloseDeal />} />
+            <Route path="notification" element={<Notification />} />
+            <Route path="requirements-overview/:requirementId" element={<RequirementOverview />} />
           </Route>
-          <Route path="/chat" element={<Chatbot />} />
-          <Route path="/user-profile/:userId" element={<UserProfile />} />
-          <Route path="*" element={<NoRouteFound />} />
-    </Route>
+        </Route>
+        <Route path="/chat" element={<Chatbot />} />
+        <Route path="/user-profile/:userId" element={<UserProfile />} />
+        <Route path="*" element={<NoRouteFound />} />
+      </Route>
     </>
   )
 );

@@ -56,7 +56,7 @@ const SupplierShowcaseSection = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
-        <div className="flex flex-col mb-8 gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-bold uppercase tracking-wider mb-3">
               <Store className="w-3.5 h-3.5" /> Explore Suppliers
@@ -68,6 +68,12 @@ const SupplierShowcaseSection = () => {
               Search by category, compare profiles, and connect directly with suppliers who deliver across India.
             </p>
           </div>
+          <Button
+            onClick={() => navigate('/suppliers')}
+            className="bg-orange-600 hover:bg-orange-500 text-white font-bold px-5 py-2.5 rounded-full text-xs sm:text-sm shadow-lg shadow-orange-600/30 flex items-center gap-2 transition-all cursor-pointer shrink-0"
+          >
+            Explore All Suppliers <ArrowRight className="w-4 h-4" />
+          </Button>
         </div>
 
         {/* Category Filter Pills */}

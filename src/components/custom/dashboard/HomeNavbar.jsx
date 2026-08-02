@@ -25,6 +25,7 @@ import {
   ChevronRight,
   Building2,
   Layers,
+  Store,
 } from 'lucide-react';
 
 import { Accordion, AccordionItem, AccordionTrigger } from '../../../components/ui/accordion';
@@ -728,11 +729,18 @@ const HomeNavbar = () => {
             <div className="flex items-center justify-between text-sm pb-2 mb-2 border-b border-slate-100">
               <div className="flex items-center gap-5">
                 <Link
+                  to="/suppliers"
+                  className="flex items-center gap-1.5 font-semibold text-slate-700 hover:text-orange-600 transition-colors whitespace-nowrap bg-orange-50/80 px-2.5 py-1 rounded-full border border-orange-200/80"
+                >
+                  <Store className="w-4 h-4 text-orange-500" />
+                  Explore Suppliers
+                </Link>
+                <Link
                   to="/product-listing"
                   className="flex items-center gap-1.5 font-semibold text-slate-600 hover:text-orange-600 transition-colors whitespace-nowrap"
                 >
                   <Compass className="w-4 h-4" />
-                  Explore
+                  Explore RFQs
                 </Link>
                 <Link
                   to="/how-it-works"
