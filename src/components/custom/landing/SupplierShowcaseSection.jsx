@@ -130,15 +130,23 @@ const SupplierShowcaseSection = () => {
               const currentYear = new Date().getFullYear();
               const yearsInBusiness = s.businessSince ? currentYear - Number(s.businessSince) : null;
 
+              const isVerified = s.verificationStatus === 'verified';
+
               return (
                 <div
                   key={s._id}
-                  className="bg-slate-800/80 hover:bg-slate-800 border border-slate-700/60 hover:border-orange-500/50 rounded-2xl p-5 transition-all flex flex-col justify-between group shadow-lg hover:shadow-orange-500/10"
+                  className={`bg-slate-800/80 hover:bg-slate-800 border rounded-2xl p-5 transition-all flex flex-col justify-between group shadow-lg ${
+                    isVerified
+                      ? 'border-emerald-500/40 hover:border-emerald-400 shadow-emerald-500/5 hover:shadow-emerald-500/15'
+                      : 'border-slate-700/60 hover:border-orange-500/50 hover:shadow-orange-500/10'
+                  }`}
                 >
                   <div>
                     {/* Header: Avatar, Name & Verification */}
                     <div className="flex items-start gap-3.5 mb-3.5">
-                      <Avatar className="h-14 w-14 border-2 border-slate-700 group-hover:border-orange-500 shrink-0 rounded-full overflow-hidden bg-slate-700">
+                      <Avatar className={`h-14 w-14 border-2 shrink-0 rounded-full overflow-hidden bg-slate-700 ${
+                        isVerified ? 'border-emerald-500 group-hover:border-emerald-400' : 'border-slate-700 group-hover:border-orange-500'
+                      }`}>
                         <AvatarImage src={resolveImageUrl(s.profileImage)} alt={fullName} className="object-cover w-full h-full rounded-full" />
                         <AvatarFallback className="bg-orange-600 text-white font-black text-sm flex items-center justify-center w-full h-full">
                           {fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'S'}
