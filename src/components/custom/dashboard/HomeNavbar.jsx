@@ -817,9 +817,9 @@ const HomeNavbar = () => {
                   logo — it was hugging the left while empty space collected
                   on the right, before ml-auto pushed the icons to the edge. */}
               <div className="flex-1 flex justify-center min-w-0">
-              <div className="w-full max-w-3xl flex items-center bg-white rounded-full border border-slate-200 shadow-sm hover:shadow-md focus-within:shadow-md focus-within:border-orange-300 transition-all duration-300 overflow-visible">
+              <div className="w-full max-w-4xl flex items-center bg-white rounded-full border border-slate-200 shadow-sm hover:shadow-md focus-within:shadow-lg focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-500/20 transition-all duration-300 overflow-visible">
               {/* Location */}
-              <div className="flex items-center relative group shrink-0 w-32 lg:w-40 border-r border-slate-200 hover:bg-slate-50 rounded-l-full transition-colors">
+              <div className="flex items-center relative group shrink-0 w-32 lg:w-44 border-r border-slate-200 hover:bg-slate-50/80 rounded-l-full transition-colors">
                 <MapPin
                   onClick={getGeoLocation}
                   className="w-4 h-4 text-orange-500 absolute left-4 top-1/2 -translate-y-1/2 cursor-pointer hover:scale-110 transition-transform z-10"
@@ -827,7 +827,7 @@ const HomeNavbar = () => {
                 />
                 <Input
                   placeholder="Location..."
-                  className="bg-transparent pl-10 pr-2 text-sm border-0 shadow-none focus-visible:ring-0 h-[42px] w-full truncate cursor-pointer rounded-l-full"
+                  className="bg-transparent pl-10 pr-2 text-xs lg:text-sm border-0 shadow-none focus-visible:ring-0 h-[44px] w-full truncate cursor-pointer rounded-l-full font-medium text-slate-700"
                   value={currentLocation}
                   onChange={handleLocationChange}
                   onKeyDown={handleLocationKeyDown}
@@ -838,7 +838,7 @@ const HomeNavbar = () => {
               <select
                 value={selectedSearchCategory}
                 onChange={e => setSelectedSearchCategory(e.target.value)}
-                className="bg-transparent border-r border-slate-200 text-slate-600 text-sm px-3 hover:bg-slate-50 focus:outline-none cursor-pointer h-[42px] max-w-[160px] truncate shrink-0 transition-colors"
+                className="bg-transparent border-r border-slate-200 text-slate-700 font-medium text-xs lg:text-sm px-3 hover:bg-slate-50/80 focus:outline-none cursor-pointer h-[44px] max-w-[160px] truncate shrink-0 transition-colors"
               >
                 <option value="all">All Categories</option>
                 {filteredCategories?.map(cat => (
@@ -849,22 +849,23 @@ const HomeNavbar = () => {
               </select>
 
               {/* Search */}
-              <div className="relative flex-1 flex items-center h-[42px] group">
+              <div className="relative flex-1 flex items-center h-[44px] group">
                 <Input
                   type="text"
                   onInput={handleInputValue}
                   value={text}
                   onKeyPress={handleKeyPress}
-                  placeholder="Looking For..."
-                  className="pl-3 pr-1 shadow-none border-0 focus-visible:ring-0 h-full w-full min-w-0 bg-transparent rounded-l-none"
+                  placeholder="Search by RFQ title, category, brand, supplier, or RFQ ID..."
+                  className="pl-4 pr-2 shadow-none border-0 focus-visible:ring-0 h-full w-full min-w-0 bg-transparent text-xs lg:text-sm font-medium text-slate-900 placeholder:text-slate-400"
                 />
                 <button
                   type="button"
                   onClick={submitSearch}
                   aria-label="Search"
-                  className="mr-1.5 shrink-0 w-8 h-8 bg-orange-500 hover:bg-orange-600 rounded-full flex items-center justify-center cursor-pointer transition-colors shadow-sm shadow-orange-500/30"
+                  className="mr-1.5 shrink-0 px-4 h-9 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 rounded-full flex items-center justify-center gap-1.5 cursor-pointer transition-all duration-200 shadow-sm shadow-orange-500/30 active:scale-95 text-white font-bold text-xs"
                 >
-                  <SearchIcon className="h-4 w-4 text-white" />
+                  <SearchIcon className="h-3.5 w-3.5" />
+                  <span className="hidden xl:inline">Search</span>
                 </button>
 
                 {/* Search Dropdown */}
@@ -1356,11 +1357,11 @@ const HomeNavbar = () => {
               </div>
 
               {/* Mobile Search */}
-              <div className="relative w-[55%] flex items-center bg-white rounded-sm border border-gray-300 focus-within:ring-1 focus-within:ring-gray-900 focus-within:border-gray-900 overflow-hidden">
+              <div className="relative w-[58%] flex items-center bg-white rounded-full border border-slate-200 shadow-xs focus-within:ring-1 focus-within:ring-orange-500 focus-within:border-orange-500 overflow-hidden">
                 <select
                   value={selectedSearchCategory}
                   onChange={e => setSelectedSearchCategory(e.target.value)}
-                  className="bg-gray-50 border-r border-gray-300 text-gray-700 text-[11px] px-1.5 py-2 focus:outline-none cursor-pointer h-[32px] max-w-[110px] truncate shrink-0"
+                  className="bg-slate-50 border-r border-slate-200 text-slate-700 text-[11px] font-medium px-1.5 py-1 focus:outline-none cursor-pointer h-[34px] max-w-[85px] truncate shrink-0"
                 >
                   <option value="all">All</option>
                   {filteredCategories?.map(cat => (
@@ -1377,10 +1378,10 @@ const HomeNavbar = () => {
                     setShowDropdown(e.target.value.trim().length > 1);
                   }}
                   onKeyPress={handleSearchKeyPress}
-                  placeholder="Looking For..."
-                  className="pl-2 pr-6 py-1 shadow-none rounded-none w-full border-none focus-visible:ring-0 h-[32px] text-xs"
+                  placeholder="Search RFQs, categories, brands, or IDs..."
+                  className="pl-2 pr-7 py-1 shadow-none rounded-none w-full border-none focus-visible:ring-0 h-[34px] text-[11px] font-medium text-slate-900 placeholder:text-slate-400"
                 />
-                <SearchIcon className="absolute right-2 top-2 h-3.5 w-3.5 pointer-events-none opacity-50" />
+                <SearchIcon className="absolute right-2 top-2.5 h-3.5 w-3.5 pointer-events-none text-orange-500" />
                 <SearchDropdown id="mobile-search-dropdown" />
               </div>
             </div>
