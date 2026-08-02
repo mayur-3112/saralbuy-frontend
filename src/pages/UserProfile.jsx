@@ -55,8 +55,25 @@ export default function UserProfile() {
   const { userId } = useParams();
   const { user: currentUser } = useUserState();
   const { fn, data, loading } = useFetch(userService.getUserProfile);
+  const [categoriesList, setCategoriesList] = useState([]);
 
-  useEffect(() => { fn(userId); }, [userId]);
+  useEffect(() => {
+    fn(userId);
+    categoryService.getCategories().then(res => {
+      const list = Array.isArray(res) ? res : res?.categories || [];
+      setCategoriesList(list);
+    }).catch(() => {});
+  }, [userId]);
+
+  const resolveCategoryName = (cat) => {
+    if (!cat) return null;
+    if (typeof cat === 'object' && cat.categoryName) return cat.categoryName;
+    if (typeof cat === 'string') {
+      const found = categoriesList.find(c => c._id === cat);
+      if (found) return found.categoryName;
+    }
+    return cat;
+  };
 
   if (loading) return <Loader />;
   if (!data) return null;
