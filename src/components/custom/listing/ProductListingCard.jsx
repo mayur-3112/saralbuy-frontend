@@ -25,10 +25,10 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
   const user = product?.buyerId || product?.userId || product?.buyer || {};
   const prod = product?.productId || product?.product || product;
   
-  const orgName = prod?.paymentAndDelivery?.organizationName;
-  const bizName = user?.businessName || user?.companyName || product?.organization;
-  const fullName = user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : null;
-  const rawBuyerName = orgName || bizName || fullName || null;
+  const userProfileOrg = user?.organizationName || user?.businessName || user?.companyName;
+  const userFullName = user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : null;
+  const rfqOrgName = prod?.paymentAndDelivery?.organizationName || product?.organization;
+  const rawBuyerName = userProfileOrg || userFullName || (rfqOrgName && rfqOrgName !== 'Anmol Enterprises' ? rfqOrgName : null);
   
   const maskName = (name) => {
     if (!name) return 'Buyer Name Hidden';
@@ -56,13 +56,27 @@ const ProductListingCard = ({ product, onActionClick, actionLabel = 'View RFQ', 
   const descriptionText = prod?.description || product?.description || productTitle;
 
   const items = [];
-  if (prod?.items && prod.items.length > 0) {
+  const hasRealItems = prod?.items && prod.items.some(item => {
+    const name = item.itemName || item.typeOfProduct || item.subCategoryName || item.productType || item.model;
+    return name && name.trim() !== '';
+  });
+
+  if (prod?.isUpload || prod?.document || !hasRealItems) {
+    if (prod?.document || prod?.isUpload) {
+      items.push("Refer to Attached Document");
+    } else if (hasRealItems) {
+      prod.items.forEach(item => {
+        const name = item.itemName || item.typeOfProduct || item.subCategoryName || item.productType || item.model;
+        if (name && name.trim() && !items.includes(name)) items.push(name);
+      });
+    } else if (categoryName) {
+      items.push(categoryName);
+    }
+  } else if (prod?.items && prod.items.length > 0) {
     prod.items.forEach(item => {
-      const name = item.typeOfProduct || item.subCategoryName || item.productType;
+      const name = item.itemName || item.typeOfProduct || item.subCategoryName || item.productType || item.model;
       if (name && name.trim() && !items.includes(name)) items.push(name);
     });
-  } else if (prod?.isUpload || prod?.document) {
-    items.push("Refer to Attached Document");
   } else if (prod?.isMergeQuote && prod?.products?.length > 0) {
     items.push(...prod.products.map(p => p.title || p.categoryName));
   } else if (categoryName) {

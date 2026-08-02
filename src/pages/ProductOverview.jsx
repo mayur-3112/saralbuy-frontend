@@ -188,15 +188,8 @@ const SellerForm = ({
   const localMainProduct = bidOverviewRes ? bidOverviewRes?.product : productResponse?.mainProduct;
   const isMulti = localMainProduct?.isMultiple;
   const rawItems = localMainProduct?.items || [];
-  // Document-upload RFQ: seller quotes a single total + file. Upload-mode RFQs
-  // are flagged isUpload even though they carry a placeholder item.
-  // A document existing (or isUpload being set) never suppresses a real
-  // structured items list on its own — only genuinely having zero items
-  // means there's nothing to quote per-line, so the seller quotes one
-  // total instead. Previously `isUpload` alone forced this branch even
-  // when items[] had real entries, hiding per-item pricing entirely for
-  // every upload-mode RFQ regardless of its actual content.
-  const isDocFlow = rawItems.length === 0 && !!localMainProduct?.document;
+  const hasRealItems = rawItems.length > 0 && rawItems.some(i => (i.itemName || i.subCategoryName || i.typeOfProduct || i.model)?.trim());
+  const isDocFlow = !!localMainProduct?.document && (!hasRealItems || localMainProduct?.isUpload);
 
   let items = rawItems;
   if (!isDocFlow && rawItems.length === 0 && localMainProduct) {
@@ -801,9 +794,8 @@ const ProductOverview = () => {
     const mainP = productResponse?.mainProduct || bidOverviewRes?.product;
     const rawItems = mainP?.items || [];
     const isMulti = mainP?.isMultiple;
-    // See the matching comment in SellerForm — a document (or isUpload)
-    // alone must never suppress a real per-item breakdown.
-    const isDocFlow = rawItems.length === 0 && !!mainP?.document;
+    const hasRealItems = rawItems.length > 0 && rawItems.some(i => (i.itemName || i.subCategoryName || i.typeOfProduct || i.model)?.trim());
+    const isDocFlow = !!mainP?.document && (!hasRealItems || mainP?.isUpload);
 
     // Quote value is PRODUCT-ONLY: sum of qty × unit price (or the seller's
     // stated total for document-upload RFQs). Taxes/freight are never added.
@@ -1136,10 +1128,10 @@ const ProductOverview = () => {
   const hasItems = (mainProductData?.items || []).length > 0;
   const isGstRequired = !!mainProductData?.paymentAndDelivery?.gstNumber;
   const buyerUser = mainProductData?.userId || mainProductData?.buyerId || mainProductData?.buyer || {};
-  const orgName = mainProductData?.paymentAndDelivery?.organizationName;
-  const bizName = buyerUser?.businessName || buyerUser?.companyName;
-  const fullName = buyerUser?.firstName ? `${buyerUser.firstName} ${buyerUser.lastName || ''}`.trim() : null;
-  const rawBuyerName = orgName || bizName || fullName || null;
+  const userProfileOrg = buyerUser?.organizationName || buyerUser?.businessName || buyerUser?.companyName;
+  const userFullName = buyerUser?.firstName ? `${buyerUser.firstName} ${buyerUser.lastName || ''}`.trim() : null;
+  const rfqOrgName = mainProductData?.paymentAndDelivery?.organizationName || mainProductData?.organization;
+  const rawBuyerName = userProfileOrg || userFullName || (rfqOrgName && rfqOrgName !== 'Anmol Enterprises' ? rfqOrgName : null);
   
   const maskName = (name) => {
     if (!name) return 'Buyer Name Hidden';
@@ -1502,34 +1494,29 @@ const ProductOverview = () => {
                     if (urls.length === 0) return null;
                     return (
                       <div className="pt-4 mt-4 border-t border-slate-100 space-y-3">
-                        <h4 className="font-semibold text-slate-800 mb-2">Attached Reference Documents ({urls.length})</h4>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          {urls.map((url, idx) => {
-                            const name = url.split('/').pop() || `Document ${idx + 1}`;
-                            const isImg = /\.(jpg|jpeg|png|webp|gif)$/i.test(url);
-                            return (
-                              <div key={idx} className="border border-slate-200 bg-slate-50/50 rounded-lg p-4 flex items-center justify-between shadow-xs hover:border-orange-200 transition-colors">
-                                <div className="flex items-center gap-2.5 overflow-hidden">
-                                  <span className="text-2xl shrink-0">{isImg ? '🖼️' : '📄'}</span>
-                                  <div className="overflow-hidden">
-                                    <p className="text-sm font-semibold text-slate-700 truncate max-w-[180px]">{name}</p>
-                                    <p className="text-[10px] text-slate-400 capitalize">Reference File {idx + 1}</p>
-                                  </div>
-                                </div>
-                                <a 
+                        <div className="bg-orange-500 text-white rounded-xl p-4 sm:p-5 shadow-sm">
+                          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                            <div className="flex items-center gap-3">
+                              <span className="text-2xl">📄</span>
+                              <div>
+                                <h4 className="font-extrabold text-base leading-tight">Uploaded Requirement Document</h4>
+                                <p className="text-xs text-orange-100 mt-0.5">The buyer posted this requirement with an attached BOQ / document file.</p>
+                              </div>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              {urls.map((url, idx) => (
+                                <a
+                                  key={idx}
                                   href={url}
                                   target="_blank"
                                   rel="noreferrer"
-                                  className="flex items-center gap-1.5 bg-orange-600 hover:bg-orange-500 text-white px-3 py-1.5 rounded text-xs font-bold transition-colors shadow-sm shrink-0"
+                                  className="inline-flex items-center gap-1.5 bg-white text-orange-600 hover:bg-orange-50 px-4 py-2 rounded-lg text-xs font-bold transition-colors shadow-sm shrink-0"
                                 >
-                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                  </svg>
-                                  Download
+                                  Open Document {idx + 1} ↗
                                 </a>
-                              </div>
-                            );
-                          })}
+                              ))}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     );

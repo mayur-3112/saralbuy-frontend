@@ -1108,21 +1108,28 @@ const RequirementOverview = () => {
 
               {/* Documents uploaded with the requirement */}
               {resolveDocuments(item.document).length > 0 && (
-                <div className="mt-2">
-                  <p className="text-sm font-semibold text-gray-700 mb-1.5">Uploaded Documents</p>
-                  <div className="flex flex-wrap gap-2">
-                    {resolveDocuments(item.document).map((doc, dIdx) => (
-                      <a
-                        key={dIdx}
-                        href={doc}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 border border-orange-200 text-orange-700 text-xs font-medium rounded-lg hover:bg-orange-100 transition-colors"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
-                        Document {dIdx + 1}
-                      </a>
-                    ))}
+                <div className="bg-orange-500 text-white rounded-xl p-4 sm:p-5 shadow-sm my-3">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">📄</span>
+                      <div>
+                        <h4 className="font-extrabold text-base leading-tight">Uploaded Requirement Document</h4>
+                        <p className="text-xs text-orange-100 mt-0.5">The buyer attached a BOQ / document file for this requirement.</p>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {resolveDocuments(item.document).map((doc, dIdx) => (
+                        <a
+                          key={dIdx}
+                          href={doc}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-4 py-2 bg-white text-orange-600 font-bold text-xs rounded-lg shadow-sm hover:bg-orange-50 transition-colors"
+                        >
+                          Open Document {dIdx + 1} ↗
+                        </a>
+                      ))}
+                    </div>
                   </div>
                 </div>
               )}
