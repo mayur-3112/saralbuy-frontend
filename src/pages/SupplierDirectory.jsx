@@ -20,6 +20,9 @@ import {
   Tag,
   Briefcase,
   ArrowRight,
+  Sparkles,
+  Layers,
+  CheckCircle2,
 } from 'lucide-react';
 import { mergeName } from '@/utils/mergerName';
 
@@ -69,9 +72,10 @@ export default function SupplierDirectory() {
     const q = searchQuery.toLowerCase().trim();
     const name = (s.businessName || s.organizationName || mergeName(s) || '').toLowerCase();
     const headline = (s.supplierHeadline || '').toLowerCase();
-    const location = (s.currentLocation || s.address || '').toLowerCase();
+    const description = (s.businessDescription || '').toLowerCase();
+    const location = (s.currentLocation || s.storeAddress || s.address || '').toLowerCase();
     const brands = (Array.isArray(s.topBrands) ? s.topBrands.join(' ') : '').toLowerCase();
-    return name.includes(q) || headline.includes(q) || location.includes(q) || brands.includes(q);
+    return name.includes(q) || headline.includes(q) || description.includes(q) || location.includes(q) || brands.includes(q);
   });
 
   return (
@@ -86,16 +90,16 @@ export default function SupplierDirectory() {
             Verified B2B Suppliers & Distributors
           </h1>
           <p className="text-slate-400 text-xs sm:text-sm mt-1.5 max-w-2xl">
-            Browse verified manufacturers, stockists, and wholesalers. View detailed credentials, brand authorizations, and request quotes directly.
+            Browse verified manufacturers, stockists, and wholesalers. View detailed credentials, primary & secondary categories, brand authorizations, and request quotes directly.
           </p>
 
-          {/* Search bar & Category filters */}
+          {/* Search bar */}
           <div className="mt-6 flex flex-col md:flex-row gap-3 items-center">
             <div className="relative flex-1 w-full">
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <Input
                 type="text"
-                placeholder="Search suppliers by name, brand, location, or headline..."
+                placeholder="Search suppliers by business name, primary/secondary category, brand, or location..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 className="pl-10 pr-4 h-11 bg-slate-800 border-slate-700 text-white placeholder:text-slate-400 rounded-xl text-sm focus-visible:ring-2 focus-visible:ring-orange-500"
@@ -136,7 +140,7 @@ export default function SupplierDirectory() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex items-center justify-between mb-6">
           <p className="text-xs sm:text-sm font-bold text-slate-600">
-            Showing <span className="text-slate-900">{filteredSuppliers.length}</span> verified supplier profiles
+            Showing <span className="text-slate-900">{filteredSuppliers.length}</span> supplier profiles
           </p>
         </div>
 
@@ -157,15 +161,17 @@ export default function SupplierDirectory() {
             <p className="text-xs text-slate-500 mt-1">Try adjusting your category filter or search terms.</p>
           </Card>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-5">
             {filteredSuppliers.map(s => {
               const fullName = mergeName(s) || 'Verified Supplier';
               const companyName = s.businessName || s.organizationName;
-              const location = s.currentLocation || s.storeAddress || s.address;
-              const primaryCatName = s.primaryCategoryId?.categoryName || s.supplierCategories?.split(',')[0] || null;
+              const location = s.storeAddress || s.currentLocation || s.address;
+              const primaryCatName = s.primaryCategoryId?.categoryName || s.supplierCategories?.split(',')[0] || 'General Supplies';
+              
               const secondaryCats = Array.isArray(s.secondaryCategoryIds)
-                ? s.secondaryCategoryIds.map(c => c?.categoryName || c).filter(Boolean)
-                : [];
+                ? s.secondaryCategoryIds.map(c => (typeof c === 'object' ? c?.categoryName : c)).filter(Boolean)
+                : (s.supplierCategories ? s.supplierCategories.split(',').slice(1).map(c => c.trim()).filter(Boolean) : []);
+
               const brands = Array.isArray(s.topBrands) ? s.topBrands.filter(Boolean) : [];
               const currentYear = new Date().getFullYear();
               const yearsInBusiness = s.businessSince ? currentYear - Number(s.businessSince) : null;
@@ -174,77 +180,122 @@ export default function SupplierDirectory() {
               return (
                 <Card
                   key={s._id}
-                  className={`p-5 sm:p-6 bg-white border rounded-2xl shadow-sm hover:shadow-md transition-all cursor-pointer group ${
+                  className={`p-5 sm:p-6 bg-white border rounded-2xl shadow-sm hover:shadow-md transition-all cursor-pointer group relative overflow-hidden ${
                     isVerified ? 'border-emerald-500/40 hover:border-emerald-500' : 'border-slate-200 hover:border-orange-400'
                   }`}
                   onClick={() => navigate(`/user-profile/${s._id}`)}
                 >
-                  {/* Rectangular RFQ-like Card Layout */}
-                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
-                    {/* Left Column: Avatar & Basic Info */}
-                    <div className="flex items-start gap-4 flex-1 min-w-0">
-                      <Avatar className={`h-16 w-16 border-2 shrink-0 rounded-full overflow-hidden bg-slate-100 ${
+                  {/* Verified Top Accent Bar */}
+                  {isVerified && (
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-400" />
+                  )}
+
+                  {/* Rectangular Detailed Layout */}
+                  <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
+                    {/* Left & Middle Column */}
+                    <div className="flex items-start gap-4 sm:gap-5 flex-1 min-w-0">
+                      {/* Avatar */}
+                      <Avatar className={`h-16 w-16 sm:h-20 sm:w-20 border-2 shrink-0 rounded-2xl overflow-hidden bg-slate-100 shadow-sm ${
                         isVerified ? 'border-emerald-500' : 'border-slate-300'
                       }`}>
                         <AvatarImage src={resolveImageUrl(s.profileImage)} alt={fullName} className="object-cover w-full h-full" />
-                        <AvatarFallback className="bg-orange-600 text-white font-black text-base flex items-center justify-center w-full h-full">
+                        <AvatarFallback className="bg-orange-600 text-white font-black text-lg flex items-center justify-center w-full h-full">
                           {fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'S'}
                         </AvatarFallback>
                       </Avatar>
 
-                      <div className="min-w-0 flex-1">
+                      {/* Content Body */}
+                      <div className="min-w-0 flex-1 space-y-2.5">
+                        {/* Title Row */}
                         <div className="flex items-center gap-2 flex-wrap">
-                          <h2 className="text-base sm:text-lg font-black text-slate-900 group-hover:text-orange-600 transition-colors">
+                          <h2 className="text-base sm:text-xl font-black text-slate-900 group-hover:text-orange-600 transition-colors tracking-tight">
                             {companyName || fullName}
                           </h2>
                           <VerifiedBadge status={s.verificationStatus} size="sm" />
-                          {primaryCatName && (
-                            <span className="px-2.5 py-0.5 rounded-full bg-orange-100 text-orange-700 text-xs font-bold border border-orange-200">
-                              {primaryCatName}
-                            </span>
-                          )}
+
+                          {/* Primary Category Pill */}
+                          <span className="px-3 py-0.5 rounded-full bg-orange-100 text-orange-800 text-xs font-extrabold border border-orange-200 flex items-center gap-1 shadow-2xs">
+                            <Sparkles className="w-3 h-3 text-orange-600" />
+                            Primary: {primaryCatName}
+                          </span>
                         </div>
 
-                        {s.supplierHeadline ? (
-                          <p className="text-xs font-medium text-slate-600 mt-1 line-clamp-2 leading-relaxed">
-                            {s.supplierHeadline}
+                        {/* Tagline / Headline */}
+                        {s.supplierHeadline && (
+                          <p className="text-xs sm:text-sm font-semibold text-slate-700 italic">
+                            "{s.supplierHeadline}"
                           </p>
-                        ) : s.businessDescription ? (
-                          <p className="text-xs text-slate-500 mt-1 line-clamp-2">
+                        )}
+
+                        {/* Business Description */}
+                        {s.businessDescription ? (
+                          <p className="text-xs text-slate-600 leading-relaxed line-clamp-2">
                             {s.businessDescription}
+                          </p>
+                        ) : s.supplierCategories ? (
+                          <p className="text-xs text-slate-600 leading-relaxed line-clamp-2">
+                            <span className="font-semibold text-slate-700">Supplying:</span> {s.supplierCategories}
                           </p>
                         ) : null}
 
-                        {/* Details Badges row */}
-                        <div className="flex items-center gap-4 text-xs text-slate-500 mt-3 flex-wrap">
+                        {/* Secondary Categories Pills Row */}
+                        {secondaryCats.length > 0 && (
+                          <div className="flex items-center gap-1.5 flex-wrap pt-1">
+                            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                              <Layers className="w-3 h-3 text-slate-400" /> Secondary Categories:
+                            </span>
+                            {secondaryCats.map((cat, idx) => (
+                              <span
+                                key={idx}
+                                className="px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[11px] font-semibold border border-slate-200"
+                              >
+                                {cat}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Extra Details Row: Location, Experience, Role, Accomplishments */}
+                        <div className="flex items-center gap-3 sm:gap-5 text-xs text-slate-600 flex-wrap pt-1 border-t border-slate-100">
                           {location && (
-                            <span className="flex items-center gap-1 font-medium text-slate-700">
-                              <MapPin className="w-3.5 h-3.5 text-orange-500" />
+                            <span className="flex items-center gap-1 font-medium text-slate-800">
+                              <MapPin className="w-3.5 h-3.5 text-orange-500 shrink-0" />
                               {location}
                             </span>
                           )}
+
                           {yearsInBusiness != null && yearsInBusiness >= 0 && (
-                            <span className="flex items-center gap-1 font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">
-                              <Award className="w-3.5 h-3.5 text-emerald-600" />
+                            <span className="flex items-center gap-1 font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-md border border-emerald-200">
+                              <Award className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                               Est. {s.businessSince} ({yearsInBusiness}+ Yrs Experience)
                             </span>
                           )}
+
                           {s.roleInCompany && (
-                            <span className="flex items-center gap-1 text-slate-600">
-                              <Briefcase className="w-3.5 h-3.5 text-slate-400" />
-                              {s.roleInCompany} ({fullName})
+                            <span className="flex items-center gap-1 text-slate-700 font-medium">
+                              <Briefcase className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                              {fullName} ({s.roleInCompany})
+                            </span>
+                          )}
+
+                          {s.accomplishments && (
+                            <span className="flex items-center gap-1 text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100 font-semibold text-[11px]">
+                              <CheckCircle2 className="w-3 h-3 text-blue-600 shrink-0" />
+                              {s.accomplishments.slice(0, 45)}...
                             </span>
                           )}
                         </div>
 
-                        {/* Brands Tag Pills */}
+                        {/* Top Brands Tag Pills */}
                         {brands.length > 0 && (
-                          <div className="flex items-center gap-1.5 mt-3 flex-wrap">
-                            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Brands:</span>
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                              <Tag className="w-3 h-3 text-slate-400" /> Authorised Brands:
+                            </span>
                             {brands.map((brand, bIdx) => (
                               <span
                                 key={bIdx}
-                                className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[11px] font-semibold border border-slate-200"
+                                className="px-2.5 py-0.5 rounded-md bg-slate-800 text-white text-[11px] font-bold shadow-2xs"
                               >
                                 {brand}
                               </span>
@@ -255,16 +306,16 @@ export default function SupplierDirectory() {
                     </div>
 
                     {/* Right Column: Actions */}
-                    <div className="flex flex-row lg:flex-col items-center lg:items-end justify-between gap-2 shrink-0 pt-3 lg:pt-0 border-t lg:border-t-0 border-slate-100">
+                    <div className="flex flex-row lg:flex-col items-center lg:items-end justify-between gap-3 shrink-0 pt-3 lg:pt-0 border-t lg:border-t-0 border-slate-100">
                       <Button
                         size="sm"
-                        className="bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs h-10 px-4 rounded-xl flex items-center justify-center gap-1.5 transition-colors cursor-pointer w-full lg:w-auto"
+                        className="bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs h-10 px-5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-orange-500/20 cursor-pointer w-full lg:w-auto"
                         onClick={e => {
                           e.stopPropagation();
                           navigate(`/user-profile/${s._id}`);
                         }}
                       >
-                        View Full Profile <ArrowRight className="w-3.5 h-3.5" />
+                        View Full Profile <ArrowRight className="w-4 h-4" />
                       </Button>
                     </div>
                   </div>
