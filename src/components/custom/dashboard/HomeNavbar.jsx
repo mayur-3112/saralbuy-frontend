@@ -325,42 +325,174 @@ const HomeNavbar = () => {
   }, [user]);
 
   // ── Shared search dropdown JSX ───────────────────────────────────────────
-  const SearchDropdown = ({ id }) =>
-    showDropdown ? (
+  const SearchDropdown = ({ id }) => {
+    const hasResults =
+      universalResults.rfqs.length > 0 ||
+      universalResults.suppliers.length > 0 ||
+      universalResults.products.length > 0 ||
+      universalResults.categories.length > 0 ||
+      universalResults.brands.length > 0;
+
+    return showDropdown ? (
       <div
         id={id}
         ref={productsRef}
-        className="absolute right-0 w-full top-full mt-2 z-[99] max-h-[300px] overflow-y-auto bg-white rounded-lg shadow-lg p-2 space-y-2"
+        className="absolute right-0 w-full top-full mt-2 z-[99] max-h-[420px] overflow-y-auto bg-white rounded-xl shadow-2xl p-3 space-y-3 border border-slate-200"
       >
         {isSearchLoading ? (
           Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-20 rounded-md w-full" />
+            <Skeleton key={i} className="h-16 rounded-md w-full" />
           ))
-        ) : products?.length > 0 ? (
-          products.map(p => (
-            <Card
-              key={p._id}
-              className="p-2 rounded-xl shadow-md bg-white cursor-pointer hover:bg-gray-50"
-              onClick={() => handleSearchSelect(p)}
-            >
-              <div className="flex gap-4">
-                <img
-                  className="w-14 h-14 object-contain rounded-lg mix-blend-darken"
-                  src={p.image || '/no-image.webp'}
-                  alt={p.title}
-                />
-                <div className="flex-1">
-                  <p className="text-md font-semibold text-orange-600">{p.title}</p>
-                  <p className="text-sm text-gray-600 line-clamp-2">{p.description}</p>
+        ) : hasResults ? (
+          <div className="space-y-3 text-left">
+            {/* 1. RFQs Group */}
+            {universalResults.rfqs.length > 0 && (
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-wider text-orange-600 mb-1 flex items-center gap-1">
+                  <FileText className="w-3 h-3" /> Buyer RFQs ({universalResults.rfqs.length})
+                </p>
+                <div className="space-y-1">
+                  {universalResults.rfqs.slice(0, 3).map(rfq => (
+                    <div
+                      key={rfq._id}
+                      className="p-2 rounded-lg bg-orange-50/60 hover:bg-orange-100/80 cursor-pointer transition-colors flex items-center justify-between gap-2"
+                      onClick={async () => {
+                        setShowDropdown(false);
+                        setSearchText('');
+                        const reqId = rfq.requirementId || (await requirementService.getRequirementId(rfq._id).catch(() => null));
+                        if (reqId) {
+                          navigate(`/account/requirements-overview/${reqId}`);
+                        } else {
+                          navigate(`/product-listing?_id=${rfq._id}&title=${encodeURIComponent(rfq.title)}`);
+                        }
+                      }}
+                    >
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs font-bold text-slate-900 truncate">{rfq.title}</p>
+                        <p className="text-[10px] text-slate-500 truncate">RFQ ID: {rfq._id}</p>
+                      </div>
+                      <span className="text-[10px] font-bold text-orange-600 bg-white px-2 py-0.5 rounded-full shadow-xs shrink-0">
+                        View RFQ →
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </div>
-            </Card>
-          ))
+            )}
+
+            {/* 2. Suppliers Group */}
+            {universalResults.suppliers.length > 0 && (
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1 flex items-center gap-1">
+                  <Building2 className="w-3 h-3 text-orange-500" /> Verified Suppliers ({universalResults.suppliers.length})
+                </p>
+                <div className="space-y-1">
+                  {universalResults.suppliers.slice(0, 3).map(sup => (
+                    <div
+                      key={sup._id}
+                      className="p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors flex items-center gap-2"
+                      onClick={() => {
+                        setShowDropdown(false);
+                        setSearchText('');
+                        navigate(`/user-profile/${sup._id}`);
+                      }}
+                    >
+                      <Avatar className="h-7 w-7 rounded-full shrink-0 border border-slate-200">
+                        <AvatarImage src={resolveImageUrl(sup.profileImage)} alt={sup.businessName} />
+                        <AvatarFallback className="text-[10px] font-bold bg-slate-100 text-slate-700">
+                          {(sup.businessName || sup.firstName || 'S')[0]}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-1">
+                          <p className="text-xs font-bold text-slate-800 truncate">
+                            {sup.businessName || `${sup.firstName || ''} ${sup.lastName || ''}`.trim()}
+                          </p>
+                          <VerifiedBadge status={sup.verificationStatus} size="sm" />
+                        </div>
+                        {sup.supplierHeadline && (
+                          <p className="text-[10px] text-slate-500 truncate">{sup.supplierHeadline}</p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* 3. Products Group */}
+            {universalResults.products.length > 0 && (
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1 flex items-center gap-1">
+                  <Box className="w-3 h-3 text-slate-400" /> Products ({universalResults.products.length})
+                </p>
+                <div className="space-y-1">
+                  {universalResults.products.slice(0, 3).map(p => (
+                    <div
+                      key={p._id}
+                      className="p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors flex items-center gap-2"
+                      onClick={() => handleSearchSelect(p)}
+                    >
+                      <img
+                        className="w-8 h-8 object-contain rounded-md mix-blend-darken bg-slate-100 p-0.5 shrink-0"
+                        src={p.image || '/no-image.webp'}
+                        alt={p.title}
+                      />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs font-semibold text-slate-800 truncate">{p.title}</p>
+                        {p.brandName || p.brand ? (
+                          <p className="text-[10px] text-slate-400 truncate">Brand: {p.brandName || p.brand}</p>
+                        ) : null}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* 4. Categories Group */}
+            {universalResults.categories.length > 0 && (
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1 flex items-center gap-1">
+                  <Layers className="w-3 h-3 text-slate-400" /> Categories ({universalResults.categories.length})
+                </p>
+                <div className="flex flex-wrap gap-1">
+                  {universalResults.categories.slice(0, 4).map(c => (
+                    <button
+                      key={c._id}
+                      type="button"
+                      className="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-orange-50 text-slate-700 hover:text-orange-600 text-[11px] font-semibold transition-colors cursor-pointer"
+                      onClick={() => {
+                        setShowDropdown(false);
+                        setSearchText('');
+                        navigate(`/product-listing?category=${c._id}`);
+                      }}
+                    >
+                      {c.categoryName}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Footer View All */}
+            <div className="pt-2 border-t border-slate-100 flex justify-between items-center text-xs">
+              <span className="text-[11px] text-slate-400 font-medium">Press Enter for all results</span>
+              <button
+                type="button"
+                onClick={submitSearch}
+                className="text-xs font-bold text-orange-600 hover:underline flex items-center gap-1 cursor-pointer"
+              >
+                View Search Page →
+              </button>
+            </div>
+          </div>
         ) : (
-          <p className="text-sm text-gray-500 p-2 text-center">No results found.</p>
+          <p className="text-xs text-slate-500 p-3 text-center font-medium">No results found for &ldquo;{text}&rdquo;</p>
         )}
       </div>
     ) : null;
+  };
 
   const handleInputValue = async e => {
     const value = e.target.value;

@@ -44,6 +44,7 @@ class UserService {
           category: category && category !== 'all' ? category : undefined,
           location: location || undefined,
           limit,
+          _t: Date.now(),
         },
       })
       .then(res => res.data?.data || res.data);

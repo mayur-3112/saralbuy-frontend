@@ -317,13 +317,29 @@ export default function SearchResults() {
                         </div>
                       </div>
 
-                      <Button
-                        size="sm"
-                        className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs h-9 rounded-xl flex items-center justify-center gap-1 transition-colors cursor-pointer"
-                        onClick={() => navigate(`/product-listing?_id=${rfq._id}&title=${encodeURIComponent(rfq.title)}`)}
-                      >
-                        Submit Quote <ArrowRight className="w-3.5 h-3.5" />
-                      </Button>
+                      <div className="flex items-center gap-2 mt-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="flex-1 border-slate-300 hover:border-orange-500 hover:text-orange-600 text-slate-700 font-bold text-xs h-9 rounded-xl flex items-center justify-center gap-1 transition-colors cursor-pointer"
+                          onClick={() => {
+                            if (rfq.requirementId) {
+                              navigate(`/account/requirements-overview/${rfq.requirementId}`);
+                            } else {
+                              navigate(`/product-listing?_id=${rfq._id}&title=${encodeURIComponent(rfq.title)}`);
+                            }
+                          }}
+                        >
+                          View Requirement
+                        </Button>
+                        <Button
+                          size="sm"
+                          className="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs h-9 rounded-xl flex items-center justify-center gap-1 transition-colors cursor-pointer"
+                          onClick={() => navigate(`/product-listing?_id=${rfq._id}&title=${encodeURIComponent(rfq.title)}`)}
+                        >
+                          Submit Quote <ArrowRight className="w-3.5 h-3.5" />
+                        </Button>
+                      </div>
                     </Card>
                   ))}
                 </div>
