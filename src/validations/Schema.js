@@ -74,6 +74,7 @@ export const ProfileSchema = z.object({
   primaryCategoryId: z.string().optional(),
   secondaryCategoryIds: z.any().optional(),
   supplierHeadline: z.string().optional(),
+  topBrands: z.string().optional(),
 });
 
 export const productOverviewBidSchema = z.object({

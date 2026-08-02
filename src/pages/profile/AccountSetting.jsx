@@ -74,6 +74,7 @@ export function AccountSettings() {
       storeAddress: '',
       primaryCategoryId: '',
       supplierHeadline: '',
+      topBrands: '',
     },
   });
 
@@ -106,6 +107,7 @@ export function AccountSettings() {
         storeAddress: user?.storeAddress || '',
         primaryCategoryId: primaryCatId,
         supplierHeadline: user?.supplierHeadline || '',
+        topBrands: Array.isArray(user?.topBrands) ? user.topBrands.join(', ') : (user?.topBrands || ''),
       });
     }
   }, [user, reset]);
@@ -159,6 +161,9 @@ export function AccountSettings() {
     formData.append('primaryCategoryId', data.primaryCategoryId || '');
     formData.append('secondaryCategoryIds', JSON.stringify(selectedSecCategories || []));
     formData.append('supplierHeadline', data.supplierHeadline || '');
+    // Convert comma-separated brand string to JSON array for backend
+    const brandsArr = (data.topBrands || '').split(',').map(b => b.trim()).filter(Boolean);
+    formData.append('topBrands', JSON.stringify(brandsArr));
 
     if (fileDoc) {
       formData.append('document', fileDoc);
@@ -440,6 +445,21 @@ export function AccountSettings() {
                     Business Since <span className="text-slate-400 font-normal">(year, optional)</span>
                   </Label>
                   <Input id="businessSince" type="number" min="1900" max={new Date().getFullYear()} placeholder="e.g. 2012" {...register('businessSince')} className="bg-white w-full" />
+                </div>
+                <div className="space-y-2 w-full">
+                  <Label className="text-gray-700 text-sm font-bold" htmlFor="topBrands">
+                    Top Brands You Deal In <span className="text-slate-400 font-normal">(comma separated)</span>
+                  </Label>
+                  <Input
+                    id="topBrands"
+                    type="text"
+                    placeholder="e.g. Tata Tiscon, UltraTech, Polycab, Havells"
+                    {...register('topBrands')}
+                    className="bg-white w-full"
+                  />
+                  <p className="text-[11px] text-slate-500">
+                    Brand names displayed on your showcase card — helps buyers find suppliers for specific brands.
+                  </p>
                 </div>
                 <div className="space-y-2 w-full">
                   <Label className="text-gray-600 text-sm" htmlFor="businessPhone">

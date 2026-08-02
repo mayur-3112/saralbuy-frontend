@@ -129,9 +129,9 @@ const SupplierShowcaseSection = () => {
               const companyName = s.businessName || s.organizationName;
               const location = (s.currentLocation || s.address || '').split(',')[0].trim();
               const primaryCatName = s.primaryCategoryId?.categoryName || s.supplierCategories?.split(',')[0] || null;
-              const secondaryCats = Array.isArray(s.secondaryCategoryIds)
-                ? s.secondaryCategoryIds.map(c => typeof c === 'object' ? c.categoryName : c)
-                : (s.supplierCategories ? s.supplierCategories.split(',').slice(1, 3) : []);
+              const brands = Array.isArray(s.topBrands) ? s.topBrands.filter(Boolean).slice(0, 4) : [];
+              const currentYear = new Date().getFullYear();
+              const yearsInBusiness = s.businessSince ? currentYear - Number(s.businessSince) : null;
 
               return (
                 <div
@@ -150,20 +150,20 @@ const SupplierShowcaseSection = () => {
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-1.5 flex-wrap">
                           <h3 className="font-bold text-white text-base truncate group-hover:text-orange-400 transition-colors">
-                            {fullName}
+                            {companyName || fullName}
                           </h3>
                           <VerifiedBadge status={s.verificationStatus} size="sm" />
                         </div>
-                        {companyName && (
-                          <p className="text-xs text-slate-400 font-medium truncate mt-0.5 flex items-center gap-1">
-                            <Building2 className="w-3 h-3 text-slate-500 shrink-0" />
-                            {companyName}
-                          </p>
-                        )}
                         {location && (
                           <p className="text-[11px] text-slate-400 font-medium truncate mt-0.5 flex items-center gap-1">
                             <MapPin className="w-3 h-3 text-orange-500 shrink-0" />
                             {location}
+                          </p>
+                        )}
+                        {yearsInBusiness != null && yearsInBusiness >= 0 && (
+                          <p className="text-[11px] text-slate-400 font-medium mt-0.5 flex items-center gap-1">
+                            <Building2 className="w-3 h-3 text-slate-500 shrink-0" />
+                            Est. {s.businessSince} · {yearsInBusiness}+ Yrs
                           </p>
                         )}
                       </div>
@@ -180,16 +180,16 @@ const SupplierShowcaseSection = () => {
                       </p>
                     ) : null}
 
-                    {/* Category Badges */}
+                    {/* Category + Brand Badges */}
                     <div className="flex flex-wrap gap-1.5 mb-4">
                       {primaryCatName && (
                         <span className="px-2.5 py-1 rounded-full bg-orange-500/20 border border-orange-500/30 text-orange-300 text-[11px] font-bold">
-                          Primary: {primaryCatName}
+                          {primaryCatName}
                         </span>
                       )}
-                      {secondaryCats.map((catName, cIdx) => (
-                        <span key={cIdx} className="px-2 py-0.5 rounded-full bg-slate-700/80 border border-slate-600/50 text-slate-300 text-[10px] font-medium">
-                          {catName}
+                      {brands.map((brand, bIdx) => (
+                        <span key={bIdx} className="px-2 py-0.5 rounded-full bg-slate-700/80 border border-slate-600/50 text-slate-300 text-[10px] font-medium">
+                          {brand}
                         </span>
                       ))}
                     </div>

@@ -256,6 +256,24 @@ export default function UserProfile() {
                       ))}
                     </div>
                   )}
+                  {Array.isArray(data.topBrands) && data.topBrands.filter(Boolean).length > 0 && (
+                    <div className="flex items-center gap-2 flex-wrap text-xs">
+                      <span className="font-bold text-slate-400 uppercase tracking-wider">Brands:</span>
+                      {data.topBrands.filter(Boolean).map((brand, bIdx) => (
+                        <span key={bIdx} className="px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 font-semibold">
+                          {brand}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  {data.businessSince && (
+                    <div className="flex items-center gap-2 text-xs">
+                      <span className="font-bold text-slate-400 uppercase tracking-wider">Established:</span>
+                      <span className="px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 font-bold">
+                        Since {data.businessSince} · {new Date().getFullYear() - Number(data.businessSince)}+ Years
+                      </span>
+                    </div>
+                  )}
                 </div>
               )}
 
